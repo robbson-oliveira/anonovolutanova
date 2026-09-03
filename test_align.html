@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Animação Leque com Ponto de Âncora — Agendas 2027</title>
+<style>
+  body {
+    background: #141418;
+    color: #f0f0f0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px;
+    margin: 0;
+  }
+  .header-desc {
+    max-width: 800px;
+    text-align: center;
+    margin-bottom: 16px;
+    line-height: 1.5;
+    color: #bbb;
+  }
+  .controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 18px;
+    align-items: center;
+    background: #202028;
+    padding: 12px 22px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  button {
+    background: #9d4f23;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 14px;
+    transition: all 0.15s ease;
+  }
+  button:hover { background: #ba5f2c; transform: translateY(-1px); }
+  button:active { transform: translateY(0); }
+  .btn-sec {
+    background: #333342;
+  }
+  .btn-sec:hover {
+    background: #444455;
+  }
+  label { font-size: 13px; cursor: pointer; user-select: none; display: flex; align-items: center; gap: 6px; }
+
+  .stage {
+    position: relative;
+    width: 1017px;
+    height: 989px;
+    background: #fff5eb;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.55);
+    border-radius: 18px;
+  }
+  .reference {
+    position: absolute;
+    top: 0; left: 0;
+    width: 1017px; height: 989px;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 30;
+    transition: opacity 0.3s ease;
+  }
+
+  /* Agendas base com dimensionamento responsivo proporcional */
+  .hero-agenda {
+    position: absolute;
+    user-select: none;
+    pointer-events: none;
+    height: auto;
+    will-change: transform, opacity, filter;
+  }
+
+  /* Agenda Azul / Masculina (Fundo) */
+  .hero-agenda-azul {
+    width: 47.98%;
+    left: 45.23%;
+    top: 16.68%;
+    transform-origin: 50% 50%;
+    z-index: 2;
+    filter: drop-shadow(0 15px 30px rgba(0,0,0,0.22));
+    transform: rotate(25.6deg);
+  }
+
+  /* Agenda Colorida / Feminina (Frente) */
+  .hero-agenda-color {
+    width: 46.61%;
+    left: 5.35%;
+    top: 12.64%;
+    /* Ponto de Âncora Físico: base inferior direita (região dos patinhos no print) */
+    transform-origin: 70% 92%;
+    z-index: 5;
+    /* Estado final exato */
+    transform: translate(0%, 0%) rotate(17.4deg);
+    filter: drop-shadow(-15px 18px 30px rgba(0,0,0,0.24));
+  }
+
+  /* Indicador Visual do Ponto de Âncora (toggle para conferir) */
+  .anchor-marker {
+    position: absolute;
+    left: 386px;
+    top: 764px;
+    width: 18px;
+    height: 18px;
+    margin-left: -9px;
+    margin-top: -9px;
+    background: #ff3333;
+    border: 3px solid white;
+    border-radius: 50%;
+    z-index: 40;
+    pointer-events: none;
+    box-shadow: 0 0 12px rgba(255, 51, 51, 0.8);
+    display: none;
+  }
+  .anchor-marker::after {
+    content: "Ponto de Âncora";
+    position: absolute;
+    left: 24px;
+    top: -2px;
+    background: rgba(0,0,0,0.85);
+    color: #fff;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .show-anchor .anchor-marker {
+    display: block;
+  }
+
+  /* Card de Preço / Compra */
+  .hero-buy-card {
+    position: absolute;
+    left: 560px;
+    top: 570px;
+    z-index: 10;
+    background: #ffffff;
+    border: 1px solid rgba(129, 136, 77, 0.4);
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.14);
+    font-family: inherit;
+  }
+  .hero-buy-card img {
+    width: 36px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  .hero-buy-card .info {
+    display: flex;
+    flex-direction: column;
+  }
+  .hero-buy-card .info strong {
+    font-size: 14px;
+    color: #222;
+  }
+  .hero-buy-card .info span {
+    font-size: 13px;
+    color: #777;
+  }
+  .hero-buy-card .btn-buy {
+    background: #344c24;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  /* =========================================================================
+     COREOGRAFIA SOLICITADA PELO CLIENTE:
+     1. Entrada das duas na posição da agenda azul (colorida só um pouco virada)
+     2. A agenda colorida arrasta para o lado até o ponto de âncora e para ali
+     3. Como se o ponto de âncora estivesse fixado, ela apenas GIRA até a posição final
+     4. Card de compra surge com suavidade
+  ========================================================================= */
+
+  /* Entrada da Agenda Azul */
+  .animating .hero-agenda-azul {
+    animation: entranceAzul 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes entranceAzul {
+    0% {
+      opacity: 0;
+      transform: translate(12%, 24%) scale(0.92) rotate(20deg);
+      filter: drop-shadow(0 5px 10px rgba(0,0,0,0.05));
+    }
+    100% {
+      opacity: 1;
+      transform: translate(0, 0) scale(1) rotate(25.6deg);
+      filter: drop-shadow(0 15px 30px rgba(0,0,0,0.22));
+    }
+  }
+
+  /* Animação com Âncora da Agenda Colorida */
+  .animating .hero-agenda-color {
+    animation: fanOutWithAnchor 2.4s cubic-bezier(0.25, 1, 0.35, 1) both;
+  }
+
+  @keyframes fanOutWithAnchor {
+    /* 0%: Entra junto com a azul vindo de baixo/fora */
+    0% {
+      opacity: 0;
+      transform: translate(70%, 25%) scale(0.92) rotate(20deg);
+      filter: drop-shadow(0 5px 10px rgba(0,0,0,0.05));
+    }
+    /* 32%: Chega na posição da agenda azul, perfeitamente sobreposta, só um pouco virada (25° vs 25.6°) */
+    32% {
+      opacity: 1;
+      transform: translate(58.48%, 6.68%) scale(1) rotate(25.0deg);
+      filter: drop-shadow(-4px 8px 16px rgba(0,0,0,0.18));
+    }
+    /* 38%: Breve pausa na sobreposição inicial */
+    38% {
+      transform: translate(58.48%, 6.68%) scale(1) rotate(25.0deg);
+      filter: drop-shadow(-4px 8px 16px rgba(0,0,0,0.18));
+    }
+    /* 62%: Desliza arrastando para o lado até cravar o ponto de âncora (translate chega a 0, 0), ainda no ângulo inicial (25°) */
+    62% {
+      transform: translate(0%, 0%) scale(1.01) rotate(25.0deg);
+      filter: drop-shadow(-10px 14px 24px rgba(0,0,0,0.22));
+    }
+    /* 66%: Ponto de âncora travado, prepara a rotação do leque */
+    66% {
+      transform: translate(0%, 0%) scale(1.01) rotate(25.0deg);
+      filter: drop-shadow(-11px 15px 25px rgba(0,0,0,0.23));
+    }
+    /* 100%: Com o ponto de âncora 100% imóvel em (0,0), apenas GIRA de 25° para 17.4° até o ponto final exato! */
+    100% {
+      opacity: 1;
+      transform: translate(0%, 0%) scale(1) rotate(17.4deg);
+      filter: drop-shadow(-15px 18px 30px rgba(0,0,0,0.24));
+    }
+  }
+
+  /* Card de Compra */
+  .animating .hero-buy-card {
+    animation: popBuyCard 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 2.1s both;
+  }
+
+  @keyframes popBuyCard {
+    0% {
+      opacity: 0;
+      transform: translateY(22px) scale(0.85);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="header-desc">
+    <strong>Coreografia com Ponto de Âncora Físico:</strong> 
+    1. Entrada sobreposta na posição da agenda azul → 
+    2. Arrasta para o lado até o ponto de âncora parar na base → 
+    3. Ponto de âncora fica fixo e a agenda <strong>apenas gira em leque</strong> para abrir na posição final do print!
+  </div>
+
+  <div class="controls">
+    <button id="btnPlay">▶ Disparar Animação Leque</button>
+    <button class="btn-sec" id="btnFinal">Posição Final Fixa</button>
+    <label><input type="checkbox" id="toggleAnchor" checked> Mostrar Ponto de Âncora Vermelho (Simulação do Print)</label>
+    <label><input type="checkbox" id="toggleRef"> Comparar com Imagem Original (50% transparência)</label>
+  </div>
+
+  <div class="stage animating show-anchor" id="stage">
+    <img src="assets/capa-agenda-2027.png" class="reference" alt="referência" id="refImg" />
+    <img src="assets/capa-2027-masculina.png" class="hero-agenda hero-agenda-azul" alt="Agenda 2027 Masculina" />
+    <img src="assets/capa-2027-feminina.png" class="hero-agenda hero-agenda-color" alt="Agenda 2027 Feminina" />
+    
+    <div class="anchor-marker" title="Ponto de Âncora Fixo"></div>
+
+    <div class="hero-buy-card">
+      <img src="assets/capa-2027-feminina.png" alt="mini" />
+      <div class="info">
+        <strong>Agenda 2027</strong>
+        <span>R$ 109,90</span>
+      </div>
+      <div class="btn-buy">Comprar Agora</div>
+    </div>
+  </div>
+
+  <script>
+    const stage = document.getElementById('stage');
+    const refImg = document.getElementById('refImg');
+    const toggleRef = document.getElementById('toggleRef');
+    const toggleAnchor = document.getElementById('toggleAnchor');
+
+    toggleRef.addEventListener('change', (e) => {
+      refImg.style.opacity = e.target.checked ? '0.5' : '0';
+    });
+
+    toggleAnchor.addEventListener('change', (e) => {
+      if (e.target.checked) stage.classList.add('show-anchor');
+      else stage.classList.remove('show-anchor');
+    });
+
+    document.getElementById('btnPlay').addEventListener('click', () => {
+      stage.classList.remove('animating');
+      void stage.offsetWidth; // trigger reflow
+      stage.classList.add('animating');
+    });
+
+    document.getElementById('btnFinal').addEventListener('click', () => {
+      stage.classList.remove('animating');
+    });
+  </script>
+</body>
+</html>

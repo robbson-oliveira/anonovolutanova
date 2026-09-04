@@ -1,0 +1,7 @@
+{
+  "rewrites": [
+    { "source": "/v2", "destination": "/wireframe-v2.html" },
+    { "source": "/v1", "destination": "/wireframe.html" },
+    { "source": "/(.*)", "destination": "/wireframe.html" }
+  ]
+}

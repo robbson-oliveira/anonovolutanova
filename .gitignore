@@ -15,3 +15,7 @@ out/
 dist/
 .env
 .env.local
+
+# Next.js
+next-env.d.ts
+*.tsbuildinfo

@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+@import "../ds/styles/tokens.css";
+@import "../ds/styles/base.css";
+
+/* O conteúdo do DS e das seções precisa ser varrido pelo Tailwind. */
+@source "../ds";
+@source "../sections";
+@source "../content";

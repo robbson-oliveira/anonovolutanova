@@ -13,7 +13,7 @@ const elevationClass = {
 } as const;
 
 const surfaceClass = {
-  plain: "bg-surface",
+  plain: "bg-surface-plain",
   warm: "bg-surface-warm",
   muted: "bg-surface-muted",
   inverse: "bg-surface-inverse text-text-on-inverse",

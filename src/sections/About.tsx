@@ -60,7 +60,7 @@ export function About() {
   return (
     <section
       id="sobre"
-      className="rounded-b-[48px] bg-surface-muted px-6 pb-24 pt-24 md:px-16"
+      className="bg-surface-gold px-6 pb-24 pt-24 md:px-16"
     >
       <Container>
         <Reveal variant="up" className="mx-auto max-w-[720px] text-center">
@@ -87,12 +87,12 @@ export function About() {
               variant={i % 2 === 0 ? "left" : "right"}
               delay={(i % 2) * 90}
             >
-              <article className="h-full overflow-hidden rounded-lg bg-surface-inverse p-10 pb-0">
-                <h3 className="text-h3 text-center leading-tight tracking-[-0.04em]">
-                  <span className="text-text-on-inverse/45">
+              <article className="h-full overflow-hidden rounded-lg bg-surface-warm-card p-10 pb-0">
+                <h3 className="text-center text-[38px] font-bold leading-tight tracking-[-0.04em]">
+                  <span className="ds-title-dim">
                     {feature.muted}{" "}
                   </span>
-                  <span className="font-bold text-text-on-inverse">
+                  <span className="text-text-on-warm">
                     {feature.strong}
                   </span>
                 </h3>

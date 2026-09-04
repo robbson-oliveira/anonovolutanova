@@ -49,7 +49,7 @@ export function Accordion({
         return (
           <div
             key={item.question}
-            className={cn(cards && "rounded-card bg-surface shadow-card")}
+            className={cn(cards && "rounded-card bg-surface-plain shadow-card")}
           >
             <h3>
               <button
@@ -65,7 +65,7 @@ export function Accordion({
               >
                 <span
                   className={cn(
-                    "font-semibold text-text-strong",
+                    "font-bold text-text-card",
                     cards ? "text-base" : "text-lead",
                   )}
                 >

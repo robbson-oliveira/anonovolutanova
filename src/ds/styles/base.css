@@ -212,3 +212,19 @@ html[data-reveal-ready] [data-reveal][data-revealed] {
     filter: none !important;
   }
 }
+
+/* =============================================================================
+   Título com realce palavra a palavra (cards da seção "Sobre")
+   As palavras ainda não realçadas usam gradiente âmbar→laranja recortado no
+   texto; as realçadas viram creme sólido. Valores extraídos do design aprovado.
+   ========================================================================== */
+.ds-title-dim {
+  background-image: linear-gradient(
+    182deg,
+    var(--brand-amber-400),
+    var(--brand-flame-500)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}

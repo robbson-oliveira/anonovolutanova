@@ -87,7 +87,7 @@ export function Eyebrow({
   return (
     <p
       className={cn(
-        "flex items-center gap-2 text-sm font-semibold text-accent",
+        "flex items-center gap-2 text-eyebrow font-bold text-kicker",
         className,
       )}
       {...props}

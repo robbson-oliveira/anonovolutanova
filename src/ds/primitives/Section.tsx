@@ -9,7 +9,7 @@ type SectionProps = React.ComponentPropsWithoutRef<"section"> & {
 
 const surfaceClass = {
   warm: "bg-surface-warm",
-  plain: "bg-surface",
+  plain: "bg-surface-plain",
   muted: "bg-surface-muted",
   inverse: "bg-surface-inverse text-text-on-inverse",
 } as const;

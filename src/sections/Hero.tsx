@@ -42,7 +42,7 @@ export function Hero() {
         </Reveal>
 
         <Reveal variant="up" delay={120}>
-          <p className="mt-4 text-h3 font-bold tracking-[-0.04em] text-accent">
+          <p className="mt-4 text-h3 text-accent">
             {HERO.subtitle}
           </p>
         </Reveal>
@@ -80,7 +80,7 @@ export function Hero() {
               <div key={stat.label} className="max-w-[150px]">
                 <dt className="sr-only">{stat.label}</dt>
                 <dd>
-                  <span className="block text-[38px] font-bold leading-none tracking-[-0.04em] text-text-display">
+                  <span className="block text-stat text-accent">
                     <Counter value={stat.value} suffix={stat.suffix} />
                   </span>
                   <span className="mt-2 block text-sm text-text">

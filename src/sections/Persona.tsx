@@ -27,7 +27,7 @@ export function Persona() {
                 >
                   ✓
                 </span>
-                <p className="mt-5 max-w-[230px] text-base text-text">{item}</p>
+                <p className="mt-5 max-w-[230px] text-base font-medium text-action">{item}</p>
               </li>
             ))}
           </ul>

@@ -9,7 +9,7 @@ export function Closing() {
         {/* No design aprovado este bloco é um cartão escuro arredondado dentro
             da página, não uma faixa sangrada de borda a borda. */}
         <Reveal variant="up">
-          <div className="rounded-lg bg-surface-inverse px-8 py-24 text-center">
+          <div className="rounded-lg bg-surface-inverse-soft px-8 py-24 text-center">
             <Badge tone="plainInverse" icon="✦" className="opacity-60">
               {CLOSING.badge}
             </Badge>

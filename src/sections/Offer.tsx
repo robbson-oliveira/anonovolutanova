@@ -11,7 +11,7 @@ export function Offer() {
   return (
     <section
       id="oferta"
-      className="relative overflow-hidden rounded-t-[48px] bg-surface-muted px-6 py-24 md:px-16"
+      className="relative overflow-hidden bg-surface-sage px-6 py-24 md:px-16"
     >
       <Container>
         <Reveal variant="up" className="mx-auto max-w-[720px] text-center">
@@ -39,7 +39,7 @@ export function Offer() {
             variant="pop"
             className="relative z-10 mx-auto w-full max-w-[535px]"
           >
-            <div className="rounded-lg bg-surface-inverse p-8 shadow-float">
+            <div className="rounded-lg bg-surface-inverse-soft p-8 shadow-float">
               <div className="rounded-card bg-surface-inverse-soft/40 p-6 text-center ring-1 ring-border-inverse">
                 <Badge tone="plainInverse" icon="✦">
                   {OFFER.badge}

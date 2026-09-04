@@ -41,7 +41,7 @@ export function Tabs({ items, className }: TabsProps) {
                 "[transition-duration:var(--duration-fast)]",
                 selected
                   ? "bg-surface-inverse text-text-on-inverse"
-                  : "border border-border bg-surface text-text hover:border-accent hover:text-accent",
+                  : "border border-border bg-surface-plain text-text hover:border-action hover:text-action",
               )}
             >
               {item.label}

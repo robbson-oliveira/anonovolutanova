@@ -22,7 +22,7 @@ export function Liturgical() {
 
           <div className="mt-8 grid gap-8 lg:grid-cols-2">
             <p className="text-lead text-text-muted">{LITURGICAL.subtitle}</p>
-            <Text>{LITURGICAL.paragraph}</Text>
+            <Text className="text-accent-hover">{LITURGICAL.paragraph}</Text>
           </div>
         </Reveal>
 
@@ -41,7 +41,7 @@ export function Liturgical() {
                 >
                   {ICONS[i % ICONS.length]}
                 </span>
-                <p className="mt-6 text-h4 font-bold text-text-strong">
+                <p className="mt-6 text-lead font-bold text-text-card">
                   {date.title}
                 </p>
                 <Text className="mt-2">{date.description}</Text>

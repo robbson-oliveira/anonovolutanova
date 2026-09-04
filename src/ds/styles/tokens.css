@@ -4,16 +4,14 @@
    Este é o ÚNICO arquivo que se edita para trocar a paleta inteira.
 
    Duas camadas, e a separação é obrigatória:
-
-     1. PRIMITIVAS  — os valores literais da marca (--brand-clay-600: #9d4f23)
-     2. SEMÂNTICAS  — o papel que cada valor cumpre (--color-accent: ...)
+     1. PRIMITIVAS  — os valores literais da marca (--brand-moss-700: #344c24)
+     2. SEMÂNTICAS  — o papel que cada valor cumpre (--color-action: ...)
 
    Componente NUNCA usa primitiva. Sempre semântica.
-   Trocar a paleta = reescrever o bloco de primitivas. Se a paleta nova tiver
-   outra estrutura, remapeia-se o bloco semântico — ainda aqui dentro.
 
-   O @theme do Tailwind v4 registra estes valores como custom properties E gera
-   os utilitários correspondentes (bg-surface, text-muted, rounded-card…).
+   PROCEDÊNCIA: todos os valores abaixo foram extraídos dos estilos COMPUTADOS
+   do wireframe_old.html com o filtro grayscale desligado — não de leitura de
+   CSS nem de estimativa em captura de tela. Ao mexer aqui, re-extrair.
    ========================================================================== */
 
 @theme {
@@ -21,31 +19,34 @@
      1. PRIMITIVAS — valores literais. Só este bloco muda numa troca de paleta.
      --------------------------------------------------------------------- */
 
-  /* Terracota (cor de marca, extraída do design system oficial) */
-  --brand-clay-700: #8a4520;
-  --brand-clay-600: #9d4f23;
-  --brand-clay-500: #b36928;
+  /* Verdes — é o verde, não a terracota, que carrega a ação no design */
+  --brand-moss-900: rgb(26 37 16);    /* títulos de seção */
+  --brand-moss-800: rgb(35 51 25);    /* barra do topo, superfícies escuras */
+  --brand-moss-700: rgb(52 76 36);    /* botões, olho de seção */
+  --brand-moss-600: rgb(56 79 37);    /* display do hero */
+  --brand-moss-500: rgb(70 99 47);    /* hover do botão */
+  --brand-sage-300: rgb(208 209 177); /* superfície da seção de oferta */
+  --brand-clay-800: rgb(139 80 42);   /* cards da seção "Sobre" */
+  --brand-amber-400: rgb(255 196 102);
+  --brand-flame-500: rgb(241 89 41);
+  --brand-ink-900: rgb(0 0 0);        /* títulos dentro de card */
+
+  /* Terracota — destaque de TEXTO (subtítulo, selos, números) */
+  --brand-clay-600: rgb(157 79 35);
+  --brand-clay-500: rgb(179 105 40);
   --brand-clay-100: rgb(157 79 35 / 0.22);
 
-  /* Verdes */
-  --brand-moss-900: #1a2510;
-  --brand-moss-800: #233319;
-  --brand-moss-700: #344c24;
-  --brand-moss-600: #384f25;
-  --brand-moss-400: #81884d;
-
-  /* Dourados / cremes */
-  --brand-gold-500: #efc886;
-  --brand-gold-300: #efdcb3;
-  --brand-cream-100: #fff5ec;
+  /* Cremes e dourados */
+  --brand-cream-100: rgb(255 245 235); /* fundo da página */
+  --brand-gold-300: rgb(239 220 179);
+  --brand-gold-500: rgb(239 200 134);
 
   /* Neutros */
-  --brand-ink-900: #1d322d;
-  --brand-ink-600: #5e5c58;
-  --brand-ink-400: #8a8680;
-  --brand-paper-100: #ffffff;
-  --brand-paper-200: #f5f7f9;
-  --brand-line-200: rgb(29 50 45 / 0.1);
+  --brand-ink-600: rgb(94 92 88);      /* texto corrido */
+  --brand-ink-400: rgb(134 134 134);   /* texto secundário */
+  --brand-paper-100: rgb(255 255 255);
+  --brand-paper-200: rgb(245 247 249);
+  --brand-line-200: rgb(26 37 16 / 0.1);
   --brand-line-inverse: rgb(255 255 255 / 0.14);
 
   /* ---------------------------------------------------------------------
@@ -53,82 +54,105 @@
      --------------------------------------------------------------------- */
 
   /* Superfícies */
-  --color-surface: var(--brand-paper-100);
+  --color-surface: var(--brand-cream-100);         /* o padrão é o creme */
+  --color-surface-plain: var(--brand-paper-100);
   --color-surface-muted: var(--brand-paper-200);
   --color-surface-warm: var(--brand-cream-100);
+  --color-surface-sage: var(--brand-sage-300);
   --color-surface-inverse: var(--brand-moss-800);
+  --color-surface-inverse-soft: var(--brand-moss-700);
   --color-surface-accent-soft: var(--brand-gold-300);
+  --color-surface-gold: var(--brand-gold-300);      /* fundo da seção "Sobre" */
+  --color-surface-warm-card: var(--brand-clay-800); /* cards da seção "Sobre" */
 
   /* Texto */
   --color-text: var(--brand-ink-600);
-  --color-text-strong: var(--brand-ink-900);
+  --color-text-strong: var(--brand-moss-900);
   --color-text-muted: var(--brand-ink-400);
   --color-text-on-inverse: var(--brand-paper-100);
   --color-text-display: var(--brand-moss-600);
+  --color-text-card: var(--brand-ink-900);          /* título dentro de card: preto */
+  --color-text-on-warm: var(--brand-gold-300);      /* texto sobre o card terracota */
 
-  /* Acento / ação */
+  /* AÇÃO — fundo de botão. É verde. Separado de `accent` de propósito:
+     conflatar os dois foi o erro que inverteu a paleta inteira. */
+  --color-action: var(--brand-moss-700);
+  --color-action-hover: var(--brand-moss-500);
+  --color-on-action: var(--brand-paper-100);
+
+  /* ACENTO — destaque de TEXTO (subtítulo do hero, selos, números). */
   --color-accent: var(--brand-clay-600);
   --color-accent-hover: var(--brand-clay-500);
-  --color-accent-strong: var(--brand-clay-700);
   --color-accent-track: var(--brand-clay-100);
-  --color-on-accent: var(--brand-paper-100);
 
   /* Apoio */
-  --color-support: var(--brand-moss-700);
+  --color-kicker: var(--brand-moss-700);
   --color-highlight: var(--brand-gold-500);
   --color-border: var(--brand-line-200);
   --color-border-inverse: var(--brand-line-inverse);
-  --color-surface-inverse-soft: var(--brand-moss-700);
 
   /* ---------------------------------------------------------------------
-     Tipografia
+     Tipografia — medidas computadas do design aprovado
      --------------------------------------------------------------------- */
   --font-sans: var(--font-manrope), "Manrope", ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-manrope), "Manrope", ui-sans-serif, system-ui, sans-serif;
 
-  /* Fluido entre as três medidas do design aprovado: 50px → 54px → 80px.
-     clamp em vez de media query para que o token continue sendo um valor só. */
+  /* H1 do hero: 80px desktop · 54 tablet · 50 mobile */
   --text-display: clamp(50px, 5.6vw, 80px);
   --text-display--line-height: 1;
   --text-display--letter-spacing: -0.04em;
   --text-display--font-weight: 700;
 
-  /* Título de seção. Mede 60px no desktop do design aprovado — bem acima do
-     que uma leitura de frequência do CSS sugeriria, porque 38px é o tamanho
-     dos títulos DENTRO dos cards, não dos títulos de seção. */
-  --text-h2: clamp(34px, 4.2vw, 60px);
-  --text-h2--line-height: 1.05;
-  --text-h2--letter-spacing: -0.04em;
-  --text-h2--font-weight: 700;
-
-  /* Título de seção de peso maior: "Depoimentos" no design aprovado. */
+  /* "Depoimentos" — o único título de 87px */
   --text-h2-hero: clamp(48px, 6.2vw, 87px);
   --text-h2-hero--line-height: 1;
-  --text-h2-hero--letter-spacing: -0.04em;
+  --text-h2-hero--letter-spacing: -0.05em;
   --text-h2-hero--font-weight: 700;
 
-  --text-h3: clamp(24px, 2.7vw, 38px);
-  --text-h3--line-height: 1.1;
+  /* Título de seção: 60px / lh 1.0 / ls -3px (= -0.05em) */
+  --text-h2: clamp(34px, 4.2vw, 60px);
+  --text-h2--line-height: 1;
+  --text-h2--letter-spacing: -0.05em;
+  --text-h2--font-weight: 700;
+
+  /* Subtítulo do hero: 30px / lh 1.0 / ls -1.2px */
+  --text-h3: clamp(22px, 2.1vw, 30px);
+  --text-h3--line-height: 1;
   --text-h3--letter-spacing: -0.04em;
   --text-h3--font-weight: 700;
 
+  /* Título dentro de card */
   --text-h4: clamp(20px, 1.7vw, 24px);
   --text-h4--line-height: 1.2;
   --text-h4--letter-spacing: -0.03em;
   --text-h4--font-weight: 700;
 
+  /* Corpo: 20px / lh 1.2 — não 17px */
+  --text-base: 20px;
+  --text-base--line-height: 1.2;
+
   --text-lead: 24px;
-  --text-lead--line-height: 1.3;
+  --text-lead--line-height: 1.25;
   --text-lead--letter-spacing: -0.02em;
 
-  --text-base: 17px;
-  --text-base--line-height: 1.5;
+  /* Rótulo dos números */
+  --text-sm: 18px;
+  --text-sm--line-height: 1.1;
 
-  --text-sm: 15px;
-  --text-sm--line-height: 1.5;
+  /* Selos e olho de seção */
+  --text-xs: 16px;
+  --text-xs--line-height: 1;
+  --text-xs--letter-spacing: -0.04em;
 
-  --text-xs: 13px;
-  --text-xs--line-height: 1.4;
+  --text-eyebrow: 14px;
+  --text-eyebrow--line-height: 1;
+  --text-eyebrow--letter-spacing: -0.04em;
+  --text-eyebrow--font-weight: 700;
+
+  /* Números do bloco de estatísticas */
+  --text-stat: 30px;
+  --text-stat--line-height: 1;
+  --text-stat--letter-spacing: -0.04em;
+  --text-stat--font-weight: 600;
 
   /* ---------------------------------------------------------------------
      Layout & espaçamento
@@ -139,20 +163,19 @@
   --spacing-section: 96px;
   --spacing-section-sm: 64px;
 
-  --radius-sm: 8px;
-  --radius-md: 10px;
-  --radius-card: 12px;
+  --radius-sm: 5px;
+  --radius-md: 10px;   /* botões de bloco */
+  --radius-card: 12px; /* botões de navegação, cards */
   --radius-lg: 24px;
   --radius-pill: 100px;
 
-  --shadow-card: 0 12px 32px rgb(29 50 45 / 0.08);
-  --shadow-float: 0 18px 44px rgb(29 50 45 / 0.14);
+  --shadow-card: 0 12px 32px rgb(26 37 16 / 0.08);
+  --shadow-float: 0 18px 44px rgb(26 37 16 / 0.14);
   --shadow-book: -14px 18px 28px rgb(0 0 0 / 0.24);
   --shadow-book-back: 0 12px 24px rgb(0 0 0 / 0.22);
 
   /* ---------------------------------------------------------------------
-     Movimento — o wireframe trata movimento como parte do sistema,
-     então timing e easing são token, não número solto no componente.
+     Movimento
      --------------------------------------------------------------------- */
   --ease-enter: cubic-bezier(0.22, 0.61, 0.36, 1);
   --ease-out-soft: cubic-bezier(0.25, 1, 0.35, 1);

@@ -38,8 +38,8 @@ export function Testimonials() {
                       className="size-14 rounded-card object-cover"
                     />
                     <div>
-                      <p className="font-bold text-text-strong">{item.name}</p>
-                      <Text as="span" size="sm" tone="muted">
+                      <p className="text-lead font-bold text-text-card">{item.name}</p>
+                      <Text as="span" size="lead" tone="muted" className="font-bold">
                         {item.city}
                       </Text>
                     </div>

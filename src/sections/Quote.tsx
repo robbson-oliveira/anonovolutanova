@@ -12,7 +12,7 @@ export function Quote() {
             <blockquote className="text-lead leading-relaxed text-text">
               “{QUOTE.text}”
             </blockquote>
-            <figcaption className="mt-6 text-h3 font-bold tracking-[-0.03em] text-text-muted">
+            <figcaption className="mt-6 text-h3 text-accent-hover">
               — {QUOTE.author}
             </figcaption>
           </figure>

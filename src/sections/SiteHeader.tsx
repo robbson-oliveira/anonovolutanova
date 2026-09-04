@@ -22,7 +22,7 @@ export function SiteHeader() {
             alt={PRODUCT_NAME}
             priority
             className="w-auto"
-            style={{ height: "62px", width: "auto" }}
+            style={{ height: "72px", width: "auto" }}
           />
         </Link>
 
@@ -32,7 +32,7 @@ export function SiteHeader() {
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="text-sm font-medium text-text transition-colors [transition-duration:var(--duration-fast)] hover:text-accent"
+                  className="text-xs font-bold text-text-strong transition-colors [transition-duration:var(--duration-fast)] hover:text-action"
                 >
                   {link.label}
                 </Link>

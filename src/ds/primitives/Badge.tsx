@@ -10,9 +10,9 @@ type BadgeProps = React.ComponentPropsWithoutRef<"span"> & {
 };
 
 const toneClass = {
-  accent: "bg-accent text-on-accent px-3.5 py-1.5 rounded-pill",
+  accent: "bg-action text-on-action px-3.5 py-1.5 rounded-pill",
   soft: "bg-surface-accent-soft text-text-strong px-3.5 py-1.5 rounded-pill",
-  support: "bg-support text-text-on-inverse px-3.5 py-1.5 rounded-pill",
+  support: "bg-surface-inverse-soft text-text-on-inverse px-3.5 py-1.5 rounded-pill",
   outline: "border border-border text-text-strong px-3.5 py-1.5 rounded-pill",
   plain: "text-text-strong",
   plainInverse: "text-text-on-inverse",

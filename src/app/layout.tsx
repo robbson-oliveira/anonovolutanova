@@ -27,7 +27,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR" className={manrope.variable}>
+    // suppressHydrationWarning: o script do reveal marca o <html> ANTES da
+    // hidratação (de propósito, para não haver um quadro de animação solta).
+    // Sem isso o React acusa divergência entre servidor e cliente.
+    <html lang="pt-BR" className={manrope.variable} suppressHydrationWarning>
       <head>
         {/* Habilita a pausa do reveal antes da primeira pintura. Se este script
             não rodar, as animações simplesmente tocam no load — nunca o

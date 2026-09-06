@@ -12,9 +12,10 @@ const eslintConfig = [
 
   {
     ignores: [
-      "assets/**",
-      "backups/**",
-      "imagens 2027/**",
+      // Historico da prototipagem e o espelho do wireframe: ~120 MB que nao
+      // sao codigo do app e so fariam o lint e o TS varrerem a toa.
+      "old/**",
+      "wireframe_site_2027/**",
       ".next/**",
       "node_modules/**",
     ],

@@ -1,7 +1,7 @@
-# Backups manuais da fase de prototipagem.
-# Foram criados antes de existir git; a partir daqui o versionamento e o proprio git.
-# Os arquivos seguem em disco, apenas nao entram no historico (~45 MB de quase-duplicatas).
-/backups/
+# Historico da fase de prototipagem: wireframes antigos, HTMLs soltos, o export
+# de assets do Framer e os backups manuais. ~120 MB de material que documenta como
+# se chegou aqui, mas que nao faz parte do que se publica. Segue em disco.
+site/old/
 
 # Sistema operacional
 Thumbs.db

@@ -1,4 +1,4 @@
-import { Badge, Button, Container, Heading, Reveal, Text } from "@ds/index";
+import { Badge, Button, Container, Heading, IconSparkle, Reveal, Text } from "@ds/index";
 import { CLOSING } from "@content/home";
 import { CHECKOUT_URL } from "@content/product";
 
@@ -10,7 +10,7 @@ export function Closing() {
             da página, não uma faixa sangrada de borda a borda. */}
         <Reveal variant="up">
           <div className="rounded-lg bg-surface-inverse-soft px-8 py-24 text-center">
-            <Badge tone="plainInverse" icon="✦" className="opacity-60">
+            <Badge tone="plainInverse" icon={<IconSparkle />} className="opacity-60">
               {CLOSING.badge}
             </Badge>
 
@@ -51,7 +51,7 @@ export function Closing() {
               </Button>
             </div>
 
-            <Badge tone="plainInverse" icon="◈" className="mt-8">
+            <Badge tone="plainInverse" icon={<IconSparkle />} className="mt-8">
               {CLOSING.seal}
             </Badge>
           </div>

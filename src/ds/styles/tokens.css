@@ -95,6 +95,8 @@
      Tipografia — medidas computadas do design aprovado
      --------------------------------------------------------------------- */
   --font-sans: var(--font-manrope), "Manrope", ui-sans-serif, system-ui, sans-serif;
+  /* Manuscrita dos mockups de pagina interna. Segunda familia do design aprovado. */
+  --font-script: var(--font-yellowtail), "Yellowtail", ui-serif, cursive;
 
   /* H1 do hero: 80px desktop · 54 tablet · 50 mobile */
   --text-display: clamp(50px, 5.6vw, 80px);
@@ -163,11 +165,20 @@
   --spacing-section: 96px;
   --spacing-section-sm: 64px;
 
+  --radius-xs: 8px;    /* 2o raio mais usado no design aprovado (23x) */
   --radius-sm: 5px;
   --radius-md: 10px;   /* botões de bloco */
   --radius-card: 12px; /* botões de navegação, cards */
   --radius-lg: 24px;
   --radius-pill: 100px;
+
+  /* Medidas extraidas do DOM do design aprovado, nao estimadas.
+     subtle  -> cards de depoimento (12x)
+     page    -> imagens de pagina interna dentro dos cards da secao Sobre (8x)
+     inset   -> os 4 cards da secao Sobre (4x); e a unica sombra interna do design */
+  --shadow-subtle: 0 1px 2px rgb(0 0 0 / 0.1);
+  --shadow-page: 0 10px 60px rgb(102 56 15 / 0.3), 0 4px 20px rgb(57 32 9 / 0.4);
+  --shadow-inset-card: 8px 7px 36px rgb(64 35 10 / 0.38) inset, 0 1px 7px rgb(0 0 0 / 0.06);
 
   --shadow-card: 0 12px 32px rgb(26 37 16 / 0.08);
   --shadow-float: 0 18px 44px rgb(26 37 16 / 0.14);

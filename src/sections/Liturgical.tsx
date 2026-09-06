@@ -1,9 +1,34 @@
-import { Button, Card, Container, Heading, Reveal, Text } from "@ds/index";
+import {
+  Button,
+  Card,
+  Container,
+  Heading,
+  type IconProps,
+  IconAniversarios,
+  IconNovenaImaculada,
+  IconOitavario,
+  IconOutrasDatas,
+  IconSeteDomingosSaoJose,
+  IconTrisagio,
+  Reveal,
+  Text,
+} from "@ds/index";
 import { LITURGICAL } from "@content/home";
 import { CHECKOUT_URL } from "@content/product";
 
-/** Ícone de cada data. Placeholder tipográfico até o eixo de ícones do DS. */
-const ICONS = ["🕊", "✧", "☩", "✦", "△", "🗓"];
+/**
+ * Um ícone por data, na ordem de `LITURGICAL.dates`. O par é semântico — a
+ * rosa é dos aniversários, a imagem de Nossa Senhora é da Novena —, então
+ * reordenar as datas no conteúdo exige reordenar aqui junto.
+ */
+const ICONS = [
+  IconOitavario,             // Oitavário pela Unidade dos Cristãos
+  IconNovenaImaculada,       // Novena da Imaculada Conceição
+  IconSeteDomingosSaoJose,   // 7 Domingos de São José
+  IconAniversarios,          // Aniversários e datas comemorativas
+  IconTrisagio,              // Triságio Angélico
+  IconOutrasDatas,           // E muitas outras datas importantes!
+];
 
 export function Liturgical() {
   return (
@@ -35,12 +60,9 @@ export function Liturgical() {
               delay={(i % 2) * 90}
             >
               <Card surface="plain" elevation="raised" padding="lg" className="h-full">
-                <span
-                  aria-hidden
-                  className="grid size-14 place-items-center rounded-card bg-surface-muted text-xl"
-                >
-                  {ICONS[i % ICONS.length]}
-                </span>
+                <DateIcon
+                  icon={ICONS[i % ICONS.length]}
+                />
                 <p className="mt-6 text-lead font-bold text-text-card">
                   {date.title}
                 </p>
@@ -63,5 +85,14 @@ export function Liturgical() {
         </Reveal>
       </Container>
     </section>
+  );
+}
+
+/** O tile creme do design vive aqui, não dentro do SVG: o ícone é só o glifo. */
+function DateIcon({ icon: Icon }: { icon: React.ComponentType<IconProps> }) {
+  return (
+    <span className="grid size-14 place-items-center rounded-card bg-surface-warm text-accent-hover">
+      <Icon className="size-full" />
+    </span>
   );
 }

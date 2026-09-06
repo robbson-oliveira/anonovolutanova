@@ -15,10 +15,29 @@ import datasObra from "@/public/img/interna-datas-obra.png";
  * Cada card tem título em duas ênfases — a primeira parte em tom apagado, a
  * segunda em destaque — e uma composição de páginas internas embaixo.
  */
+type Layer = {
+  src: StaticImageData;
+  className: string;
+  /**
+   * Linhas manuscritas sobre as pautas da página. No design aprovado é o que
+   * mostra a agenda em uso — o PNG é a página em branco, a letra é texto por
+   * cima. Cada item cai numa pauta: `top` é a primeira, `step` o espaçamento,
+   * ambos em % da altura da imagem, medidos sobre a arte.
+   */
+  handwriting?: {
+    items: readonly string[];
+    top: number;
+    step: number;
+    left: string;
+    /** corpo da letra em % da largura da imagem, para escalar junto */
+    size: string;
+  };
+};
+
 type Feature = {
   muted: string;
   strong: string;
-  layers: { src: StaticImageData; className: string }[];
+  layers: Layer[];
 };
 
 const FEATURES: Feature[] = [
@@ -26,8 +45,33 @@ const FEATURES: Feature[] = [
     muted: "Espaço para o plano de vida",
     strong: "e suas metas anuais",
     layers: [
-      { src: planoDeVida, className: "left-[4%] top-[14%] w-[97%]" },
-      { src: metasAnuais, className: "left-[55%] top-0 w-[50%]" },
+      {
+        src: planoDeVida,
+        className: "left-[4%] top-[14%] w-[97%]",
+        handwriting: {
+          items: ABOUT.features[0].items,
+          top: 20.4,
+          step: 3.24,
+          left: "7.5%",
+          size: "3.4cqw",
+        },
+      },
+      {
+        src: metasAnuais,
+        className: "left-[55%] top-0 w-[50%]",
+        /*
+         * As metas vivem em ABOUT.features[1] no conteúdo, mas no design
+         * aprovado elas são a segunda página DESTE card — o card 1 mostra as
+         * duas listas. O agrupamento do conteúdo não reflete o layout.
+         */
+        handwriting: {
+          items: ABOUT.features[1].items,
+          top: 20.4,
+          step: 3.25,
+          left: "17.5%",
+          size: "3.1cqw",
+        },
+      },
     ],
   },
   {
@@ -87,7 +131,7 @@ export function About() {
               variant={i % 2 === 0 ? "left" : "right"}
               delay={(i % 2) * 90}
             >
-              <article className="h-full overflow-hidden rounded-lg bg-surface-warm-card p-10 pb-0">
+              <article className="h-full overflow-hidden rounded-lg bg-surface-warm-card p-10 pb-0 shadow-inset-card">
                 <h3 className="text-center text-[38px] font-bold leading-tight tracking-[-0.04em]">
                   <span className="ds-title-dim">
                     {feature.muted}{" "}
@@ -99,13 +143,20 @@ export function About() {
 
                 <div className="relative mt-12 h-[520px]">
                   {feature.layers.map((layer, j) => (
-                    <Image
+                    <div
                       key={j}
-                      src={layer.src}
-                      alt=""
-                      aria-hidden
-                      className={`absolute h-auto ${layer.className}`}
-                    />
+                      className={`absolute [container-type:inline-size] ${layer.className}`}
+                    >
+                      <Image
+                        src={layer.src}
+                        alt=""
+                        aria-hidden
+                        className="h-auto w-full rounded-xs shadow-page"
+                      />
+                      {layer.handwriting ? (
+                        <Handwriting {...layer.handwriting} />
+                      ) : null}
+                    </div>
                   ))}
                 </div>
               </article>
@@ -114,5 +165,28 @@ export function About() {
         </ul>
       </Container>
     </section>
+  );
+}
+
+/** Cada linha cai sobre uma pauta da arte, por isso é posicionada uma a uma. */
+function Handwriting({
+  items,
+  top,
+  step,
+  left,
+  size,
+}: NonNullable<Layer["handwriting"]>) {
+  return (
+    <ul aria-hidden className="pointer-events-none absolute inset-0">
+      {items.map((item, i) => (
+        <li
+          key={item}
+          className="absolute whitespace-nowrap font-script text-text-strong"
+          style={{ top: `${top + i * step}%`, left, fontSize: size }}
+        >
+          {item}
+        </li>
+      ))}
+    </ul>
   );
 }

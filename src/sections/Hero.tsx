@@ -1,6 +1,7 @@
 import Image from "next/image";
 import {
   Badge,
+  IconSparkle,
   Button,
   Counter,
   Heading,
@@ -26,7 +27,7 @@ export function Hero() {
 
       <div className="relative z-10 flex min-h-[720px] max-w-[540px] flex-col justify-center py-20">
         <Reveal variant="up">
-          <Badge tone="plain" icon="✦">
+          <Badge tone="plain" icon={<IconSparkle />}>
             {HERO.badge}
           </Badge>
         </Reveal>
@@ -66,8 +67,8 @@ export function Hero() {
 
         <Reveal variant="up" delay={280}>
           <div className="mt-6 flex flex-wrap items-center gap-6">
-            {HERO.seals.map((seal, i) => (
-              <Badge key={seal} tone="plain" icon={i === 0 ? "⚡" : "◈"}>
+            {HERO.seals.map((seal) => (
+              <Badge key={seal} tone="plain" icon={<IconSparkle />}>
                 {seal}
               </Badge>
             ))}

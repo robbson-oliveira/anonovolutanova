@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { IconChevronLeft, IconChevronRight } from "@ds/icons";
 import { cn } from "@ds/utils/cn";
 
 type CarouselProps = {
@@ -74,7 +75,7 @@ export function Carousel({ children, label, className }: CarouselProps) {
               "disabled:cursor-not-allowed disabled:opacity-35",
             )}
           >
-            <span aria-hidden>{direction === -1 ? "‹" : "›"}</span>
+            {direction === -1 ? <IconChevronLeft /> : <IconChevronRight />}
           </button>
         ))}
       </div>

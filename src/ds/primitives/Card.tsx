@@ -1,13 +1,14 @@
 import { cn } from "@ds/utils/cn";
 
 type CardProps = React.ComponentPropsWithoutRef<"div"> & {
-  elevation?: "flat" | "raised" | "float";
+  elevation?: "flat" | "subtle" | "raised" | "float";
   surface?: "plain" | "warm" | "muted" | "inverse";
   padding?: "sm" | "md" | "lg" | "none";
 };
 
 const elevationClass = {
   flat: "border border-border",
+  subtle: "shadow-subtle",
   raised: "shadow-card",
   float: "shadow-float",
 } as const;

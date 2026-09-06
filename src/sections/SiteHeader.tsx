@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { Button, Container, cn } from "@ds/index";
+import { Button, Container, IconArrowRight, cn } from "@ds/index";
 import { NAV_LINKS } from "@content/home";
 import { CHECKOUT_URL, PRODUCT_NAME } from "@content/product";
 import logo from "@/public/img/logo.png";
@@ -53,7 +53,7 @@ export function SiteHeader() {
           </Link>
           <Button href={CHECKOUT_URL} size="md">
             Comprar
-            <span aria-hidden>→</span>
+            <IconArrowRight />
           </Button>
           <button
             type="button"

@@ -1,4 +1,4 @@
-import { Container, Heading, Reveal, Text } from "@ds/index";
+import { Container, Heading, IconCheck, Reveal, Text } from "@ds/index";
 import { PERSONA } from "@content/home";
 
 export function Persona() {
@@ -25,7 +25,7 @@ export function Persona() {
                   aria-hidden
                   className="grid size-14 place-items-center rounded-card bg-surface-inverse text-lg text-text-on-inverse"
                 >
-                  ✓
+                  <IconCheck className="text-2xl" />
                 </span>
                 <p className="mt-5 max-w-[230px] text-base font-medium text-action">{item}</p>
               </li>

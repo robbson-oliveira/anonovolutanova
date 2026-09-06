@@ -26,3 +26,21 @@ export { Reveal, REVEAL_READY_SCRIPT } from "@ds/motion/Reveal";
 export { Counter } from "@ds/motion/Counter";
 
 export { cn } from "@ds/utils/cn";
+
+export {
+  IconBase,
+  type IconProps,
+  IconSparkle,
+  IconArrowRight,
+  IconCheck,
+  IconPlus,
+  IconChevronLeft,
+  IconChevronRight,
+  IconStar,
+  IconOitavario,
+  IconNovenaImaculada,
+  IconSeteDomingosSaoJose,
+  IconAniversarios,
+  IconTrisagio,
+  IconOutrasDatas,
+} from "@ds/icons";

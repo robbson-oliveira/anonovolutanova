@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
+import { IconPlus } from "@ds/icons";
 import { cn } from "@ds/utils/cn";
 
 export type AccordionItem = {
@@ -72,16 +73,13 @@ export function Accordion({
                   {numbered ? `${i + 1}. ` : null}
                   {item.question}
                 </span>
-                <span
-                  aria-hidden
+                <IconPlus
                   className={cn(
-                    "shrink-0 text-lg text-text-muted transition-transform",
+                    "text-lg text-text-muted transition-transform",
                     "[transition-duration:var(--duration-fast)]",
                     isOpen && "rotate-45",
                   )}
-                >
-                  +
-                </span>
+                />
               </button>
             </h3>
 

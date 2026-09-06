@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Card, Carousel, Container, Heading, Reveal, Text } from "@ds/index";
+import { Card, Carousel, Container, Heading, IconStar, Reveal, Text } from "@ds/index";
 import { TESTIMONIALS } from "@content/offer";
 import avatarRobson from "@/public/img/avatar-robson.jpeg";
 import avatarAndrea from "@/public/img/avatar-andrea.jpg";
@@ -26,7 +26,7 @@ export function Testimonials() {
               >
                 <Card
                   surface="plain"
-                  elevation="raised"
+                  elevation="subtle"
                   padding="lg"
                   className="h-full"
                 >
@@ -46,7 +46,11 @@ export function Testimonials() {
                   </div>
 
                   <p aria-label="5 de 5 estrelas" className="mt-5 text-accent">
-                    <span aria-hidden>★★★★★</span>
+                    <span aria-hidden className="inline-flex gap-0.5">
+                      {Array.from({ length: 5 }, (_, s) => (
+                        <IconStar key={s} />
+                      ))}
+                    </span>
                   </p>
 
                   <blockquote className="mt-4 text-base text-text">

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Badge, Button, Container, Heading, Reveal, Text } from "@ds/index";
+import { Badge, Button, Container, Heading, IconCheck, IconSparkle, Reveal, Text } from "@ds/index";
 import { OFFER } from "@content/offer";
 import { CHECKOUT_URL, installmentLabel, priceLabel } from "@content/product";
 import capaSolo from "@/public/img/capa-solo.png";
@@ -41,7 +41,7 @@ export function Offer() {
           >
             <div className="rounded-lg bg-surface-inverse-soft p-8 shadow-float">
               <div className="rounded-card bg-surface-inverse-soft/40 p-6 text-center ring-1 ring-border-inverse">
-                <Badge tone="plainInverse" icon="✦">
+                <Badge tone="plainInverse" icon={<IconSparkle />}>
                   {OFFER.badge}
                 </Badge>
                 <p className="mt-3 text-display font-bold tracking-[-0.04em] text-text-on-inverse">
@@ -86,7 +86,7 @@ export function Offer() {
                       aria-hidden
                       className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-pill bg-surface-inverse-soft text-text-on-inverse ring-1 ring-border-inverse"
                     >
-                      ✓
+                      <IconCheck className="text-[0.7rem]" />
                     </span>
                     {item}
                   </li>

@@ -20,3 +20,11 @@ dist/
 next-env.d.ts
 *.tsbuildinfo
 *.bak*
+
+# Material bruto de referencia: o export do Framer e as artes em alta que
+# alimentaram o site. Pesam ~14 MB, nao sao consumidos por nenhum build e
+# existem so como fonte de consulta. Seguem em disco.
+anonovolutanova.framer.website.zip
+anonovolutanova.framer.website/
+/imagens 2027/
+*.h2d

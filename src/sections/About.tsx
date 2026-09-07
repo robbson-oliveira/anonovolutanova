@@ -19,23 +19,27 @@ const datasObra = "/img/interna-datas-obra.png";
  * px, relativa ao canto superior esquerdo do card. Não escalar.
  */
 type Layer = {
-  src: string;
+  /** Página (PNG). Ausente quando a camada é só uma forma vetorial. */
+  src?: string;
+  /** Sombra em cunha do wireframe: path SVG desenhado no viewBox da caixa. */
+  wedge?: { path: string; h: number; opacity: number };
   box: { w: number; x: number; y: number };
   /**
    * Linhas manuscritas sobre as pautas da página. No design aprovado é o que
    * mostra a agenda em uso — o PNG é a página em branco, a letra é texto por
-   * cima. Cada item cai numa pauta: `top` é a primeira, `step` o espaçamento,
-   * ambos em % da altura da imagem, medidos sobre a arte.
+   * cima. Medidas em px lidas no wireframe, relativas ao canto da CAIXA da
+   * página: `top` é a primeira pauta, `step` o espaçamento entre pautas.
    */
   handwriting?: {
     items: readonly string[];
     top: number;
     step: number;
-    left: string;
-    /** corpo da letra em % da largura da imagem, para escalar junto */
-    size: string;
+    left: number;
+    /** corpo da letra em px, como no wireframe */
+    size: number;
   };
 };
+
 
 export type Feature = {
   muted: string;
@@ -56,10 +60,10 @@ export const FEATURES: Feature[] = [
         box: { w: 575, x: 21, y: 260 },
         handwriting: {
           items: ABOUT.features[0].items,
-          top: 20.4,
-          step: 3.24,
-          left: "7.5%",
-          size: "3.4cqw",
+          top: 161,
+          step: 27,
+          left: 41,
+          size: 20,
         },
       },
       {
@@ -72,10 +76,10 @@ export const FEATURES: Feature[] = [
          */
         handwriting: {
           items: ABOUT.features[1].items,
-          top: 20.4,
-          step: 3.25,
-          left: "17.5%",
-          size: "3.1cqw",
+          top: 84,
+          step: 13.5,
+          left: 52,
+          size: 9.41,
         },
       },
     ],
@@ -85,9 +89,19 @@ export const FEATURES: Feature[] = [
     strong: "uma frase de São Josemaria para inspirar",
     layers: [
       { src: agendaDiaria, box: { w: 598, x: 177, y: 105 } },
+      {
+        /* Sombra em cunha que a página projeta sobre o card (wireframe). */
+        box: { w: 498, x: 29, y: 169 },
+        wedge: {
+          h: 523,
+          opacity: 0.34,
+          path: "M 432.044 462.613 L 52.696 326.925 C 46.057 324.55 43.894 316.234 48.536 310.926 L 293.943 30.262 C 298.519 25.028 306.908 25.946 310.244 32.046 L 477.206 337.287 C 478.486 339.626 478.778 342.379 478.018 344.934 L 444.997 456.046 C 443.363 461.545 437.446 464.545 432.044 462.613 Z",
+        },
+      },
       { src: citacao, box: { w: 276, x: 60, y: 188 } },
     ],
   },
+
   {
     muted: "Todo mês",
     strong: "um tema para viver a santidade no cotidiano",
@@ -165,15 +179,41 @@ export function FeatureCard({
         {feature.layers.map((layer, j) => (
           <div
             key={j}
-            className="absolute [container-type:inline-size]"
+            className="absolute"
             style={{ width: layer.box.w, left: layer.box.x, top: layer.box.y }}
           >
-            <img
-              src={layer.src}
-              alt=""
-              aria-hidden
-              className="h-auto w-full rounded-xs shadow-page"
-            />
+            {layer.src ? (
+              <img
+                src={layer.src}
+                alt=""
+                aria-hidden
+                className="h-auto w-full rounded-xs shadow-page"
+              />
+            ) : null}
+            {layer.wedge ? (
+              <svg
+                aria-hidden
+                width={layer.box.w}
+                height={layer.wedge.h}
+                viewBox={`0 0 ${layer.box.w} ${layer.wedge.h}`}
+                className="block"
+                style={{ opacity: layer.wedge.opacity }}
+              >
+                <defs>
+                  <linearGradient
+                    id={`wedge-${j}`}
+                    x1="0"
+                    x2="1"
+                    y1="0.2196"
+                    y2="0.7804"
+                  >
+                    <stop offset="0" stopColor="#000" stopOpacity="1" />
+                    <stop offset="1" stopColor="#000" stopOpacity="0" />
+                  </linearGradient>
+                </defs>
+                <path d={layer.wedge.path} fill={`url(#wedge-${j})`} />
+              </svg>
+            ) : null}
             {layer.handwriting ? <Handwriting {...layer.handwriting} /> : null}
           </div>
         ))}
@@ -196,11 +236,17 @@ function Handwriting({
         <li
           key={item}
           className="absolute whitespace-nowrap font-script text-text-strong"
-          style={{ top: `${top + i * step}%`, left, fontSize: size }}
+          style={{
+            top: top + i * step,
+            left,
+            fontSize: size,
+            lineHeight: 1,
+          }}
         >
           {item}
         </li>
       ))}
     </ul>
   );
+
 }

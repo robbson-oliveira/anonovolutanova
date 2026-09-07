@@ -147,7 +147,7 @@ export function Testimonials() {
             </ul>
           </Reveal>
 
-          <div style={{ display: "flex", gap: 12, marginTop: 32 }}>
+          <div style={{ display: "flex", gap: 12, marginTop: 27 }}>
             {([-1, 1] as const).map((dir) => (
               <button
                 key={dir}

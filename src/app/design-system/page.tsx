@@ -466,12 +466,12 @@ export default function DesignSystemPage() {
               </Row>
 
               <Row label="FeatureCard" last meta="4 cards · 586×600 · animação por camadas">
-                <Note className="!text-left">
+                <Text className="mx-auto mb-4 max-w-[620px]">
                   Os quatro boxes de destaque da seção “O que a torna especial”:
                   medidas exatas do wireframe (586×600), grade de duas colunas e a
                   animação de entrada por camadas, compartilhando um único gatilho
                   de scroll por card.
-                </Note>
+                </Text>
                 <ul className="mt-8 grid justify-center gap-7 lg:grid-cols-[repeat(2,586px)]">
                   {FEATURES.map((feature, i) => (
                     <FeatureCard key={feature.strong} feature={feature} index={i} />

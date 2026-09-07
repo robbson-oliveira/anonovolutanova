@@ -9,6 +9,45 @@
 @source "../content";
 @source "../routes";
 
+/* Fontes locais: sem troca visível de fonte no carregamento.
+   `display: block` evita o flash com fonte errada — os arquivos são
+   servidos da mesma origem e pré-carregados, então o bloqueio é imperceptível. */
+@font-face {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("/fonts/manrope-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 500;
+  font-display: block;
+  src: url("/fonts/manrope-latin-500-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 600;
+  font-display: block;
+  src: url("/fonts/manrope-latin-600-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+  src: url("/fonts/manrope-latin-700-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Yellowtail";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("/fonts/yellowtail-latin-400-normal.woff2") format("woff2");
+}
+
 :root {
   --font-manrope: "Manrope";
   --font-yellowtail: "Yellowtail";

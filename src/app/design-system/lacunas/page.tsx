@@ -521,23 +521,23 @@ const GRUPOS: Grupo[] = [
     descricao:
       "Composições recorrentes da home. São reutilizáveis, mas hoje só existem dentro das seções.",
     itens: [
-      ...FEATURES.map((feature, i) => ({
-        nome: `Box "${feature.muted} ${feature.strong}"`,
+      {
+        nome: "Boxes “O que a torna especial”",
         onde: "Seção Sobre — O que a torna especial",
         falta:
-          "Box de destaque com título em duas ênfases e composição de páginas internas sobrepostas (com linhas manuscritas quando houver). Entra com a animação Reveal alternando o lado.",
+          "Os 4 boxes de destaque com título em duas ênfases e composição de páginas internas sobrepostas (com linhas manuscritas quando houver). Entram com a animação Reveal alternando o lado, na mesma sequência e tamanho do wireframe: grade de 2 colunas.",
         prioridade: "alta" as Prioridade,
         larga: true,
         demo: (
-          <ul className="max-w-[680px]">
-            <FeatureCard feature={feature} index={i} />
+          <ul className="grid w-full gap-6 lg:grid-cols-2">
+            {FEATURES.map((feature, i) => (
+              <FeatureCard key={feature.strong} feature={feature} index={i} />
+            ))}
           </ul>
         ),
         demoNota:
-          i % 2 === 0
-            ? "Animação de entrada: Reveal vindo da esquerda, sem atraso."
-            : "Animação de entrada: Reveal vindo da direita, com 90ms de atraso.",
-      })),
+          "Animação de entrada: Reveal alternando esquerda/direita por coluna, com 90ms de atraso na segunda.",
+      },
 
       {
         nome: "Bloco de estatísticas",

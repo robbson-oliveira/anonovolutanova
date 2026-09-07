@@ -75,7 +75,13 @@ const REF_NATURAL = { width: 1017, height: 989 };
  */
 const REF_CALIBRATION = { scale: 0.817, x: -47, y: -73 };
 
-const REF_STORAGE_KEY = "lab.hero-animation.ref-align.v1";
+/**
+ * Versão do ajuste salvo. Subir a versão sempre que REF_CALIBRATION mudar:
+ * assim um ajuste antigo guardado no navegador não sobrescreve a calibragem
+ * nova logo depois da tela abrir (era isso que fazia a referência "encolher"
+ * um instante depois de carregar).
+ */
+const REF_STORAGE_KEY = "lab.hero-animation.ref-align.v2";
 
 type RefAlign = { scale: number; x: number; y: number };
 

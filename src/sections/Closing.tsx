@@ -12,7 +12,7 @@ const textura = "/img/textura-rodape.png";
 export function Closing() {
   return (
     <section
-      id="fechamento"
+      id="fechamento-bloco"
       style={{
         position: "relative",
         width: 1440,

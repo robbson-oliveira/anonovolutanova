@@ -1,4 +1,3 @@
-import Image from "next/image";
 import {
   Badge,
   IconSparkle,
@@ -9,10 +8,8 @@ import {
   Text,
 } from "@ds/index";
 import { HERO, STATS } from "@content/home";
-import { CHECKOUT_URL, CYCLE_YEAR, priceLabel } from "@content/product";
-import capaColor from "@/public/img/capa-color.png";
-import capaClassica from "@/public/img/capa-classica.png";
-import capaSolo from "@/public/img/capa-solo.png";
+import { CHECKOUT_URL } from "@content/product";
+import { BookStage } from "./BookStage";
 
 export function Hero() {
   return (
@@ -22,10 +19,36 @@ export function Hero() {
     >
       {/* O palco sangra para fora do container e passa da borda direita da
           janela. É a composição aprovada: as agendas não são uma "imagem ao
-          lado do texto", elas atravessam o limite da página. */}
-      <BookStage />
+          lado do texto", elas atravessam o limite da página. O posicionamento
+          mora aqui, não no BookStage — o componente é só o palco 740×740. */}
+      <div className="absolute left-[46%] top-2 hidden lg:block">
+        <BookStage />
+      </div>
 
-      <div className="relative z-10 flex min-h-[720px] max-w-[540px] flex-col justify-center py-20">
+      {/* Medido direto no design aprovado, não estimado: a coluna de texto
+          do Hero segue esquerda=(viewport-1316)/2 — testado em 4 larguras de
+          1538 a 3000px, erro zero nas quatro. NÃO é o --container-content de
+          1200px do resto do site. O header (SiteHeader.tsx) usa essa MESMA
+          medida agora — o logo precisa cair na borda do texto, então os dois
+          compartilham max-w-[1316px] + px-6 lg:px-0. Antes o header tinha
+          seu próprio 1390px, e o logo ficava ~23px à direita do texto.
+
+          A medição não tinha padding nenhum somado ao teto (a fórmula bate
+          exata sem termo extra) — daí o `px-6 lg:px-0`: só existe gutter
+          abaixo de 1024px, faixa em que o teto de 1316px ainda não entra em
+          jogo. Empilhar `md:px-16` por cima do teto foi o erro da primeira
+          tentativa: empurrava o texto 64px além do medido e criava a
+          sobreposição de novo, só que em todas as larguras.
+
+          A seção não pode ganhar esse teto de largura ela mesma — o
+          BookStage acima depende do padding desta <section> para o
+          posicionamento em porcentagem, e mudar isso desalinha a animação
+          toda. Em vez disso: cancela o padding da seção só para este ramo
+          (-mx-6 md:-mx-16) e reaplica a centralização medida, a partir da
+          viewport inteira de novo. */}
+      <div className="relative z-10 -mx-6 md:-mx-16">
+        <div className="mx-auto max-w-[1316px] px-6 lg:px-0">
+          <div className="flex min-h-[720px] max-w-[540px] flex-col justify-center py-20">
         <Reveal variant="up">
           <Badge tone="plain" icon={<IconSparkle />}>
             {HERO.badge}
@@ -92,89 +115,9 @@ export function Hero() {
             ))}
           </dl>
         </Reveal>
-      </div>
-    </section>
-  );
-}
-
-/**
- * As duas agendas entram em leque: a Clássica assenta primeiro, a Color pousa
- * sobre ela, encosta e desliza girando ao redor da própria âncora até a
- * posição final. Ângulos, porcentagens e o `transform-origin` são o resultado
- * aprovado no protótipo — não são valores arbitrários e não devem ser
- * "arredondados".
- */
-function BookStage() {
-  return (
-    /* 740px é a medida do palco no protótipo aprovado; as porcentagens
-       internas de cada agenda são relativas a ela. */
-    <div
-      aria-hidden
-      className="pointer-events-none absolute left-[46%] top-2 hidden aspect-square w-[740px] lg:block"
-    >
-      {/* Clássica — assenta primeiro, fica atrás */}
-      <div
-        data-motion="hero-book"
-        style={{ left: "45.2%", top: "23.5%" }}
-        className="absolute z-[2] w-[48%] origin-center [animation:ds-book-back-in_0.9s_var(--ease-out-soft)_both]"
-      >
-        <Image
-          src={capaClassica}
-          alt="Agenda Ano Novo, Luta Nova — Edição Clássica"
-          priority
-          className="h-auto w-full"
-        />
-      </div>
-
-      {/* Color — pousa sobre a outra, encosta e desliza girando na âncora */}
-      <div
-        data-motion="hero-book"
-        style={{ left: "0.8%", top: "11.5%" }}
-        className="absolute z-[5] w-[46.6%] [transform-origin:70%_92%] [animation:ds-book-fan-out_var(--duration-book)_var(--ease-out-soft)_both]"
-      >
-        <Image
-          src={capaColor}
-          alt="Agenda Ano Novo, Luta Nova — Edição Color"
-          priority
-          className="h-auto w-full"
-        />
-      </div>
-
-      <PriceCard />
-    </div>
-  );
-}
-
-/**
- * Card flutuante de compra. Compacto e horizontal: miniatura à esquerda,
- * preço à direita, botão embaixo. A linha de parcelamento NÃO entra aqui —
- * ela pertence ao card da seção de oferta.
- */
-function PriceCard() {
-  return (
-    <div
-      data-motion="hero-card"
-      className="pointer-events-auto absolute left-[30%] top-[61%] z-10 w-[200px] rounded-md bg-surface p-2.5 shadow-float [animation:ds-pop-in_0.6s_var(--ease-overshoot)_2.1s_both]"
-    >
-      <div className="flex items-center gap-2.5">
-        <Image
-          src={capaSolo}
-          alt=""
-          className="h-9 w-auto rounded-[3px]"
-          style={{ height: "36px", width: "auto" }}
-        />
-        <div>
-          <p className="text-xs text-text-muted">Agenda {CYCLE_YEAR}</p>
-          <p className="text-sm font-bold text-text-strong">{priceLabel}</p>
+          </div>
         </div>
       </div>
-      <Button
-        href={CHECKOUT_URL}
-        shape="block"
-        className="mt-2.5 h-9 w-full text-xs"
-      >
-        Comprar Agora
-      </Button>
-    </div>
+    </section>
   );
 }

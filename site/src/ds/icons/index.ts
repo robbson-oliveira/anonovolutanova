@@ -8,6 +8,10 @@ export {
   IconChevronLeft,
   IconChevronRight,
   IconStar,
+  IconAccount,
+  IconClose,
+  IconAsterisk,
+  IconGiftBox,
 } from "./ui";
 
 export {

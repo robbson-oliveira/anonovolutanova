@@ -74,3 +74,75 @@ export function IconStar(props: IconProps) {
     </IconBase>
   );
 }
+
+/*
+ * Área do cliente, esteira de frete grátis e o fechar dela: extraídos do
+ * wireframe aprovado (auditoria de header/topbar). O ícone da conta é
+ * levemente retangular (23×24 no original) — mantido no viewBox nativo em
+ * vez de forçado no grid 16×16, para não distorcer a proporção.
+ */
+
+/** Área do cliente */
+export function IconAccount(props: IconProps) {
+  return (
+    <IconBase viewBox="0 0 23 24" fill="none" {...props}>
+      <path fill="transparent" d="M.07 24V0h22.857v24Z" />
+      <path
+        fill="currentColor"
+        d="M11.068 13.091c3.694 0 6.7-2.937 6.7-6.546S14.762 0 11.068 0C7.379.005 4.374 2.941 4.369 6.545c0 3.609 3.005 6.546 6.699 6.546m0-11.198c2.63.003 4.772 2.09 4.775 4.652 0 2.566-2.142 4.652-4.775 4.652-2.632 0-4.773-2.086-4.773-4.652 0-2.565 2.141-4.651 4.773-4.652m5.459 13.497H5.61c-3.057.003-5.548 2.437-5.551 5.425v2.239c0 .522.432.946.963.946s.962-.424.962-.946v-2.239c.003-1.945 1.63-3.53 3.626-3.532h10.917c1.997.002 3.624 1.587 3.627 3.532v2.239c0 .522.432.946.962.946a.955.955 0 0 0 .963-.946v-2.239c-.003-2.988-2.494-5.422-5.552-5.425"
+      />
+    </IconBase>
+  );
+}
+
+/** Fechar a esteira de frete grátis */
+export function IconClose(props: IconProps) {
+  return (
+    <IconBase viewBox="0 0 24 24" fill="none" {...props}>
+      <path
+        fill="transparent"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={1.5}
+        d="M4.75 12A7.25 7.25 0 0 1 12 4.75h0A7.25 7.25 0 0 1 19.25 12h0A7.25 7.25 0 0 1 12 19.25h0A7.25 7.25 0 0 1 4.75 12m5-2.25 4.5 4.5m0-4.5-4.5 4.5"
+      />
+    </IconBase>
+  );
+}
+
+/** Separador da esteira: asterisco, alterna com o pacote entre as repetições. */
+export function IconAsterisk(props: IconProps) {
+  return (
+    <IconBase fill="none" {...props}>
+      <path
+        fill="currentColor"
+        d="M57.584 40.011 41.218 30l16.365-10.011a1.244 1.244 0 0 0 .412-1.712l-4.809-7.861a1.24 1.24 0 0 0-1.712-.413L35.852 19.56V1.246C35.852.558 35.294 0 34.606 0h-9.213c-.688 0-1.246.558-1.246 1.246V19.56L8.525 10.004a1.245 1.245 0 0 0-1.713.413l-4.808 7.86a1.25 1.25 0 0 0 .412 1.713L18.781 30 2.416 40.011a1.24 1.24 0 0 0-.412 1.712l4.808 7.86a1.245 1.245 0 0 0 1.713.414l15.622-9.557v18.314c0 .688.558 1.246 1.246 1.246h9.213c.688 0 1.246-.558 1.246-1.246V40.441l15.622 9.555a1.246 1.246 0 0 0 1.713-.412l4.809-7.861a1.25 1.25 0 0 0-.412-1.712"
+      />
+    </IconBase>
+  );
+}
+
+/**
+ * Separador da esteira: a caixa. Única exceção ao contrato de currentColor
+ * do resto do sistema — é uma ilustração colorida de propósito (6 tons fixos,
+ * extraídos do wireframe aprovado), não um glifo. Repintar por herança
+ * destruiria o sombreado 3D que dá a leitura de caixa/pacote.
+ */
+/* eslint-disable no-restricted-syntax -- exceção documentada acima: cores
+   fixas da ilustração extraída do wireframe, não tokens de marca. */
+export function IconGiftBox(props: IconProps) {
+  return (
+    <IconBase fill="none" {...props}>
+      <g fill="transparent">
+        <path fill="#FFCE94" d="M28.526.366 5.374 12.657a1.97 1.97 0 0 0-1.044 1.736v30.853c0 1.246.7 2.386 1.812 2.95l22.704 11.515c.724.368 1.58.368 2.304 0l22.705-11.515a3.31 3.31 0 0 0 1.811-2.95V14.393c0-.727-.401-1.395-1.044-1.736L31.47.366a3.14 3.14 0 0 0-2.944 0" />
+        <path fill="#FCB043" d="M29.913 60c.395 0 .79-.092 1.152-.276L53.77 48.209a3.31 3.31 0 0 0 1.811-2.95V14.406a1.95 1.95 0 0 0-.225-.904L29.913 27.053Z" />
+        <path fill="#E2791B" d="M29.998 27.054 4.555 13.502a1.95 1.95 0 0 0-.225.904v30.852c0 1.247.7 2.387 1.812 2.951l22.704 11.515c.357.181.751.276 1.152.276z" />
+        <path fill="#DEF2FC" d="m39.014 4.365-25.75 13.713v4.388c0 .421.232.808.604 1.006l4.475 2.385a.533.533 0 0 0 .784-.47v-4.096L44.916 7.498Z" />
+        <path fill="#403A46" d="m33.669 51.241 6.869-3.285a2.48 2.48 0 0 0 1.408-2.293l-.001-.03a1.09 1.09 0 0 0-1.588-.944l-6.688 3.434zm0 4.791 3.772-1.753a2.48 2.48 0 0 0 1.433-2.304 1.09 1.09 0 0 0-1.594-.942l-3.611 1.88Z" />
+        <path fill="#B6C8CE" d="M13.264 18.172v4.344c0 .421.232.808.604 1.006l4.475 2.385a.533.533 0 0 0 .784-.47v-4.096l.043-.023Z" />
+      </g>
+    </IconBase>
+  );
+}
+/* eslint-enable no-restricted-syntax */

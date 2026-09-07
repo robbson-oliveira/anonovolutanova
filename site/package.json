@@ -22,6 +22,7 @@
     "@types/react-dom": "^19.1.7",
     "eslint": "^9.36.0",
     "eslint-config-next": "15.5.25",
+    "svgo": "^3.3.5",
     "tailwindcss": "^4.1.13",
     "typescript": "^5.9.2"
   }

@@ -119,12 +119,12 @@
 @keyframes ds-book-back-in {
   0% {
     opacity: 0;
-    transform: translate(10%, 20%) scale(0.93) rotate(20deg);
+    transform: translate(10%, 20%) scale(0.93) rotate(10.5deg);
     filter: drop-shadow(0 4px 8px rgb(0 0 0 / 0.05));
   }
   100% {
     opacity: 1;
-    transform: translate(0, 0) scale(1) rotate(26.2deg);
+    transform: translate(0, 0) scale(1) rotate(16.7deg);
     filter: drop-shadow(var(--shadow-book-back));
   }
 }
@@ -133,28 +133,28 @@
   /* entra junto com a de trás */
   0% {
     opacity: 0;
-    transform: translate(65%, 22%) scale(0.92) rotate(20deg);
+    transform: translate(65%, 22%) scale(0.92) rotate(13.5deg);
     filter: drop-shadow(0 4px 8px rgb(0 0 0 / 0.05));
   }
   /* assenta sobre a de trás */
   28% {
     opacity: 1;
-    transform: translate(58.5%, 7.5%) scale(1) rotate(26deg);
+    transform: translate(58.5%, 7.5%) scale(1) rotate(19.5deg);
     filter: drop-shadow(-4px 8px 14px rgb(0 0 0 / 0.18));
   }
   /* toque físico */
   34% {
-    transform: translate(58.5%, 7.5%) scale(1.01) rotate(26deg);
+    transform: translate(58.5%, 7.5%) scale(1.01) rotate(19.5deg);
     filter: drop-shadow(-5px 9px 16px rgb(0 0 0 / 0.19));
   }
   /* desliza arrastando e já vai girando na âncora */
   65% {
-    transform: translate(14%, 1.8%) scale(1.01) rotate(18deg);
+    transform: translate(14%, 1.8%) scale(1.01) rotate(11.5deg);
     filter: drop-shadow(-11px 15px 24px rgb(0 0 0 / 0.22));
   }
   100% {
     opacity: 1;
-    transform: translate(0%, 0%) scale(1) rotate(13deg);
+    transform: translate(0%, 0%) scale(1) rotate(6.5deg);
     filter: drop-shadow(var(--shadow-book));
   }
 }

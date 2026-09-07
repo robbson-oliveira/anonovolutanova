@@ -30,6 +30,7 @@ import {
 } from "@ds/index";
 import { EditionSelectorDemo } from "./EditionSelectorDemo";
 import { Metrics } from "./TokenMetrics";
+import { AxisNav } from "./AxisNav";
 import { TopBar } from "@sections/TopBar";
 import { SiteHeader } from "@sections/SiteHeader";
 import { Hero } from "@sections/Hero";
@@ -267,12 +268,16 @@ const AXES = [
 export default function DesignSystemPage() {
   return (
     <>
-      <TopBar />
-      <div className="pt-9">
+      {/* Sem `sticky`: aqui a barra rola com a página. Ela não compete pelo
+          topo fixo com a navegação dos eixos — essa assume o posto assim
+          que o scroll a alcança, como convém a quem "entrou" no design
+          system, não a quem ainda está vendo a vitrine do site. */}
+      <TopBar sticky={false} />
+      <div>
         <SiteHeader />
         <main>
           <Hero />
-          <AxisNav />
+          <AxisNav axes={AXES} />
 
           <AxisSection {...AXES[0]}>
             <Note>
@@ -671,26 +676,6 @@ export default function DesignSystemPage() {
 }
 
 /* -------------------------------------------------------------------------- */
-
-/** Índice dos eixos. Fica sob a barra fixa de 36px, por isso o `top-9`. */
-function AxisNav() {
-  return (
-    <nav className="sticky top-9 z-30 border-y border-border bg-surface/95 backdrop-blur">
-      <Container className="flex flex-wrap items-center gap-x-6 gap-y-2 py-3">
-        <span className="text-xs font-bold text-accent">Design System</span>
-        {AXES.map((a) => (
-          <a
-            key={a.id}
-            href={`#${a.id}`}
-            className="text-xs text-text-muted transition-colors hover:text-text-strong"
-          >
-            {a.title}
-          </a>
-        ))}
-      </Container>
-    </nav>
-  );
-}
 
 const AXIS_SURFACE = {
   warm: "bg-surface",

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { Button, Container, IconArrowRight, cn } from "@ds/index";
+import { Button, Container, IconAccount, IconArrowRight, cn } from "@ds/index";
 import { NAV_LINKS } from "@content/home";
 import { CHECKOUT_URL, PRODUCT_NAME } from "@content/product";
 import logo from "@/public/img/logo.png";
@@ -13,9 +13,16 @@ export function SiteHeader() {
 
   return (
     // Não é sticky: no design aprovado o cabeçalho rola junto com a página.
-    // Só a barra de frete fica fixa no topo.
-    <header className="relative z-40 border-b border-border bg-surface">
-      <div className="mx-auto flex h-20 w-full max-w-[1440px] items-center justify-between gap-6 px-6 md:px-16">
+    // Só a barra de frete fica fixa no topo. Sem borda embaixo — o wireframe
+    // não tem nenhuma (0px em toda a cadeia de elementos, conferido no DOM).
+    <header className="relative z-40 bg-surface">
+      {/* 1316px, a MESMA medida do texto do Hero (Hero.tsx), não os 1200px
+          do container de conteúdo do resto do site nem um valor próprio do
+          header. O logo precisa cair exatamente na borda esquerda do bloco
+          de texto — por isso aqui usa a receita idêntica de Hero.tsx
+          (max-w-[1316px] + px-6 lg:px-0), não a antiga (1390px + padding
+          fixo) que deixava o logo ~23px à direita do texto. */}
+      <div className="mx-auto flex h-20 w-full max-w-[1316px] items-center justify-between gap-6 px-6 lg:px-0">
         <Link href="#inicio" className="flex shrink-0 items-center">
           <Image
             src={logo}
@@ -44,14 +51,15 @@ export function SiteHeader() {
         <div className="flex items-center gap-3">
           <Link
             href="#conta"
-            aria-label="Minha conta"
+            aria-label="Área do cliente"
             className="hidden size-11 place-items-center rounded-pill text-text-strong transition-colors [transition-duration:var(--duration-fast)] hover:text-accent lg:grid"
           >
-            <span aria-hidden className="text-lg leading-none">
-              ⚇
-            </span>
+            <IconAccount className="text-xl" />
           </Link>
-          <Button href={CHECKOUT_URL} size="md">
+          {/* shape="block": medido no wireframe, radius=12px (rounded-card),
+              não pílula. O padrão do Button é pílula para botão de nav — este
+              é a exceção confirmada, não os outros que ainda não medi. */}
+          <Button href={CHECKOUT_URL} size="md" shape="block">
             Comprar
             <IconArrowRight />
           </Button>

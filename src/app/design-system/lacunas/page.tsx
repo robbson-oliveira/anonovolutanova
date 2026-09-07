@@ -27,6 +27,8 @@ import { Quote } from "@sections/Quote";
 import { Persona } from "@sections/Persona";
 import { Closing } from "@sections/Closing";
 import { Explore } from "@sections/Explore";
+import { FEATURES, FeatureCard } from "@sections/About";
+
 import { STATS } from "@content/home";
 import { OFFER } from "@content/offer";
 import { installmentLabel, priceLabel } from "@content/product";

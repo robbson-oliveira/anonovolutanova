@@ -5,7 +5,7 @@ import { cn } from "@ds/utils/cn";
 
 type RevealProps = {
   as?: "div" | "section" | "li" | "article" | "span";
-  variant?: "up" | "left" | "right" | "pop";
+  variant?: "up" | "left" | "right" | "pop" | "forward";
   /** Atraso em ms. Usado para escalonar pares (esquerda/direita). */
   delay?: number;
   className?: string;

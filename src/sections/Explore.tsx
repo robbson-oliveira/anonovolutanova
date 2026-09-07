@@ -109,6 +109,8 @@ export function Explore() {
               }}
               className={cn(
                 "cursor-pointer rounded-[10px] p-[10px] text-[16px] leading-[16px] tracking-[-0.04em] transition-colors",
+                /* borda de 1px por dentro — no wireframe ela não altera os 36px de altura */
+                "shadow-[inset_0_0_0_1px_var(--color-accent)]",
                 "[transition-duration:var(--duration-fast)]",
                 i === tab
                   ? "bg-accent font-bold text-on-action"

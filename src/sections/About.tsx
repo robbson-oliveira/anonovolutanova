@@ -16,7 +16,8 @@ const datasObra = "/img/interna-datas-obra.png";
  */
 type Layer = {
   src: string;
-  className: string;
+  /** caixa da página em px, medida no wireframe e relativa ao canto do card */
+  box: { w: number; x: number; y: number };
   /**
    * Linhas manuscritas sobre as pautas da página. No design aprovado é o que
    * mostra a agenda em uso — o PNG é a página em branco, a letra é texto por

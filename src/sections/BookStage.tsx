@@ -56,8 +56,8 @@ export function BookStage({
       {/* Color — pousa sobre a outra, encosta e desliza girando na âncora */}
       <div
         data-motion="hero-book"
-        style={{ left: "8.5%", top: "9.1%" }}
-        className="absolute z-[5] w-[46.6%] [transform-origin:70%_92%] [animation:ds-book-fan-out_var(--duration-book)_var(--ease-out-soft)_both]"
+        style={{ left: "8.475%", top: "9.006%" }}
+        className="absolute z-[5] w-[45.64%] [transform-origin:70%_92%] [animation:ds-book-fan-out_var(--duration-book)_var(--ease-out-soft)_both]"
       >
         <Cover
           src={colorSrc}

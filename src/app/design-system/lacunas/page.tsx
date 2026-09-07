@@ -546,10 +546,11 @@ const GRUPOS: Grupo[] = [
         nome: "Bloco de oferta",
         onde: "Seção de oferta",
         falta:
-          "Superfície sage, selos, preço, parcelamento e lista de benefícios. É o bloco de conversão e não tem anatomia documentada.",
+          "Painel claro arredondado, cartão escuro cobrindo as imagens inclinadas, caixa interna com selo e preço, botão laranja em degradê, ícones de pagamento e checklist. É o bloco de conversão e não tem anatomia documentada — e a seção Offer do site já diverge do wireframe (fundo sage, botão escuro, texto diferente).",
         prioridade: "alta",
         larga: true,
-        demo: <Offer />,
+        demo: <DemoOferta />,
+        demoNota: "Montagem fiel ao wireframe, não a seção atual do site.",
       },
       {
         nome: "Bloco de fechamento",

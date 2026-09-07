@@ -58,6 +58,44 @@ const FALLBACK_DURATION = 2700;
 
 const srcOf = (src: CoverSrc) => src;
 
+/**
+ * Tamanho natural de public/img/referencia-posicionamento.png. A referência
+ * NÃO é quadrada e é um recorte fechado nas duas agendas — ela não tem a
+ * folga do palco nem o cartão de preço. Por isso ela é desenhada no tamanho
+ * real dela e ancorada no canto do palco: escala 1,00 = 1px da referência
+ * vale 1px do palco de 740. Espremer com object-contain dentro do quadrado
+ * (como era antes) inventava uma escala que não correspondia a nada.
+ */
+const REF_NATURAL = { width: 1017, height: 989 };
+
+/**
+ * Calibragem medida no navegador com a animação congelada no último frame:
+ * compara a caixa das capas da referência com a caixa das capas do BookStage
+ * real. Com estes números a referência abre já encaixada.
+ */
+const REF_CALIBRATION = { scale: 0.6316, x: 26, y: 34 };
+
+const REF_STORAGE_KEY = "lab.hero-animation.ref-align.v1";
+
+type RefAlign = { scale: number; x: number; y: number };
+
+function loadRefAlign(): RefAlign {
+  if (typeof window === "undefined") return REF_CALIBRATION;
+  try {
+    const raw = window.localStorage.getItem(REF_STORAGE_KEY);
+    if (!raw) return REF_CALIBRATION;
+    const parsed = JSON.parse(raw) as Partial<RefAlign>;
+    const ok = (n: unknown): n is number =>
+      typeof n === "number" && Number.isFinite(n);
+    if (ok(parsed.scale) && ok(parsed.x) && ok(parsed.y)) {
+      return { scale: parsed.scale, x: parsed.x, y: parsed.y };
+    }
+  } catch {
+    /* storage indisponível ou corrompido: cai na calibragem */
+  }
+  return REF_CALIBRATION;
+}
+
 export default function HeroAnimationLab() {
   const [runId, setRunId] = useState(0);
   const [assets, setAssets] = useState(DEFAULT_ASSETS);

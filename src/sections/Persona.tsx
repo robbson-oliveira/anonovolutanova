@@ -41,8 +41,7 @@ export function Persona() {
             <p
               style={{
                 width: 458,
-                margin: 0,
-                paddingTop: 24,
+                margin: "24px 0 0",
                 fontSize: 20,
                 lineHeight: "24px",
                 fontWeight: 400,

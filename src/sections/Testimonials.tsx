@@ -28,7 +28,7 @@ export function Testimonials() {
       id="depoimentos"
       style={{
         width: 1440,
-        padding: "0 0 200px 60px",
+        padding: "0 0 118px 60px",
         background: "var(--color-surface)",
         overflow: "hidden",
       }}
@@ -77,14 +77,14 @@ export function Testimonials() {
                       boxShadow: "rgba(0, 0, 0, 0.1) 0px 1px 2px 0px",
                     }}
                   >
-                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
                       <img
                         src={AVATARS[i % AVATARS.length]}
                         alt=""
                         aria-hidden
                         style={{ width: 60, height: 60, borderRadius: 12, objectFit: "cover" }}
                       />
-                      <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: 2, paddingTop: 10 }}>
                         <p
                           style={{
                             margin: 0,
@@ -147,7 +147,7 @@ export function Testimonials() {
             </ul>
           </Reveal>
 
-          <div style={{ display: "flex", gap: 12, marginTop: 26 }}>
+          <div style={{ display: "flex", gap: 12, marginTop: 32 }}>
             {([-1, 1] as const).map((dir) => (
               <button
                 key={dir}

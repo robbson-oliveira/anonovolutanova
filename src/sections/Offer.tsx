@@ -182,6 +182,7 @@ export function Offer() {
                     style={{
                       margin: "6px 0 0",
                       fontSize: 18,
+                      lineHeight: "normal",
                       fontWeight: 500,
                       letterSpacing: "-0.36px",
                       color: "rgba(255, 255, 255, 0.75)",

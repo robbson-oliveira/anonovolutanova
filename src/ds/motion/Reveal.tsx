@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { cn } from "@ds/utils/cn";
 
 type RevealProps = {
@@ -21,6 +21,56 @@ type RevealProps = {
  * nada fica preso invisível. O contrário (JS que precisa rodar para revelar)
  * deixa a página em branco quando falha.
  */
+/**
+ * Quando um bloco tem várias camadas que precisam entrar JUNTAS (um card com
+ * páginas sobrepostas, por exemplo), o gatilho é o grupo inteiro — e não cada
+ * camada por si, o que fazia a entrada parecer travada e escalonada demais.
+ */
+const RevealGroupContext = createContext<boolean | null>(null);
+
+export function RevealGroup({
+  as: Tag = "div",
+  className,
+  children,
+}: {
+  as?: "div" | "section" | "li" | "article" | "span";
+  className?: string;
+  children: React.ReactNode;
+}) {
+  const ref = useRef<HTMLElement>(null);
+  const [revealed, setRevealed] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || revealed) return;
+    if (!("IntersectionObserver" in window)) {
+      setRevealed(true);
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setRevealed(true);
+            io.disconnect();
+          }
+        }
+      },
+      { threshold: 0, rootMargin: "0px 0px -10% 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [revealed]);
+
+  return (
+    <RevealGroupContext.Provider value={revealed}>
+      <Tag ref={ref as React.Ref<never>} className={cn(className)}>
+        {children}
+      </Tag>
+    </RevealGroupContext.Provider>
+  );
+}
+
 export function Reveal({
   as: Tag = "div",
   variant = "up",
@@ -29,9 +79,13 @@ export function Reveal({
   children,
 }: RevealProps) {
   const ref = useRef<HTMLElement>(null);
-  const [revealed, setRevealed] = useState(false);
+  const group = useContext(RevealGroupContext);
+  const [selfRevealed, setSelfRevealed] = useState(false);
+  const revealed = group !== null ? group : selfRevealed;
+  const setRevealed = setSelfRevealed;
 
   useEffect(() => {
+    if (group !== null) return;
     const el = ref.current;
     if (!el || revealed) return;
 
@@ -54,7 +108,7 @@ export function Reveal({
 
     io.observe(el);
     return () => io.disconnect();
-  }, [revealed]);
+  }, [group, revealed]);
 
   return (
     <Tag

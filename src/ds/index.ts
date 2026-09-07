@@ -22,7 +22,7 @@ export {
 } from "@ds/primitives/EditionSelector";
 export { BookCover } from "@ds/primitives/BookCover";
 
-export { Reveal, REVEAL_READY_SCRIPT } from "@ds/motion/Reveal";
+export { Reveal, RevealGroup, REVEAL_READY_SCRIPT } from "@ds/motion/Reveal";
 export { Counter } from "@ds/motion/Counter";
 
 export { cn } from "@ds/utils/cn";

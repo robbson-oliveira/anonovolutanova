@@ -1,38 +1,110 @@
-import { Container, Heading, IconCheck, Reveal, Text } from "@ds/index";
+import { IconCheck, Reveal, RevealGroup } from "@ds/index";
 import { PERSONA } from "@content/home";
+
+/* -----------------------------------------------------------------------------
+   PERSONA — medido no wireframe (viewport 1440), section 1440x902.
+   padding 100/60 · gap 60 · painel 1320x522 r18 pad 80/60 gap 50 · grade 3 col
+   ícone 60x60 · gap ícone→texto 24 · texto 239px 20/24 500 -0.4px
+   -------------------------------------------------------------------------- */
 
 export function Persona() {
   return (
-    <section className="bg-surface px-6 py-24 md:px-16">
-      <Container>
-        <Reveal
-          variant="up"
-          className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,480px)]"
-        >
-          <Heading as="h2" className="max-w-[620px]">
-            {PERSONA.title}
-          </Heading>
-          <Text className="lg:pt-3">{PERSONA.paragraph}</Text>
-        </Reveal>
+    <section
+      id="persona"
+      style={{
+        width: 1440,
+        padding: "100px 60px",
+        display: "flex",
+        flexDirection: "column",
+        gap: 60,
+        background: "var(--color-surface)",
+      }}
+    >
+      <RevealGroup>
+        <div style={{ display: "flex", width: 1320, alignItems: "flex-start" }}>
+          <Reveal variant="up">
+            <h2
+              style={{
+                width: 648,
+                margin: 0,
+                fontSize: 60,
+                lineHeight: "60px",
+                fontWeight: 700,
+                letterSpacing: "-3px",
+                color: "var(--color-text-strong)",
+              }}
+            >
+              {PERSONA.title}
+            </h2>
+          </Reveal>
+          <Reveal variant="up" delay={90} style={{ marginLeft: "auto" }}>
+            <p
+              style={{
+                width: 458,
+                margin: 0,
+                paddingTop: 24,
+                fontSize: 20,
+                lineHeight: "24px",
+                fontWeight: 400,
+                color: "var(--color-text)",
+              }}
+            >
+              {PERSONA.paragraph}
+            </p>
+          </Reveal>
+        </div>
 
-        {/* Um painel único com a grade dentro — no design aprovado os itens
-            não são cards separados. */}
-        <Reveal variant="up" delay={90}>
-          <ul className="mt-14 grid gap-x-10 gap-y-12 rounded-lg bg-surface-muted p-14 md:grid-cols-2 lg:grid-cols-3">
+        <Reveal variant="up" delay={180}>
+          <ul
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 366.7px)",
+              gap: 50,
+              width: 1320,
+              margin: 0,
+              padding: "80px 60px",
+              listStyle: "none",
+              borderRadius: 18,
+              backgroundImage:
+                "linear-gradient(99deg, rgb(231, 221, 194) 0%, rgb(240, 233, 214) 100%)",
+            }}
+          >
             {PERSONA.items.map((item) => (
-              <li key={item}>
+              <li key={item} style={{ display: "flex", flexDirection: "column", gap: 24 }}>
                 <span
                   aria-hidden
-                  className="grid size-14 place-items-center rounded-card bg-surface-inverse text-lg text-text-on-inverse"
+                  style={{
+                    display: "grid",
+                    placeItems: "center",
+                    width: 60,
+                    height: 60,
+                    borderRadius: 14,
+                    color: "var(--color-text-on-inverse)",
+                    fontSize: 26,
+                    backgroundImage:
+                      "linear-gradient(225deg, rgb(52, 76, 36) 0%, rgb(26, 37, 16) 100%)",
+                  }}
                 >
-                  <IconCheck className="text-2xl" />
+                  <IconCheck />
                 </span>
-                <p className="mt-5 max-w-[230px] text-base font-medium text-action">{item}</p>
+                <p
+                  style={{
+                    width: 239,
+                    margin: 0,
+                    fontSize: 20,
+                    lineHeight: "24px",
+                    fontWeight: 500,
+                    letterSpacing: "-0.4px",
+                    color: "rgb(52, 76, 36)",
+                  }}
+                >
+                  {item}
+                </p>
               </li>
             ))}
           </ul>
         </Reveal>
-      </Container>
+      </RevealGroup>
     </section>
   );
 }

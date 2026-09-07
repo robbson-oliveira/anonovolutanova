@@ -108,9 +108,28 @@ export default function HeroAnimationLab() {
   const [showRef, setShowRef] = useState(true);
   const [refOpacity, setRefOpacity] = useState(0.4);
   const [refBlend, setRefBlend] = useState<"normal" | "difference">("normal");
-  const [refScale, setRefScale] = useState(1);
-  const [refX, setRefX] = useState(0);
-  const [refY, setRefY] = useState(0);
+  const [refScale, setRefScale] = useState(REF_CALIBRATION.scale);
+  const [refX, setRefX] = useState(REF_CALIBRATION.x);
+  const [refY, setRefY] = useState(REF_CALIBRATION.y);
+
+  // Estado salvo só é lido depois da hidratação, para não divergir do SSR.
+  useEffect(() => {
+    const saved = loadRefAlign();
+    setRefScale(saved.scale);
+    setRefX(saved.x);
+    setRefY(saved.y);
+  }, []);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(
+        REF_STORAGE_KEY,
+        JSON.stringify({ scale: refScale, x: refX, y: refY }),
+      );
+    } catch {
+      /* sem storage: o ajuste só não sobrevive ao reload */
+    }
+  }, [refScale, refX, refY]);
 
   const [showInitial, setShowInitial] = useState(false);
   const [showFinal, setShowFinal] = useState(false);

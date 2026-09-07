@@ -659,29 +659,14 @@ const GRUPOS: Grupo[] = [
         demo: <Quote />,
       },
       {
-        nome: "Bloco de persona / checklist",
-        onde: "Para quem é a agenda",
-        falta: "Lista de itens com ícone de check, espaçamento e ritmo próprios.",
+        nome: "Checklist (marcadores)",
+        onde: "Oferta e persona",
+        falta: "Lista com ícone de check em pílula — variação genérica.",
         prioridade: "baixa",
         larga: true,
-        demo: (
-          <div className="space-y-8">
-            <DemoChecklist />
-            <Persona />
-          </div>
-        ),
+        demo: <DemoChecklist />,
       },
-      {
-        nome: "Bloco de oferta",
-        onde: "Seção de oferta",
-        falta:
-          "O site já usa a cor certa (bg-surface-sage = #d0d1b1 do wireframe), mas aplica no fundo da seção inteira, de ponta a ponta. No wireframe, título + parágrafo + card de preço ficam dentro de um painel único recuado, com canto arredondado responsivo (90px → 67px → 24px) — o site não tem esse painel. Falta também o cartão escuro estreito sobre as duas imagens inclinadas (capa e página interna), com selo, preço, botão translúcido, bandeiras de pagamento e checklist — hoje o card do site usa botão laranja e proporção diferente.",
-        prioridade: "alta",
-        larga: true,
-        demo: <DemoOfertaPainel />,
-        demoNota:
-          "Montagem fiel ao wireframe (painel + cartão), valores extraídos do CSS real do arquivo — não da seção atual do site.",
-      },
+
       {
         nome: "Bloco de fechamento",
         onde: "Antes do rodapé",

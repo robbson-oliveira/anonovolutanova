@@ -305,120 +305,273 @@ function DemoChecklist() {
   );
 }
 
+/* -----------------------------------------------------------------------------
+   Seção de oferta reconstruída a partir do CSS REAL do wireframe, não de print.
+   Origem de cada valor: public/wireframe/wireframe-v2.html, section#price
+   ("Price -Section"). As classes .framer-* citadas abaixo são as do próprio
+   arquivo — dá para conferir cada número buscando a classe lá.
+
+   Duas armadilhas que derrubaram as tentativas anteriores, ambas causadas pelo
+   `html { filter: grayscale(100%) }` que o wireframe aplica em si mesmo:
+     · o cartão NÃO é cinza — é verde-escuro #374e24 com borda #81884d;
+     · o botão NÃO é claro/translúcido — é o degradê laranja
+       linear-gradient(62deg, #FF7A2F 0%, #FF7A2F 42%, #F4D36A 100%).
+   Quem olhou só a captura leu os dois dessaturados e documentou ao contrário.
+
+   Breakpoints do wireframe: <768 / 768–1199,98 / ≥1200. O 768 coincide com o
+   `md` padrão do Tailwind; para o 1200 não há equivalente padrão, daí o
+   arbitrário `min-[1200px]:`.
+   -------------------------------------------------------------------------- */
+
+const CARD_BG = "#374e24";
+const CARD_BORDER = "#81884d";
+const BOTAO_GRADIENTE =
+  "linear-gradient(62deg, #FF7A2F 0%, #FF7A2F 42%, #F4D36A 100%)";
+const CHECK_GRADIENTE = "linear-gradient(225deg, #81884D 0%, #344C24 100%)";
+
+/* Medidas do wireframe a 1440px de viewport, lidas com getComputedStyle no DOM
+   renderizado (com as animações de entrada neutralizadas):
+
+     painel ............... 1440×1266, bg #d0d1b1, raio 90px, overflow clip
+     container ............ 1200 de largura, padding-top 208px, gap 87px
+     bloco de texto ....... 760×197, gap 21px
+     coluna do preço ...... 537×774, centrada  →  @452
+     cartão ............... 537×774 @452,492, pad-top 54px, gap 16px
+     caixa do preço ....... 394×180 @523,546
+     botão ................ 394×72  @523,742
+     bandeiras ............ 128×21  @656,840   (SVG único, centrado)
+     checklist ............ 537×309 @452,877, pad-top 50px
+       └ frame ............ 354×259 @543,927, gap 21px
+
+   Os gaps fecham exatos: 546+180+16=742 · 742+72+16+10=840 · 840+21+16=877.
+   O cartão termina em 1266 — a mesma base do painel, por isso só o topo é
+   arredondado. Quem sangra e é cortado pelo `overflow: clip` são as imagens. */
+
 /**
- * Painel externo da seção de oferta, extraído do CSS real do wireframe
- * (classes .framer-1gvz3z6 / .framer-1h0xv8m / .framer-52glac em
- * wireframe-v2.html) em vez de estimado por print — o painel aparece cinza
- * na captura porque o wireframe roda inteiro com filter:grayscale(100%);
- * a cor real do fundo é #d0d1b1, que já é --brand-sage-300 /
- * --color-surface-sage no token, a mesma usada em bg-surface-sage no
- * Offer.tsx real. O que falta no site é a FORMA: no wireframe título +
- * parágrafo + card de preço ficam dentro de um único painel recuado com
- * canto arredondado, não um fundo de seção de ponta a ponta.
+ * Cartão escuro central (.framer-11n5j7r "Content").
  *
- * border-radius e padding-top são responsivos, valores lidos direto das
- * media queries do arquivo (não arbitrados):
- *   >=1200px .......... radius 90px, padding-top 208px
- *   768-1199px ........ radius 67px, padding-top 180px
- *   <768px ............. radius 24px, padding-top 78px, + padding lateral 20px
- * 768px bate com o breakpoint `md` padrão do Tailwind; 1200px não tem
- * breakpoint padrão equivalente, por isso o arbitrário `min-[1200px]:`.
+ * Só o topo é arredondado (24px) e a altura é fixa (774px no desktop): o
+ * cartão encosta na base do painel de propósito. Quem sangra e é cortado pela
+ * borda arredondada são as duas imagens, não ele.
  */
-function DemoOfertaPainel() {
+function OfertaCartao() {
   return (
     <div
       className={cn(
-        "bg-surface-sage px-5 pt-[78px] pb-10",
-        "rounded-[24px] md:rounded-[67px] min-[1200px]:rounded-[90px]",
-        "md:px-0 md:pt-[180px] min-[1200px]:pt-[208px]",
+        "relative z-10 flex w-full flex-col items-center justify-start overflow-clip",
+        "h-[774px] max-w-[588px] rounded-t-[24px] pt-[54px]",
+        "max-[1199px]:h-[760px] max-[1199px]:w-[477px] max-[1199px]:max-w-[558px] max-[1199px]:px-[60px]",
+        "max-md:h-[645px] max-md:px-6 max-md:pt-[30px]",
+        "gap-4",
+        "shadow-[0_22px_15.1px_#00000080]",
       )}
+      style={{ backgroundColor: CARD_BG }}
     >
-      <Reveal variant="up" className="mx-auto max-w-[720px] text-center">
-        <Heading as="h2">{OFFER.title}</Heading>
-        <Text className="mx-auto mt-5 max-w-[560px]">{OFFER.paragraph}</Text>
-      </Reveal>
-      <div className="mx-auto mt-16 max-w-[800px]">
-        <DemoOferta />
+      {/* Caixa do preço (394×180): fundo #81884d4d, raio 12px e um fio de
+          1.03822px SÓ na base — não é um contorno completo. */}
+      <div
+        className={cn(
+          "flex w-full max-w-[394px] flex-col items-center rounded-[12px] p-5",
+          "gap-5 max-md:gap-1.5",
+          "border-b-[1.03822px] border-b-[#dcdcdc33]",
+        )}
+        style={{ backgroundColor: "#81884d4d" }}
+      >
+        {/* Selo (139×36): py 10px + texto de 16px com leading 100%. O texto
+            precisa do tamanho explícito — herdando o do pai daria 40px. */}
+        <div className="flex items-center gap-2.5 py-2.5 max-md:gap-[5px] max-md:py-1">
+          <IconSparkle className="text-[16px] text-white" />
+          <p className="text-[16px] font-bold leading-none tracking-[-0.04em] text-white">
+            {OFFER.badge}
+          </p>
+        </div>
+
+        {/* Preço (234×84): no wireframe o valor e o parcelamento são irmãos
+            dentro do MESMO container, então o gap de 10,38px da coluna não
+            entra entre os dois. A conta é 54 + 6 (margem) + 24 (leading). */}
+        <div className="flex flex-col items-center">
+          <p className="text-[54px] font-bold leading-none tracking-[-0.05em] text-white">
+            {priceLabel}
+          </p>
+          <p className="mt-[6px] text-[18px] font-medium leading-[24px] tracking-[-0.02em] text-white/75">
+            {installmentLabel}
+          </p>
+        </div>
       </div>
+
+      {/* Botão (394×72): raio 9px, borda 1.3px #5D754D e o degradê laranja. */}
+      <a
+        href="#comprar"
+        className={cn(
+          "flex h-[72px] w-full max-w-[394px] items-center justify-center rounded-[9px]",
+          "max-md:h-[58px]",
+          "border-[1.3px] border-[#5d754d]",
+          "text-[20px] font-bold leading-[1.2em] tracking-[-0.02em] text-white",
+          "shadow-[0_12px_24px_rgba(0,0,0,0.3)]",
+        )}
+        style={{ backgroundImage: BOTAO_GRADIENTE }}
+      >
+        {OFFER.cta}
+      </a>
+
+      {/* Bandeiras de pagamento: um SVG único de 128,25×21, centrado, 10px
+          abaixo do gap de 16px do cartão (medido em y=840). */}
+      <img
+        src="/img/bandeiras-pagamento.svg"
+        alt=""
+        aria-hidden
+        className="mt-[10px] h-[21px] w-[128.25px]"
+      />
+
+      {/* Checklist (537×309, pad-top 50): o bloco de 354px é centrado no
+          cartão, mas o conteúdo dentro dele alinha à esquerda. */}
+      <div className="flex w-full items-start justify-center pt-[50px] max-md:pt-5">
+        <div className="flex w-full max-w-[354px] flex-col items-start gap-[21px] max-md:max-w-[310px] max-md:gap-[18px] max-md:px-4">
+          <p className="text-[20.76px] font-semibold leading-[120%] tracking-[-0.04em] text-white">
+            {OFFER.listTitle}
+          </p>
+          <ul className="flex w-full flex-col gap-[20.7644px] max-md:gap-[18px]">
+            {OFFER.list.map((item) => (
+              <li
+                key={item}
+                className="flex w-full items-center gap-4 max-md:gap-[13px]"
+              >
+                {/* Bolinha: 32px (23px no mobile) com degradê 225deg — não é
+                    um círculo chapado. */}
+                <span
+                  aria-hidden
+                  className="relative size-8 shrink-0 rounded-full max-md:size-[23px]"
+                  style={{ backgroundImage: CHECK_GRADIENTE }}
+                >
+                  <IconCheck className="absolute left-[10px] top-[10px] text-[12px] text-white max-md:left-[8px] max-md:top-[7px] max-md:text-[8px]" />
+                </span>
+                <p className="flex-1 text-[18.17px] leading-[120%] tracking-[-0.04em] text-white">
+                  {item}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      {/* A borda do wireframe vem do `data-border` do Framer, que é um
+          pseudo-elemento: ela NÃO entra no box model. Uma `border` de verdade
+          no cartão encolheria o conteúdo em 4,16px e estreitaria o checklist
+          (537 → 533). Por isso ela é desenhada por cima, em absoluto. */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-0 rounded-t-[24px] border-x-[2.08px] border-t-[2.08px]"
+        style={{ borderColor: CARD_BORDER }}
+      />
     </div>
   );
 }
 
 /**
- * Bloco de oferta fiel ao wireframe: painel claro arredondado, título escuro
- * centralizado, cartão escuro cobrindo as duas imagens inclinadas (capa à
- * esquerda, página interna à direita), caixa interna com selo + preço +
- * parcelamento, botão laranja em degradê, ícones de pagamento e checklist.
- * É uma montagem de auditoria — não altera a seção Offer do site.
+ * Composição do preço (.framer-1lygbgi): uma coluna ESTREITA de 537px com o
+ * cartão dentro, e as duas agendas posicionadas em absoluto a partir dela,
+ * muito maiores que a coluna. É isso que produz o efeito do wireframe — as
+ * agendas não são "imagens ao lado do cartão", elas são peças gigantes que
+ * vazam para os dois lados e o painel corta.
+ *
+ * Capa (.framer-6ev259): 1414×879, bottom -199, right -69, object-contain,
+ * translateX(81px) rotate(-2deg).
+ * Interna (.framer-2bicl9): 711×879, bottom -168, left 101%,
+ * translateX(-50%) translateX(-81px) rotate(3deg), raio 2px e sombra própria.
  */
-function DemoOferta() {
+function OfertaComposicao() {
   return (
-    <div className="relative overflow-hidden rounded-[24px] bg-[#EDEDED]">
-      {/* Palco: as duas peças ocupam quase toda a área, o cartão fica por cima
-          e sangra para fora do topo e da base — como no wireframe. */}
-      <div className="relative mx-auto flex min-h-[520px] w-full items-center justify-center px-4 py-10">
-        <img
-          src="/img/capa-solo.png"
-          alt=""
-          aria-hidden
-          className="pointer-events-none absolute bottom-[-6%] left-[-2%] w-[46%] -rotate-[4deg]"
-        />
-        <img
-          src="/img/interna-oferta.png"
-          alt=""
-          aria-hidden
-          className="pointer-events-none absolute bottom-[-8%] right-[-2%] w-[46%] rotate-[3deg]"
-        />
+    <div
+      className={cn(
+        "relative flex w-[537px] max-w-[588px] items-center justify-center",
+        "max-[1199px]:w-min",
+        "max-md:w-full max-md:max-w-[584px] max-md:px-[10px]",
+      )}
+    >
+      {/* Capa: 1414×879 ancorada pela DIREITA da coluna (right -69), com
+          object-contain — a arte fica centrada na caixa larga e por isso
+          aparece bem à esquerda, atravessando o painel. */}
+      <img
+        src="/img/capa-solo.png"
+        alt=""
+        aria-hidden
+        loading="lazy"
+        className={cn(
+          "pointer-events-none absolute z-[1] h-[879px] w-[1414px] max-w-none object-contain",
+          "bottom-[-199px] right-[-69px]",
+          "max-[1199px]:right-[-156px]",
+          "max-md:bottom-[-219px] max-md:right-[-532px]",
+        )}
+        style={{ transform: "translateX(81px) rotate(-2deg)" }}
+      />
+      {/* Página interna: 711×879 ancorada em left:101% da coluna e recuada
+          por translateX(-50%) − 81px. object-fill (a proporção bate: 0,809). */}
+      <img
+        src="/img/interna-oferta.png"
+        alt=""
+        aria-hidden
+        loading="lazy"
+        className={cn(
+          "pointer-events-none absolute z-[1] h-[879px] w-[711px] max-w-none rounded-[2px] object-fill",
+          "shadow-[11px_-3px_10.2px_rgba(0,0,0,0.2)]",
+          "bottom-[-168px] left-[101%]",
+          "max-[1199px]:bottom-[-118px] max-[1199px]:left-[97%]",
+          "max-md:bottom-[-178px]",
+        )}
+        style={{
+          transform: "translateX(-50%) translateX(-81px) rotate(3deg)",
+        }}
+      />
 
-        <div className="relative z-10 w-full max-w-[380px] rounded-[20px] bg-[#3B3B3B] p-5 shadow-float">
-          <div className="rounded-[14px] bg-white/10 px-6 py-5 text-center">
-            <span className="inline-flex items-center gap-2 text-sm text-white/85">
-              <IconSparkle /> {OFFER.badge}
-            </span>
-            <p className="mt-2 text-[2.6rem] font-bold leading-none tracking-[-0.04em] text-white">
-              {priceLabel}
-            </p>
-            <p className="mt-2 text-sm text-white/60">{installmentLabel}</p>
-          </div>
+      <OfertaCartao />
+    </div>
+  );
+}
 
-          {/* Botão neutro claro, não o degradê laranja do site. */}
-          <a
-            href="#comprar"
-            className="mt-3 block rounded-[12px] bg-white/25 py-4 text-center text-base font-semibold text-white"
-          >
-            {OFFER.cta}
-          </a>
-
-          <ul className="mt-4 flex items-center justify-center gap-3 opacity-70">
-            {["mc", "visa", "elo", "pix"].map((m) => (
-              <li
-                key={m}
-                aria-hidden
-                className="h-4 w-8 rounded-[3px] bg-white/70"
-              />
-            ))}
-          </ul>
-
-          <p className="mt-7 text-[0.95rem] font-semibold text-white">
-            {OFFER.listTitle}
+/**
+ * Painel externo (.framer-1h0xv8m "Background" + .framer-52glac "Container").
+ *
+ * O fundo é #d0d1b1 — que já é o token --brand-sage-300 / --color-surface-sage
+ * do design system, o mesmo `bg-surface-sage` que o Offer.tsx usa hoje. A cor
+ * nunca foi o problema; o que falta no site é a FORMA: no wireframe título,
+ * parágrafo e composição de preço ficam dentro de um painel único recuado, com
+ * canto arredondado e `overflow: clip`, não um fundo de seção de ponta a ponta.
+ *
+ * Valores lidos das media queries (não arbitrados):
+ *   ≥1200px ..... raio 90px, padding-top 208px, gap 87px
+ *   768–1199px .. raio 67px, padding-top 180px, gap 87px
+ *   <768px ...... raio 24px, padding-top  78px, gap 50px, + 20px lateral
+ */
+function DemoOfertaPainel() {
+  return (
+    <div
+      className={cn(
+        "overflow-clip bg-surface-sage",
+        "rounded-[90px] max-[1199px]:rounded-[67px] max-md:rounded-[24px] max-md:px-5",
+      )}
+    >
+      <div
+        className={cn(
+          "mx-auto flex max-w-[1200px] flex-col items-center",
+          "gap-[87px] pt-[208px]",
+          "max-[1199px]:pt-[180px]",
+          "max-md:gap-[50px] max-md:pt-[78px]",
+        )}
+      >
+        {/* Bloco de texto: 67% de largura com teto de 800px (760 úteis, o
+            padding lateral é de 20px), gap 21px entre título e parágrafo.
+            Tipografia medida no wireframe, não a escala do DS — esta página é
+            de auditoria e precisa ser comparável ao original. */}
+        <div className="flex w-[67%] max-w-[800px] flex-col items-center gap-[21px] px-5 text-center">
+          <h3 className="text-[60px] font-bold leading-[60px] tracking-[-3px] text-[#1a2510] max-md:text-[40px] max-md:leading-[40px]">
+            {OFFER.title}
+          </h3>
+          <p className="text-[20px] leading-[28px] tracking-[-0.2px] text-[#344c24] opacity-70 max-md:text-[15px]">
+            {OFFER.paragraph}
           </p>
-          <ul className="mt-4 space-y-4">
-            {OFFER.list.map((item) => (
-              <li
-                key={item}
-                className="flex items-start gap-3 text-[0.9rem] leading-snug text-white/85"
-              >
-                <span
-                  aria-hidden
-                  className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-white/25 text-white"
-                >
-                  <IconCheck className="text-[0.6rem]" />
-                </span>
-                {item}
-              </li>
-            ))}
-          </ul>
         </div>
+
+        <OfertaComposicao />
       </div>
     </div>
   );

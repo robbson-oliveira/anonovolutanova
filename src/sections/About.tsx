@@ -33,13 +33,14 @@ type Layer = {
   };
 };
 
-type Feature = {
+export type Feature = {
   muted: string;
   strong: string;
   layers: Layer[];
 };
 
-const FEATURES: Feature[] = [
+export const FEATURES: Feature[] = [
+
   {
     muted: "Espaço para o plano de vida",
     strong: "e suas metas anuais",

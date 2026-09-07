@@ -50,7 +50,15 @@ export function TopBar({ sticky = true }: TopBarProps) {
         sticky ? "fixed inset-x-0 top-0 z-50" : "relative",
       )}
     >
-      <Marquee items={items} gap={28} className="w-full" />
+      <div className="relative flex flex-1 justify-center overflow-hidden">
+        <Marquee
+          items={items}
+          gap={28}
+          duration={45}
+          fade
+          className="max-w-2xl"
+        />
+      </div>
       <button
         type="button"
         onClick={() => setDismissed(true)}
@@ -62,3 +70,4 @@ export function TopBar({ sticky = true }: TopBarProps) {
     </div>
   );
 }
+

@@ -507,7 +507,8 @@ const GRUPOS: Grupo[] = [
         prioridade: "alta",
         larga: true,
         demo: <DemoBookStage />,
-        demoNota: "Palco 740×740 exibido a 50%.",
+        demoNota:
+          "Palco 740×740 exibido a 50%. Peça única: o mesmo BookStage do Hero — ajustes só em /lab/hero-animation, nunca duplicando a animação aqui.",
       },
       {
         nome: "Heading, Text, Eyebrow",

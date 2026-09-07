@@ -529,7 +529,7 @@ const GRUPOS: Grupo[] = [
         prioridade: "alta" as Prioridade,
         larga: true,
         demo: (
-          <ul className="mx-auto grid w-full max-w-content gap-7 lg:grid-cols-2 [&_article]:h-[600px]">
+          <ul className="mx-auto grid justify-center gap-7 lg:grid-cols-[repeat(2,586px)]">
             {FEATURES.map((feature, i) => (
               <FeatureCard key={feature.strong} feature={feature} index={i} />
             ))}

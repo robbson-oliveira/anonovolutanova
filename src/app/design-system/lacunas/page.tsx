@@ -562,6 +562,49 @@ const GRUPOS: Grupo[] = [
     ],
   },
   {
+    id: "meio",
+    n: "3b",
+    titulo: "Blocos do miolo da página",
+    descricao:
+      "Explore, calendário litúrgico e citação, transportados do wireframe com medição elemento a elemento em viewport 1440.",
+    itens: [
+      {
+        nome: "Explore a Agenda",
+        onde: "Depois dos cards terracota",
+        falta:
+          "Painel de 1160\u00d7819 com abas de 36px, seletor de edição, capa de 607px com três marcadores de 28px e a citação de 582px no pé.",
+        prioridade: "alta",
+        larga: true,
+        demo: <EscalaWireframe altura={1288}><Explore /></EscalaWireframe>,
+        demoNota:
+          "Medidas do wireframe: seção 1440\u00d71288, padding 120/60/100; título 60/60; apoio 20/24 em caixa de 389px; abas raio 10 e padding 10; marcadores verdes em (15,9 / 28,9), (59,6 / 65,2) e (69,9 / 52,7)% da capa.",
+      },
+      {
+        nome: "Datas do calendário litúrgico",
+        onde: "Depois do Explore",
+        falta:
+          "Textura de fundo a 19%, título de 60px em caixa de 1018px, duas colunas de apoio, seis cards brancos de 499\u00d7270 e CTA de 600\u00d768.",
+        prioridade: "alta",
+        larga: true,
+        demo: <EscalaWireframe altura={1488}><Liturgical /></EscalaWireframe>,
+        demoNota:
+          "Cards 499\u00d7270, raio 12, padding 42/32, ícone de 60px e 20px até o título (24/24, ls -0,96). Grade de 2 colunas com gap 20. Só o título anima (fade + 28px, ~700ms).",
+      },
+      {
+        nome: "Citação de São Josemaria",
+        onde: "Pé do painel do Explore",
+        falta:
+          "Caixa de 582px centralizada: frase 20/24 em cinza e atribuição 30/36 em terracota, separadas por 20px.",
+        prioridade: "media",
+        larga: true,
+        demo: <Quote />,
+        demoNota:
+          "No wireframe a citação não é uma seção própria: ela fecha o painel do Explore. Aqui está isolada para poder ser reutilizada.",
+      },
+    ],
+  },
+
+  {
     id: "blocos",
     n: "04",
     titulo: "Blocos de conteúdo",

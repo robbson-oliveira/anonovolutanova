@@ -170,63 +170,74 @@ export function FeatureCard({
   feature: Feature;
   index?: number;
 }) {
+  void index;
   return (
-    <Reveal
-      as="li"
-      variant={index % 2 === 0 ? "left" : "right"}
-      delay={(index % 2) * 90}
-    >
-      <article
-        className="relative h-[600px] w-[586px] max-w-full overflow-hidden rounded-[12px] bg-surface-warm-card px-5 pt-[60px] shadow-inset-card"
-      >
-        <h3 className="text-center text-[38px] font-bold leading-[38px] tracking-[-0.04em]">
-          <span className="ds-title-dim">{feature.muted} </span>
-          <span className="text-text-on-warm">{feature.strong}</span>
-        </h3>
+    <li>
+      <article className="relative h-[600px] w-[586px] max-w-full overflow-hidden rounded-[12px] bg-surface-warm-card px-5 pt-[60px] shadow-inset-card">
+        <Reveal variant="up">
+          <h3 className="text-center text-[38px] font-bold leading-[38px] tracking-[-0.04em]">
+            <span className="ds-title-dim">{feature.muted} </span>
+            <span className="text-text-on-warm">{feature.strong}</span>
+          </h3>
+        </Reveal>
 
-        {feature.layers.map((layer, j) => (
-          <div
-            key={j}
-            className="absolute"
-            style={{ width: layer.box.w, left: layer.box.x, top: layer.box.y }}
-          >
-            {layer.src ? (
-              <img
-                src={layer.src}
-                alt=""
-                aria-hidden
-                className="h-auto w-full rounded-xs shadow-page"
-              />
-            ) : null}
-            {layer.wedge ? (
-              <svg
-                aria-hidden
-                width={layer.box.w}
-                height={layer.wedge.h}
-                viewBox={`0 0 ${layer.box.w} ${layer.wedge.h}`}
-                className="block"
-                style={{ opacity: layer.wedge.opacity }}
-              >
-                <defs>
-                  <linearGradient
-                    id={`wedge-${j}`}
-                    x1="0"
-                    x2="1"
-                    y1="0.2196"
-                    y2="0.7804"
-                  >
-                    <stop offset="0" stopColor="#000" stopOpacity="1" />
-                    <stop offset="1" stopColor="#000" stopOpacity="0" />
-                  </linearGradient>
-                </defs>
-                <path d={layer.wedge.path} fill={`url(#wedge-${j})`} />
-              </svg>
-            ) : null}
-            {layer.handwriting ? <Handwriting {...layer.handwriting} /> : null}
-          </div>
-        ))}
+        {feature.layers.map((layer, j) => {
+          const content = (
+            <>
+              {layer.src ? (
+                <img
+                  src={layer.src}
+                  alt=""
+                  aria-hidden
+                  className="h-auto w-full rounded-xs shadow-page"
+                />
+              ) : null}
+              {layer.wedge ? (
+                <svg
+                  aria-hidden
+                  width={layer.box.w}
+                  height={layer.wedge.h}
+                  viewBox={`0 0 ${layer.box.w} ${layer.wedge.h}`}
+                  className="block"
+                  style={{ opacity: layer.wedge.opacity }}
+                >
+                  <defs>
+                    <linearGradient
+                      id={`wedge-${j}`}
+                      x1="0"
+                      x2="1"
+                      y1="0.2196"
+                      y2="0.7804"
+                    >
+                      <stop offset="0" stopColor="#000" stopOpacity="1" />
+                      <stop offset="1" stopColor="#000" stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                  <path d={layer.wedge.path} fill={`url(#wedge-${j})`} />
+                </svg>
+              ) : null}
+              {layer.handwriting ? <Handwriting {...layer.handwriting} /> : null}
+            </>
+          );
+
+          return (
+            <div
+              key={j}
+              className="absolute"
+              style={{ width: layer.box.w, left: layer.box.x, top: layer.box.y }}
+            >
+              {layer.anim ? (
+                <Reveal variant={layer.anim.variant} delay={layer.anim.delay}>
+                  {content}
+                </Reveal>
+              ) : (
+                content
+              )}
+            </div>
+          );
+        })}
       </article>
-    </Reveal>
+    </li>
   );
 }
 

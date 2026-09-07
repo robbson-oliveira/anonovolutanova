@@ -271,6 +271,17 @@ export default function DesignSystemPage() {
           <Hero />
           <AxisNav axes={AXES} />
 
+          {/* Link discreto para o levantamento de peças ainda não
+              documentadas. Não entra na navegação pública do site. */}
+          <div className="px-6 pt-10 text-center md:px-16">
+            <a
+              href="/design-system/lacunas"
+              className="text-sm font-semibold text-accent underline underline-offset-4"
+            >
+              Ver o que ainda falta documentar
+            </a>
+          </div>
+
           <AxisSection {...AXES[0]}>
             <Note>
               Duas famílias, não uma. Os componentes escolhem papel, nunca

@@ -101,7 +101,7 @@ export const FEATURES: Feature[] = [
     muted: "Todo dia",
     strong: "uma frase de São Josemaria para inspirar",
     layers: [
-      { src: agendaDiaria, box: { w: 598, x: 177, y: 105 } },
+      { src: agendaDiaria, box: { w: 598, x: 177, y: 105 }, noShadow: true },
       {
         /* Sombra em cunha que a página projeta sobre o card (wireframe). */
         box: { w: 498, x: 29, y: 169 },
@@ -195,7 +195,11 @@ export function FeatureCard({
                   src={layer.src}
                   alt=""
                   aria-hidden
-                  className="h-auto w-full rounded-xs shadow-page"
+                  className={
+                    layer.noShadow
+                      ? "h-auto w-full rounded-xs"
+                      : "h-auto w-full rounded-xs shadow-page"
+                  }
                 />
               ) : null}
               {layer.wedge ? (

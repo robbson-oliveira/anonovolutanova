@@ -12,7 +12,7 @@ export const NAV_LINKS = [
 export const HERO = {
   badge: "Edição Limitada",
   title: ["Ano Novo,", "Luta Nova"],
-  subtitle: "Viva o caminho de santidade no dia a dia",
+  subtitle: "Menos cálculo. Mais confiança. Patos à água!",
   paragraph:
     `Chegou a hora de garantir a sua Agenda Ano Novo, Luta Nova ${CYCLE_YEAR}. ` +
     "Inspirada por São Josemaria Escrivá, ela é o convite para lançar-se à água " +
@@ -29,10 +29,10 @@ export const STATS = [
 
 export const ABOUT = {
   eyebrow: "O que a torna especial?",
-  title: "Mais que uma agenda. Um caminho de santidade em cada página.",
+  title: "Mais que uma agenda. Um impulso para transformar propósito em ação.",
   paragraph:
     `A Agenda ${CYCLE_YEAR} une organização e vida espiritual, ajudando você a ` +
-    "viver com presença de Deus e foco no essencial.",
+    "dar passos concretos naquilo que realmente importa.",
   cta: `Garantir minha Agenda ${CYCLE_YEAR}`,
   features: [
     {

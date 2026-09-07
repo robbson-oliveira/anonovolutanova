@@ -630,6 +630,50 @@ const GRUPOS: Grupo[] = [
       },
     ],
   },
+  {
+    id: "venda",
+    n: "3c",
+    titulo: "Blocos finais de venda",
+    descricao:
+      "Persona, depoimentos e oferta, transportados do wireframe com medição camada a camada em viewport 1440.",
+    itens: [
+      {
+        nome: "Para quem é (Persona)",
+        onde: "Depois do calendário litúrgico",
+        falta:
+          "Seção 1440\u00d7902: título de 60/60 à esquerda, apoio de 458px à direita e painel de 1320\u00d7522 em degradê creme com seis itens.",
+        prioridade: "alta",
+        larga: true,
+        demo: <EscalaWireframe altura={902}><Persona /></EscalaWireframe>,
+        demoNota:
+          "Painel raio 18, degradê 99° de #e7ddc2 a #f0e9d6, padding 80/60, grade de 3 colunas com gap 50. Ícone 60\u00d760 raio 14, 24px até o texto (239px, 20/24, peso 500, ls -0,4).",
+      },
+      {
+        nome: "Depoimentos",
+        onde: "Depois da persona",
+        falta:
+          "Título de 120/132 e carrossel de cards brancos de 505\u00d7288 com avatar, nome, cidade, estrelas e citação.",
+        prioridade: "alta",
+        larga: true,
+        demo: <EscalaWireframe altura={936}><Testimonials /></EscalaWireframe>,
+        demoNota:
+          "Card raio 12, sombra 0 1px 2px rgba(0,0,0,.1), padding 42, conteúdo 421px com gap 30. Avatar 60\u00d760 raio 12, gap 12; nome e cidade 24/24 peso 700 (cidade #868686); estrelas 124\u00d721; citação 20/24. Setas de 58px.",
+      },
+      {
+        nome: "Oferta e Condições Especiais",
+        onde: "Antes do FAQ",
+        falta:
+          "Painel de 1440\u00d71266 com raio 90, capa girada -2°, página interna girada 3° e cartão escuro de 537\u00d7774 sobreposto com selo, preço, botão, pagamentos e checklist.",
+        prioridade: "alta",
+        larga: true,
+        demo: <EscalaWireframe altura={1266}><Offer /></EscalaWireframe>,
+        demoNota:
+          "Camadas medidas: cartão em x451,5 / y492, raio 24 no topo, fundo #374E24, sombra 0 22px 15,1px rgba(0,0,0,.5). Preço 394\u00d7180 raio 12 sobre rgba(129,136,77,.3); botão 394\u00d772 em degradê 62°; pagamentos 128\u00d721; checklist com ícones de 32px e texto de 306px.",
+      },
+    ],
+  },
+
+
 
   {
     id: "blocos",

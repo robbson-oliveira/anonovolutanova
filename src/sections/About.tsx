@@ -1,22 +1,21 @@
-import Image, { type StaticImageData } from "next/image";
 import { Button, Container, Eyebrow, Heading, Reveal, Text } from "@ds/index";
 import { ABOUT } from "@content/home";
 import { CHECKOUT_URL } from "@content/product";
-import planoDeVida from "@/public/img/interna-plano-de-vida.png";
-import metasAnuais from "@/public/img/interna-metas-anuais.png";
-import agendaDiaria from "@/public/img/interna-agenda-diaria.png";
-import citacao from "@/public/img/interna-citacao.png";
-import vidaOracao from "@/public/img/interna-vida-oracao.png";
-import propositosMes from "@/public/img/interna-propositos-mes.png";
-import calendario from "@/public/img/interna-calendario.png";
-import datasObra from "@/public/img/interna-datas-obra.png";
+const planoDeVida = "/img/interna-plano-de-vida.png";
+const metasAnuais = "/img/interna-metas-anuais.png";
+const agendaDiaria = "/img/interna-agenda-diaria.png";
+const citacao = "/img/interna-citacao.png";
+const vidaOracao = "/img/interna-vida-oracao.png";
+const propositosMes = "/img/interna-propositos-mes.png";
+const calendario = "/img/interna-calendario.png";
+const datasObra = "/img/interna-datas-obra.png";
 
 /**
  * Cada card tem título em duas ênfases — a primeira parte em tom apagado, a
  * segunda em destaque — e uma composição de páginas internas embaixo.
  */
 type Layer = {
-  src: StaticImageData;
+  src: string;
   className: string;
   /**
    * Linhas manuscritas sobre as pautas da página. No design aprovado é o que
@@ -147,7 +146,7 @@ export function About() {
                       key={j}
                       className={`absolute [container-type:inline-size] ${layer.className}`}
                     >
-                      <Image
+                      <img
                         src={layer.src}
                         alt=""
                         aria-hidden

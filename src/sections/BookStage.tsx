@@ -1,11 +1,10 @@
-import Image, { type StaticImageData } from "next/image";
 import { CHECKOUT_URL, CYCLE_YEAR, priceLabel } from "@content/product";
-import capaColor from "@/public/img/capa-color.png";
-import capaClassica from "@/public/img/capa-classica.png";
-import capaSolo from "@/public/img/capa-solo.png";
+const capaColor = "/img/capa-color.png";
+const capaClassica = "/img/capa-classica.png";
+const capaSolo = "/img/capa-solo.png";
 
 /** Um asset trocado no lab chega como blob: URL, sem dimensões conhecidas. */
-export type CoverSrc = string | StaticImageData;
+export type CoverSrc = string;
 
 /**
  * Medida do palco no protótipo aprovado. Todas as porcentagens internas das
@@ -81,11 +80,7 @@ function Cover({
   alt: string;
   priority?: boolean;
 }) {
-  if (typeof src === "string") {
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img src={src} alt={alt} className="h-auto w-full" />;
-  }
-  return <Image src={src} alt={alt} priority={priority} className="h-auto w-full" />;
+  return <img src={src} alt={alt} loading={priority ? "eager" : "lazy"} className="h-auto w-full" />;
 }
 
 /**
@@ -139,9 +134,5 @@ function Thumb({ src }: { src: CoverSrc }) {
   const className =
     "absolute left-[-6.3px] top-[-2px] h-[54px] w-[49px] max-w-none rounded-card object-contain";
 
-  if (typeof src === "string") {
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img src={src} alt="" className={className} />;
-  }
-  return <Image src={src} alt="" className={className} />;
+  return <img src={src} alt="" className={className} />;
 }

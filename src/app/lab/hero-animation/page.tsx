@@ -3,10 +3,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@ds/index";
 import { BookStage, STAGE_SIZE, type CoverSrc } from "@sections/BookStage";
-import capaColor from "@/public/img/capa-color.png";
-import capaClassica from "@/public/img/capa-classica.png";
-import capaSolo from "@/public/img/capa-solo.png";
-import referencia from "@/public/img/referencia-posicionamento.png";
+const capaColor = "/img/capa-color.png";
+const capaClassica = "/img/capa-classica.png";
+const capaSolo = "/img/capa-solo.png";
+const referencia = "/img/referencia-posicionamento.png";
 
 /**
  * Builder da animação das duas agendas do Hero.
@@ -56,7 +56,7 @@ const KEYFRAME_SOURCES = [
 
 const FALLBACK_DURATION = 2700;
 
-const srcOf = (src: CoverSrc) => (typeof src === "string" ? src : src.src);
+const srcOf = (src: CoverSrc) => src;
 
 export default function HeroAnimationLab() {
   const [runId, setRunId] = useState(0);

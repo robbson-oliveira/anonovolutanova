@@ -7,3 +7,9 @@
 @source "../ds";
 @source "../sections";
 @source "../content";
+@source "../routes";
+
+:root {
+  --font-manrope: "Manrope";
+  --font-yellowtail: "Yellowtail";
+}

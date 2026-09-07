@@ -1,9 +1,7 @@
-import Image from "next/image";
-import Link from "next/link";
 import { Container, Text } from "@ds/index";
 import { FOOTER } from "@content/home";
 import { PRODUCT_NAME } from "@content/product";
-import logo from "@/public/img/logo.png";
+const logo = "/img/logo.png";
 
 export function SiteFooter() {
   return (
@@ -14,7 +12,7 @@ export function SiteFooter() {
       />
 
       <Container className="relative text-center">
-        <Image
+        <img
           src={logo}
           alt={PRODUCT_NAME}
           style={{ height: "120px", width: "auto" }}
@@ -27,12 +25,12 @@ export function SiteFooter() {
           <ul className="flex flex-wrap justify-center gap-x-9 gap-y-3">
             {FOOTER.links.map((link) => (
               <li key={link.href}>
-                <Link
+                <a
                   href={link.href}
                   className="text-sm font-semibold text-text-strong transition-colors [transition-duration:var(--duration-fast)] hover:text-accent"
                 >
                   {link.label}
-                </Link>
+                </a>
               </li>
             ))}
           </ul>

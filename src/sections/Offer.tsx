@@ -1,9 +1,8 @@
-import Image from "next/image";
 import { Badge, Button, Container, Heading, IconCheck, IconSparkle, Reveal, Text } from "@ds/index";
 import { OFFER } from "@content/offer";
 import { CHECKOUT_URL, installmentLabel, priceLabel } from "@content/product";
-import capaSolo from "@/public/img/capa-solo.png";
-import internaOferta from "@/public/img/interna-oferta.png";
+const capaSolo = "/img/capa-solo.png";
+const internaOferta = "/img/interna-oferta.png";
 
 const PAYMENT_METHODS = ["Mastercard", "Visa", "Elo", "Pix"];
 
@@ -22,13 +21,13 @@ export function Offer() {
         <div className="relative mt-16">
           {/* As duas imagens flanqueiam o card e ficam parcialmente atrás dele.
               É a composição aprovada: o card não fica "ao lado", ele cobre. */}
-          <Image
+          <img
             src={capaSolo}
             alt=""
             aria-hidden
             className="pointer-events-none absolute left-[-8%] top-16 hidden w-[46%] max-w-none lg:block"
           />
-          <Image
+          <img
             src={internaOferta}
             alt=""
             aria-hidden

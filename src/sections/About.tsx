@@ -1,4 +1,4 @@
-import { Button, Container, Eyebrow, Heading, Reveal, Text } from "@ds/index";
+import { Button, Container, Eyebrow, Heading, Reveal, RevealGroup, Text } from "@ds/index";
 import { ABOUT } from "@content/home";
 import { CHECKOUT_URL } from "@content/product";
 const planoDeVida = "/img/interna-plano-de-vida.png";

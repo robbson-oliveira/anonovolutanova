@@ -18,7 +18,7 @@ import {
   BookCover,
   cn,
 } from "@ds/index";
-import { TopBar } from "@sections/TopBar";
+
 import { SiteHeader } from "@sections/SiteHeader";
 import { SiteFooter } from "@sections/SiteFooter";
 import { BookStage } from "@sections/BookStage";

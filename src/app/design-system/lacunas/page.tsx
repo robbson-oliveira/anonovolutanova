@@ -314,80 +314,66 @@ function DemoChecklist() {
  */
 function DemoOferta() {
   return (
-    <div className="relative overflow-hidden rounded-[32px] bg-surface-muted px-6 py-14 md:px-16">
-      <div className="mx-auto max-w-[720px] text-center">
-        <Heading as="h3" className="text-text-strong">
-          {OFFER.title}
-        </Heading>
-        <Text className="mx-auto mt-4 max-w-[560px]" tone="muted">
-          2027 já começou por aqui. A nova edição será produzida em quantidade
-          limitada — então não espere o momento perfeito para garantir a sua.
-          Patos à água!
-        </Text>
-      </div>
-
-      <div className="relative mx-auto mt-14 max-w-[880px] pb-10">
-        {/* Imagens inclinadas atrás do cartão, como no wireframe. */}
+    <div className="relative overflow-hidden rounded-[24px] bg-[#EDEDED]">
+      {/* Palco: as duas peças ocupam quase toda a área, o cartão fica por cima
+          e sangra para fora do topo e da base — como no wireframe. */}
+      <div className="relative mx-auto flex min-h-[520px] w-full items-center justify-center px-4 py-10">
         <img
           src="/img/capa-solo.png"
           alt=""
           aria-hidden
-          className="pointer-events-none absolute left-[-4%] top-10 w-[44%] -rotate-[14deg] shadow-float"
+          className="pointer-events-none absolute bottom-[-6%] left-[-2%] w-[46%] -rotate-[4deg]"
         />
         <img
           src="/img/interna-oferta.png"
           alt=""
           aria-hidden
-          className="pointer-events-none absolute right-[-4%] top-6 w-[40%] rotate-[13deg] shadow-float"
+          className="pointer-events-none absolute bottom-[-8%] right-[-2%] w-[46%] rotate-[3deg]"
         />
 
-        <div className="relative z-10 mx-auto w-full max-w-[520px] rounded-[28px] bg-surface-inverse p-6 shadow-float md:p-8">
-          <div className="rounded-[18px] bg-surface-inverse-soft/60 p-6 text-center ring-1 ring-border-inverse">
-            <Badge tone="plainInverse" icon={<IconSparkle />}>
-              {OFFER.badge}
-            </Badge>
-            <p className="mt-3 text-display font-bold tracking-[-0.04em] text-text-on-inverse">
+        <div className="relative z-10 w-full max-w-[380px] rounded-[20px] bg-[#3B3B3B] p-5 shadow-float">
+          <div className="rounded-[14px] bg-white/10 px-6 py-5 text-center">
+            <span className="inline-flex items-center gap-2 text-sm text-white/85">
+              <IconSparkle /> {OFFER.badge}
+            </span>
+            <p className="mt-2 text-[2.6rem] font-bold leading-none tracking-[-0.04em] text-white">
               {priceLabel}
             </p>
-            <p className="mt-1 text-base text-text-on-inverse/70">
-              {installmentLabel}
-            </p>
+            <p className="mt-2 text-sm text-white/60">{installmentLabel}</p>
           </div>
 
-          {/* Botão em degradê laranja→dourado, como no wireframe (hoje não
-              existe essa variante no catálogo de botões). */}
+          {/* Botão neutro claro, não o degradê laranja do site. */}
           <a
             href="#comprar"
-            className="mt-4 block rounded-[9px] border border-[#5D754D] bg-gradient-to-br from-[#FF7A2F] to-[#F4D36A] py-4 text-center text-lg font-bold tracking-[-0.02em] text-white"
+            className="mt-3 block rounded-[12px] bg-white/25 py-4 text-center text-base font-semibold text-white"
           >
             {OFFER.cta}
           </a>
 
-          <ul className="mt-4 flex items-center justify-center gap-4">
-            {["Mastercard", "Visa", "Elo", "Pix"].map((m) => (
+          <ul className="mt-4 flex items-center justify-center gap-3 opacity-70">
+            {["mc", "visa", "elo", "pix"].map((m) => (
               <li
                 key={m}
-                className="text-xs font-semibold text-text-on-inverse/60"
-              >
-                {m}
-              </li>
+                aria-hidden
+                className="h-4 w-8 rounded-[3px] bg-white/70"
+              />
             ))}
           </ul>
 
-          <p className="mt-8 font-semibold text-text-on-inverse">
+          <p className="mt-7 text-[0.95rem] font-semibold text-white">
             {OFFER.listTitle}
           </p>
           <ul className="mt-4 space-y-4">
             {OFFER.list.map((item) => (
               <li
                 key={item}
-                className="flex items-start gap-3 text-sm text-text-on-inverse/85"
+                className="flex items-start gap-3 text-[0.9rem] leading-snug text-white/85"
               >
                 <span
                   aria-hidden
-                  className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-surface-inverse-soft text-text-on-inverse ring-1 ring-border-inverse"
+                  className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-white/25 text-white"
                 >
-                  <IconCheck className="text-[0.7rem]" />
+                  <IconCheck className="text-[0.6rem]" />
                 </span>
                 {item}
               </li>
@@ -398,6 +384,7 @@ function DemoOferta() {
     </div>
   );
 }
+
 
 /* --------------------------------- conteúdo -------------------------------- */
 
@@ -546,7 +533,7 @@ const GRUPOS: Grupo[] = [
         nome: "Bloco de oferta",
         onde: "Seção de oferta",
         falta:
-          "Painel claro arredondado, cartão escuro cobrindo as imagens inclinadas, caixa interna com selo e preço, botão laranja em degradê, ícones de pagamento e checklist. É o bloco de conversão e não tem anatomia documentada — e a seção Offer do site já diverge do wireframe (fundo sage, botão escuro, texto diferente).",
+          "Palco cinza-claro com as duas peças (capa e página interna) quase encostando nas bordas, e um cartão escuro estreito centralizado por cima: caixa interna com selo e preço, botão claro translúcido, bandeiras de pagamento e checklist. A seção Offer do site diverge disso (fundo sage, título e texto acima, botão laranja, imagens pequenas inclinadas).",
         prioridade: "alta",
         larga: true,
         demo: <DemoOferta />,

@@ -1,4 +1,13 @@
-import { Button, Container, Eyebrow, Heading, Reveal, RevealGroup, Text } from "@ds/index";
+import {
+  Button,
+  Container,
+  Eyebrow,
+  Heading,
+  IconSparkle,
+  Reveal,
+  RevealGroup,
+  Text,
+} from "@ds/index";
 import { ABOUT } from "@content/home";
 import { CHECKOUT_URL } from "@content/product";
 const planoDeVida = "/img/interna-plano-de-vida.png";
@@ -147,18 +156,24 @@ export const FEATURES: Feature[] = [
  */
 export function AboutHeader() {
   return (
-    <RevealGroup className="mx-auto flex w-full max-w-[583px] flex-col items-center">
+    <RevealGroup className="mx-auto flex w-full max-w-[600px] flex-col items-center">
       <Reveal variant="up">
-        <Eyebrow className="justify-center">{ABOUT.eyebrow}</Eyebrow>
+        {/* Olho: ícone 16 + 5px de respiro + rótulo 14/14, caixa de 24px. */}
+        <span className="flex h-6 items-center gap-[5px]">
+          <span aria-hidden className="text-kicker">
+            <IconSparkle />
+          </span>
+          <Eyebrow>{ABOUT.eyebrow}</Eyebrow>
+        </span>
       </Reveal>
 
-      <Reveal variant="up" delay={60} className="w-full">
+      <Reveal variant="up" delay={60} className="w-[583px] max-w-full">
         <Heading as="h2" className="mt-[11px] w-full">
           {ABOUT.title}
         </Heading>
       </Reveal>
 
-      <Reveal variant="up" delay={120} className="w-full">
+      <Reveal variant="up" delay={120} className="w-[583px] max-w-full">
         <p className="mt-[23px] w-full text-[20px] leading-7 tracking-[-0.2px] text-kicker">
           {ABOUT.paragraph}
         </p>
@@ -169,7 +184,7 @@ export function AboutHeader() {
           href={CHECKOUT_URL}
           size="lg"
           shape="block"
-          className="h-[68px] w-[600px] max-w-full"
+          className="h-[68px] w-[600px] max-w-full rounded-[10px] text-xs font-bold"
         >
           {ABOUT.cta}
         </Button>

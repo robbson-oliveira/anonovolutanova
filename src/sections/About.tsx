@@ -19,23 +19,27 @@ const datasObra = "/img/interna-datas-obra.png";
  * px, relativa ao canto superior esquerdo do card. Não escalar.
  */
 type Layer = {
-  src: string;
+  /** Página (PNG). Ausente quando a camada é só uma forma vetorial. */
+  src?: string;
+  /** Sombra em cunha do wireframe: path SVG desenhado no viewBox da caixa. */
+  wedge?: { path: string; h: number; opacity: number };
   box: { w: number; x: number; y: number };
   /**
    * Linhas manuscritas sobre as pautas da página. No design aprovado é o que
    * mostra a agenda em uso — o PNG é a página em branco, a letra é texto por
-   * cima. Cada item cai numa pauta: `top` é a primeira, `step` o espaçamento,
-   * ambos em % da altura da imagem, medidos sobre a arte.
+   * cima. Medidas em px lidas no wireframe, relativas ao canto da CAIXA da
+   * página: `top` é a primeira pauta, `step` o espaçamento entre pautas.
    */
   handwriting?: {
     items: readonly string[];
     top: number;
     step: number;
-    left: string;
-    /** corpo da letra em % da largura da imagem, para escalar junto */
-    size: string;
+    left: number;
+    /** corpo da letra em px, como no wireframe */
+    size: number;
   };
 };
+
 
 export type Feature = {
   muted: string;

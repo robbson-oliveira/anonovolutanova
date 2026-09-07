@@ -179,7 +179,7 @@ export function FeatureCard({
   void index;
   return (
     <li>
-      <article className="relative h-[600px] w-[586px] max-w-full overflow-hidden rounded-[12px] bg-surface-warm-card px-5 pt-[60px] shadow-inset-card">
+      <RevealGroup as="article" className="relative h-[600px] w-[586px] max-w-full overflow-hidden rounded-[12px] bg-surface-warm-card px-5 pt-[60px] shadow-inset-card">
         <Reveal variant="up">
           <h3 className="text-center text-[38px] font-bold leading-[38px] tracking-[-0.04em]">
             <span className="ds-title-dim">{feature.muted} </span>
@@ -246,7 +246,7 @@ export function FeatureCard({
             </div>
           );
         })}
-      </article>
+      </RevealGroup>
     </li>
   );
 }

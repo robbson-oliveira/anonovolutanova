@@ -54,6 +54,7 @@ export function Persona() {
           </Reveal>
         </div>
 
+        <div style={{ marginTop: 60 }}>
         <Reveal variant="up" delay={180}>
           <ul
             style={{
@@ -104,6 +105,7 @@ export function Persona() {
             ))}
           </ul>
         </Reveal>
+        </div>
       </RevealGroup>
     </section>
   );

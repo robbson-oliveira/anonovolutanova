@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DesignSystemRouteImport } from './routes/design-system'
+import { Route as DesignSystemIndexRouteImport } from './routes/design-system.index'
 import { Route as DesignSystemLacunasRouteImport } from './routes/design-system.lacunas'
 import { Route as LabHeroAnimationRouteImport } from './routes/lab.hero-animation'
 
@@ -23,6 +24,11 @@ const DesignSystemRoute = DesignSystemRouteImport.update({
   id: '/design-system',
   path: '/design-system',
   getParentRoute: () => rootRouteImport,
+} as any)
+const DesignSystemIndexRoute = DesignSystemIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DesignSystemRoute,
 } as any)
 const DesignSystemLacunasRoute = DesignSystemLacunasRouteImport.update({
   id: '/lacunas',
@@ -40,12 +46,13 @@ export interface FileRoutesByFullPath {
   '/design-system': typeof DesignSystemRouteWithChildren
   '/design-system/lacunas': typeof DesignSystemLacunasRoute
   '/lab/hero-animation': typeof LabHeroAnimationRoute
+  '/design-system/': typeof DesignSystemIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/design-system': typeof DesignSystemRouteWithChildren
   '/design-system/lacunas': typeof DesignSystemLacunasRoute
   '/lab/hero-animation': typeof LabHeroAnimationRoute
+  '/design-system': typeof DesignSystemIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,19 +60,25 @@ export interface FileRoutesById {
   '/design-system': typeof DesignSystemRouteWithChildren
   '/design-system/lacunas': typeof DesignSystemLacunasRoute
   '/lab/hero-animation': typeof LabHeroAnimationRoute
+  '/design-system/': typeof DesignSystemIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/design-system' | '/design-system/lacunas' | '/lab/hero-animation'
+    | '/'
+    | '/design-system'
+    | '/design-system/lacunas'
+    | '/lab/hero-animation'
+    | '/design-system/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/design-system' | '/design-system/lacunas' | '/lab/hero-animation'
+  to: '/' | '/design-system/lacunas' | '/lab/hero-animation' | '/design-system'
   id:
     | '__root__'
     | '/'
     | '/design-system'
     | '/design-system/lacunas'
     | '/lab/hero-animation'
+    | '/design-system/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -90,6 +103,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DesignSystemRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/design-system/': {
+      id: '/design-system/'
+      path: '/'
+      fullPath: '/design-system/'
+      preLoaderRoute: typeof DesignSystemIndexRouteImport
+      parentRoute: typeof DesignSystemRoute
+    }
     '/design-system/lacunas': {
       id: '/design-system/lacunas'
       path: '/lacunas'
@@ -109,10 +129,12 @@ declare module '@tanstack/react-router' {
 
 interface DesignSystemRouteChildren {
   DesignSystemLacunasRoute: typeof DesignSystemLacunasRoute
+  DesignSystemIndexRoute: typeof DesignSystemIndexRoute
 }
 
 const DesignSystemRouteChildren: DesignSystemRouteChildren = {
   DesignSystemLacunasRoute: DesignSystemLacunasRoute,
+  DesignSystemIndexRoute: DesignSystemIndexRoute,
 }
 
 const DesignSystemRouteWithChildren = DesignSystemRoute._addFileChildren(

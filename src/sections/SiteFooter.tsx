@@ -1,49 +1,131 @@
-import { Container, Text } from "@ds/index";
+import { Reveal, RevealGroup } from "@ds/index";
 import { FOOTER } from "@content/home";
 import { PRODUCT_NAME } from "@content/product";
-const logo = "/img/logo.png";
 
+const logo = "/img/logo.png";
+const textura = "/img/textura-rodape.png";
+
+/**
+ * Rodape — medido no wireframe (viewport 1440): faixa de 1440x654 que continua
+ * a mesma textura do fechamento (deslocada -885px), logo 106x141 centralizado,
+ * texto de apoio 391px, linha de links 16/16 e nota social 354px.
+ */
 export function SiteFooter() {
   return (
-    <footer className="relative overflow-hidden bg-surface px-6 py-24 md:px-16">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[url('/img/textura-rodape.png')] bg-cover bg-center opacity-[0.05]"
-      />
+    <footer
+      style={{
+        position: "relative",
+        width: 1440,
+        height: 654,
+        margin: "0 auto",
+        backgroundImage: `url(${textura})`,
+        backgroundSize: "1440px 1539px",
+        backgroundPosition: "0 -885px",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      <RevealGroup>
+        <Reveal variant="up">
+          <img
+            src={logo}
+            alt={PRODUCT_NAME}
+            style={{
+              position: "absolute",
+              left: 667,
+              top: 0,
+              width: 106,
+              height: 141,
+              objectFit: "contain",
+            }}
+          />
+        </Reveal>
 
-      <Container className="relative text-center">
-        <img
-          src={logo}
-          alt={PRODUCT_NAME}
-          style={{ height: "120px", width: "auto" }}
-          className="mx-auto w-auto"
-        />
+        <Reveal variant="up" delay={80}>
+          <p
+            style={{
+              position: "absolute",
+              left: 524.5,
+              top: 172,
+              width: 391,
+              margin: 0,
+              fontSize: 20,
+              lineHeight: "24px",
+              color: "rgb(94, 92, 88)",
+              textAlign: "center",
+            }}
+          >
+            {FOOTER.tagline}
+          </p>
+        </Reveal>
 
-        <Text className="mx-auto mt-8 max-w-[420px]">{FOOTER.tagline}</Text>
-
-        <nav aria-label="Rodapé" className="mt-12">
-          <ul className="flex flex-wrap justify-center gap-x-9 gap-y-3">
+        <Reveal variant="up" delay={140}>
+          <nav
+            aria-label="Rodapé"
+            style={{
+              position: "absolute",
+              left: 0,
+              top: 321,
+              width: 1440,
+              display: "flex",
+              justifyContent: "center",
+              gap: 36,
+            }}
+          >
             {FOOTER.links.map((link) => (
-              <li key={link.href}>
-                <a
-                  href={link.href}
-                  className="text-sm font-semibold text-text-strong transition-colors [transition-duration:var(--duration-fast)] hover:text-accent"
-                >
-                  {link.label}
-                </a>
-              </li>
+              <a
+                key={link.href}
+                href={link.href}
+                style={{
+                  fontSize: 16,
+                  lineHeight: "22px",
+                  fontWeight: 700,
+                  letterSpacing: "-0.64px",
+                  color: "rgb(26, 37, 16)",
+                  textDecoration: "none",
+                }}
+              >
+                {link.label}
+              </a>
             ))}
-          </ul>
-        </nav>
+          </nav>
+        </Reveal>
 
-        <Text tone="muted" className="mx-auto mt-14 max-w-[420px]">
-          {FOOTER.copyright}
-        </Text>
+        <Reveal variant="up" delay={200}>
+          <p
+            style={{
+              position: "absolute",
+              left: 524.5,
+              top: 420,
+              width: 391,
+              margin: 0,
+              fontSize: 20,
+              lineHeight: "24px",
+              color: "rgb(94, 92, 88)",
+              textAlign: "center",
+            }}
+          >
+            {FOOTER.copyright}
+          </p>
+        </Reveal>
 
-        <Text size="xs" tone="muted" className="mx-auto mt-5 max-w-[420px]">
-          {FOOTER.socialNote}
-        </Text>
-      </Container>
+        <Reveal variant="up" delay={260}>
+          <p
+            style={{
+              position: "absolute",
+              left: 543,
+              top: 492,
+              width: 354,
+              margin: 0,
+              fontSize: 12,
+              lineHeight: "14.4px",
+              color: "rgb(94, 92, 88)",
+              textAlign: "center",
+            }}
+          >
+            {FOOTER.socialNote}
+          </p>
+        </Reveal>
+      </RevealGroup>
     </footer>
   );
 }

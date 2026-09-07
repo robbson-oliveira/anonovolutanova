@@ -674,6 +674,39 @@ const GRUPOS: Grupo[] = [
       },
     ],
   },
+  {
+    id: "fechamento",
+    n: "3d",
+    titulo: "Fechamento e rodapé",
+    descricao:
+      "Os dois últimos blocos do wireframe, medidos em viewport 1440. Os dois dividem a mesma textura de fundo de 1440\u00d71539.",
+    itens: [
+      {
+        nome: "Chamada final (Closing)",
+        onde: "Depois do FAQ",
+        falta:
+          "Faixa de 1440\u00d7885 com textura e cartão verde de 1278\u00d7716 (raio 24) com selo, título, texto, dois botões e o aviso de envio.",
+        prioridade: "alta",
+        larga: true,
+        demo: <EscalaWireframe altura={885}><Closing /></EscalaWireframe>,
+        demoNota:
+          "Cartão em x81 / y9, fundo #344C24, padding 141px 0. Selo 16/16 em degradê dourado (y151); título 30/30 ls -1,2 (y197); texto 626px em 20/24 #d6d6d6 (y247); botão 361\u00d768 raio 9 em degradê 62° com sombra 0 12px 24px; link 225\u00d768 raio 10; \u201cEnvio Imediato!\u201d em y549.",
+      },
+      {
+        nome: "Rodapé (SiteFooter)",
+        onde: "Fim da página",
+        falta:
+          "Faixa de 1440\u00d7654 com a mesma textura deslocada, logo 106\u00d7141, apoio de 391px, linha de links, créditos e nota social.",
+        prioridade: "alta",
+        larga: true,
+        demo: <EscalaWireframe altura={654}><SiteFooter /></EscalaWireframe>,
+        demoNota:
+          "Logo centralizada no topo; apoio 391px em 20/24 #5e5c58 (y172); links 16/16 peso 700 ls -0,64 #1a2510 com gap 36 (y321); créditos 391px em 20/24 (y420); nota social 354px em 12/14,4 (y492).",
+      },
+    ],
+  },
+
+
 
 
 

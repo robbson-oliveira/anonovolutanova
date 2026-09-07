@@ -144,13 +144,12 @@ export const PERSONA = {
 
 export const CLOSING = {
   badge: "Edição Limitada",
-  title: "Com a confiança de quem se lança à água",
+  title: "Patos à água! Garanta a sua.",
   paragraph:
-    "São Josemaria Escrivá ensinava: lança-te à água como os patos. A vida " +
-    "espiritual cresce quando trocamos o excesso de cálculo pela confiança e " +
-    `damos o primeiro passo, mesmo sem garantias. A Agenda ${CYCLE_YEAR} foi ` +
-    "feita para acompanhar cada passo da sua luta diária — unindo oração, " +
-    "trabalho e alegria.",
+    "São Josemaria gostava de usar uma imagem muito simples: os patos que se " +
+    "lançam à água sem medo. Assim é a vida de quem confia — dá o primeiro " +
+    `passo e deixa Deus conduzir. A Agenda ${CYCLE_YEAR} acompanha essa ` +
+    "caminhada, dia após dia.",
   primaryCta: `Garantir minha Agenda ${CYCLE_YEAR}`,
   secondaryCta: "Saiba Mais",
   seal: "Envio Imediato!",

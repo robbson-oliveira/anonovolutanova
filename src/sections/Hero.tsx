@@ -29,12 +29,12 @@ export function Hero() {
   return (
     <section
       id="inicio"
-      className="relative overflow-hidden bg-surface pb-[155px] pt-[67px]"
+      className="relative overflow-hidden bg-surface pb-[184px] pt-[29px]"
     >
       <div className="mx-auto w-full max-w-[1316px] px-6 lg:px-0">
         <div className="relative">
           {/* Palco: sangra para fora do container, como no wireframe. */}
-          <div className="absolute left-[532px] top-[-105.5px] hidden lg:block">
+          <div className="absolute left-[532px] top-[-67.5px] hidden lg:block">
             <BookStage />
           </div>
 

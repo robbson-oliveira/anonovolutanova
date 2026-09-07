@@ -16,6 +16,7 @@ type Axis = { id: string; title: string };
 export function AxisNav({ axes }: { axes: Axis[] }) {
   const sentinelRef = useRef<HTMLDivElement>(null);
   const [stuck, setStuck] = useState(false);
+  const [activeId, setActiveId] = useState<string | null>(null);
 
   useEffect(() => {
     const el = sentinelRef.current;
@@ -27,6 +28,26 @@ export function AxisNav({ axes }: { axes: Axis[] }) {
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    const sections = axes
+      .map((a) => document.getElementById(a.id))
+      .filter(Boolean) as HTMLElement[];
+    if (sections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) setActiveId(visible.target.id);
+      },
+      { rootMargin: "-40% 0px -55% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] },
+    );
+
+    sections.forEach((s) => observer.observe(s));
+    return () => observer.disconnect();
+  }, [axes]);
 
   return (
     <>
@@ -46,17 +67,34 @@ export function AxisNav({ axes }: { axes: Axis[] }) {
           >
             Design System
           </span>
-          {axes.map((a) => (
-            <a
-              key={a.id}
-              href={`#${a.id}`}
-              className="text-xs text-text-muted transition-colors [transition-duration:var(--duration-fast)] hover:text-text-strong"
-            >
-              {a.title}
-            </a>
-          ))}
+          {axes.map((a) => {
+            const isActive = activeId === a.id;
+            return (
+              <a
+                key={a.id}
+                href={`#${a.id}`}
+                aria-current={isActive ? "location" : undefined}
+                className={cn(
+                  "group relative text-xs transition-colors [transition-duration:var(--duration-fast)]",
+                  isActive
+                    ? "font-bold text-text-strong"
+                    : "text-text-muted hover:text-text-strong",
+                )}
+              >
+                {a.title}
+                <span
+                  aria-hidden
+                  className={cn(
+                    "absolute -right-2 top-1/2 h-[0.15em] w-[0.3em] -translate-y-1/2 rounded-full bg-text-strong transition-opacity [transition-duration:var(--duration-fast)]",
+                    isActive ? "opacity-100" : "opacity-0 group-hover:opacity-60",
+                  )}
+                />
+              </a>
+            );
+          })}
         </Container>
       </nav>
     </>
   );
 }
+

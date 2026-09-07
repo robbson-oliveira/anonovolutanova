@@ -698,7 +698,9 @@ export default function DesignSystemLacunasPage() {
         <SiteHeader />
         <main>
           <section className="bg-surface px-6 py-24 md:px-16">
-            <Container>
+            {/* Grade mais larga que a do site (1360px) para os previews
+                respirarem — só nesta página de auditoria. */}
+            <div className="mx-auto w-full max-w-[1360px]">
               <Reveal variant="up" className="mx-auto max-w-[760px] text-center">
                 <Eyebrow className="justify-center">
                   Auditoria · Design System

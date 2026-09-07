@@ -235,7 +235,7 @@ export default function DesignSystemLacunasPage() {
                       <span className="font-mono text-[11px] uppercase tracking-widest text-text-muted">
                         {grupo.n} · {grupo.itens.length} itens
                       </span>
-                      <Heading as="h2" size="h3" className="mt-2">
+                      <Heading as="h2" className="mt-2">
                         {grupo.titulo}
                       </Heading>
                       <Text size="sm" tone="muted" className="mt-2 max-w-prose">

@@ -305,6 +305,100 @@ function DemoChecklist() {
   );
 }
 
+/**
+ * Bloco de oferta fiel ao wireframe: painel claro arredondado, título escuro
+ * centralizado, cartão escuro cobrindo as duas imagens inclinadas (capa à
+ * esquerda, página interna à direita), caixa interna com selo + preço +
+ * parcelamento, botão laranja em degradê, ícones de pagamento e checklist.
+ * É uma montagem de auditoria — não altera a seção Offer do site.
+ */
+function DemoOferta() {
+  return (
+    <div className="relative overflow-hidden rounded-[32px] bg-surface-muted px-6 py-14 md:px-16">
+      <div className="mx-auto max-w-[720px] text-center">
+        <Heading as="h3" className="text-text-strong">
+          {OFFER.title}
+        </Heading>
+        <Text className="mx-auto mt-4 max-w-[560px]" tone="muted">
+          2027 já começou por aqui. A nova edição será produzida em quantidade
+          limitada — então não espere o momento perfeito para garantir a sua.
+          Patos à água!
+        </Text>
+      </div>
+
+      <div className="relative mx-auto mt-14 max-w-[880px] pb-10">
+        {/* Imagens inclinadas atrás do cartão, como no wireframe. */}
+        <img
+          src="/img/capa-solo.png"
+          alt=""
+          aria-hidden
+          className="pointer-events-none absolute left-[-4%] top-10 w-[44%] -rotate-[14deg] shadow-float"
+        />
+        <img
+          src="/img/interna-oferta.png"
+          alt=""
+          aria-hidden
+          className="pointer-events-none absolute right-[-4%] top-6 w-[40%] rotate-[13deg] shadow-float"
+        />
+
+        <div className="relative z-10 mx-auto w-full max-w-[520px] rounded-[28px] bg-surface-inverse p-6 shadow-float md:p-8">
+          <div className="rounded-[18px] bg-surface-inverse-soft/60 p-6 text-center ring-1 ring-border-inverse">
+            <Badge tone="plainInverse" icon={<IconSparkle />}>
+              {OFFER.badge}
+            </Badge>
+            <p className="mt-3 text-display font-bold tracking-[-0.04em] text-text-on-inverse">
+              {priceLabel}
+            </p>
+            <p className="mt-1 text-base text-text-on-inverse/70">
+              {installmentLabel}
+            </p>
+          </div>
+
+          {/* Botão em degradê laranja→dourado, como no wireframe (hoje não
+              existe essa variante no catálogo de botões). */}
+          <a
+            href="#comprar"
+            className="mt-4 block rounded-[9px] border border-[#5D754D] bg-gradient-to-br from-[#FF7A2F] to-[#F4D36A] py-4 text-center text-lg font-bold tracking-[-0.02em] text-white"
+          >
+            {OFFER.cta}
+          </a>
+
+          <ul className="mt-4 flex items-center justify-center gap-4">
+            {["Mastercard", "Visa", "Elo", "Pix"].map((m) => (
+              <li
+                key={m}
+                className="text-xs font-semibold text-text-on-inverse/60"
+              >
+                {m}
+              </li>
+            ))}
+          </ul>
+
+          <p className="mt-8 font-semibold text-text-on-inverse">
+            {OFFER.listTitle}
+          </p>
+          <ul className="mt-4 space-y-4">
+            {OFFER.list.map((item) => (
+              <li
+                key={item}
+                className="flex items-start gap-3 text-sm text-text-on-inverse/85"
+              >
+                <span
+                  aria-hidden
+                  className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-surface-inverse-soft text-text-on-inverse ring-1 ring-border-inverse"
+                >
+                  <IconCheck className="text-[0.7rem]" />
+                </span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* --------------------------------- conteúdo -------------------------------- */
 
 const GRUPOS: Grupo[] = [

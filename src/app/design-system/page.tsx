@@ -30,6 +30,7 @@ import { EditionSelectorDemo } from "./EditionSelectorDemo";
 import { Metrics } from "./TokenMetrics";
 import { AxisNav } from "./AxisNav";
 import { TopBar } from "@sections/TopBar";
+import { FEATURES, FeatureCard } from "@sections/About";
 import { SiteHeader } from "@sections/SiteHeader";
 import { Hero } from "@sections/Hero";
 import { SiteFooter } from "@sections/SiteFooter";
@@ -246,6 +247,7 @@ const AXES = [
   { id: "movimento", n: "06", kind: "Interação", title: "Movimento" },
   { id: "icones", n: "07", kind: "Ativos", title: "Ícones" },
   { id: "assets", n: "08", kind: "Ativos", title: "Assets" },
+  { id: "blocos", n: "09", kind: "Seções", title: "Blocos de seção" },
 ];
 
 /**

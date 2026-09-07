@@ -81,7 +81,7 @@ const REF_CALIBRATION = { scale: 0.817, x: -47, y: -73 };
  * nova logo depois da tela abrir (era isso que fazia a referência "encolher"
  * um instante depois de carregar).
  */
-const REF_STORAGE_KEY = "lab.hero-animation.ref-align.v2";
+const REF_STORAGE_KEY = "lab.hero-animation.ref-align.v3";
 
 type RefAlign = { scale: number; x: number; y: number };
 
@@ -137,6 +137,16 @@ export default function HeroAnimationLab() {
     }
   }, [refScale, refX, refY]);
 
+  // URLs temporárias pertencem ao laboratório. Liberá-las apenas ao sair evita
+  // tanto vazamento de memória quanto quebrar uma imagem ainda em renderização.
+  useEffect(
+    () => () => {
+      for (const url of assetUrlsRef.current) URL.revokeObjectURL(url);
+      assetUrlsRef.current.clear();
+    },
+    [],
+  );
+
   const [showInitial, setShowInitial] = useState(false);
   const [showFinal, setShowFinal] = useState(false);
   const [showGuides, setShowGuides] = useState(false);
@@ -145,6 +155,7 @@ export default function HeroAnimationLab() {
   const [panelOpen, setPanelOpen] = useState(false);
 
   const liveRef = useRef<HTMLDivElement>(null);
+  const assetUrlsRef = useRef<Set<string>>(new Set());
 
   const liveAnimations = useCallback((): Animation[] => {
     const el = liveRef.current;
@@ -200,16 +211,19 @@ export default function HeroAnimationLab() {
     setTime(value);
     for (const a of liveAnimations()) {
       a.pause();
-      a.currentTime = value;
+      const endTime = Number(a.effect?.getComputedTiming().endTime ?? value);
+      a.currentTime = Math.min(value, endTime);
     }
   }
 
   function swapAsset(key: AssetKey, file: File) {
     const url = URL.createObjectURL(file);
+    assetUrlsRef.current.add(url);
     setAssets((prev) => {
       const old = prev[key];
       if (typeof old === "string" && old.startsWith("blob:")) {
         URL.revokeObjectURL(old);
+        assetUrlsRef.current.delete(old);
       }
       return { ...prev, [key]: url };
     });
@@ -221,6 +235,7 @@ export default function HeroAnimationLab() {
       const old = prev[key];
       if (typeof old === "string" && old.startsWith("blob:")) {
         URL.revokeObjectURL(old);
+        assetUrlsRef.current.delete(old);
       }
       return { ...prev, [key]: DEFAULT_ASSETS[key] };
     });

@@ -527,16 +527,22 @@ const GRUPOS: Grupo[] = [
         nome: "Hero (primeira dobra completa)",
         onde: "Topo da home",
         falta:
-          "Composição inteira: selo, título de 80px, subtítulo, parágrafo de 540px, botão 425\u00d768, selos, números alinhados pela base e o palco 740\u00d7740 com as duas agendas e o card de preço.",
+          "Composição inteira: selo, título de 80px, subtítulo, parágrafo de 540px, botão 425\u00d768, selos, números centralizados entre si e o palco 740\u00d7740 com as duas agendas e o card de preço.",
         prioridade: "alta",
         larga: true,
         demo: (
-          <div className="-mx-6 overflow-hidden">
-            <Hero />
+          /* Palco de 1440px reduzido para caber na ficha, sem cortar a coluna. */
+          <div className="-mx-6 h-[759px] overflow-hidden">
+            <div
+              className="w-[1440px] origin-top-left"
+              style={{ transform: "scale(0.9431)" }}
+            >
+              <Hero />
+            </div>
           </div>
         ),
         demoNota:
-          "Ritmo vertical medido no wireframe: coluna a 153px do topo, 3 / 19 / 19 / 29 / 10 / 29px entre as peças. O palco é o mesmo BookStage de /lab/hero-animation.",
+          "Ritmo vertical medido no wireframe: coluna a 153px do topo, 3 / 19 / 19 / 29 / 10 / 29px entre as peças. Exibido em escala 0,943 (1440px reduzidos para a largura da ficha). O palco é o mesmo BookStage de /lab/hero-animation.",
       },
       {
         nome: "Cabeçalho da seção \u201cSobre\u201d",

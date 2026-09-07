@@ -23,6 +23,12 @@ type Layer = {
   src?: string;
   /** Sombra em cunha do wireframe: path SVG desenhado no viewBox da caixa. */
   wedge?: { path: string; h: number; opacity: number };
+  /**
+   * Quando o PNG é uma página inclinada em fundo transparente, a sombra
+   * retangular do CSS aparece como um vinco reto no card. Nesses casos a
+   * sombra real vem da cunha SVG, então a do CSS é desligada.
+   */
+  noShadow?: boolean;
   box: { w: number; x: number; y: number };
   /**
    * Entrada da camada, exatamente como no wireframe: quem anima é cada página
@@ -95,7 +101,7 @@ export const FEATURES: Feature[] = [
     muted: "Todo dia",
     strong: "uma frase de São Josemaria para inspirar",
     layers: [
-      { src: agendaDiaria, box: { w: 598, x: 177, y: 105 } },
+      { src: agendaDiaria, box: { w: 598, x: 177, y: 105 }, noShadow: true },
       {
         /* Sombra em cunha que a página projeta sobre o card (wireframe). */
         box: { w: 498, x: 29, y: 169 },
@@ -189,7 +195,11 @@ export function FeatureCard({
                   src={layer.src}
                   alt=""
                   aria-hidden
-                  className="h-auto w-full rounded-xs shadow-page"
+                  className={
+                    layer.noShadow
+                      ? "h-auto w-full rounded-xs"
+                      : "h-auto w-full rounded-xs shadow-page"
+                  }
                 />
               ) : null}
               {layer.wedge ? (

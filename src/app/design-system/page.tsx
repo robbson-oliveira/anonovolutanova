@@ -247,7 +247,6 @@ const AXES = [
   { id: "movimento", n: "06", kind: "Interação", title: "Movimento" },
   { id: "icones", n: "07", kind: "Ativos", title: "Ícones" },
   { id: "assets", n: "08", kind: "Ativos", title: "Assets" },
-  { id: "blocos", n: "09", kind: "Seções", title: "Blocos de seção" },
 ];
 
 /**

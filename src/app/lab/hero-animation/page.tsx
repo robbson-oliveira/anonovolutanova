@@ -73,7 +73,7 @@ const REF_NATURAL = { width: 1017, height: 989 };
  * compara a caixa das capas da referência com a caixa das capas do BookStage
  * real. Com estes números a referência abre já encaixada.
  */
-const REF_CALIBRATION = { scale: 0.6316, x: 26, y: 34 };
+const REF_CALIBRATION = { scale: 0.817, x: -47, y: -73 };
 
 const REF_STORAGE_KEY = "lab.hero-animation.ref-align.v1";
 

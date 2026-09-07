@@ -552,19 +552,24 @@ export default function HeroAnimationLab() {
 
                 {showRef && (
                   <div
-                    className="pointer-events-none absolute inset-0 z-30"
+                    className="pointer-events-none absolute left-0 top-0 z-30"
                     style={{
                       opacity: refOpacity,
                       mixBlendMode: refBlend,
                     }}
                   >
+                    {/* Tamanho natural + origem no canto do palco: a escala do
+                        painel vira uma medida real, não um encaixe implícito. */}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={srcOf(assets.referencia)}
                       alt=""
-                      className="h-full w-full object-contain"
                       style={{
+                        width: REF_NATURAL.width,
+                        height: REF_NATURAL.height,
+                        maxWidth: "none",
                         transform: `translate(${refX}px, ${refY}px) scale(${refScale})`,
+                        transformOrigin: "top left",
                       }}
                     />
                   </div>

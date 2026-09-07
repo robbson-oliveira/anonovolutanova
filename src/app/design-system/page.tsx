@@ -247,7 +247,6 @@ const AXES = [
   { id: "movimento", n: "06", kind: "Interação", title: "Movimento" },
   { id: "icones", n: "07", kind: "Ativos", title: "Ícones" },
   { id: "assets", n: "08", kind: "Ativos", title: "Assets" },
-  { id: "blocos", n: "09", kind: "Seções", title: "Blocos de seção" },
 ];
 
 /**
@@ -462,8 +461,22 @@ export default function DesignSystemPage() {
               </Row>
 
 
-              <Row label="EditionSelector" last>
+              <Row label="EditionSelector">
                 <EditionSelectorDemo />
+              </Row>
+
+              <Row label="FeatureCard" last meta="4 cards · 586×600 · animação por camadas">
+                <Text className="mx-auto mb-4 max-w-[620px]">
+                  Os quatro boxes de destaque da seção “O que a torna especial”:
+                  medidas exatas do wireframe (586×600), grade de duas colunas e a
+                  animação de entrada por camadas, compartilhando um único gatilho
+                  de scroll por card.
+                </Text>
+                <ul className="mt-8 grid justify-center gap-7 lg:grid-cols-[repeat(2,586px)]">
+                  {FEATURES.map((feature, i) => (
+                    <FeatureCard key={feature.strong} feature={feature} index={i} />
+                  ))}
+                </ul>
               </Row>
             </div>
           </AxisSection>
@@ -691,21 +704,6 @@ export default function DesignSystemPage() {
                 </figure>
               ))}
             </div>
-          </AxisSection>
-
-          <AxisSection {...AXES[8]}>
-            <Note>
-              Os quatro boxes de destaque da seção “O que a torna especial”:
-              medidas exatas do wireframe (586×600), grade de duas colunas e a
-              animação de entrada por camadas, compartilhando um único gatilho
-              de scroll por card.
-            </Note>
-
-            <ul className="mx-auto grid justify-center gap-7 lg:grid-cols-[repeat(2,586px)]">
-              {FEATURES.map((feature, i) => (
-                <FeatureCard key={feature.strong} feature={feature} index={i} />
-              ))}
-            </ul>
           </AxisSection>
 
         </main>

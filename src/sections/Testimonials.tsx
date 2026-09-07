@@ -1,66 +1,186 @@
-import { Card, Carousel, Container, Heading, IconStar, Reveal, Text } from "@ds/index";
-import { TESTIMONIALS } from "@content/offer";
-const avatarRobson = "/img/avatar-robson.jpeg";
-const avatarAndrea = "/img/avatar-andrea.jpg";
-const avatarJeje = "/img/avatar-jeje.jpg";
+"use client";
 
-const AVATARS = [avatarRobson, avatarAndrea, avatarJeje];
+import { useRef } from "react";
+import { IconStar, Reveal, RevealGroup } from "@ds/index";
+import { TESTIMONIALS } from "@content/offer";
+
+const AVATARS = ["/img/avatar-robson.jpeg", "/img/avatar-andrea.jpg", "/img/avatar-jeje.jpg"];
+
+/* -----------------------------------------------------------------------------
+   DEPOIMENTOS — medido no wireframe (viewport 1440), section 1440x936.
+   padding 0 0 200 60 · título x201 y250 120/132 600 -6px
+   cards 505x288 r12 branco, sombra 0 1px 2px rgba(0,0,0,.1), pad 42px 0
+   conteúdo 421 · gap 30 · avatar 60x60 r12 · gap 12 · nome/cidade 24/24 700
+   estrelas 124x21 · citação 20/24 400
+   -------------------------------------------------------------------------- */
+
+const CARD_STEP = 509.3 + 24;
 
 export function Testimonials() {
+  const trackRef = useRef<HTMLUListElement>(null);
+
+  const slide = (dir: -1 | 1) => {
+    trackRef.current?.scrollBy({ left: dir * CARD_STEP, behavior: "smooth" });
+  };
+
   return (
-    <section id="depoimentos" className="bg-surface px-6 py-24 md:px-16">
-      <Container>
-        <Reveal variant="up">
-          <Heading as="h2" level="hero">
-            Depoimentos
-          </Heading>
-        </Reveal>
+    <section
+      id="depoimentos"
+      style={{
+        width: 1440,
+        padding: "0 0 200px 60px",
+        background: "var(--color-surface)",
+        overflow: "hidden",
+      }}
+    >
+      <RevealGroup>
+        <div style={{ paddingTop: 250, paddingLeft: 141 }}>
+          <Reveal variant="up">
+            <h2
+              style={{
+                width: 800,
+                margin: 0,
+                fontSize: 120,
+                lineHeight: "132px",
+                fontWeight: 600,
+                letterSpacing: "-6px",
+                color: "var(--brand-ink-900, #000)",
+              }}
+            >
+              Depoimentos
+            </h2>
+          </Reveal>
 
-        <Reveal variant="up" delay={90} className="mt-10">
-          <Carousel label="Depoimentos de leitoras">
-            {TESTIMONIALS.map((item, i) => (
-              <li
-                key={item.name}
-                className="w-[calc(100%-1rem)] shrink-0 snap-start sm:w-[420px]"
-              >
-                <Card
-                  surface="plain"
-                  elevation="subtle"
-                  padding="lg"
-                  className="h-full"
-                >
-                  <div className="flex items-center gap-4">
-                    <img
-                      src={AVATARS[i % AVATARS.length]}
-                      alt=""
-                      aria-hidden
-                      className="size-14 rounded-card object-cover"
-                    />
-                    <div>
-                      <p className="text-lead font-bold text-text-card">{item.name}</p>
-                      <Text as="span" size="lead" tone="muted" className="font-bold">
-                        {item.city}
-                      </Text>
+          <Reveal variant="up" delay={90}>
+            <ul
+              ref={trackRef}
+              style={{
+                display: "flex",
+                gap: 24,
+                margin: "58px 0 0",
+                padding: "0 0 4px",
+                listStyle: "none",
+                overflowX: "auto",
+                scrollSnapType: "x mandatory",
+                scrollbarWidth: "none",
+              }}
+            >
+              {TESTIMONIALS.map((item, i) => (
+                <li key={item.name} style={{ flex: "0 0 505px", scrollSnapAlign: "start" }}>
+                  <article
+                    style={{
+                      width: 505,
+                      height: 288,
+                      padding: "42px",
+                      borderRadius: 12,
+                      background: "var(--color-surface-plain)",
+                      boxShadow: "rgba(0, 0, 0, 0.1) 0px 1px 2px 0px",
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                      <img
+                        src={AVATARS[i % AVATARS.length]}
+                        alt=""
+                        aria-hidden
+                        style={{ width: 60, height: 60, borderRadius: 12, objectFit: "cover" }}
+                      />
+                      <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                        <p
+                          style={{
+                            margin: 0,
+                            fontSize: 24,
+                            lineHeight: "24px",
+                            fontWeight: 700,
+                            letterSpacing: "-0.96px",
+                            color: "var(--brand-ink-900, #000)",
+                          }}
+                        >
+                          {item.name}
+                        </p>
+                        <p
+                          style={{
+                            margin: 0,
+                            fontSize: 24,
+                            lineHeight: "24px",
+                            fontWeight: 700,
+                            letterSpacing: "-0.96px",
+                            color: "rgb(134, 134, 134)",
+                          }}
+                        >
+                          {item.city}
+                        </p>
+                      </div>
                     </div>
-                  </div>
 
-                  <p aria-label="5 de 5 estrelas" className="mt-5 text-accent">
-                    <span aria-hidden className="inline-flex gap-0.5">
+                    <p
+                      aria-label="5 de 5 estrelas"
+                      style={{
+                        display: "flex",
+                        gap: 5,
+                        width: 124,
+                        height: 21,
+                        margin: "20px 0 0",
+                        fontSize: 21,
+                        lineHeight: "21px",
+                        color: "var(--brand-ink-900, #000)",
+                      }}
+                    >
                       {Array.from({ length: 5 }, (_, s) => (
-                        <IconStar key={s} />
+                        <IconStar key={s} aria-hidden />
                       ))}
-                    </span>
-                  </p>
+                    </p>
 
-                  <blockquote className="mt-4 text-base text-text">
-                    {item.quote}
-                  </blockquote>
-                </Card>
-              </li>
+                    <blockquote
+                      style={{
+                        width: 421,
+                        margin: "30px 0 0",
+                        fontSize: 20,
+                        lineHeight: "24px",
+                        color: "var(--color-text)",
+                      }}
+                    >
+                      {item.quote}
+                    </blockquote>
+                  </article>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+
+          <div style={{ display: "flex", gap: 12, marginTop: 26 }}>
+            {([-1, 1] as const).map((dir) => (
+              <button
+                key={dir}
+                type="button"
+                onClick={() => slide(dir)}
+                aria-label={dir === -1 ? "Depoimento anterior" : "Próximo depoimento"}
+                style={{
+                  display: "grid",
+                  placeItems: "center",
+                  width: 58,
+                  height: 58,
+                  borderRadius: 12,
+                  border: "none",
+                  cursor: "pointer",
+                  color: "var(--color-text-on-inverse)",
+                  backgroundImage:
+                    "linear-gradient(225deg, rgb(52, 76, 36) 0%, rgb(26, 37, 16) 100%)",
+                }}
+              >
+                <svg width="10" height="16" viewBox="0 0 10 16" fill="none" aria-hidden>
+                  <path
+                    d={dir === -1 ? "M8.5 1.5 2 8l6.5 6.5" : "M1.5 1.5 8 8l-6.5 6.5"}
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
             ))}
-          </Carousel>
-        </Reveal>
-      </Container>
+          </div>
+        </div>
+      </RevealGroup>
     </section>
   );
 }

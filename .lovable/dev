@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -e
-cd "$(dirname "$0")/../site"
+cd "$(dirname "$0")/.."
 exec npx next dev --port 8080 --hostname 0.0.0.0

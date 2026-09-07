@@ -561,7 +561,7 @@ const GRUPOS: Grupo[] = [
         larga: true,
         demo: (
           /* Palco de 1440px reduzido para caber na ficha, sem cortar a coluna. */
-          <div className="-mx-6 h-[759px] overflow-hidden">
+          <div className="-mx-6 h-[810px] overflow-hidden">
             <div
               className="w-[1440px] origin-top-left"
               style={{ transform: "scale(0.9431)" }}

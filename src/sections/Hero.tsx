@@ -15,7 +15,8 @@ import { BookStage } from "./BookStage";
  * Primeira dobra. Todo o ritmo vertical abaixo foi MEDIDO no wireframe
  * (public/wireframe/wireframe-v2.html) em viewport 1440, com o topo da seção
  * em y=42:
- *   coluna de texto  x=62 (= (1440-1316)/2), começa 153px abaixo do topo
+ *   coluna de texto  x=62 (= (1440-1316)/2); selo 57px e título 96px abaixo
+ *                    do fim do cabeçalho (padding-top 29, altura total 859)
  *   selo             36px de altura
  *   título           2 linhas de 80px, 3px abaixo do selo
  *   subtítulo        30px, 19px abaixo do título
@@ -23,18 +24,18 @@ import { BookStage } from "./BookStage";
  *   botão            425 × 68, raio 10, 29px abaixo do parágrafo
  *   selos            36px, 10px abaixo do botão
  *   números          29px abaixo dos selos, alinhados pela base
- *   palco            740 × 740, canto em x=650,5 / y=102 (60 abaixo da seção)
+ *   palco            740 × 740; capa colorida em x=653,5 / y=4 da seção
  */
 export function Hero() {
   return (
     <section
       id="inicio"
-      className="relative overflow-hidden bg-surface pb-[43px] pt-[153px]"
+      className="relative overflow-hidden bg-surface pb-[221px] pt-[29px]"
     >
       <div className="mx-auto w-full max-w-[1316px] px-6 lg:px-0">
         <div className="relative">
           {/* Palco: sangra para fora do container, como no wireframe. */}
-          <div className="absolute left-[588.5px] top-[-93px] hidden lg:block">
+          <div className="absolute left-[532px] top-[-67.5px] hidden lg:block">
             <BookStage />
           </div>
 

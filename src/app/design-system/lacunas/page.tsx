@@ -18,7 +18,7 @@ import {
   BookCover,
   cn,
 } from "@ds/index";
-import { TopBar } from "@sections/TopBar";
+
 import { SiteHeader } from "@sections/SiteHeader";
 import { SiteFooter } from "@sections/SiteFooter";
 import { BookStage } from "@sections/BookStage";
@@ -436,17 +436,8 @@ const GRUPOS: Grupo[] = [
       "As peças fixas que envolvem todo o site. Aparecem em toda página e nenhuma tem ficha própria no catálogo.",
     itens: [
       {
-        nome: "Barra fixa do topo (TopBar)",
-        onde: "Topo de todas as páginas",
-        falta:
-          "Faixa escura de 36px com esteira de avisos, ícones alternados (caixa e asterisco) e botão de fechar. O catálogo mostra só a esteira isolada, sem o comportamento fixo, sem o dispensar e sem a altura reservada no shell.",
-        prioridade: "alta",
-        larga: true,
-        demo: <TopBar sticky={false} />,
-        demoNota: "Peça real, sem o comportamento fixo.",
-      },
-      {
         nome: "Cabeçalho do site (SiteHeader)",
+
         onde: "Abaixo da barra do topo",
         falta:
           "Marca, navegação, botão de conta e CTA. Sem ficha, sem estado mobile e sem regra de comportamento no scroll.",
@@ -703,8 +694,8 @@ function Preview({
 export default function DesignSystemLacunasPage() {
   return (
     <>
-      <TopBar sticky={false} />
       <div>
+
         <SiteHeader />
         <main>
           <section className="bg-surface px-6 py-24 md:px-16">

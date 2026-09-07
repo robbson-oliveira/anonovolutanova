@@ -372,7 +372,14 @@ export default function DesignSystemPage() {
             </Note>
 
             <div>
+              <Row label="TopBar" meta="faixa fixa · marquee centralizada · fade lateral">
+                <div className="w-full overflow-hidden rounded-lg">
+                  <TopBar sticky={false} />
+                </div>
+              </Row>
+
               <Row label="Button" meta="4 variantes">
+
                 <div className="flex flex-wrap items-center gap-3">
                   <Button>Primário</Button>
                   <Button variant="secondary">Secundário</Button>

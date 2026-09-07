@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { cn } from "@ds/utils/cn";
 
 type Variant = "primary" | "secondary" | "ghost" | "inverse";
@@ -39,7 +38,7 @@ type ButtonProps = {
   className?: string;
   children: React.ReactNode;
 } & (
-  | ({ href: string } & Omit<React.ComponentPropsWithoutRef<typeof Link>, "href" | "className">)
+  | ({ href: string } & Omit<React.ComponentPropsWithoutRef<"a">, "href" | "className">)
   | ({ href?: undefined } & Omit<React.ComponentPropsWithoutRef<"button">, "className">)
 );
 
@@ -60,7 +59,7 @@ export function Button({
 
   if (props.href !== undefined) {
     const { href, ...rest } = props;
-    return <Link href={href} className={classes} {...rest} />;
+    return <a href={href} className={classes} {...rest} />;
   }
 
   const { href, ...rest } = props;

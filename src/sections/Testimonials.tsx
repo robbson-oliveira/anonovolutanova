@@ -1,9 +1,8 @@
-import Image from "next/image";
 import { Card, Carousel, Container, Heading, IconStar, Reveal, Text } from "@ds/index";
 import { TESTIMONIALS } from "@content/offer";
-import avatarRobson from "@/public/img/avatar-robson.jpeg";
-import avatarAndrea from "@/public/img/avatar-andrea.jpg";
-import avatarJeje from "@/public/img/avatar-jeje.jpg";
+const avatarRobson = "/img/avatar-robson.jpeg";
+const avatarAndrea = "/img/avatar-andrea.jpg";
+const avatarJeje = "/img/avatar-jeje.jpg";
 
 const AVATARS = [avatarRobson, avatarAndrea, avatarJeje];
 
@@ -31,7 +30,7 @@ export function Testimonials() {
                   className="h-full"
                 >
                   <div className="flex items-center gap-4">
-                    <Image
+                    <img
                       src={AVATARS[i % AVATARS.length]}
                       alt=""
                       aria-hidden

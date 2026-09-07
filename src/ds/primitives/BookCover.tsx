@@ -1,8 +1,7 @@
-import Image, { type StaticImageData } from "next/image";
 import { cn } from "@ds/utils/cn";
 
 type BookCoverProps = {
-  src: StaticImageData | string;
+  src: string;
   alt: string;
   /** Altura renderizada em px. É ela que garante a paridade entre as capas. */
   height: number;
@@ -28,10 +27,10 @@ export function BookCover({
   className,
 }: BookCoverProps) {
   return (
-    <Image
+    <img
       src={src}
       alt={alt}
-      priority={priority}
+      loading={priority ? "eager" : "lazy"}
       style={{ height: `${height}px`, width: "auto" }}
       className={cn("block max-w-full", className)}
     />

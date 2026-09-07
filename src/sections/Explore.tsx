@@ -12,8 +12,8 @@ import {
 } from "@ds/index";
 import { EXPLORE } from "@content/home";
 import { EDITIONS } from "@content/product";
-import capaColor from "@/public/img/capa-color.png";
-import capaClassica from "@/public/img/capa-classica.png";
+const capaColor = "/img/capa-color.png";
+const capaClassica = "/img/capa-classica.png";
 
 const COVERS = {
   color: { src: capaColor, alt: "Capa da Edição Color" },

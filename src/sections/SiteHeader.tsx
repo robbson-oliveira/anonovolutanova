@@ -1,12 +1,10 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
 import { useState } from "react";
 import { Button, Container, IconAccount, IconArrowRight, cn } from "@ds/index";
 import { NAV_LINKS } from "@content/home";
 import { CHECKOUT_URL, PRODUCT_NAME } from "@content/product";
-import logo from "@/public/img/logo.png";
+const logo = "/img/logo.png";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
@@ -23,39 +21,39 @@ export function SiteHeader() {
           (max-w-[1316px] + px-6 lg:px-0), não a antiga (1390px + padding
           fixo) que deixava o logo ~23px à direita do texto. */}
       <div className="mx-auto flex h-20 w-full max-w-[1316px] items-center justify-between gap-6 px-6 lg:px-0">
-        <Link href="#inicio" className="flex shrink-0 items-center">
-          <Image
+        <a href="#inicio" className="flex shrink-0 items-center">
+          <img
             src={logo}
             alt={PRODUCT_NAME}
-            priority
+            loading="eager"
             className="w-auto"
             style={{ height: "72px", width: "auto" }}
           />
-        </Link>
+        </a>
 
         <nav aria-label="Principal" className="hidden lg:block">
           <ul className="flex items-center gap-8">
             {NAV_LINKS.map((link) => (
               <li key={link.href}>
-                <Link
+                <a
                   href={link.href}
                   className="text-xs font-bold text-text-strong transition-colors [transition-duration:var(--duration-fast)] hover:text-action"
                 >
                   {link.label}
-                </Link>
+                </a>
               </li>
             ))}
           </ul>
         </nav>
 
         <div className="flex items-center gap-3">
-          <Link
+          <a
             href="#conta"
             aria-label="Área do cliente"
             className="hidden size-11 place-items-center rounded-pill text-text-strong transition-colors [transition-duration:var(--duration-fast)] hover:text-accent lg:grid"
           >
             <IconAccount className="text-xl" />
-          </Link>
+          </a>
           {/* shape="block": medido no wireframe, radius=12px (rounded-card),
               não pílula. O padrão do Button é pílula para botão de nav — este
               é a exceção confirmada, não os outros que ainda não medi. */}
@@ -83,13 +81,13 @@ export function SiteHeader() {
           <ul className="flex flex-col gap-4">
             {NAV_LINKS.map((link) => (
               <li key={link.href}>
-                <Link
+                <a
                   href={link.href}
                   onClick={() => setOpen(false)}
                   className="text-base font-medium text-text"
                 >
                   {link.label}
-                </Link>
+                </a>
               </li>
             ))}
           </ul>

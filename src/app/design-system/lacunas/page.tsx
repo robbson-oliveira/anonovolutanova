@@ -174,7 +174,52 @@ const GRUPOS: Grupo[] = [
       },
     ],
   },
+  {
+    id: "divergencias",
+    n: "05",
+    titulo: "Documentado errado (não bate com o site)",
+    descricao:
+      "Peças que já aparecem no catálogo, mas em versão diferente da que a home realmente usa — quem consulta o catálogo vê algo que não existe no site.",
+    itens: [
+      {
+        nome: "Perguntas frequentes (FAQ)",
+        onde: "Seção de perguntas",
+        falta:
+          "No site cada pergunta é um cartão branco separado, com sombra e numeração. No catálogo aparece como lista contínua com fio de divisão, sem fundo branco e sem número — é a versão errada da peça.",
+        prioridade: "alta",
+      },
+      {
+        nome: "Cartões",
+        onde: "Datas litúrgicas, depoimentos, Sobre, preço",
+        falta:
+          "O catálogo mostra só a versão em fundo creme. Os cartões do site são brancos (datas, depoimentos) e terracota (Sobre) — nenhuma dessas superfícies aparece.",
+        prioridade: "alta",
+      },
+      {
+        nome: "Abas (Explore)",
+        onde: "Explore a Agenda",
+        falta:
+          "No catálogo os painéis têm texto de exemplo. No site cada aba mostra uma página interna da agenda com legenda manuscrita — a anatomia real não está representada.",
+        prioridade: "media",
+      },
+      {
+        nome: "Selos",
+        onde: "Hero, oferta, fechamento",
+        falta:
+          "O rótulo diz 6 tons, mas só 5 aparecem; falta o tom usado sobre fundo escuro no fechamento e na oferta.",
+        prioridade: "media",
+      },
+      {
+        nome: "Botões",
+        onde: "Hero, oferta, cabeçalho",
+        falta:
+          "O rótulo diz 4 variantes, mas uma das amostras é apenas o tamanho grande. Faltam separar variante de tamanho e mostrar os estados (repouso, hover, desabilitado).",
+        prioridade: "media",
+      },
+    ],
+  },
 ];
+
 
 const PRIORIDADE_LABEL: Record<Prioridade, string> = {
   alta: "Prioridade alta",

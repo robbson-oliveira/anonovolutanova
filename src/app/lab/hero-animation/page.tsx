@@ -338,11 +338,11 @@ export default function HeroAnimationLab() {
             <Slider
               label="Escala"
               value={refScale}
-              min={0.5}
+              min={0.3}
               max={1.8}
-              step={0.01}
+              step={0.001}
               onChange={setRefScale}
-              readout={refScale.toFixed(2)}
+              readout={refScale.toFixed(3)}
               disabled={!showRef}
             />
             <Slider
@@ -365,16 +365,43 @@ export default function HeroAnimationLab() {
               readout={`${refY}px`}
               disabled={!showRef}
             />
+            <div className="rounded border border-slate-800 bg-slate-950 px-2.5 py-2 text-[11px] leading-snug text-slate-400">
+              <p>
+                Referência natural:{" "}
+                <span className="font-mono text-slate-200">
+                  {REF_NATURAL.width}×{REF_NATURAL.height}
+                </span>{" "}
+                · palco{" "}
+                <span className="font-mono text-slate-200">
+                  {STAGE_SIZE}×{STAGE_SIZE}
+                </span>
+              </p>
+              <p>
+                Na tela:{" "}
+                <span className="font-mono text-slate-200">
+                  {Math.round(REF_NATURAL.width * refScale)}×
+                  {Math.round(REF_NATURAL.height * refScale)}
+                </span>{" "}
+                em{" "}
+                <span className="font-mono text-slate-200">
+                  {refX},{refY}
+                </span>
+              </p>
+              <p className="mt-1 text-slate-500">
+                Escala 1,000 = 1px da referência para 1px do palco. Seu ajuste
+                fica salvo neste navegador.
+              </p>
+            </div>
             <button
               type="button"
               onClick={() => {
-                setRefScale(1);
-                setRefX(0);
-                setRefY(0);
+                setRefScale(REF_CALIBRATION.scale);
+                setRefX(REF_CALIBRATION.x);
+                setRefY(REF_CALIBRATION.y);
               }}
               className="w-full rounded border border-slate-700 px-3 py-1.5 text-[11px] text-slate-300 hover:bg-slate-800"
             >
-              Zerar alinhamento
+              Voltar à calibragem
             </button>
           </Panel>
 

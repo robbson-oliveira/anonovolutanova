@@ -22,8 +22,8 @@ import { TopBar } from "@sections/TopBar";
 import { SiteHeader } from "@sections/SiteHeader";
 import { SiteFooter } from "@sections/SiteFooter";
 import { BookStage } from "@sections/BookStage";
-import { Faq } from "@sections/Faq";
 import { Quote } from "@sections/Quote";
+
 import { Persona } from "@sections/Persona";
 import { Closing } from "@sections/Closing";
 import { Explore } from "@sections/Explore";

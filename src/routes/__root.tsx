@@ -4,7 +4,6 @@ import {
   Scripts,
   createRootRoute,
 } from "@tanstack/react-router";
-import { REVEAL_READY_SCRIPT } from "@ds/index";
 import "../app/globals.css";
 
 export const Route = createRootRoute({
@@ -21,7 +20,6 @@ export const Route = createRootRoute({
         href: "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Yellowtail&display=swap",
       },
     ],
-    scripts: [{ children: REVEAL_READY_SCRIPT }],
   }),
   component: Outlet,
   shellComponent: RootDocument,
@@ -29,7 +27,7 @@ export const Route = createRootRoute({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" data-reveal-ready="">
       <head>
         <HeadContent />
       </head>

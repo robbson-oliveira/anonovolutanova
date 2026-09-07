@@ -6,11 +6,28 @@ const nextConfig: NextConfig = {
     // Capas e logo são PNG com canal alfa; formatos modernos preservam alfa.
     formats: ["image/avif", "image/webp"],
   },
-  // O export estático do Framer (wireframe_old.html, design-system.html) e a
-  // pasta assets/ continuam na raiz apenas como referência visual. Não fazem
-  // parte do build.
+
+  /*
+   * O que este deploy publica é material de revisão: o design system e o
+   * wireframe aprovado. O site comercial ainda não foi lançado, então a
+   * landing não recebe rota pública — ela existe no código e roda em
+   * desenvolvimento, mas a raiz do deploy leva ao design system.
+   */
+  async redirects() {
+    return [
+      { source: "/", destination: "/design-system", permanent: false },
+      // Atalho: /wireframe abre a versão em revisão sem precisar do arquivo.
+      {
+        source: "/wireframe",
+        destination: "/wireframe/wireframe-v2.html",
+        permanent: false,
+      },
+    ];
+  },
+
+  // O historico da prototipagem vive em old/ e nao entra no bundle.
   outputFileTracingExcludes: {
-    "*": ["./assets/**", "./backups/**", "./imagens 2027/**"],
+    "*": ["./old/**"],
   },
 };
 

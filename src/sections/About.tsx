@@ -13,10 +13,14 @@ const datasObra = "/img/interna-datas-obra.png";
 /**
  * Cada card tem título em duas ênfases — a primeira parte em tom apagado, a
  * segunda em destaque — e uma composição de páginas internas embaixo.
+ *
+ * Todas as medidas abaixo foram lidas no wireframe (public/wireframe/
+ * wireframe-v2.html) com o card em 586 × 600 px: `box` é a caixa da página em
+ * px, relativa ao canto superior esquerdo do card. Não escalar.
  */
 type Layer = {
   src: string;
-  className: string;
+  box: { w: number; x: number; y: number };
   /**
    * Linhas manuscritas sobre as pautas da página. No design aprovado é o que
    * mostra a agenda em uso — o PNG é a página em branco, a letra é texto por
@@ -39,15 +43,17 @@ export type Feature = {
   layers: Layer[];
 };
 
-export const FEATURES: Feature[] = [
+export const CARD_W = 586;
+export const CARD_H = 600;
 
+export const FEATURES: Feature[] = [
   {
     muted: "Espaço para o plano de vida",
     strong: "e suas metas anuais",
     layers: [
       {
         src: planoDeVida,
-        className: "left-[4%] top-[14%] w-[97%]",
+        box: { w: 575, x: 21, y: 260 },
         handwriting: {
           items: ABOUT.features[0].items,
           top: 20.4,
@@ -58,7 +64,7 @@ export const FEATURES: Feature[] = [
       },
       {
         src: metasAnuais,
-        className: "left-[55%] top-0 w-[50%]",
+        box: { w: 298, x: 323, y: 195 },
         /*
          * As metas vivem em ABOUT.features[1] no conteúdo, mas no design
          * aprovado elas são a segunda página DESTE card — o card 1 mostra as
@@ -78,34 +84,31 @@ export const FEATURES: Feature[] = [
     muted: "Todo dia",
     strong: "uma frase de São Josemaria para inspirar",
     layers: [
-      { src: agendaDiaria, className: "left-[30%] top-0 w-[101%]" },
-      { src: citacao, className: "left-[10%] top-[14%] w-[47%]" },
+      { src: agendaDiaria, box: { w: 598, x: 177, y: 105 } },
+      { src: citacao, box: { w: 276, x: 60, y: 188 } },
     ],
   },
   {
     muted: "Todo mês",
     strong: "um tema para viver a santidade no cotidiano",
     layers: [
-      { src: vidaOracao, className: "left-[-19%] top-0 w-[76%]" },
-      { src: propositosMes, className: "left-[44%] top-[38%] w-[74%]" },
+      { src: vidaOracao, box: { w: 451, x: -114, y: 180 } },
+      { src: propositosMes, box: { w: 439, x: 261, y: 289 } },
     ],
   },
   {
     muted: "Datas especiais do calendário litúrgico e",
     strong: "datas importantes da Obra",
     layers: [
-      { src: calendario, className: "left-[23%] top-0 w-[75%]" },
-      { src: datasObra, className: "left-[1%] top-[22%] w-[59%]" },
+      { src: calendario, box: { w: 441, x: 136, y: 195 } },
+      { src: datasObra, box: { w: 348, x: 9, y: 305 } },
     ],
   },
 ];
 
 export function About() {
   return (
-    <section
-      id="sobre"
-      className="bg-surface-gold px-6 pb-24 pt-24 md:px-16"
-    >
+    <section id="sobre" className="bg-surface-gold px-6 pb-24 pt-24 md:px-16">
       <Container>
         <Reveal variant="up" className="mx-auto max-w-[720px] text-center">
           <Eyebrow className="justify-center">{ABOUT.eyebrow}</Eyebrow>
@@ -123,7 +126,7 @@ export function About() {
           </Button>
         </Reveal>
 
-        <ul className="mt-20 grid gap-6 lg:grid-cols-2">
+        <ul className="mt-20 grid justify-center gap-7 lg:grid-cols-[repeat(2,586px)]">
           {FEATURES.map((feature, i) => (
             <FeatureCard key={feature.strong} feature={feature} index={i} />
           ))}
@@ -134,9 +137,9 @@ export function About() {
 }
 
 /**
- * Um box da seção "O que a torna especial" — título em duas ênfases e a
- * composição de páginas. A animação de entrada (Reveal) vem junto: alterna
- * lado e ganha atraso conforme a coluna. Reutilizado pelo catálogo.
+ * Um box da seção "O que a torna especial" — 586 × 600 px, exatamente como no
+ * wireframe. A animação de entrada (Reveal) vem junto: alterna lado e ganha
+ * atraso conforme a coluna. Reutilizado pelo catálogo.
  */
 export function FeatureCard({
   feature,
@@ -151,35 +154,33 @@ export function FeatureCard({
       variant={index % 2 === 0 ? "left" : "right"}
       delay={(index % 2) * 90}
     >
-      <article className="h-full overflow-hidden rounded-lg bg-surface-warm-card p-10 pb-0 shadow-inset-card">
-        <h3 className="text-center text-[38px] font-bold leading-tight tracking-[-0.04em]">
+      <article
+        className="relative h-[600px] w-[586px] max-w-full overflow-hidden rounded-[12px] bg-surface-warm-card px-5 pt-[60px] shadow-inset-card"
+      >
+        <h3 className="text-center text-[38px] font-bold leading-[38px] tracking-[-0.04em]">
           <span className="ds-title-dim">{feature.muted} </span>
           <span className="text-text-on-warm">{feature.strong}</span>
         </h3>
 
-        <div className="relative mt-12 h-[520px]">
-          {feature.layers.map((layer, j) => (
-            <div
-              key={j}
-              className={`absolute [container-type:inline-size] ${layer.className}`}
-            >
-              <img
-                src={layer.src}
-                alt=""
-                aria-hidden
-                className="h-auto w-full rounded-xs shadow-page"
-              />
-              {layer.handwriting ? (
-                <Handwriting {...layer.handwriting} />
-              ) : null}
-            </div>
-          ))}
-        </div>
+        {feature.layers.map((layer, j) => (
+          <div
+            key={j}
+            className="absolute [container-type:inline-size]"
+            style={{ width: layer.box.w, left: layer.box.x, top: layer.box.y }}
+          >
+            <img
+              src={layer.src}
+              alt=""
+              aria-hidden
+              className="h-auto w-full rounded-xs shadow-page"
+            />
+            {layer.handwriting ? <Handwriting {...layer.handwriting} /> : null}
+          </div>
+        ))}
       </article>
     </Reveal>
   );
 }
-
 
 /** Cada linha cai sobre uma pauta da arte, por isso é posicionada uma a uma. */
 function Handwriting({

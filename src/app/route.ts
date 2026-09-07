@@ -5,7 +5,7 @@ import path from "path";
 // O arquivo original em public/wireframe/wireframe-v2.html NÃO é alterado:
 // apenas injetamos <base href="/wireframe/"> na resposta para que os
 // assets relativos (assets/...) resolvam corretamente a partir de "/".
-export const dynamic = "force-dynamic";
+export const dynamic = "force-static";
 
 export async function GET() {
   const filePath = path.join(

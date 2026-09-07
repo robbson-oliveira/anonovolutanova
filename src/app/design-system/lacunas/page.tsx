@@ -25,6 +25,8 @@ import { BookStage } from "@sections/BookStage";
 import { Quote } from "@sections/Quote";
 
 import { Persona } from "@sections/Persona";
+import { Testimonials } from "@sections/Testimonials";
+import { Offer } from "@sections/Offer";
 import { Closing } from "@sections/Closing";
 import { Explore } from "@sections/Explore";
 import { Liturgical } from "@sections/Liturgical";

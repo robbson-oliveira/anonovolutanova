@@ -27,6 +27,8 @@ import { Quote } from "@sections/Quote";
 import { Persona } from "@sections/Persona";
 import { Closing } from "@sections/Closing";
 import { Explore } from "@sections/Explore";
+import { Hero } from "@sections/Hero";
+import { AboutHeader } from "@sections/About";
 
 
 import { STATS } from "@content/home";
@@ -515,8 +517,47 @@ const GRUPOS: Grupo[] = [
     ],
   },
   {
-    id: "blocos",
+    id: "topo",
     n: "03",
+    titulo: "Blocos do topo da página",
+    descricao:
+      "Primeira dobra e abertura da seção \u201cSobre\u201d, transportadas do wireframe com medição camada a camada em viewport 1440.",
+    itens: [
+      {
+        nome: "Hero (primeira dobra completa)",
+        onde: "Topo da home",
+        falta:
+          "Composição inteira: selo, título de 80px, subtítulo, parágrafo de 540px, botão 425\u00d768, selos, números alinhados pela base e o palco 740\u00d7740 com as duas agendas e o card de preço.",
+        prioridade: "alta",
+        larga: true,
+        demo: (
+          <div className="-mx-6 overflow-hidden">
+            <Hero />
+          </div>
+        ),
+        demoNota:
+          "Ritmo vertical medido no wireframe: coluna a 153px do topo, 3 / 19 / 19 / 29 / 10 / 29px entre as peças. O palco é o mesmo BookStage de /lab/hero-animation.",
+      },
+      {
+        nome: "Cabeçalho da seção \u201cSobre\u201d",
+        onde: "Antes dos 4 cards terracota",
+        falta:
+          "Olho, título de 60px em caixa de 583px, texto de apoio 20/28 e CTA de 600\u00d768 \u2014 com entrada em Reveal de gatilho único.",
+        prioridade: "alta",
+        larga: true,
+        demo: (
+          <div className="rounded-[90px] bg-surface-gold px-6 py-16">
+            <AboutHeader />
+          </div>
+        ),
+        demoNota:
+          "Espaçamentos medidos: 11px abaixo do olho, 23px abaixo do título, 27px acima do botão. Título e apoio alinhados à esquerda dentro da caixa centralizada.",
+      },
+    ],
+  },
+  {
+    id: "blocos",
+    n: "04",
     titulo: "Blocos de conteúdo",
     descricao:
       "Composições recorrentes da home. São reutilizáveis, mas hoje só existem dentro das seções.",
@@ -577,7 +618,7 @@ const GRUPOS: Grupo[] = [
   },
   {
     id: "variacoes",
-    n: "04",
+    n: "05",
     titulo: "Estados e variações",
     descricao:
       "Peças que existem no catálogo, mas só em amostra genérica — sem as variações que o site realmente usa.",
@@ -609,7 +650,7 @@ const GRUPOS: Grupo[] = [
   },
   {
     id: "divergencias",
-    n: "05",
+    n: "06",
     titulo: "Documentado errado (não bate com o site)",
     descricao:
       "Peças que já aparecem no catálogo, mas em versão diferente da que a home realmente usa — quem consulta o catálogo vê algo que não existe no site.",

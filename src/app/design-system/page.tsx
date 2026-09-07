@@ -1,5 +1,3 @@
-import type { Metadata } from "next";
-import Image, { type StaticImageData } from "next/image";
 import {
   Accordion,
   Badge,
@@ -36,32 +34,26 @@ import { SiteHeader } from "@sections/SiteHeader";
 import { Hero } from "@sections/Hero";
 import { SiteFooter } from "@sections/SiteFooter";
 
-import imgAvatarAndrea from "@/public/img/avatar-andrea.jpg";
-import imgAvatarJeje from "@/public/img/avatar-jeje.jpg";
-import imgAvatarRobson from "@/public/img/avatar-robson.jpeg";
-import imgCapaClassica from "@/public/img/capa-classica.png";
-import imgCapaColor from "@/public/img/capa-color.png";
-import imgCapaDupla from "@/public/img/capa-dupla.png";
-import imgCapaSolo from "@/public/img/capa-solo.png";
-import imgInternaAgendaDiaria from "@/public/img/interna-agenda-diaria.png";
-import imgInternaCalendario from "@/public/img/interna-calendario.png";
-import imgInternaCitacao from "@/public/img/interna-citacao.png";
-import imgInternaDatasObra from "@/public/img/interna-datas-obra.png";
-import imgInternaMetasAnuais from "@/public/img/interna-metas-anuais.png";
-import imgInternaOferta from "@/public/img/interna-oferta.png";
-import imgInternaPlanoDeVida from "@/public/img/interna-plano-de-vida.png";
-import imgInternaPropositosMes from "@/public/img/interna-propositos-mes.png";
-import imgInternaVidaOracao from "@/public/img/interna-vida-oracao.png";
-import imgLogo from "@/public/img/logo.png";
-import imgOrnamentoRodape from "@/public/img/ornamento-rodape.png";
-import imgTexturaLiturgica from "@/public/img/textura-liturgica.png";
-import imgTexturaRodape from "@/public/img/textura-rodape.png";
-
-export const metadata: Metadata = {
-  title: "Design System",
-  description:
-    "Os 8 eixos do design system da Agenda Ano Novo, Luta Nova, renderizados a partir dos tokens reais.",
-};
+const imgAvatarAndrea = "/img/avatar-andrea.jpg";
+const imgAvatarJeje = "/img/avatar-jeje.jpg";
+const imgAvatarRobson = "/img/avatar-robson.jpeg";
+const imgCapaClassica = "/img/capa-classica.png";
+const imgCapaColor = "/img/capa-color.png";
+const imgCapaDupla = "/img/capa-dupla.png";
+const imgCapaSolo = "/img/capa-solo.png";
+const imgInternaAgendaDiaria = "/img/interna-agenda-diaria.png";
+const imgInternaCalendario = "/img/interna-calendario.png";
+const imgInternaCitacao = "/img/interna-citacao.png";
+const imgInternaDatasObra = "/img/interna-datas-obra.png";
+const imgInternaMetasAnuais = "/img/interna-metas-anuais.png";
+const imgInternaOferta = "/img/interna-oferta.png";
+const imgInternaPlanoDeVida = "/img/interna-plano-de-vida.png";
+const imgInternaPropositosMes = "/img/interna-propositos-mes.png";
+const imgInternaVidaOracao = "/img/interna-vida-oracao.png";
+const imgLogo = "/img/logo.png";
+const imgOrnamentoRodape = "/img/ornamento-rodape.png";
+const imgTexturaLiturgica = "/img/textura-liturgica.png";
+const imgTexturaRodape = "/img/textura-rodape.png";
 
 /* -----------------------------------------------------------------------------
    Esta página lê os MESMOS tokens que o site. Não é documentação escrita à mão:
@@ -170,7 +162,7 @@ const FONTS = [
    A galeria mostra a arte, não o nome do arquivo: numa lista de `interna-*.png`
    ninguém reconhece qual página é qual. `tall` marca as artes de proporção
    retrato (páginas internas e capas), que ocupam duas faixas no mosaico. */
-type Asset = { src: StaticImageData; role: string; group: string; tall?: boolean };
+type Asset = { src: string; role: string; group: string; tall?: boolean };
 
 const ASSETS: Asset[] = [
   { src: imgCapaSolo, role: "Capa solo", group: "Capas", tall: true },
@@ -648,12 +640,11 @@ export default function DesignSystemPage() {
                   key={a.role}
                   className="mb-4 break-inside-avoid overflow-hidden rounded-xs border border-border bg-surface-plain"
                 >
-                  <Image
+                  <img
                     src={a.src}
                     alt=""
                     aria-hidden
-                    placeholder="blur"
-                    sizes="(min-width: 1024px) 22vw, (min-width: 768px) 30vw, 45vw"
+                    loading="lazy"
                     className="h-auto w-full"
                   />
                   <figcaption className="flex items-baseline justify-between gap-2 px-3 py-2">

@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  ...(process.env.NEXT_EXPORT ? { output: "export" as const, distDir: "dist", images: { unoptimized: true } } : {}),
   images: {
     // Capas e logo são PNG com canal alfa; formatos modernos preservam alfa.
     formats: ["image/avif", "image/webp"],

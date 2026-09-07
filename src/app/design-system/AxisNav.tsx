@@ -85,7 +85,7 @@ export function AxisNav({ axes }: { axes: Axis[] }) {
                 <span
                   aria-hidden
                   className={cn(
-                    "absolute -right-2 top-1/2 h-[0.12em] w-[0.45em] -translate-y-1/2 rounded-sm bg-text-strong transition-opacity [transition-duration:var(--duration-fast)]",
+                    "absolute -bottom-1 left-1/2 h-[0.12em] w-[0.45em] -translate-x-1/2 rounded-sm bg-text-strong transition-opacity [transition-duration:var(--duration-fast)]",
                     isActive ? "opacity-100" : "opacity-0 group-hover:opacity-60",
                   )}
                 />

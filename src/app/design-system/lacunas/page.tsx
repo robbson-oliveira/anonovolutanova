@@ -694,8 +694,8 @@ function Preview({
 export default function DesignSystemLacunasPage() {
   return (
     <>
-      <TopBar sticky={false} />
       <div>
+
         <SiteHeader />
         <main>
           <section className="bg-surface px-6 py-24 md:px-16">

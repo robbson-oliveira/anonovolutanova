@@ -805,7 +805,7 @@ export default function DesignSystemLacunasPage() {
                   </section>
                 ))}
               </div>
-            </Container>
+            </div>
           </section>
         </main>
         <SiteFooter />

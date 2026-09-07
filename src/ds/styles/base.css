@@ -207,6 +207,10 @@
 [data-reveal="pop"] {
   animation-name: ds-reveal-pop;
 }
+[data-reveal="forward"] {
+  animation-name: ds-reveal-forward;
+  animation-duration: 1.15s;
+}
 
 html[data-reveal-ready] [data-reveal] {
   animation-play-state: paused;

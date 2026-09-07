@@ -100,9 +100,7 @@ export const FEATURES: Feature[] = [
     ],
   },
 
-      { src: citacao, box: { w: 276, x: 60, y: 188 }, anim: { variant: "forward" } },
-    ],
-  },
+
 
   {
     muted: "Todo mês",

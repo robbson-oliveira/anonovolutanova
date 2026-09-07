@@ -68,7 +68,7 @@ export const ABOUT = {
 
 export const EXPLORE = {
   eyebrow: "Explore a Agenda",
-  title: "Por dentro: um caminho de santidade, mês a mês e dia após dia",
+  title: "Por dentro: um convite à ação, mês a mês e dia após dia.",
   tabs: [
     "Capa",
     "Propósitos do Mês e Calendário",

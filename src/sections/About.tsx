@@ -1,4 +1,13 @@
-import { Button, Container, Eyebrow, Heading, Reveal, RevealGroup, Text } from "@ds/index";
+import {
+  Button,
+  Container,
+  Eyebrow,
+  Heading,
+  IconSparkle,
+  Reveal,
+  RevealGroup,
+  Text,
+} from "@ds/index";
 import { ABOUT } from "@content/home";
 import { CHECKOUT_URL } from "@content/product";
 const planoDeVida = "/img/interna-plano-de-vida.png";
@@ -134,25 +143,62 @@ export const FEATURES: Feature[] = [
   },
 ];
 
+/**
+ * Cabeçalho da seção "Sobre" — olho, título, apoio e CTA.
+ *
+ * Medidas lidas no wireframe (viewport 1440), relativas ao topo do bloco:
+ *   olho    24px de altura, centralizado (pill 168 × 24)
+ *   título  583px de largura, 60/60, ls -3px, 11px abaixo do olho
+ *   apoio   583px de largura, 20/28, ls -0.2px, 23px abaixo do título
+ *   botão   600 × 68, raio 10, 27px abaixo do apoio
+ * O título e o apoio são alinhados à ESQUERDA dentro da caixa de 583px, e a
+ * caixa é que está centralizada — não é texto centralizado.
+ */
+export function AboutHeader() {
+  return (
+    <RevealGroup className="mx-auto flex w-full max-w-[600px] flex-col items-center">
+      <Reveal variant="up">
+        {/* Olho: ícone 16 + 5px de respiro + rótulo 14/14, caixa de 24px. */}
+        <span className="flex h-6 items-center gap-[5px]">
+          <span aria-hidden className="text-kicker [&_svg]:size-4">
+            <IconSparkle />
+          </span>
+          <Eyebrow>{ABOUT.eyebrow}</Eyebrow>
+        </span>
+      </Reveal>
+
+      <Reveal variant="up" delay={60} className="w-[583px] max-w-full">
+        <Heading as="h2" className="mt-[11px] w-full">
+          {ABOUT.title}
+        </Heading>
+      </Reveal>
+
+      <Reveal variant="up" delay={120} className="w-[583px] max-w-full">
+        <p className="mt-[23px] w-full text-[20px] leading-7 tracking-[-0.2px] text-kicker">
+          {ABOUT.paragraph}
+        </p>
+      </Reveal>
+
+      <Reveal variant="up" delay={180} className="mt-[27px] w-full">
+        <Button
+          href={CHECKOUT_URL}
+          size="lg"
+          shape="block"
+          className="h-[68px] w-[600px] max-w-full"
+          style={{ borderRadius: 10, fontSize: 16, lineHeight: "16px", letterSpacing: "-0.64px", fontWeight: 700 }}
+        >
+          {ABOUT.cta}
+        </Button>
+      </Reveal>
+    </RevealGroup>
+  );
+}
+
 export function About() {
   return (
     <section id="sobre" className="bg-surface-gold px-6 pb-24 pt-24 md:px-16">
       <Container>
-        <Reveal variant="up" className="mx-auto max-w-[720px] text-center">
-          <Eyebrow className="justify-center">{ABOUT.eyebrow}</Eyebrow>
-          <Heading as="h2" className="mt-5">
-            {ABOUT.title}
-          </Heading>
-          <Text className="mx-auto mt-6 max-w-[560px]">{ABOUT.paragraph}</Text>
-          <Button
-            href={CHECKOUT_URL}
-            size="lg"
-            shape="block"
-            className="mt-8 w-full max-w-[600px]"
-          >
-            {ABOUT.cta}
-          </Button>
-        </Reveal>
+        <AboutHeader />
 
         <ul className="mt-20 grid justify-center gap-7 lg:grid-cols-[repeat(2,586px)]">
           {FEATURES.map((feature, i) => (
@@ -163,6 +209,7 @@ export function About() {
     </section>
   );
 }
+
 
 /**
  * Um box da seção "O que a torna especial" — 586 × 600 px, exatamente como no

@@ -27,7 +27,7 @@ import { Quote } from "@sections/Quote";
 import { Persona } from "@sections/Persona";
 import { Closing } from "@sections/Closing";
 import { Explore } from "@sections/Explore";
-import { FEATURES, FeatureCard } from "@sections/About";
+
 
 import { STATS } from "@content/home";
 import { OFFER } from "@content/offer";
@@ -521,23 +521,6 @@ const GRUPOS: Grupo[] = [
     descricao:
       "Composições recorrentes da home. São reutilizáveis, mas hoje só existem dentro das seções.",
     itens: [
-      {
-        nome: "Boxes “O que a torna especial”",
-        onde: "Seção Sobre — O que a torna especial",
-        falta:
-          "Os 4 boxes de destaque com título em duas ênfases e composição de páginas internas sobrepostas (com linhas manuscritas quando houver). Entram com a animação Reveal alternando o lado, na mesma sequência e tamanho do wireframe: grade de 2 colunas.",
-        prioridade: "alta" as Prioridade,
-        larga: true,
-        demo: (
-          <ul className="mx-auto grid justify-center gap-7 lg:grid-cols-[repeat(2,586px)]">
-            {FEATURES.map((feature, i) => (
-              <FeatureCard key={feature.strong} feature={feature} index={i} />
-            ))}
-          </ul>
-        ),
-        demoNota:
-          "Animação de entrada: Reveal alternando esquerda/direita por coluna, com 90ms de atraso na segunda.",
-      },
 
       {
         nome: "Bloco de estatísticas",

@@ -25,10 +25,11 @@ import { BookStage } from "@sections/BookStage";
 import { Faq } from "@sections/Faq";
 import { Quote } from "@sections/Quote";
 import { Persona } from "@sections/Persona";
-import { Offer } from "@sections/Offer";
 import { Closing } from "@sections/Closing";
 import { Explore } from "@sections/Explore";
 import { STATS } from "@content/home";
+import { OFFER } from "@content/offer";
+import { installmentLabel, priceLabel } from "@content/product";
 
 /* -----------------------------------------------------------------------------
    Inventário das peças da home que ainda não têm ficha no catálogo — agora com

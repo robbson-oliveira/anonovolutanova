@@ -6,9 +6,9 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
   plugins: [tsconfigPaths(), tailwindcss(), tanstackStart(), react()],
-  // The published runtime cannot resolve npm packages dynamically. Keep the
-  // React runtime inside the server bundle instead of emitting bare imports.
+  // The published Worker cannot resolve npm packages dynamically. Bundle the
+  // complete SSR dependency graph so React and its renderer remain one copy.
   ssr: {
-    noExternal: ["react", "react-dom", "scheduler"],
+    noExternal: true,
   },
 });

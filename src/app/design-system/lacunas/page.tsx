@@ -22,8 +22,8 @@ import { TopBar } from "@sections/TopBar";
 import { SiteHeader } from "@sections/SiteHeader";
 import { SiteFooter } from "@sections/SiteFooter";
 import { BookStage } from "@sections/BookStage";
-import { Faq } from "@sections/Faq";
 import { Quote } from "@sections/Quote";
+
 import { Persona } from "@sections/Persona";
 import { Closing } from "@sections/Closing";
 import { Explore } from "@sections/Explore";
@@ -529,17 +529,8 @@ const GRUPOS: Grupo[] = [
       "Composições recorrentes da home. São reutilizáveis, mas hoje só existem dentro das seções.",
     itens: [
       {
-        nome: "Bloco de FAQ",
-        onde: "Seção de perguntas",
-        falta:
-          "O acordeão aparece cru no catálogo. Falta a variação real: em cards, numerada e com o primeiro item aberto.",
-        prioridade: "alta",
-        larga: true,
-        demo: <Faq />,
-        demoNota: "Seção real do site.",
-      },
-      {
         nome: "Bloco de estatísticas",
+
         onde: "Hero",
         falta:
           "Números grandes com contagem animada e legenda. O contador está documentado sozinho, o bloco não.",
@@ -630,17 +621,8 @@ const GRUPOS: Grupo[] = [
       "Peças que já aparecem no catálogo, mas em versão diferente da que a home realmente usa — quem consulta o catálogo vê algo que não existe no site.",
     itens: [
       {
-        nome: "Perguntas frequentes (FAQ)",
-        onde: "Seção de perguntas",
-        falta:
-          "No site cada pergunta é um cartão branco separado, com sombra e numeração. No catálogo aparece como lista contínua com fio de divisão, sem fundo branco e sem número — é a versão errada da peça.",
-        prioridade: "alta",
-        larga: true,
-        demo: <Faq />,
-        demoNota: "Versão correta (a do site).",
-      },
-      {
         nome: "Cartões",
+
         onde: "Datas litúrgicas, depoimentos, Sobre, preço",
         falta:
           "O catálogo mostra só a versão em fundo creme. Os cartões do site são brancos (datas, depoimentos) e terracota (Sobre) — nenhuma dessas superfícies aparece.",

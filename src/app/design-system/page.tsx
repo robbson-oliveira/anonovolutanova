@@ -424,13 +424,25 @@ export default function DesignSystemPage() {
                 />
               </Row>
 
-              <Row label="Accordion">
+              <Row label="Accordion" meta="variant cards · numerado">
                 <Accordion
+                  variant="cards"
+                  numbered
                   defaultOpen={0}
                   items={[
                     {
                       question: "A agenda é entregue na minha cidade?",
-                      answer: <p>Sim, enviamos para todo o Brasil.</p>,
+                      answer: (
+                        <p>
+                          Sim! Enviamos para todo o Brasil. Na hora do pedido,
+                          você informa o endereço e nós cuidamos do envio com
+                          todo carinho.
+                        </p>
+                      ),
+                    },
+                    {
+                      question: "Qual é o tamanho e o acabamento da agenda?",
+                      answer: <p>Formato A5, capa dura e espiral wire-o.</p>,
                     },
                     {
                       question: "Como posso pagar?",
@@ -439,6 +451,7 @@ export default function DesignSystemPage() {
                   ]}
                 />
               </Row>
+
 
               <Row label="EditionSelector" last>
                 <EditionSelectorDemo />

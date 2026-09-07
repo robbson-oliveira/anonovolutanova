@@ -5,6 +5,12 @@ type MarqueeProps = {
   /** Espaço entre itens, em px. Vira margem do item, não `gap`. */
   gap?: number;
   className?: string;
+  /** Duração da volta completa, em segundos. Sobrescreve o token padrão. */
+  duration?: number;
+  /** Renderiza máscaras de fade nas laterais. Útil para esteiras curtas. */
+  fade?: boolean;
+  /** Cor base das máscaras de fade. Padrão: a cor de fundo do pai. */
+  fadeColor?: string;
 };
 
 /**
@@ -18,7 +24,14 @@ type MarqueeProps = {
  *
  * A duplicata é `aria-hidden`: o leitor de tela ouve a frase uma vez.
  */
-export function Marquee({ items, gap = 28, className }: MarqueeProps) {
+export function Marquee({
+  items,
+  gap = 28,
+  className,
+  duration,
+  fade = false,
+  fadeColor,
+}: MarqueeProps) {
   const renderRun = (hidden: boolean) =>
     items.map((item, i) => (
       <li
@@ -31,6 +44,10 @@ export function Marquee({ items, gap = 28, className }: MarqueeProps) {
       </li>
     ));
 
+  const animationStyle = duration
+    ? { animationDuration: `${duration}s` }
+    : undefined;
+
   return (
     <div
       className={cn("group relative overflow-hidden", className)}
@@ -42,10 +59,35 @@ export function Marquee({ items, gap = 28, className }: MarqueeProps) {
           "[animation:ds-ticker_var(--duration-ticker)_linear_infinite]",
           "group-hover:[animation-play-state:paused]",
         )}
+        style={animationStyle}
       >
         {renderRun(false)}
         {renderRun(true)}
       </ul>
+
+      {fade && (
+        <>
+          <div
+            className="pointer-events-none absolute inset-y-0 left-0 w-10"
+            style={{
+              backgroundImage: fadeColor
+                ? `linear-gradient(to right, ${fadeColor}, transparent)`
+                : "linear-gradient(to right, var(--color-surface-inverse), transparent)",
+            }}
+            aria-hidden="true"
+          />
+          <div
+            className="pointer-events-none absolute inset-y-0 right-0 w-10"
+            style={{
+              backgroundImage: fadeColor
+                ? `linear-gradient(to left, ${fadeColor}, transparent)`
+                : "linear-gradient(to left, var(--color-surface-inverse), transparent)",
+            }}
+            aria-hidden="true"
+          />
+        </>
+      )}
     </div>
   );
 }
+

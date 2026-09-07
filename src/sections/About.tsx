@@ -179,15 +179,41 @@ export function FeatureCard({
         {feature.layers.map((layer, j) => (
           <div
             key={j}
-            className="absolute [container-type:inline-size]"
+            className="absolute"
             style={{ width: layer.box.w, left: layer.box.x, top: layer.box.y }}
           >
-            <img
-              src={layer.src}
-              alt=""
-              aria-hidden
-              className="h-auto w-full rounded-xs shadow-page"
-            />
+            {layer.src ? (
+              <img
+                src={layer.src}
+                alt=""
+                aria-hidden
+                className="h-auto w-full rounded-xs shadow-page"
+              />
+            ) : null}
+            {layer.wedge ? (
+              <svg
+                aria-hidden
+                width={layer.box.w}
+                height={layer.wedge.h}
+                viewBox={`0 0 ${layer.box.w} ${layer.wedge.h}`}
+                className="block"
+                style={{ opacity: layer.wedge.opacity }}
+              >
+                <defs>
+                  <linearGradient
+                    id={`wedge-${j}`}
+                    x1="0"
+                    x2="1"
+                    y1="0.2196"
+                    y2="0.7804"
+                  >
+                    <stop offset="0" stopColor="#000" stopOpacity="1" />
+                    <stop offset="1" stopColor="#000" stopOpacity="0" />
+                  </linearGradient>
+                </defs>
+                <path d={layer.wedge.path} fill={`url(#wedge-${j})`} />
+              </svg>
+            ) : null}
             {layer.handwriting ? <Handwriting {...layer.handwriting} /> : null}
           </div>
         ))}
@@ -210,11 +236,17 @@ function Handwriting({
         <li
           key={item}
           className="absolute whitespace-nowrap font-script text-text-strong"
-          style={{ top: `${top + i * step}%`, left, fontSize: size }}
+          style={{
+            top: top + i * step,
+            left,
+            fontSize: size,
+            lineHeight: 1,
+          }}
         >
           {item}
         </li>
       ))}
     </ul>
   );
+
 }

@@ -21,7 +21,7 @@ export function Persona() {
       }}
     >
       <RevealGroup>
-        <div style={{ display: "flex", width: 1320, alignItems: "flex-start" }}>
+        <div style={{ display: "flex", width: 1320, alignItems: "flex-start", justifyContent: "space-between" }}>
           <Reveal variant="up">
             <h2
               style={{
@@ -37,7 +37,7 @@ export function Persona() {
               {PERSONA.title}
             </h2>
           </Reveal>
-          <Reveal variant="up" delay={90} style={{ marginLeft: "auto" }}>
+          <Reveal variant="up" delay={90}>
             <p
               style={{
                 width: 458,

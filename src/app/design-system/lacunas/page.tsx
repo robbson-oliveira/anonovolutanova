@@ -27,6 +27,7 @@ import { Quote } from "@sections/Quote";
 import { Persona } from "@sections/Persona";
 import { Closing } from "@sections/Closing";
 import { Explore } from "@sections/Explore";
+import { Liturgical } from "@sections/Liturgical";
 import { Hero } from "@sections/Hero";
 import { AboutHeader } from "@sections/About";
 
@@ -63,6 +64,32 @@ type Grupo = {
 };
 
 /* ---------------------------------- demos --------------------------------- */
+
+/** Mostra um bloco de 1440px dentro da ficha, reduzido sem alterar as medidas. */
+const ESCALA = 0.9431;
+
+function EscalaWireframe({
+  altura,
+  children,
+}: {
+  altura: number;
+  children: ReactNode;
+}) {
+  return (
+    <div
+      className="-mx-6 overflow-hidden"
+      style={{ height: `${Math.round(altura * ESCALA)}px` }}
+    >
+      <div
+        className="w-[1440px] origin-top-left"
+        style={{ transform: `scale(${ESCALA})` }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
 
 function DemoContainerSection() {
   return (

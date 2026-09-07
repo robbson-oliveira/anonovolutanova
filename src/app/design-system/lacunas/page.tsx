@@ -257,7 +257,8 @@ export default function DesignSystemLacunasPage() {
                 </Heading>
                 <Text className="mt-6">
                   Levantamento das peças que já existem na home e nas seções do
-                  site, mas que não têm ficha no catálogo. São{" "}
+                  site e ainda não têm ficha no catálogo — mais as que estão no
+                  catálogo em versão diferente da do site. São{" "}
                   <strong>{TOTAL} itens</strong> pendentes, sendo{" "}
                   <strong>{ALTAS} de prioridade alta</strong>.
                 </Text>

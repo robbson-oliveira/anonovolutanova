@@ -464,6 +464,17 @@ export default function HeroAnimationLab() {
             </p>
           </Panel>
 
+          <Panel title="Peça compartilhada">
+            <p className="text-[11px] leading-snug text-slate-400">
+              O palco aqui é o próprio{" "}
+              <code className="font-mono text-slate-200">BookStage</code> — a
+              mesma peça usada no Hero do site e exibida no catálogo do design
+              system (<code className="font-mono">/design-system/lacunas</code>
+              ). Este laboratório é o pai: quem ajusta, ajusta aqui. Nunca
+              duplicar a animação em outro arquivo.
+            </p>
+          </Panel>
+
           <Panel title="Onde editar">
             {KEYFRAME_SOURCES.map((k) => (
               <div key={k.name} className="text-[11px] leading-snug">

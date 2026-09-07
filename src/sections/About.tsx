@@ -23,6 +23,12 @@ type Layer = {
   src?: string;
   /** Sombra em cunha do wireframe: path SVG desenhado no viewBox da caixa. */
   wedge?: { path: string; h: number; opacity: number };
+  /**
+   * Quando o PNG é uma página inclinada em fundo transparente, a sombra
+   * retangular do CSS aparece como um vinco reto no card. Nesses casos a
+   * sombra real vem da cunha SVG, então a do CSS é desligada.
+   */
+  noShadow?: boolean;
   box: { w: number; x: number; y: number };
   /**
    * Entrada da camada, exatamente como no wireframe: quem anima é cada página

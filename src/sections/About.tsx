@@ -25,6 +25,11 @@ type Layer = {
   wedge?: { path: string; h: number; opacity: number };
   box: { w: number; x: number; y: number };
   /**
+   * Entrada da camada, exatamente como no wireframe: quem anima é cada página
+   * (não o card). Sem `anim`, a camada é estática, como lá.
+   */
+  anim?: { variant: "up" | "left" | "right" | "pop" | "forward"; delay?: number };
+  /**
    * Linhas manuscritas sobre as pautas da página. No design aprovado é o que
    * mostra a agenda em uso — o PNG é a página em branco, a letra é texto por
    * cima. Medidas em px lidas no wireframe, relativas ao canto da CAIXA da

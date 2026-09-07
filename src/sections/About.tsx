@@ -125,48 +125,61 @@ export function About() {
 
         <ul className="mt-20 grid gap-6 lg:grid-cols-2">
           {FEATURES.map((feature, i) => (
-            <Reveal
-              as="li"
-              key={feature.strong}
-              variant={i % 2 === 0 ? "left" : "right"}
-              delay={(i % 2) * 90}
-            >
-              <article className="h-full overflow-hidden rounded-lg bg-surface-warm-card p-10 pb-0 shadow-inset-card">
-                <h3 className="text-center text-[38px] font-bold leading-tight tracking-[-0.04em]">
-                  <span className="ds-title-dim">
-                    {feature.muted}{" "}
-                  </span>
-                  <span className="text-text-on-warm">
-                    {feature.strong}
-                  </span>
-                </h3>
-
-                <div className="relative mt-12 h-[520px]">
-                  {feature.layers.map((layer, j) => (
-                    <div
-                      key={j}
-                      className={`absolute [container-type:inline-size] ${layer.className}`}
-                    >
-                      <img
-                        src={layer.src}
-                        alt=""
-                        aria-hidden
-                        className="h-auto w-full rounded-xs shadow-page"
-                      />
-                      {layer.handwriting ? (
-                        <Handwriting {...layer.handwriting} />
-                      ) : null}
-                    </div>
-                  ))}
-                </div>
-              </article>
-            </Reveal>
+            <FeatureCard key={feature.strong} feature={feature} index={i} />
           ))}
         </ul>
       </Container>
     </section>
   );
 }
+
+/**
+ * Um box da seção "O que a torna especial" — título em duas ênfases e a
+ * composição de páginas. A animação de entrada (Reveal) vem junto: alterna
+ * lado e ganha atraso conforme a coluna. Reutilizado pelo catálogo.
+ */
+export function FeatureCard({
+  feature,
+  index = 0,
+}: {
+  feature: Feature;
+  index?: number;
+}) {
+  return (
+    <Reveal
+      as="li"
+      variant={index % 2 === 0 ? "left" : "right"}
+      delay={(index % 2) * 90}
+    >
+      <article className="h-full overflow-hidden rounded-lg bg-surface-warm-card p-10 pb-0 shadow-inset-card">
+        <h3 className="text-center text-[38px] font-bold leading-tight tracking-[-0.04em]">
+          <span className="ds-title-dim">{feature.muted} </span>
+          <span className="text-text-on-warm">{feature.strong}</span>
+        </h3>
+
+        <div className="relative mt-12 h-[520px]">
+          {feature.layers.map((layer, j) => (
+            <div
+              key={j}
+              className={`absolute [container-type:inline-size] ${layer.className}`}
+            >
+              <img
+                src={layer.src}
+                alt=""
+                aria-hidden
+                className="h-auto w-full rounded-xs shadow-page"
+              />
+              {layer.handwriting ? (
+                <Handwriting {...layer.handwriting} />
+              ) : null}
+            </div>
+          ))}
+        </div>
+      </article>
+    </Reveal>
+  );
+}
+
 
 /** Cada linha cai sobre uma pauta da arte, por isso é posicionada uma a uma. */
 function Handwriting({

@@ -306,6 +306,45 @@ function DemoChecklist() {
 }
 
 /**
+ * Painel externo da seção de oferta, extraído do CSS real do wireframe
+ * (classes .framer-1gvz3z6 / .framer-1h0xv8m / .framer-52glac em
+ * wireframe-v2.html) em vez de estimado por print — o painel aparece cinza
+ * na captura porque o wireframe roda inteiro com filter:grayscale(100%);
+ * a cor real do fundo é #d0d1b1, que já é --brand-sage-300 /
+ * --color-surface-sage no token, a mesma usada em bg-surface-sage no
+ * Offer.tsx real. O que falta no site é a FORMA: no wireframe título +
+ * parágrafo + card de preço ficam dentro de um único painel recuado com
+ * canto arredondado, não um fundo de seção de ponta a ponta.
+ *
+ * border-radius e padding-top são responsivos, valores lidos direto das
+ * media queries do arquivo (não arbitrados):
+ *   >=1200px .......... radius 90px, padding-top 208px
+ *   768-1199px ........ radius 67px, padding-top 180px
+ *   <768px ............. radius 24px, padding-top 78px, + padding lateral 20px
+ * 768px bate com o breakpoint `md` padrão do Tailwind; 1200px não tem
+ * breakpoint padrão equivalente, por isso o arbitrário `min-[1200px]:`.
+ */
+function DemoOfertaPainel() {
+  return (
+    <div
+      className={cn(
+        "bg-surface-sage px-5 pt-[78px] pb-10",
+        "rounded-[24px] md:rounded-[67px] min-[1200px]:rounded-[90px]",
+        "md:px-0 md:pt-[180px] min-[1200px]:pt-[208px]",
+      )}
+    >
+      <Reveal variant="up" className="mx-auto max-w-[720px] text-center">
+        <Heading as="h2">{OFFER.title}</Heading>
+        <Text className="mx-auto mt-5 max-w-[560px]">{OFFER.paragraph}</Text>
+      </Reveal>
+      <div className="mx-auto mt-16 max-w-[800px]">
+        <DemoOferta />
+      </div>
+    </div>
+  );
+}
+
+/**
  * Bloco de oferta fiel ao wireframe: painel claro arredondado, título escuro
  * centralizado, cartão escuro cobrindo as duas imagens inclinadas (capa à
  * esquerda, página interna à direita), caixa interna com selo + preço +
@@ -533,11 +572,12 @@ const GRUPOS: Grupo[] = [
         nome: "Bloco de oferta",
         onde: "Seção de oferta",
         falta:
-          "Palco cinza-claro com as duas peças (capa e página interna) quase encostando nas bordas, e um cartão escuro estreito centralizado por cima: caixa interna com selo e preço, botão claro translúcido, bandeiras de pagamento e checklist. A seção Offer do site diverge disso (fundo sage, título e texto acima, botão laranja, imagens pequenas inclinadas).",
+          "O site já usa a cor certa (bg-surface-sage = #d0d1b1 do wireframe), mas aplica no fundo da seção inteira, de ponta a ponta. No wireframe, título + parágrafo + card de preço ficam dentro de um painel único recuado, com canto arredondado responsivo (90px → 67px → 24px) — o site não tem esse painel. Falta também o cartão escuro estreito sobre as duas imagens inclinadas (capa e página interna), com selo, preço, botão translúcido, bandeiras de pagamento e checklist — hoje o card do site usa botão laranja e proporção diferente.",
         prioridade: "alta",
         larga: true,
-        demo: <DemoOferta />,
-        demoNota: "Montagem fiel ao wireframe, não a seção atual do site.",
+        demo: <DemoOfertaPainel />,
+        demoNota:
+          "Montagem fiel ao wireframe (painel + cartão), valores extraídos do CSS real do arquivo — não da seção atual do site.",
       },
       {
         nome: "Bloco de fechamento",

@@ -43,7 +43,8 @@ export function Hero() {
               <Badge
                 tone="plain"
                 icon={<IconSparkle />}
-                className="h-9 gap-2.5 font-bold text-text"
+                className="h-9 gap-2.5 text-text"
+                style={{ fontWeight: 700 }}
               >
                 {HERO.badge}
               </Badge>
@@ -80,7 +81,8 @@ export function Hero() {
                 href={CHECKOUT_URL}
                 size="lg"
                 shape="block"
-                className="mt-[29px] h-[68px] w-full max-w-[425px] rounded-[10px] text-xs font-bold"
+                className="mt-[29px] h-[68px] w-full max-w-[425px]"
+                style={{ borderRadius: 10, fontSize: 16, lineHeight: "16px", letterSpacing: "-0.64px", fontWeight: 700 }}
               >
                 {HERO.cta}
               </Button>
@@ -93,7 +95,8 @@ export function Hero() {
                     key={seal}
                     tone="plain"
                     icon={<IconSparkle />}
-                    className="h-9 gap-2.5 rounded-[10px] px-2.5 font-bold text-accent"
+                    className="h-9 gap-2.5 px-2.5 text-accent"
+                    style={{ fontWeight: 700, borderRadius: 10 }}
                   >
                     {seal}
                   </Badge>
@@ -102,7 +105,7 @@ export function Hero() {
             </Reveal>
 
             <Reveal variant="up" delay={320}>
-              <dl className="mt-[29px] flex flex-wrap items-end gap-x-[20px] gap-y-6">
+              <dl className="mt-[29px] flex flex-wrap items-center gap-x-[20px] gap-y-6">
                 {STATS.map((stat, i) => (
                   <div
                     key={stat.label}

@@ -160,7 +160,7 @@ export function AboutHeader() {
       <Reveal variant="up">
         {/* Olho: ícone 16 + 5px de respiro + rótulo 14/14, caixa de 24px. */}
         <span className="flex h-6 items-center gap-[5px]">
-          <span aria-hidden className="text-kicker">
+          <span aria-hidden className="text-kicker [&_svg]:size-4">
             <IconSparkle />
           </span>
           <Eyebrow>{ABOUT.eyebrow}</Eyebrow>
@@ -184,7 +184,8 @@ export function AboutHeader() {
           href={CHECKOUT_URL}
           size="lg"
           shape="block"
-          className="h-[68px] w-[600px] max-w-full rounded-[10px] text-xs font-bold"
+          className="h-[68px] w-[600px] max-w-full"
+          style={{ borderRadius: 10, fontSize: 16, lineHeight: "16px", letterSpacing: "-0.64px", fontWeight: 700 }}
         >
           {ABOUT.cta}
         </Button>

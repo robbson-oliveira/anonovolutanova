@@ -35,7 +35,7 @@ export function Hero() {
       <div className="mx-auto w-full max-w-[1316px] px-6 lg:px-0">
         <div className="relative">
           {/* Palco: sangra para fora do container, como no wireframe. */}
-          <div className="absolute left-[590px] top-[-67.5px] hidden lg:block">
+          <div className="absolute left-[600px] top-[-67.5px] hidden lg:block">
             <BookStage />
           </div>
 

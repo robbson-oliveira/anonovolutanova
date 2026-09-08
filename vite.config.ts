@@ -37,6 +37,19 @@ export default defineConfig(({ command }) => ({
     react(),
     stripCreateRequire,
   ],
+  resolve:
+    command === "build"
+      ? {
+          // The serverless runtime has no Node streams renderer; use the edge
+          // build of react-dom/server instead of the Node one.
+          alias: [
+            {
+              find: /^react-dom\/server(\.node)?$/,
+              replacement: "react-dom/server.edge",
+            },
+          ],
+        }
+      : undefined,
   // Production needs a self-contained server bundle. During development,
   // Vite must pre-bundle React's CommonJS entry instead of evaluating it as
   // raw ESM (which would leave the `module` global undefined).

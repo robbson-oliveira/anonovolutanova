@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Style Guide — Agenda 2027</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Yellowtail&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Allura&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* Paleta Principal — Tema Dourado (extraído do PDF: texto e preenchimentos reais) */
+    --dourado-escuro:#967438;   /* número do dia, "tarefas", horários */
+    --dourado-medio:#C09955;    /* subtítulo/lema, dia da semana */
+    --dourado-claro:#E6C67C;    /* fundo de badges de data especial */
+    --dourado-caixa:#F9F6F2;    /* fundo da caixa de tarefas no tema dourado */
+
+    /* Paleta Secundária — Tema Azul Petróleo (extraído do PDF) */
+    --azul-escuro:#134F63;      /* número do dia, título de mês — também cor de marca (capa/abertura) */
+    --azul-medio:#2A7087;       /* subtítulo/lema, "tarefas", dia da semana, horários */
+    --azul-claro:#7595A5;       /* fundo de badges de data especial */
+    --azul-caixa:#EBF3F5;       /* fundo da caixa de tarefas no tema azul */
+
+    /* Neutros */
+    --creme-base:#FAF7F0;       /* fundo geral aproximado (textura aquarela fotográfica) */
+    --cinza-linha:#939598;      /* linha pontilhada de horário — igual nos dois temas */
+    --cinza-texto:#8C8577;
+
+    /* Acentos (reaproveitam os tons médios de cada tema) */
+    --dourado-cta:#C09955;
+    --petroleo-cta:#2A7087;
+
+    /* aliases usados no restante do documento */
+    --dourado-profundo:var(--dourado-escuro);
+    --mostarda:var(--dourado-claro);
+    --aquarela-creme:var(--dourado-caixa);
+    --azul-petroleo:var(--azul-escuro);
+    --azul-aco:var(--azul-claro);
+    --aquarela-azul:var(--azul-caixa);
+    --bege-caixa:var(--dourado-caixa);
+    --bege-linha:var(--cinza-linha);
+    --marinho-texto:#23343D;
+
+    --white:#FFFFFF;
+    --radius:14px;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:#E9E4D8;
+    font-family:'Manrope', ui-sans-serif, system-ui, sans-serif;
+    color:var(--marinho-texto);
+    display:flex;
+    justify-content:center;
+    padding:40px 16px;
+  }
+
+  .page{
+    width:100%;
+    max-width:760px;
+    background:var(--white);
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 20px 60px rgba(35,52,61,0.12);
+  }
+
+  /* Top bar */
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:22px 36px;
+    border-bottom:1px solid #EFEAE0;
+    font-size:14px;
+  }
+  .topbar-left{display:flex;align-items:center;gap:10px;color:var(--cinza-texto);}
+  .logo-badge{
+    width:28px;height:28px;border-radius:8px;
+    background:var(--marinho-texto);
+    display:flex;align-items:center;justify-content:center;
+    font-size:14px;
+  }
+  .crumb-sep{color:#C9C2B3;}
+  .crumb-current{color:var(--marinho-texto);font-weight:600;}
+  .topbar-right{color:var(--cinza-texto);font-size:13px;}
+
+  /* Hero */
+  .hero{
+    padding:44px 36px 34px;
+    background:linear-gradient(180deg,#FBFAF6 0%, var(--white) 100%);
+  }
+  .hero-icon{
+    width:54px;height:54px;border-radius:50%;
+    background:var(--aquarela-azul);
+    display:flex;align-items:center;justify-content:center;
+    font-size:26px;
+    margin-bottom:18px;
+    border:1px solid #E4EEF0;
+  }
+  .hero h1{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:600;
+    font-size:44px;
+    margin:0 0 8px;
+    color:var(--marinho-texto);
+    letter-spacing:0.3px;
+  }
+  .hero p{
+    margin:0;
+    color:var(--cinza-texto);
+    font-size:15px;
+  }
+
+  .accent-bar{
+    height:8px;
+    background:linear-gradient(90deg, var(--dourado-profundo) 0%, var(--mostarda) 35%, var(--azul-aco) 65%, var(--azul-petroleo) 100%);
+  }
+
+  main{
+    background:var(--creme-base);
+    padding:8px 36px 10px;
+  }
+
+  section{ padding:38px 0 6px; }
+  section + section{ border-top:1px solid #EEE7D8; }
+
+  .section-head h2{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:600;
+    font-size:26px;
+    margin:0 0 4px;
+    color:var(--marinho-texto);
+  }
+  .section-head p{
+    margin:0 0 22px;
+    color:var(--cinza-texto);
+    font-size:13.5px;
+  }
+
+  /* Swatch grid */
+  .swatch-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+    margin-bottom:6px;
+  }
+  .swatch-grid.two{grid-template-columns:repeat(2,1fr);}
+
+  .swatch-card{
+    background:var(--white);
+    border:1px solid #E9E2D0;
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .swatch-color{ height:96px; }
+  .swatch-info{ padding:14px 16px 16px; }
+  .swatch-name{ font-weight:600; font-size:14.5px; margin:0 0 3px; }
+  .swatch-hex{
+    font-family:'Manrope', ui-sans-serif, system-ui, sans-serif;
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:0.4px;
+    margin:0 0 8px;
+  }
+  .swatch-desc{ font-size:12.5px; color:var(--cinza-texto); line-height:1.5; margin:0; }
+
+  /* Rótulos de hierarquia tipográfica */
+  .font-tier-label{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:10.5px;
+    font-weight:700;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    padding:3px 10px;
+    border-radius:100px;
+    margin-bottom:16px;
+  }
+  .label-primary{
+    background:#344C24;
+    color:#fff;
+  }
+  .label-support{
+    background:#F9F6F2;
+    border:1.5px solid #C09955;
+    color:#967438;
+  }
+  .font-tier{ margin-bottom:32px; }
+  .font-tier:last-child{ margin-bottom:0; }
+  .font-tier-divider{
+    height:1px;
+    background:#EEE7D8;
+    margin:28px 0;
+  }
+
+  /* Typography section */
+  .type-card{
+    background:var(--white);
+    border:1px solid #E9E2D0;
+    border-radius:var(--radius);
+    padding:32px 32px 28px;
+  }
+  .type-row{ margin-bottom:22px; }
+  .type-row:last-child{ margin-bottom:0; }
+  .type-meta{
+    font-size:11.5px;
+    color:var(--cinza-texto);
+    margin-top:4px;
+    font-family:'Manrope', ui-sans-serif, system-ui, sans-serif;
+  }
+  .t-h1{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:600;
+    font-size:34px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--azul-escuro);
+    margin:0;
+  }
+  .t-h2{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:600;
+    font-style:italic;
+    font-size:22px;
+    color:var(--dourado-medio);
+    margin:0;
+  }
+  .t-h2.blue{ color:var(--azul-medio); }
+  .t-script{
+    font-family:'Allura', cursive;
+    font-size:34px;
+    color:var(--dourado-medio);
+    margin:0;
+  }
+  .t-body{
+    font-family:'Manrope', ui-sans-serif, system-ui, sans-serif;
+    font-size:15px;
+    color:var(--marinho-texto);
+    margin:0;
+  }
+  .t-label{
+    font-family:'Manrope', ui-sans-serif, system-ui, sans-serif;
+    font-size:12px;
+    letter-spacing:0.5px;
+    color:var(--cinza-texto);
+    margin:0;
+  }
+
+  /* Components */
+  .comp-block{
+    background:var(--white);
+    border:1px solid #E9E2D0;
+    border-radius:var(--radius);
+    padding:24px 28px;
+    margin-bottom:18px;
+  }
+  .comp-title{
+    font-size:13px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    color:var(--cinza-texto);
+    margin:0 0 16px;
+  }
+
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:10px 18px;
+    border-radius:8px;
+    font-size:13.5px;
+    font-weight:600;
+    border:none;
+    cursor:default;
+    margin:0 10px 10px 0;
+  }
+  .btn-primary-gold{ background:var(--dourado-profundo); color:#fff; }
+  .btn-primary-blue{ background:var(--azul-petroleo); color:#fff; }
+  .btn-outline{ background:#fff; color:var(--marinho-texto); border:1.5px solid var(--marinho-texto); }
+  .btn-soft{ background:var(--bege-caixa); color:var(--dourado-profundo); }
+
+  .card-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:16px;
+  }
+  .mini-card{
+    border:1px solid #E9E2D0;
+    border-radius:12px;
+    overflow:hidden;
+    background:#fff;
+  }
+  .mini-card-top{ height:70px; }
+  .mini-card-body{ padding:12px 14px 14px; }
+  .mini-card-title{ font-weight:600; font-size:13px; margin:0 0 3px; }
+  .mini-card-sub{ font-size:11.5px; color:var(--cinza-texto); margin:0 0 8px; }
+  .mini-card-tag{ font-size:11px; font-weight:600; }
+
+  .badge-row{ display:flex; flex-wrap:wrap; gap:10px; }
+  .badge{
+    padding:6px 14px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+  }
+  .badge-gold{ background:var(--mostarda); color:#fff; }
+  .badge-blue{ background:var(--azul-aco); color:#fff; }
+  .badge-outline{ background:#fff; border:1.5px solid var(--dourado-profundo); color:var(--dourado-profundo); }
+  .badge-soft{ background:var(--aquarela-azul); color:var(--azul-petroleo); }
+
+  footer{
+    text-align:center;
+    padding:26px 20px 30px;
+    color:var(--cinza-texto);
+    font-size:12px;
+    background:var(--creme-base);
+  }
+  .footer-strip{
+    background:var(--bege-caixa);
+    text-align:center;
+    padding:14px;
+    font-size:12.5px;
+    color:var(--dourado-profundo);
+    font-weight:600;
+    letter-spacing:0.3px;
+  }
+
+  @media (max-width:640px){
+    body{ padding:0; }
+    .page{ border-radius:0; }
+    .topbar{ flex-direction:column; align-items:flex-start; gap:8px; padding:18px 20px; }
+    .hero{ padding:32px 20px 26px; }
+    .hero h1{ font-size:34px; }
+    main{ padding:8px 20px 10px; }
+    .swatch-grid, .swatch-grid.two, .card-grid{ grid-template-columns:1fr; }
+    .type-card{ padding:24px 20px; }
+    .comp-block{ padding:20px; }
+    .t-h1{ font-size:28px; letter-spacing:1px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <span class="logo-badge">🦆</span>
+      Projeto Agenda <span class="crumb-sep">→</span> <span class="crumb-current">Style Guide 2027</span>
+    </div>
+    <div class="topbar-right">Ano Novo, Luta Nova — Patos à Água</div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-icon">🦆</div>
+    <h1>Style Guide</h1>
+    <p>Identidade visual da Agenda 2027 — paleta dourada e azul-petróleo, aquarela e tipografia serifada</p>
+  </div>
+
+  <div class="accent-bar"></div>
+
+  <main>
+
+    <section>
+      <div class="section-head">
+        <h2>Paleta Principal</h2>
+        <p>Tema Dourado — usado nos meses ímpares: janeiro, março, maio, julho, setembro e novembro (cores extraídas diretamente do PDF de arte-final)</p>
+      </div>
+      <div class="swatch-grid">
+        <div class="swatch-card">
+          <div class="swatch-color" style="background:var(--dourado-escuro);"></div>
+          <div class="swatch-info">
+            <p class="swatch-name">Dourado Escuro</p>
+            <p class="swatch-hex" style="color:var(--dourado-escuro);">#967438</p>
+            <p class="swatch-desc">número do dia, "tarefas mais importantes" e horários — cor de texto dominante do tema</p>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-color" style="background:var(--dourado-medio);"></div>
+          <div class="swatch-info">
+            <p class="swatch-name">Dourado Médio</p>
+            <p class="swatch-hex" style="color:var(--dourado-medio);">#C09955</p>
+            <p class="swatch-desc">subtítulo/lema do dia e dia da semana — também a cor do script Allura nas aberturas de mês douradas</p>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-color" style="background:var(--dourado-claro);"></div>
+          <div class="swatch-info">
+            <p class="swatch-name">Dourado Claro</p>
+            <p class="swatch-hex" style="color:var(--dourado-medio);">#E6C67C</p>
+            <p class="swatch-desc">preenchimento sólido das tarjas/badges de data especial (texto em branco)</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>Paleta Secundária</h2>
+        <p>Tema Azul Petróleo — usado nos meses pares: fevereiro, abril, junho, agosto, outubro e dezembro</p>
+      </div>
+      <div class="swatch-grid">
+        <div class="swatch-card">
+          <div class="swatch-color" style="background:var(--azul-escuro);"></div>
+          <div class="swatch-info">
+            <p class="swatch-name">Azul Escuro</p>
+            <p class="swatch-hex" style="color:var(--azul-escuro);">#134F63</p>
+            <p class="swatch-desc">número do dia e título de mês — é também a cor de marca fixa da capa e das páginas de abertura de todos os meses</p>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-color" style="background:var(--azul-medio);"></div>
+          <div class="swatch-info">
+            <p class="swatch-name">Azul Médio</p>
+            <p class="swatch-hex" style="color:var(--azul-medio);">#2A7087</p>
+            <p class="swatch-desc">subtítulo/lema, "tarefas", dia da semana e horários — usado de forma mais ampla que o par dourado</p>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-color" style="background:var(--azul-claro);"></div>
+          <div class="swatch-info">
+            <p class="swatch-name">Azul Claro</p>
+            <p class="swatch-hex" style="color:var(--azul-medio);">#7595A5</p>
+            <p class="swatch-desc">preenchimento sólido das tarjas/badges de data especial (texto em branco)</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>Neutros</h2>
+        <p>Fundos e linhas — comuns aos dois temas, também extraídos dos vetores do PDF</p>
+      </div>
+      <div class="swatch-grid">
+        <div class="swatch-card">
+          <div class="swatch-color" style="background:var(--creme-base); border-bottom:1px solid #eee;"></div>
+          <div class="swatch-info">
+            <p class="swatch-name">Creme Base</p>
+            <p class="swatch-hex" style="color:var(--dourado-escuro);">≈ #FAF7F0</p>
+            <p class="swatch-desc">fundo aquarelado das páginas — aproximação, pois é uma textura fotográfica, não uma cor chapada</p>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-color" style="background:var(--dourado-caixa); border-bottom:1px solid #eee;"></div>
+          <div class="swatch-info">
+            <p class="swatch-name">Caixa de Tarefas — Dourado</p>
+            <p class="swatch-hex" style="color:var(--dourado-escuro);">#F9F6F2</p>
+            <p class="swatch-desc">fundo sólido da caixa "tarefas mais importantes" nas páginas do tema dourado</p>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-color" style="background:var(--azul-caixa); border-bottom:1px solid #eee;"></div>
+          <div class="swatch-info">
+            <p class="swatch-name">Caixa de Tarefas — Azul</p>
+            <p class="swatch-hex" style="color:var(--azul-escuro);">#EBF3F5</p>
+            <p class="swatch-desc">fundo sólido da caixa "tarefas mais importantes" nas páginas do tema azul</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>Neutros de Texto</h2>
+        <p>Hierarquia de leitura nas páginas diárias</p>
+      </div>
+      <div class="swatch-grid two">
+        <div class="swatch-card">
+          <div class="swatch-color" style="background:var(--marinho-texto);"></div>
+          <div class="swatch-info">
+            <p class="swatch-name">Marinho (uso genérico)</p>
+            <p class="swatch-hex" style="color:var(--marinho-texto);">#23343D</p>
+            <p class="swatch-desc">tom neutro escuro de referência para textos gerais fora da grade de horários — a agenda em si usa o Azul Escuro #134F63 como tinta de marca</p>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-color" style="background:var(--cinza-linha);"></div>
+          <div class="swatch-info">
+            <p class="swatch-name">Cinza Linha</p>
+            <p class="swatch-hex" style="color:var(--cinza-texto);">#939598</p>
+            <p class="swatch-desc">linha pontilhada de horário — cinza neutro, idêntico nos dois temas (não acompanha a cor do mês)</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>Acentos</h2>
+        <p>Tons médios de cada tema, reaproveitados como cor de ação (links, ícones, CTAs)</p>
+      </div>
+      <div class="swatch-grid two">
+        <div class="swatch-card">
+          <div class="swatch-color" style="background:var(--dourado-cta);"></div>
+          <div class="swatch-info">
+            <p class="swatch-name">Dourado CTA</p>
+            <p class="swatch-hex" style="color:var(--dourado-cta);">#C09955</p>
+            <p class="swatch-desc">mesmo tom do Dourado Médio, reaproveitado para links e destaques de ação</p>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-color" style="background:var(--petroleo-cta);"></div>
+          <div class="swatch-info">
+            <p class="swatch-name">Petróleo CTA</p>
+            <p class="swatch-hex" style="color:var(--petroleo-cta);">#2A7087</p>
+            <p class="swatch-desc">mesmo tom do Azul Médio, reaproveitado para links e destaques de ação</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>Tipografia</h2>
+        <p>Hierarquia em dois níveis: fontes primárias do site e Instagram, e fontes de apoio da agenda impressa.</p>
+      </div>
+
+      <!-- PRIMÁRIAS -->
+      <div class="type-card" style="margin-bottom:18px;">
+        <div class="font-tier">
+          <span class="font-tier-label label-primary">● Primárias — Site e Instagram</span>
+          <div class="type-row">
+            <p style="font-family:'Manrope',ui-sans-serif,sans-serif;font-size:34px;font-weight:700;letter-spacing:-0.04em;color:var(--marinho-texto);margin:0;">Ano Novo, Luta Nova</p>
+            <p class="type-meta">Manrope Bold 700 — fonte principal de toda a interface: títulos do site, posts do Instagram, botões, selos, números. Pesos usados: 400 · 500 · 600 · 700</p>
+          </div>
+          <div class="type-row">
+            <p style="font-family:'Manrope',ui-sans-serif,sans-serif;font-size:16px;font-weight:400;color:var(--cinza-texto);margin:0;max-width:480px;line-height:1.6;">A santidade se constrói nas pequenas coisas, um dia de cada vez. No trabalho, na família, nos estudos — Deus está nos detalhes do cotidiano.</p>
+            <p class="type-meta">Manrope Regular 400 — corpo de texto em legendas, descrições e copy de Instagram</p>
+          </div>
+        </div>
+
+        <div class="font-tier-divider"></div>
+
+        <div class="font-tier">
+          <span class="font-tier-label label-primary">● Primárias — Site e Instagram</span>
+          <div class="type-row">
+            <p style="font-family:'Yellowtail',cursive;font-size:34px;color:var(--dourado-medio);margin:0;">Contemplar o Rosário às 16h</p>
+            <p class="type-meta">Yellowtail Regular — manuscrita decorativa do site. Simula a caligrafia de quem já preencheu a agenda; aparece nos mockups de páginas internas e em posts que mostram a agenda preenchida. Peso único: 400</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- DE APOIO -->
+      <div class="type-card">
+        <div class="font-tier">
+          <span class="font-tier-label label-support">◆ De Apoio — Agenda Impressa</span>
+          <div class="type-row">
+            <p class="t-h1">Título de Mês (H1)</p>
+            <p class="type-meta">Cormorant Garamond SemiBold, versalete — nas páginas diárias usa a cor do tema (Dourado Escuro #967438 ou Azul Escuro #134F63); na capa e nas páginas de abertura de mês é sempre Azul Escuro #134F63, mesmo nos meses dourados</p>
+          </div>
+          <div class="type-row">
+            <p class="t-h2">Dar o primeiro passo (H2)</p>
+            <p class="type-meta">Cormorant Garamond SemiBold Italic — subtítulo/lema do dia, na cor média do tema (Dourado Médio #C09955 ou Azul Médio #2A7087)</p>
+          </div>
+          <div class="type-row">
+            <p class="t-script">Servir sem calcular</p>
+            <p class="type-meta">Allura Regular — script decorativo, usado apenas no lema das páginas de abertura de mês, na cor média do tema vigente. (Atenção: "Ano Novo, Luta Nova" na capa NÃO é Allura — é Cormorant Garamond Regular, em Azul Escuro #134F63)</p>
+          </div>
+          <div class="type-row">
+            <p class="t-body">Tarefas mais importantes do dia. Texto corrido usado em blocos de anotação e conteúdo geral.</p>
+            <p class="type-meta">Optima LT Std DemiBold (fonte real do PDF, licenciada — não disponível em Google Fonts). Cor: tom escuro/médio do tema conforme o contexto</p>
+          </div>
+          <div class="type-row">
+            <p class="t-label">QUARTA-FEIRA · 8H · 9H · 10H</p>
+            <p class="type-meta">Optima LT Std DemiBold Italic — dia da semana e horários, letter-spacing aberto, tom médio do tema</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>Exemplos de Componentes</h2>
+        <p>Aplicação prática das cores em elementos da agenda</p>
+      </div>
+
+      <div class="comp-block">
+        <p class="comp-title">Botões</p>
+        <button class="btn btn-primary-gold">Tema Dourado</button>
+        <button class="btn btn-primary-blue">Tema Azul</button>
+        <button class="btn btn-outline">Outline</button>
+        <button class="btn btn-soft">Suave</button>
+      </div>
+
+      <div class="comp-block">
+        <p class="comp-title">Cartões de Página</p>
+        <div class="card-grid">
+          <div class="mini-card">
+            <div class="mini-card-top" style="background:var(--aquarela-creme);"></div>
+            <div class="mini-card-body">
+              <p class="mini-card-title">6 Janeiro</p>
+              <p class="mini-card-sub">Dar o primeiro passo</p>
+              <p class="mini-card-tag" style="color:var(--dourado-profundo);">● Tema Dourado</p>
+            </div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-top" style="background:var(--aquarela-azul);"></div>
+            <div class="mini-card-body">
+              <p class="mini-card-title">5 Fevereiro</p>
+              <p class="mini-card-sub">Confiar mais, controlar menos</p>
+              <p class="mini-card-tag" style="color:var(--azul-petroleo);">● Tema Azul</p>
+            </div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-top" style="background:var(--creme-base); border-bottom:1px solid #eee;"></div>
+            <div class="mini-card-body">
+              <p class="mini-card-title">Anotações</p>
+              <p class="mini-card-sub">Página neutra de bloco de notas</p>
+              <p class="mini-card-tag" style="color:var(--cinza-texto);">● Neutro</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="comp-block">
+        <p class="comp-title">Badges & Tarjas</p>
+        <div class="badge-row">
+          <span class="badge badge-gold">Tempo de Natal</span>
+          <span class="badge badge-blue">Santa Águeda, virgem e mártir</span>
+          <span class="badge badge-outline">Oitava da Páscoa</span>
+          <span class="badge badge-soft">Dia dos Pais</span>
+        </div>
+      </div>
+
+      <div class="comp-block">
+        <p class="comp-title">Página de Abertura de Mês</p>
+        <div class="card-grid" style="grid-template-columns:repeat(2,1fr);">
+          <div class="mini-card">
+            <div class="mini-card-top" style="background:var(--dourado-caixa); height:110px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+              <p style="font-family:'Cormorant Garamond',serif; font-weight:600; letter-spacing:3px; color:var(--azul-escuro); margin:0; font-size:15px;">SETEMBRO</p>
+              <p style="font-family:'Allura',cursive; color:var(--dourado-medio); margin:4px 0 0; font-size:19px;">Servir sem calcular</p>
+            </div>
+            <div class="mini-card-body">
+              <p class="mini-card-sub" style="margin:0;">título sempre em Azul Escuro #134F63 (mesmo em mês dourado) · subtítulo script na cor média do tema · ilustração exclusiva do mês</p>
+            </div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-top" style="background:var(--azul-caixa); height:110px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+              <p style="font-family:'Cormorant Garamond',serif; font-weight:600; letter-spacing:3px; color:var(--azul-escuro); margin:0; font-size:15px;">FEVEREIRO</p>
+              <p style="font-family:'Allura',cursive; color:var(--azul-medio); margin:4px 0 0; font-size:19px;">Confiar mais, controlar menos</p>
+            </div>
+            <div class="mini-card-body">
+              <p class="mini-card-sub" style="margin:0;">mesma estrutura — só o subtítulo muda para o tom médio do tema · ilustração diferente a cada mês</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="comp-block">
+        <p class="comp-title">Página de Propósito do Mês</p>
+        <div class="mini-card" style="max-width:340px;">
+          <div class="mini-card-top" style="background:var(--dourado-caixa); height:60px;"></div>
+          <div class="mini-card-body">
+            <p class="mini-card-title" style="font-style:italic; font-family:'Cormorant Garamond',serif; font-size:15px;">Servir sem calcular</p>
+            <p class="mini-card-sub">breve texto reflexivo (2–4 linhas curtas) seguido de uma caixa "Propósito do Mês" com linhas em branco para o leitor preencher</p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>Observações de Produção</h2>
+        <p>Detalhes de diagramação identificados no PDF de arte-final, importantes para manter a consistência</p>
+      </div>
+      <div class="type-card" style="padding:24px 28px;">
+        <p class="t-body" style="margin-bottom:14px;"><strong>Espelhamento de página par/ímpar:</strong> nas páginas diárias, o cabeçalho se inverte conforme a posição na lombada — páginas pares trazem o número do dia à esquerda e o mês à direita; páginas ímpares invertem, com o mês à esquerda e o número à direita (número sempre voltado para a borda externa da folha).</p>
+        <p class="t-body" style="margin-bottom:14px;"><strong>Variante compacta (semana do Natal):</strong> nos dias 25 e 26/12 dois dias dividem a mesma página, com grade de horário reduzida (8h–12h) e badge de duas linhas — layout mais enxuto para a semana de festas.</p>
+        <p class="t-body" style="margin:0;"><strong>QR code:</strong> aparece pontualmente em datas específicas (ex.: Oitavário pela Unidade dos Cristãos), sempre na cor do tema do mês, alinhado à direita da grade de horários.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="footer-strip">Style Guide · Agenda 2027 · Patos à Água</div>
+  <footer>© 2027 Projeto Agenda — Guia de Identidade Visual</footer>
+
+</div>
+</body>
+</html>

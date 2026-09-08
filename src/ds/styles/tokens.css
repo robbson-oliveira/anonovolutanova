@@ -116,8 +116,8 @@
   --text-h2--letter-spacing: -0.05em;
   --text-h2--font-weight: 700;
 
-  /* Subtítulo do hero: 30px / lh 1.0 / ls -1.2px */
-  --text-h3: clamp(22px, 2.1vw, 30px);
+  /* Subtítulo do hero: 26px / lh 1.0 / ls -1.04px */
+  --text-h3: clamp(22px, 2.1vw, 26px);
   --text-h3--line-height: 1;
   --text-h3--letter-spacing: -0.04em;
   --text-h3--font-weight: 700;

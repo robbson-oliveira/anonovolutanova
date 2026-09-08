@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DesignSystemRouteImport } from './routes/design-system'
+import { Route as StyleGuideRouteImport } from './routes/style-guide'
 import { Route as DesignSystemIndexRouteImport } from './routes/design-system.index'
 import { Route as DesignSystemLacunasRouteImport } from './routes/design-system.lacunas'
 import { Route as LabHeroAnimationRouteImport } from './routes/lab.hero-animation'
@@ -23,6 +24,11 @@ const IndexRoute = IndexRouteImport.update({
 const DesignSystemRoute = DesignSystemRouteImport.update({
   id: '/design-system',
   path: '/design-system',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StyleGuideRoute = StyleGuideRouteImport.update({
+  id: '/style-guide',
+  path: '/style-guide',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DesignSystemIndexRoute = DesignSystemIndexRouteImport.update({
@@ -44,12 +50,14 @@ const LabHeroAnimationRoute = LabHeroAnimationRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/design-system': typeof DesignSystemRouteWithChildren
+  '/style-guide': typeof StyleGuideRoute
   '/design-system/lacunas': typeof DesignSystemLacunasRoute
   '/lab/hero-animation': typeof LabHeroAnimationRoute
   '/design-system/': typeof DesignSystemIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/style-guide': typeof StyleGuideRoute
   '/design-system/lacunas': typeof DesignSystemLacunasRoute
   '/lab/hero-animation': typeof LabHeroAnimationRoute
   '/design-system': typeof DesignSystemIndexRoute
@@ -58,6 +66,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/design-system': typeof DesignSystemRouteWithChildren
+  '/style-guide': typeof StyleGuideRoute
   '/design-system/lacunas': typeof DesignSystemLacunasRoute
   '/lab/hero-animation': typeof LabHeroAnimationRoute
   '/design-system/': typeof DesignSystemIndexRoute
@@ -67,15 +76,22 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/design-system'
+    | '/style-guide'
     | '/design-system/lacunas'
     | '/lab/hero-animation'
     | '/design-system/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/design-system/lacunas' | '/lab/hero-animation' | '/design-system'
+  to:
+    | '/'
+    | '/style-guide'
+    | '/design-system/lacunas'
+    | '/lab/hero-animation'
+    | '/design-system'
   id:
     | '__root__'
     | '/'
     | '/design-system'
+    | '/style-guide'
     | '/design-system/lacunas'
     | '/lab/hero-animation'
     | '/design-system/'
@@ -84,6 +100,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DesignSystemRoute: typeof DesignSystemRouteWithChildren
+  StyleGuideRoute: typeof StyleGuideRoute
   LabHeroAnimationRoute: typeof LabHeroAnimationRoute
 }
 
@@ -101,6 +118,13 @@ declare module '@tanstack/react-router' {
       path: '/design-system'
       fullPath: '/design-system'
       preLoaderRoute: typeof DesignSystemRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/style-guide': {
+      id: '/style-guide'
+      path: '/style-guide'
+      fullPath: '/style-guide'
+      preLoaderRoute: typeof StyleGuideRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/design-system/': {
@@ -144,6 +168,7 @@ const DesignSystemRouteWithChildren = DesignSystemRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DesignSystemRoute: DesignSystemRouteWithChildren,
+  StyleGuideRoute: StyleGuideRoute,
   LabHeroAnimationRoute: LabHeroAnimationRoute,
 }
 export const routeTree = rootRouteImport

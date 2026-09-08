@@ -10,4 +10,15 @@ export default defineConfig(({ command }) => ({
   // Vite must pre-bundle React's CommonJS entry instead of evaluating it as
   // raw ESM (which would leave the `module` global undefined).
   ssr: command === "build" ? { noExternal: true } : undefined,
+  environments:
+    command === "build"
+      ? {
+          ssr: {
+            // Bundled CommonJS interop calls createRequire(import.meta.url),
+            // which is undefined in the serverless runtime and throws before
+            // any page renders. Give it a static, valid file URL.
+            define: { "import.meta.url": JSON.stringify("file:///server.js") },
+          },
+        }
+      : undefined,
 }));

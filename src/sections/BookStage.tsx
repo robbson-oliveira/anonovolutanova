@@ -98,7 +98,7 @@ function PriceCard({ thumbSrc }: { thumbSrc: CoverSrc }) {
   return (
     <div
       data-motion="hero-card"
-      className="pointer-events-auto absolute left-[30%] top-[58.3%] z-10 flex h-[119px] w-[191px] flex-col items-center justify-start gap-[3px] rounded-md bg-surface p-2.5 [animation:ds-pop-in_0.6s_var(--ease-overshoot)_2.1s_both] [box-shadow:0_4px_4px_rgb(0_0_0/0.1)]"
+      className="pointer-events-auto absolute left-[30%] top-[57%] z-10 flex h-[119px] w-[191px] flex-col items-center justify-start gap-[3px] rounded-md bg-surface p-2.5 [animation:ds-pop-in_0.6s_var(--ease-overshoot)_2.1s_both] [box-shadow:0_4px_4px_rgb(0_0_0/0.1)]"
     >
       <div className="flex items-center">
         {/* Slot de 45px: no wireframe a miniatura transborda um pouco a

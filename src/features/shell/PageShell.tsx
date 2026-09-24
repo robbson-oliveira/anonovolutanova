@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Button, Container, IconArrowRight, Text } from "@ds/index";
 import { FOOTER } from "@content/home";
 import { CHECKOUT_URL, PRODUCT_NAME } from "@content/product";
+import { CartButton } from "@/features/cart/CartButton";
 
 const logo = "/img/logo.png";
 
@@ -15,7 +16,7 @@ const FOOTER_LINKS = [
 
 type PageShellProps = {
   children: React.ReactNode;
-  /** Esconde o botão "Comprar" do topo — na própria página de compra. */
+  /** Esconde o botão "Comprar" do topo — na página de compra e no checkout. */
   hideBuyButton?: boolean;
 };
 
@@ -36,12 +37,15 @@ export function PageShell({ children, hideBuyButton = false }: PageShellProps) {
           <a href="/" className="flex shrink-0 items-center" aria-label="Página inicial">
             <Image src={logo} alt={PRODUCT_NAME} width={1086} height={1448} sizes="42px" preload className="block h-14 w-auto" />
           </a>
-          {hideBuyButton ? null : (
-            <Button href={CHECKOUT_URL} size="md" shape="block">
-              Comprar
-              <IconArrowRight />
-            </Button>
-          )}
+          <div className="flex items-center gap-3">
+            <CartButton />
+            {hideBuyButton ? null : (
+              <Button href={CHECKOUT_URL} size="md" shape="block">
+                Comprar
+                <IconArrowRight />
+              </Button>
+            )}
+          </div>
         </Container>
       </header>
 

@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
   Badge,
   Button,
@@ -15,7 +16,9 @@ import {
   cn,
 } from "@ds/index";
 import { whatsappUrlWith, type EditionId } from "@content/product";
-import { formatBRL, type ProductOffer } from "@/lib/commerce/offer";
+import type { ProductOffer } from "@/lib/commerce/offer-types";
+import { formatBRL } from "@/lib/format";
+import { useOptionalCart } from "@/features/cart/CartProvider";
 
 /** Acima disso é revenda: o atendimento é pelo WhatsApp (B2B a partir de 50). */
 const MAX_QTY = 49;
@@ -36,9 +39,13 @@ export function PurchasePanel({ offer, initialEdition }: PurchasePanelProps) {
   const [qty, setQty] = useState(1);
   const groupName = useId();
 
+  const cart = useOptionalCart();
+  const router = useRouter();
+
   const edition = offer.editions.find((e) => e.id === editionId)!;
   const total = offer.price * qty;
-  const missingForFreeShipping = Math.max(0, offer.freeShippingMinQty - qty);
+  // O que já está no carrinho conta para o frete grátis.
+  const missingForFreeShipping = Math.max(0, offer.freeShippingMinQty - qty - (cart?.count ?? 0));
   const soldOut = offer.editions.every((e) => !e.inStock);
 
   const changeQty = (next: number) =>
@@ -113,6 +120,7 @@ export function PurchasePanel({ offer, initialEdition }: PurchasePanelProps) {
                     type="radio"
                     name={groupName}
                     value={e.id}
+                    aria-label={e.label}
                     checked={active}
                     disabled={!e.inStock}
                     onChange={() => setEditionId(e.id)}
@@ -206,17 +214,43 @@ export function PurchasePanel({ offer, initialEdition }: PurchasePanelProps) {
           </Text>
         </div>
 
-        {/* CTA — enquanto o checkout headless não entra (Fase 4), o pedido é pelo WhatsApp. */}
+        {/* CTA — com o checkout desligado (NEXT_PUBLIC_CHECKOUT_ENABLED) ou sem o
+            produto 2027 configurado, o pedido segue pelo WhatsApp. */}
         <div className="flex flex-col gap-3">
           {soldOut ? (
             <Button href={whatsappUrlWith(`Olá! Quero entrar na lista de espera da ${offer.name}.`)} size="lg" shape="block" target="_blank" rel="noopener">
               Entrar na lista de espera
             </Button>
-          ) : offer.checkoutEnabled ? (
-            <Button size="lg" shape="block" type="button">
-              Continuar para o pagamento
-              <IconArrowRight />
-            </Button>
+          ) : offer.checkoutEnabled && cart && edition.variationId ? (
+            <>
+              <Button
+                size="lg"
+                shape="block"
+                type="button"
+                disabled={cart.busy || !edition.inStock}
+                onClick={async () => {
+                  if (await cart.add(edition.variationId!, qty)) router.push("/checkout");
+                }}
+              >
+                {cart.busy ? "Adicionando…" : "Garantir minha agenda"}
+                <IconArrowRight />
+              </Button>
+              <button
+                type="button"
+                disabled={cart.busy || !edition.inStock}
+                onClick={async () => {
+                  if (await cart.add(edition.variationId!, qty)) cart.openDrawer();
+                }}
+                className="cursor-pointer text-sm font-semibold text-action underline-offset-4 hover:underline disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Adicionar ao carrinho e escolher a outra edição
+              </button>
+              {cart.error ? (
+                <Text size="xs" tone="accent" role="alert" className="text-center">
+                  {cart.error}
+                </Text>
+              ) : null}
+            </>
           ) : (
             <>
               <Button href={whatsappUrlWith(orderMessage)} size="lg" shape="block" target="_blank" rel="noopener">

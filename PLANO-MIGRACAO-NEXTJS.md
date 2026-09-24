@@ -284,6 +284,32 @@ A home em React (`old/app-root/page.tsx`, com as 13 seções de `src/sections/`)
 
 ### Fase 4 — Carrinho e checkout no Next
 
+> **✅ Feita em 24/09/2026**, ainda sem commit.
+>
+> **O que existe:**
+> - Carrinho com Cart-Token (`src/lib/commerce/store-api.ts`, `src/features/cart/`), com gaveta, botão no cabeçalho e cupom sempre visível.
+> - `/comprar` lendo preço, estoque e variações do WooCommerce (`ANLN_PRODUCT_ID`).
+> - Checkout de 3 passos (`src/features/checkout/`), com CEP pelo ViaCEP e frete da Store API.
+> - Pagamento plugável: `src/lib/payments/`, com o Asaas completo e o Mercado Pago só com Pix por enquanto.
+> - `/checkout/obrigado`, que mostra o QR do Pix e se atualiza sozinha até o pagamento cair.
+>
+> **Desligado por padrão:** sem `NEXT_PUBLIC_CHECKOUT_ENABLED=true` e `ANLN_PRODUCT_ID`, o `/comprar` continua terminando no WhatsApp. Ligar é passo da virada (Fase 7).
+>
+> **Testado de ponta a ponta contra um servidor falso** da Store API e do plugin, que imita as respostas reais, o `Cart-Token` e o CORS:
+> - adicionar ao carrinho, cupom inválido e válido;
+> - frete grátis ao chegar em 4 unidades, CEP preenchido pelo ViaCEP de verdade;
+> - validação de cada etapa e formulário restaurado depois de recarregar a página;
+> - cartão recusado (o erro aparece e dá para tentar de novo);
+> - Pix com QR, a página confirmando sozinha e parando de consultar;
+> - celular sem rolagem horizontal.
+>
+> O pedido chega ao servidor no formato que o `anln-storefront-bridge` espera. **Falta o teste real, contra o WordPress de homologação** com o plugin e o gateway em sandbox (Fase 3, item 4).
+>
+> **Ficou para a Fase 5:**
+> - atribuição do pedido (UTMs);
+> - link `?cupom=`;
+> - eventos de e-commerce no `dataLayer`.
+
 **Estrutura sugerida**, seguindo as convenções do storefront e o DS daqui:
 
 ```

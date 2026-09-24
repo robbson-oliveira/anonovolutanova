@@ -19,4 +19,10 @@ export const publicEnv = {
   siteUrl: trimSlash(
     process.env.NEXT_PUBLIC_SITE_URL || "https://anonovolutanova.com.br",
   ),
+  /**
+   * Liga o carrinho e o checkout headless. Fica desligado até a virada
+   * (Fase 7): antes disso /comprar termina no pedido pelo WhatsApp mesmo com o
+   * produto configurado. Só vale com ANLN_PRODUCT_ID definido no servidor.
+   */
+  checkoutEnabled: process.env.NEXT_PUBLIC_CHECKOUT_ENABLED === "true",
 } as const;

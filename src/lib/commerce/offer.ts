@@ -1,3 +1,5 @@
+import "server-only";
+
 import {
   CYCLE_YEAR,
   EDITIONS,
@@ -6,39 +8,37 @@ import {
   PRODUCT_NAME,
   type EditionId,
 } from "@content/product";
+import { publicEnv } from "@/lib/env";
+import { serverEnv } from "@/lib/env.server";
+import { editionFromAttribute } from "./editions";
+import type { ProductOffer } from "./offer-types";
+
+export type { EditionOffer, ProductOffer } from "./offer-types";
 
 /**
- * O que a página de compra precisa saber sobre a oferta.
+ * A oferta da página de compra: preço, parcelas e, por edição, estoque e o id
+ * da variação no WooCommerce.
  *
- * Hoje sai de `src/content/product.ts`. Na Fase 4 (ver
- * PLANO-MIGRACAO-NEXTJS.md) passa a sair do produto variável 2027 no
- * WooCommerce — preço, estoque e o id de cada variação —, e só esta função
- * muda: a página e o painel de compra já consomem este formato.
+ * Com `ANLN_PRODUCT_ID` definido, lê o produto variável 2027 pela Store API
+ * (revalida a cada minuto: o estoque é limitado de verdade). Sem ele, ou se o
+ * WordPress não responder, usa `src/content/product.ts` — e aí não há como
+ * vender pelo site, então `checkoutEnabled` fica falso e a página cai no
+ * pedido pelo WhatsApp.
  */
-export type EditionOffer = {
-  id: EditionId;
-  label: string;
-  cover: string;
-  /** Dimensões intrínsecas do arquivo, para o next/image reservar o espaço. */
-  coverSize: { width: number; height: number };
-  description: string;
-  inStock: boolean;
-  /** Id da variação no WooCommerce. Nulo até o produto 2027 existir. */
-  variationId: number | null;
-};
-
-export type ProductOffer = {
-  name: string;
-  year: number;
-  price: number;
-  installments: { count: number; amount: number };
-  freeShippingMinQty: number;
-  editions: EditionOffer[];
-  /** Carrinho e checkout headless no ar? Até a Fase 4, não. */
-  checkoutEnabled: boolean;
-};
-
 export async function getProductOffer(): Promise<ProductOffer> {
+  const fallback = staticOffer();
+  const productId = serverEnv.productId;
+  if (!productId) return fallback;
+
+  try {
+    const fromStore = await storeOffer(productId);
+    return fromStore ?? fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function staticOffer(): ProductOffer {
   return {
     name: PRODUCT_NAME,
     year: CYCLE_YEAR,
@@ -58,6 +58,65 @@ export async function getProductOffer(): Promise<ProductOffer> {
   };
 }
 
-const BRL = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+type StoreProduct = {
+  id: number;
+  name: string;
+  is_in_stock: boolean;
+  prices: { price: string; currency_minor_unit: number };
+  variations?: Array<{ id: number; attributes: Array<{ name: string; value: string }> }>;
+};
 
-export const formatBRL = (value: number) => BRL.format(value);
+async function storeOffer(productId: number): Promise<ProductOffer | null> {
+  const base = `${publicEnv.wpUrl}/wp-json/wc/store/v1/products`;
+  const init = { next: { revalidate: 60 }, signal: AbortSignal.timeout(10_000) } as const;
+
+  const parentRes = await fetch(`${base}/${productId}`, init);
+  if (!parentRes.ok) return null;
+  const parent = (await parentRes.json()) as StoreProduct;
+
+  const variationIds = (parent.variations ?? []).map((v) => v.id);
+  if (!variationIds.length) return null;
+
+  // Estoque e preço de cada variação (a resposta do pai não traz por variação).
+  const variations = await Promise.all(
+    variationIds.map(async (id) => {
+      const res = await fetch(`${base}/${id}`, init);
+      return res.ok ? ((await res.json()) as StoreProduct) : null;
+    }),
+  );
+
+  const byEdition = new Map<EditionId, { variationId: number; inStock: boolean; price: number }>();
+  for (const v of parent.variations ?? []) {
+    const edition = v.attributes.map((a) => editionFromAttribute(a.value)).find(Boolean) ?? null;
+    const detail = variations.find((d) => d?.id === v.id);
+    if (!edition || !detail) continue;
+    byEdition.set(edition, {
+      variationId: v.id,
+      inStock: detail.is_in_stock,
+      price: Number(detail.prices.price) / 10 ** detail.prices.currency_minor_unit,
+    });
+  }
+
+  // Sem as duas edições mapeadas, o produto no WooCommerce não está como o
+  // site espera: melhor não vender do que vender a edição errada.
+  if (EDITIONS.some((e) => !byEdition.has(e.id))) return null;
+
+  const fallback = staticOffer();
+  const price = Math.min(...[...byEdition.values()].map((e) => e.price));
+  const installmentCount = fallback.installments.count;
+
+  return {
+    ...fallback,
+    price,
+    installments: {
+      count: installmentCount,
+      amount: Math.round((price / installmentCount) * 100) / 100,
+    },
+    editions: fallback.editions.map((e) => {
+      const live = byEdition.get(e.id)!;
+      return { ...e, inStock: live.inStock, variationId: live.variationId };
+    }),
+    checkoutEnabled: publicEnv.checkoutEnabled,
+  };
+}
+

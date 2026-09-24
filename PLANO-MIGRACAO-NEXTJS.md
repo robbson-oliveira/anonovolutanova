@@ -205,6 +205,30 @@ A home em React (`old/app-root/page.tsx`, com as 13 seções de `src/sections/`)
 
 ### Fase 3 — Backend WooCommerce preparado para headless
 
+> **🟡 Parte de código feita em 24/09/2026.** O plugin `anln-storefront-bridge` 0.1.0 está em `Desktop\anln-storefront-bridge`, com repositório git próprio e ainda sem commit.
+> - Gera um zip de 44 KB e não depende de Composer.
+> - 23 testes de lógica passam.
+> - Detalhes no `README.md` do plugin.
+>
+> **Descoberto ao ler o código do `woo-asaas` 2.7.7.** O plugin não tem suporte ao checkout de blocos e quebra em dois pontos quando o pedido vem da Store API:
+>
+> - **Cliente no Asaas:** é criado num gancho do checkout clássico que a Store API não dispara. Um pedido de visitante sairia sem cliente.
+> - **Dados do cartão e parcelas:** são lidos com `filter_input( INPUT_POST )`. A Store API manda JSON, então chegariam vazios.
+>
+> O plugin cobre os dois (`AsaasStoreApiCompat`) e lê o Pix da meta `__ASAAS_ORDER`, com `encodedImage`, `payload` e `expirationDate`. **Nada disso rodou contra o Asaas ainda:** é o que o teste em sandbox (item 4) precisa confirmar.
+>
+> **Para D3:** o Mercado Pago tem checkout de blocos oficial e tokeniza o cartão no navegador. Depende menos de adaptação. O Asaas funciona com a camada de compatibilidade, mas ela depende de detalhes internos do plugin, e cada atualização do `woo-asaas` pede repetir o roteiro de sandbox.
+>
+> **Também entrou no plugin:**
+> - O frete grátis por quantidade (item 2, opção 2), configurável no painel, com padrão de 4 unidades.
+> - O desconto do Pix, configurável no próprio plugin.
+>
+> **Falta, e depende de acesso ao WordPress:**
+> - Criar o produto 2027 (item 1).
+> - Configurar o método "Frete grátis" na zona de entrega.
+> - Subir o WordPress de homologação com os dois gateways em sandbox e rodar o roteiro do README do plugin (item 4).
+> - Configurar os webhooks (item 5).
+
 **No WordPress:**
 
 1. **Produto 2027:** produto **variável** "Agenda Ano Novo, Luta Nova 2027", com atributo *Edição* (Color | Clássica), R$ 109,90, **estoque por variação** (a escassez é real) e SKU por edição.
@@ -218,13 +242,13 @@ A home em React (`old/app-root/page.tsx`, com as 13 seções de `src/sections/`)
    | O quê | Camila | Ano Novo, Luta Nova |
    |---|---|---|
    | Pasta e slug do plugin | `cm-storefront-bridge` | `anln-storefront-bridge` |
-   | Namespace PHP | `CamilaMaehler\…` | `AnoNovoLutaNova\StorefrontBridge\…` |
+   | Namespace PHP | `MeuMouse\CMStorefrontBridge\…` | `MeuMouse\AnlnStorefrontBridge\…` |
    | Namespace REST | `cm-storefront/v1` | `anln-storefront/v1` |
    | Extensão da Store API | `cm_checkout` | `anln_checkout` |
    | Opções do WordPress | `cm_bridge_*` | `anln_bridge_*` |
    | Constantes do `wp-config` | `CM_BRIDGE_*` | `ANLN_BRIDGE_*` |
    | Meta do pedido | `_billing_cpf` etc. | Mantidos. São os nomes que o WooCommerce Brasil e os gateways já leem. |
-   | Chaves no front (localStorage, cabeçalhos) | `cm_cart_token`, `X-CM-Internal-Key` | `anln_cart_token`, `X-ANLN-Internal-Key` |
+   | Chaves no front (localStorage) | `cm_cart_token` | `anln_cart_token` (a chave interna `X-CM-Internal-Key` não existe no fork: só servia à busca de conta) |
 
    - **Manter:**
      - `Support/Cors.php`, com origem `https://anonovolutanova.com.br` e o `Cart-Token` exposto.

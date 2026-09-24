@@ -17,6 +17,9 @@ import {
 } from "@/lib/commerce/store-api";
 import { formatBRL } from "@/lib/format";
 import { gatewayDiscount, paymentOptions, type CardInput } from "@/lib/payments";
+import { orderAttribution } from "@/lib/attribution";
+import { cartCoupon, cartTrackItems } from "@/lib/tracking/cart-items";
+import { savePurchaseSnapshot, trackAddPaymentInfo, trackAddShippingInfo, trackBeginCheckout } from "@/lib/tracking/events";
 import { CardForm } from "./CardForm";
 import { Field, SelectField } from "./Field";
 import { OrderSummary } from "./OrderSummary";
@@ -107,6 +110,14 @@ export function CheckoutPage() {
   useEffect(() => {
     if (chosen && chosen.kind !== payKind) setPayKind(chosen.kind);
   }, [chosen, payKind]);
+
+  // begin_checkout: uma vez, quando o carrinho com itens chega.
+  const beganCheckout = useRef(false);
+  useEffect(() => {
+    if (beganCheckout.current || !cart.cart?.items.length) return;
+    beganCheckout.current = true;
+    trackBeginCheckout(cartTrackItems(cart.cart), cartCoupon(cart.cart));
+  }, [cart.cart]);
 
   // ----- Validação -----
 
@@ -203,7 +214,11 @@ export function CheckoutPage() {
       if (contactValid) go("entrega");
     } else if (step === "entrega") {
       setShowErrors((s) => ({ ...s, entrega: true }));
-      if (shippingValid && !shipping.loading) go("pagamento");
+      if (shippingValid && !shipping.loading) {
+        const tier = shipping.rates.find((r) => r.rate_id === shipping.selected)?.name ?? "";
+        trackAddShippingInfo(cartTrackItems(cart.cart), tier, cartCoupon(cart.cart));
+        go("pagamento");
+      }
     }
   };
 
@@ -236,6 +251,11 @@ export function CheckoutPage() {
         await selectShippingRate({ package_id: shipping.packageId, rate_id: shipping.selected });
       }
 
+      const trackItems = cartTrackItems(cart.cart);
+      const coupon = cartCoupon(cart.cart);
+      const paymentType = chosen.kind === "pix" ? "pix" : "credit_card";
+      trackAddPaymentInfo(trackItems, paymentType, coupon);
+
       const payment_data =
         chosen.kind === "card" ? await chosen.adapter.cardPaymentData(card) : chosen.adapter.pixPaymentData();
 
@@ -244,7 +264,7 @@ export function CheckoutPage() {
         shipping_address: shippingAddress,
         payment_method: chosen.gateway.id,
         payment_data,
-        extensions: { anln_checkout: checkoutExtension(form) },
+        extensions: { anln_checkout: { ...checkoutExtension(form), attribution: orderAttribution() } },
       });
 
       const status = result.payment_result?.payment_status;
@@ -252,6 +272,16 @@ export function CheckoutPage() {
         const detail = result.payment_result.payment_details.find((d) => /message/i.test(d.key))?.value;
         throw { code: "payment_failed", status: 402, message: detail || "O pagamento não foi aprovado. Confira os dados ou escolha outra forma." };
       }
+
+      // O purchase só sai na página de obrigado, com o pagamento confirmado.
+      savePurchaseSnapshot({
+        transaction_id: String(result.order_id),
+        value: Math.round((orderTotal - pixDiscount) * 100) / 100,
+        shipping: fromMinor(cart.cart?.totals.total_shipping, minor),
+        coupon,
+        payment_type: paymentType,
+        items: trackItems,
+      });
 
       clearForm();
       cart.reset();

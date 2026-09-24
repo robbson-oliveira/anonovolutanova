@@ -1,6 +1,8 @@
 import { readFile } from "fs/promises";
 import path from "path";
 import { CHECKOUT_URL, PRODUCT_NAME } from "@content/product";
+import { publicEnv } from "@/lib/env";
+import { gtmHeadSnippet } from "@/lib/tracking/gtm";
 
 // Serve o wireframe estático (Framer export) como a rota raiz "/".
 // O arquivo original em public/wireframe/wireframe-v2.html NÃO é alterado:
@@ -93,6 +95,10 @@ const HEAD_TAGS = [
   '<meta property="og:type" content="website">',
   '<meta name="twitter:card" content="summary_large_image">',
   `<script>${BUY_BUTTON_SCRIPT}</script>`,
+  // GTM + aviso de cookies: os mesmos das páginas React (layout.tsx).
+  `<script>${gtmHeadSnippet(publicEnv.gtmId)}</script>`,
+  '<link rel="stylesheet" href="/consent.css">',
+  '<script src="/consent.js" defer></script>',
 ].join("");
 
 export async function GET() {

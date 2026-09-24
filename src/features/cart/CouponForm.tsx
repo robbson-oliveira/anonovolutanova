@@ -9,7 +9,7 @@ import { useCart } from "./CartProvider";
  * visível, não escondido atrás de um "tem cupom?".
  */
 export function CouponForm() {
-  const { cart, busy, applyCoupon, removeCoupon } = useCart();
+  const { cart, busy, applyCoupon, removeCoupon, couponNotice } = useCart();
   const [code, setCode] = useState("");
   const applied = cart?.coupons ?? [];
 
@@ -32,6 +32,12 @@ export function CouponForm() {
           </button>
         </div>
       ))}
+
+      {couponNotice && applied.length === 0 ? (
+        <p className="text-xs leading-snug text-text-muted" role="status">
+          {couponNotice}
+        </p>
+      ) : null}
 
       {applied.length === 0 ? (
         <form

@@ -25,4 +25,6 @@ export const publicEnv = {
    * produto configurado. Só vale com ANLN_PRODUCT_ID definido no servidor.
    */
   checkoutEnabled: process.env.NEXT_PUBLIC_CHECKOUT_ENABLED === "true",
+  /** Container do Google Tag Manager (GTM-XXXX). Vazio: sem GTM, só dataLayer. */
+  gtmId: process.env.NEXT_PUBLIC_GTM_ID || "",
 } as const;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
@@ -19,6 +19,7 @@ import { whatsappUrlWith, type EditionId } from "@content/product";
 import type { ProductOffer } from "@/lib/commerce/offer-types";
 import { formatBRL } from "@/lib/format";
 import { useOptionalCart } from "@/features/cart/CartProvider";
+import { item, trackAddToCart, trackViewItem } from "@/lib/tracking/events";
 
 /** Acima disso é revenda: o atendimento é pelo WhatsApp (B2B a partir de 50). */
 const MAX_QTY = 49;
@@ -50,6 +51,26 @@ export function PurchasePanel({ offer, initialEdition }: PurchasePanelProps) {
 
   const changeQty = (next: number) =>
     setQty(Math.min(MAX_QTY, Math.max(1, Number.isFinite(next) ? next : 1)));
+
+  // view_item: uma vez por visita à página, com as edições disponíveis. A
+  // trava evita o disparo duplo do Strict Mode (efeitos rodam duas vezes em dev).
+  const viewed = useRef(false);
+  useEffect(() => {
+    if (viewed.current) return;
+    viewed.current = true;
+    trackViewItem(
+      offer.editions
+        .filter((e) => e.inStock)
+        .map((e) => item(e.variationId ?? e.id, e.label, offer.price, 1)),
+    );
+  }, [offer]);
+
+  const addToCart = async () => {
+    if (!cart || !edition.variationId) return false;
+    const ok = await cart.add(edition.variationId, qty);
+    if (ok) trackAddToCart([item(edition.variationId, edition.label, offer.price, qty)]);
+    return ok;
+  };
 
   const orderMessage =
     `Olá! Quero ${qty} ${qty === 1 ? "unidade" : "unidades"} da ` +
@@ -229,7 +250,7 @@ export function PurchasePanel({ offer, initialEdition }: PurchasePanelProps) {
                 type="button"
                 disabled={cart.busy || !edition.inStock}
                 onClick={async () => {
-                  if (await cart.add(edition.variationId!, qty)) router.push("/checkout");
+                  if (await addToCart()) router.push("/checkout");
                 }}
               >
                 {cart.busy ? "Adicionando…" : "Garantir minha agenda"}
@@ -239,7 +260,7 @@ export function PurchasePanel({ offer, initialEdition }: PurchasePanelProps) {
                 type="button"
                 disabled={cart.busy || !edition.inStock}
                 onClick={async () => {
-                  if (await cart.add(edition.variationId!, qty)) cart.openDrawer();
+                  if (await addToCart()) cart.openDrawer();
                 }}
                 className="cursor-pointer text-sm font-semibold text-action underline-offset-4 hover:underline disabled:cursor-not-allowed disabled:opacity-50"
               >

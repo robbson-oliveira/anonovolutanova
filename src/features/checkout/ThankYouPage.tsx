@@ -7,6 +7,7 @@ import { INSTAGRAM_URL, WHATSAPP_URL } from "@content/product";
 import { getPaymentInstructions, type PaymentInstructions } from "@/lib/commerce/bridge-api";
 import { errorMessage } from "@/lib/commerce/store-api";
 import { formatBRL } from "@/lib/format";
+import { trackPurchaseOnce } from "@/lib/tracking/events";
 
 /** De quanto em quanto tempo perguntar se o Pix caiu, e por quanto tempo. */
 const POLL_MS = 5000;
@@ -52,6 +53,12 @@ export function ThankYouPage() {
       clearTimeout(timer);
     };
   }, [orderId, orderKey]);
+
+  // purchase: quando o pagamento é confirmado, uma vez por pedido.
+  const paidNow = data?.payment_status === "paid";
+  useEffect(() => {
+    if (paidNow) trackPurchaseOnce(orderId);
+  }, [paidNow, orderId]);
 
   if (!orderId || !orderKey) {
     return (

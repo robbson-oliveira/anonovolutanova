@@ -367,6 +367,28 @@ precisa ser terminado. O outro é apagado.
 
 ### Fase 5 — Afiliados por cupom, rastreio e recuperação
 
+> **✅ Parte do site feita em 24/09/2026**, ainda sem commit. Testada de ponta a ponta contra o servidor falso da Fase 4.
+>
+> **Afiliadas:**
+> - O link `?cupom=CODIGO` é capturado em qualquer página, inclusive na home do wireframe, por `src/proxy.ts`.
+> - O código fica num cookie de 30 dias e entra sozinho no carrinho assim que ele tem itens.
+> - Cupom vencido ou inexistente: aviso discreto, a compra segue. Tirado à mão: não volta.
+>
+> **Origem do pedido:** UTMs, cliques pagos (`fbclid`, `gclid`) e referência externa entram no pedido pela `extensions.anln_checkout.attribution`. Vale o último clique não direto. O plugin grava isso nos `_wc_order_attribution_*`, e aí o WooCommerce mostra a "Origem" do pedido.
+>
+> **GTM e eventos:**
+> - Com `NEXT_PUBLIC_GTM_ID`, o GTM carrega em todas as páginas, inclusive no wireframe, com Consent Mode v2 negado por padrão.
+> - O aviso de cookies (`public/consent.js`) grava a escolha e atualiza o consentimento. O rodapé tem o link "Preferências de cookies".
+> - Eventos GA4 no `dataLayer`: `view_item`, `add_to_cart`, `begin_checkout`, `add_shipping_info`, `add_payment_info` e `purchase`.
+> - O `purchase` sai só quando o pagamento é confirmado, uma vez por pedido.
+>
+> **Falta, fora do código:**
+> - **Montar o container do GTM:** tags do GA4 e do Meta Pixel ouvindo esses eventos. Isso substitui o PixelYourSite na virada.
+> - **Criar os cupons das afiliadas** (item 1 abaixo).
+> - **Decidir sobre o item 3** (carrinho abandonado), que ficou de fora. Ele depende do plugin *woo-cart-abandonment-recovery* e de uma rota no bridge.
+>
+> Uma compra paga depois que a pessoa fecha a página de obrigado não gera `purchase` no navegador. Se isso pesar, o passo seguinte é enviar a compra pelo servidor, como o bridge da Camila faz.
+
 1. **Afiliadas por cupom exclusivo (D7):**
    - **No WooCommerce:** um cupom por afiliada, com o nome dela (ex.: `MARIANA10`).
      - Restrito ao produto 2027.

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { REVEAL_READY_SCRIPT } from "@ds/index";
 import { PRODUCT_NAME } from "@content/product";
 import { publicEnv } from "@/lib/env";
+import { gtmHeadSnippet } from "@/lib/tracking/gtm";
 import "./globals.css";
 
 /*
@@ -91,6 +92,12 @@ export default function RootLayout({
             contrário, que deixaria blocos invisíveis. */}
         <script dangerouslySetInnerHTML={{ __html: REVEAL_READY_SCRIPT }} />
         <script dangerouslySetInnerHTML={{ __html: fontReadinessScript }} />
+        {/* GTM com Consent Mode v2 (tudo negado até o aceite) e o aviso de
+            cookies — os mesmos arquivos que o wireframe usa (route.ts). */}
+        <script dangerouslySetInnerHTML={{ __html: gtmHeadSnippet(publicEnv.gtmId) }} />
+        {/* eslint-disable-next-line @next/next/no-css-tags -- CSS estático compartilhado com o wireframe */}
+        <link rel="stylesheet" href="/consent.css" />
+        <script src="/consent.js" defer />
       </head>
       <body className="antialiased">{children}</body>
     </html>

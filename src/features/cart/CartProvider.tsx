@@ -3,6 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import * as storeApi from "@/lib/commerce/store-api";
 import { errorMessage, type StoreCart } from "@/lib/commerce/store-api";
+import { COUPON_COOKIE, deleteCookie, readCookie } from "@/lib/attribution";
 
 type CartContextValue = {
   cart: StoreCart | null;
@@ -13,6 +14,8 @@ type CartContextValue = {
   /** Alguma chamada ao carrinho em andamento. */
   busy: boolean;
   error: string | null;
+  /** Aviso sobre o cupom do link de afiliada (aplicado ou recusado). */
+  couponNotice: string | null;
   drawerOpen: boolean;
   openDrawer: () => void;
   closeDrawer: () => void;
@@ -42,7 +45,8 @@ const hasStoredToken = () => {
  * Estado do carrinho, espelhando o do WooCommerce (a fonte da verdade é
  * sempre a Store API: cada ação devolve o carrinho inteiro e ele substitui o
  * local). Portado de `contexts/cart-context.tsx` do storefront, sem a
- * personalização de produto e sem tracking (Fase 5).
+ * personalização de produto. Os eventos de GA4 saem dos componentes
+ * (src/lib/tracking), onde se sabe a edição e a etapa do funil.
  */
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<StoreCart | null>(null);
@@ -50,6 +54,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [ready, setReady] = useState(false);
+  const [couponNotice, setCouponNotice] = useState<string | null>(null);
+  const linkCouponTried = useRef(false);
   const pending = useRef(0);
 
   // Toda ação passa por aqui: marca ocupado, troca o carrinho pela resposta e
@@ -88,6 +94,28 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     void load.finally(() => setReady(true));
   }, [refresh]);
 
+  // Cupom do link da afiliada (?cupom=, guardado em cookie pelo proxy): entra
+  // sozinho uma vez, assim que o carrinho tem itens — o WooCommerce só aceita
+  // cupom em carrinho não vazio. Recusado (vencido, inexistente), o cookie sai
+  // e a compra segue sem ele, com um aviso discreto.
+  useEffect(() => {
+    if (!cart?.items.length || linkCouponTried.current) return;
+    const code = readCookie(COUPON_COOKIE);
+    if (!code) return;
+    linkCouponTried.current = true;
+    if (cart.coupons.some((c) => c.code.toUpperCase() === code)) return;
+    storeApi
+      .applyCoupon(code)
+      .then((next) => {
+        setCart(next);
+        setCouponNotice(`Cupom ${code} aplicado.`);
+      })
+      .catch(() => {
+        deleteCookie(COUPON_COOKIE);
+        setCouponNotice(`O cupom ${code} não está mais valendo. Sua compra segue normalmente.`);
+      });
+  }, [cart]);
+
   const value = useMemo<CartContextValue>(
     () => ({
       cart,
@@ -95,6 +123,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       count: cart?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0,
       busy,
       error,
+      couponNotice,
       drawerOpen,
       openDrawer: () => setDrawerOpen(true),
       closeDrawer: () => setDrawerOpen(false),
@@ -121,6 +150,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       applyCoupon: async (code) =>
         Boolean(await run(() => storeApi.applyCoupon(code.trim()), "Não foi possível aplicar o cupom.")),
       removeCoupon: async (code) => {
+        // Tirou o cupom da afiliada à mão: ele não volta sozinho.
+        if (readCookie(COUPON_COOKIE) === code.toUpperCase()) deleteCookie(COUPON_COOKIE);
+        setCouponNotice(null);
         await run(() => storeApi.removeCoupon(code), "Não foi possível remover o cupom.");
       },
       replace: setCart,
@@ -128,9 +160,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         storeApi.forgetCartToken();
         setCart(null);
         setError(null);
+        setCouponNotice(null);
+        // Uma próxima compra no mesmo aparelho também leva o cupom do link.
+        linkCouponTried.current = false;
       },
     }),
-    [cart, ready, busy, error, drawerOpen, refresh, run],
+    [cart, ready, busy, error, couponNotice, drawerOpen, refresh, run],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

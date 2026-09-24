@@ -3,6 +3,7 @@ import { Button, Container, IconArrowRight, Text } from "@ds/index";
 import { FOOTER } from "@content/home";
 import { CHECKOUT_URL, PRODUCT_NAME } from "@content/product";
 import { CartButton } from "@/features/cart/CartButton";
+import { ConsentLink } from "./ConsentLink";
 
 const logo = "/img/logo.png";
 
@@ -77,6 +78,7 @@ export function PageShell({ children, hideBuyButton = false }: PageShellProps) {
           <Text size="xs" tone="inverse" className="opacity-60">
             {FOOTER.copyright}
           </Text>
+          <ConsentLink />
         </Container>
       </footer>
     </div>

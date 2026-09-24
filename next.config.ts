@@ -33,12 +33,20 @@ const nextConfig: NextConfig = {
       ),
       { source: "/produto/:slug*", destination: "/comprar", permanent: true },
       { source: "/product/:slug*", destination: "/comprar", permanent: true },
+      { source: "/categoria-produto/:slug*", destination: "/comprar", permanent: true },
 
       /* Sem conta de cliente (D6) e sem AffiliateWP (D7). Temporários: a
-         página do programa de afiliadas por cupom ainda vai existir. */
-      ...["/my-account/:path*", "/minha-conta/:path*", "/area-afiliado/:path*", "/affiliate-login/:path*"].map(
-        (source) => ({ source, destination: "/contato", permanent: false }),
-      ),
+         página do programa de afiliadas por cupom ainda vai existir. Lista
+         tirada do sitemap público do WordPress em 24/09/2026. */
+      ...[
+        "/my-account/:path*",
+        "/minha-conta/:path*",
+        "/area-afiliado/:path*",
+        "/affiliate-login/:path*",
+        "/registro-de-afiliados/:path*",
+        "/conteudos-para-divulgacao/:path*",
+        "/obrigado-pelo-seu-registro/:path*",
+      ].map((source) => ({ source, destination: "/contato", permanent: false })),
     ];
   },
 

@@ -6,6 +6,7 @@ import {
   attributionFromRequest,
   couponFromUrl,
 } from "@/lib/attribution";
+import { GONE_HTML, isGone } from "@/lib/legacy-urls";
 
 /**
  * Roda antes de toda página (inclusive a home, que é o wireframe em HTML puro)
@@ -20,8 +21,17 @@ import {
  * Não guardam dado pessoal — só o código do cupom e a origem da visita.
  */
 export function proxy(request: NextRequest) {
-  const response = NextResponse.next();
   const url = request.nextUrl;
+
+  // Conteúdo do WordPress antigo sem equivalente: 410 (ver legacy-urls.ts).
+  if (isGone(url.pathname)) {
+    return new NextResponse(GONE_HTML, {
+      status: 410,
+      headers: { "Content-Type": "text/html; charset=utf-8", "X-Robots-Tag": "noindex" },
+    });
+  }
+
+  const response = NextResponse.next();
   const cookieOptions = {
     maxAge: COOKIE_MAX_AGE,
     path: "/",

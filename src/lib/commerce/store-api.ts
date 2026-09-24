@@ -148,6 +148,16 @@ type RequestOptions = {
 };
 
 async function request<T>(path: string, options: RequestOptions = {}, isRetry = false): Promise<T> {
+  const method = options.method ?? "GET";
+
+  // Primeira mudança sem token: o carrinho que ela criasse não seria achado
+  // depois pelo Cart-Token devolvido (a sessão sem token não fica ligada a
+  // ele — conferido no WooCommerce 11 do ambiente local). Um GET /cart antes
+  // emite o token, e a mudança já vai com ele.
+  if (method !== "GET" && !readCartToken()) {
+    await request<StoreCart>("/cart");
+  }
+
   const headers: Record<string, string> = {
     Accept: "application/json",
     "Content-Type": "application/json",
@@ -155,7 +165,6 @@ async function request<T>(path: string, options: RequestOptions = {}, isRetry = 
   const cartToken = readCartToken();
   if (cartToken) headers["Cart-Token"] = cartToken;
 
-  const method = options.method ?? "GET";
   const response = await fetch(`${BASE}${path}`, {
     method,
     credentials: "include",

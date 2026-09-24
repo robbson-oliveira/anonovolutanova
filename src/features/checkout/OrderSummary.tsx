@@ -28,7 +28,9 @@ export function OrderSummary({
   const items = fromMinor(cart.totals.total_items, minor);
   const discount = fromMinor(cart.totals.total_discount, minor);
   const shipping = fromMinor(cart.totals.total_shipping, minor);
-  const total = fromMinor(cart.totals.total_price, minor) - pixDiscount;
+  // Antes do endereço o WooCommerce já soma um frete estimado (pelo endereço
+  // da loja). Até a entrega ser escolhida, o total mostrado não o inclui.
+  const total = fromMinor(cart.totals.total_price, minor) - (shippingKnown ? 0 : shipping) - pixDiscount;
 
   return (
     <section aria-label="Resumo do pedido" className="flex flex-col gap-5 rounded-card bg-surface-plain p-6 shadow-card">

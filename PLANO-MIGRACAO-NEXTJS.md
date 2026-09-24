@@ -414,6 +414,25 @@ precisa ser terminado. O outro é apagado.
 
 ### Fase 6 — Qualidade
 
+> **🟡 Em andamento (24/09/2026), com WordPress local em Docker** (`dev/wordpress`, porta 8088). Ele é montado por script, e o script pode rodar de novo sem duplicar nada:
+> - WooCommerce 11.1, Asaas e Mercado Pago instalados;
+> - produto 2027 variável (id 10);
+> - zona Brasil com um frete pago de teste e "Frete grátis";
+> - cupom MARIANA10;
+> - o `anln-storefront-bridge` montado da pasta dele.
+>
+> **Verificado contra o WooCommerce real:**
+> - CORS com `Cart-Token` exposto;
+> - frete pago com 1 unidade, só frete grátis com 4;
+> - cupom do link aplicado sozinho;
+> - pedido pela Store API com CPF, número, bairro e origem gravados no pedido;
+> - `payment-instructions` com a chave certa, e 404 igual para chave errada ou pedido inexistente;
+> - imagem Docker do site servindo as rotas e lendo o produto.
+>
+> **O teste real achou um bug que o servidor falso escondia.** A primeira mudança no carrinho sem `Cart-Token` criava um carrinho que o token devolvido não encontrava depois. O cliente da Store API agora pega o token antes. Corrigido.
+>
+> **Falta:** chaves de sandbox do gateway no wp-admin local, que só quem tem a conta pode pôr. Com elas, rodar o roteiro de pagamento do README do plugin, os pagamentos com cartão e Pix, e o Lighthouse.
+
 - **Pedidos de ponta a ponta no sandbox do gateway escolhido:**
   - Pix pago.
   - Pix expirado.
@@ -432,6 +451,17 @@ precisa ser terminado. O outro é apagado.
 - **E-mails do WooCommerce:** a marca e os links apontam para `anonovolutanova.com.br`, não para `admin.`.
 
 ### Fase 7 — Virada
+
+> **🟡 Preparada (24/09/2026).** O passo a passo executável, com comandos, variáveis e plano de volta, está em **`RUNBOOK-VIRADA.md`**.
+>
+> **Já no código:**
+> - **`Dockerfile`** para o Easypanel, com build testado em imagem local. Na Vercel não é usado.
+> - **Redirects e 410** a partir do **sitemap público** do WordPress, porque a integração com o Search Console exige assinatura do SEO Gets.
+>   - O sitemap mostrou 11 posts e 9 categorias de demonstração do tema (plantas), páginas do AffiliateWP e um arquivo de autor com slug derivado de e-mail.
+>   - O que tem equivalente redireciona. O resto responde **410**, para sair do índice (`src/lib/legacy-urls.ts`).
+> - **Plugin 0.2.0:** o site público do WordPress redireciona (301) para o Next depois da virada. É o item 7 da Fase 3.
+>   - Webhooks de pagamento (`/asaas-webhook/`, `wc-api`), REST, admin e cron continuam respondendo; testado no Docker.
+>   - Fica desligado até "URL do site" ser preenchida.
 
 1. Congelar o conteúdo no WordPress e fazer backup (o All-in-One WP Migration já está instalado).
 2. Pagar ou registrar as comissões em aberto do AffiliateWP. Entregar os cupons às afiliadas. Desativar o AffiliateWP.

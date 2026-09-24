@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import {
   Badge,
@@ -874,6 +875,19 @@ function Preview({
     </figure>
   );
 }
+
+export const metadata: Metadata = {
+  title: { absolute: "Lacunas do Design System | Ano Novo, Luta Nova" },
+  description:
+    "Levantamento das peças da home que ainda não estão documentadas no design system da Agenda Ano Novo, Luta Nova.",
+  openGraph: {
+    title: "Lacunas do Design System | Ano Novo, Luta Nova",
+    description:
+      "Levantamento das peças da home que ainda não estão documentadas no design system.",
+    type: "website",
+  },
+  twitter: { card: "summary" },
+};
 
 export default function DesignSystemLacunasPage() {
   return (

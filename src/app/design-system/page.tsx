@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import {
   Accordion,
   Badge,
@@ -258,6 +259,17 @@ const AXES = [
  * tira de cor sobre rótulo. A sombra só aparece onde ela É o conteúdo sendo
  * demonstrado (Componentes, Elevação) — em todo o resto o wrapper é plano.
  */
+export const metadata: Metadata = {
+  title: { absolute: "Design System | Ano Novo, Luta Nova" },
+  description: "Catálogo visual do design system da Agenda Ano Novo, Luta Nova 2027.",
+  openGraph: {
+    title: "Design System | Ano Novo, Luta Nova",
+    description: "Catálogo visual do design system da Agenda Ano Novo, Luta Nova 2027.",
+    type: "website",
+  },
+  twitter: { card: "summary" },
+};
+
 export default function DesignSystemPage() {
   return (
     <>

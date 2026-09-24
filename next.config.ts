@@ -2,7 +2,11 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  ...(process.env.NEXT_EXPORT ? { output: "export" as const, distDir: "dist", images: { unoptimized: true } } : {}),
+
+  // Servidor autocontido para a imagem Docker; a Vercel ignora a opção.
+  // O checkout vai precisar de servidor, então export estático não serve.
+  output: "standalone",
+
   images: {
     // Capas e logo são PNG com canal alfa; formatos modernos preservam alfa.
     formats: ["image/avif", "image/webp"],
@@ -21,6 +25,13 @@ const nextConfig: NextConfig = {
         destination: "/wireframe/wireframe-v2.html",
         permanent: false,
       },
+    ];
+  },
+
+  async rewrites() {
+    return [
+      // O guia de estilo é um HTML estático; a URL curta continua valendo.
+      { source: "/style-guide", destination: "/style-guide-agenda-2027.html" },
     ];
   },
 

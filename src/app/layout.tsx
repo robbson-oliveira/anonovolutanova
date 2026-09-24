@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { REVEAL_READY_SCRIPT } from "@ds/index";
 import { PRODUCT_NAME } from "@content/product";
+import { publicEnv } from "@/lib/env";
 import "./globals.css";
 
 /*
@@ -53,6 +54,7 @@ const fontReadinessScript = `
 `;
 
 export const metadata: Metadata = {
+  metadataBase: new URL(publicEnv.siteUrl),
   title: {
     default: `${PRODUCT_NAME} — Viva o caminho de santidade no dia a dia`,
     template: `%s · ${PRODUCT_NAME}`,

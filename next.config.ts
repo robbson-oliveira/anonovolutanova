@@ -25,6 +25,20 @@ const nextConfig: NextConfig = {
         destination: "/wireframe/wireframe-v2.html",
         permanent: false,
       },
+
+      /* URLs do site antigo (WordPress/Elementor/WooCommerce) que o wireframe,
+         o Google e os links antigos ainda apontam. A loja agora é /comprar. */
+      ...["/shop", "/loja", "/carrinho", "/cart", "/finalizacao-de-compra", "/finalizar-compra", "/checkout-2"].map(
+        (source) => ({ source, destination: "/comprar", permanent: true }),
+      ),
+      { source: "/produto/:slug*", destination: "/comprar", permanent: true },
+      { source: "/product/:slug*", destination: "/comprar", permanent: true },
+
+      /* Sem conta de cliente (D6) e sem AffiliateWP (D7). Temporários: a
+         página do programa de afiliadas por cupom ainda vai existir. */
+      ...["/my-account/:path*", "/minha-conta/:path*", "/area-afiliado/:path*", "/affiliate-login/:path*"].map(
+        (source) => ({ source, destination: "/contato", permanent: false }),
+      ),
     ];
   },
 

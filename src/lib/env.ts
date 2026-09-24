@@ -1,0 +1,22 @@
+/**
+ * Variáveis públicas, lidas num lugar só (como no storefront da Camila).
+ *
+ * `NEXT_PUBLIC_*` é embutida no bundle em tempo de build. Numa imagem Docker,
+ * cada uma precisa virar `ARG` no Dockerfile, senão chega vazia.
+ */
+
+const trimSlash = (url: string) => url.replace(/\/+$/, "");
+
+export const publicEnv = {
+  /**
+   * WordPress/WooCommerce. Hoje é o domínio principal; na virada passa a ser
+   * https://admin.anonovolutanova.com.br (ver PLANO-MIGRACAO-NEXTJS.md, D2).
+   */
+  wpUrl: trimSlash(
+    process.env.NEXT_PUBLIC_WP_URL || "https://anonovolutanova.com.br",
+  ),
+  /** URL canônica deste site (sitemap, Open Graph, JSON-LD). */
+  siteUrl: trimSlash(
+    process.env.NEXT_PUBLIC_SITE_URL || "https://anonovolutanova.com.br",
+  ),
+} as const;

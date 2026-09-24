@@ -48,6 +48,15 @@ export function IconPlus(props: IconProps) {
   );
 }
 
+/** Diminuir — par do IconPlus no seletor de quantidade, mesmo traço. */
+export function IconMinus(props: IconProps) {
+  return (
+    <IconBase viewBox={UI_BOX} fill="none" {...props}>
+      <path d="M3.4 8h9.2" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" fill="none" />
+    </IconBase>
+  );
+}
+
 /** Anterior */
 export function IconChevronLeft(props: IconProps) {
   return (

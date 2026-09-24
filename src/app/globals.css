@@ -8,6 +8,7 @@
 @source "../sections";
 @source "../content";
 @source "../app";
+@source "../features";
 
 /* As fontes locais e os nomes usados pelos tokens entram inline no HTML
    inicial em `src/app/layout.tsx`, antes das folhas de estilo. */

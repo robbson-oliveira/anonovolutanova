@@ -165,6 +165,17 @@ entrega:
 
 ### Fase 2 — Ligar o wireframe à loja (D5)
 
+> **✅ Feita em 24/09/2026**, ainda sem commit.
+>
+> O que saiu diferente do previsto, depois de ler o HTML do wireframe:
+>
+> - **Nem todo botão de compra vai para `/comprar`.** Os do topo e do cabeçalho são links `./#price`, que rolam até a oferta: é o fluxo aprovado, e ficou assim. Só os dois botões da seção de oferta mudaram. Eles abriam uma aba nova com o carrinho do WordPress (produto 2026) e agora abrem `/comprar` na mesma aba.
+> - **O `<base href="/wireframe/">` saiu.** Ele fazia o `./#price` abrir a cópia crua do wireframe, fora da home. Os caminhos dos assets agora são reescritos para `/wireframe/assets/`.
+> - **O snapshot abria cópias congeladas das páginas do WordPress** (contato, termos, privacidade, afiliados). Esses links agora vão para as páginas do Next.
+> - **Enquanto não há checkout (Fase 4), `/comprar` termina num link de WhatsApp** com o pedido já escrito (edição e quantidade). Muda em um lugar só: `checkoutEnabled` em `src/lib/commerce/offer.ts`.
+> - **O formulário da página de contato não foi migrado** (era do Elementor). A página lista WhatsApp, e-mail e Instagram.
+> - **Imagem quebrada no próprio wireframe:** `assets/0ddd6486241d9f47_…jpeg` (4 ocorrências). Já estava assim no arquivo original, antes da migração.
+
 A home continua sendo o wireframe aprovado (`public/wireframe/wireframe-v2.html`,
 export do Framer). O arquivo **não é editado**: tudo o que muda entra na
 resposta do `src/app/route.ts`, que já injeta o `<base href>`.

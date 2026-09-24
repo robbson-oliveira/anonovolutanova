@@ -34,6 +34,7 @@ export {
   IconArrowRight,
   IconCheck,
   IconPlus,
+  IconMinus,
   IconChevronLeft,
   IconChevronRight,
   IconStar,

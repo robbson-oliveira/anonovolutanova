@@ -431,6 +431,17 @@ precisa ser terminado. O outro é apagado.
 >
 > **O teste real achou um bug que o servidor falso escondia.** A primeira mudança no carrinho sem `Cart-Token` criava um carrinho que o token devolvido não encontrava depois. O cliente da Store API agora pega o token antes. Corrigido.
 >
+> **Checkout redesenhado no padrão do checkout da Camila, com as cores e o DS do projeto:**
+> - etapas com "ETAPA N", cartões de revisão com "Editar", painel "Destinatário" (igual ao titular até ser editado) e painel "Endereço";
+> - endereço só com CEP, endereço, número, bairro, complemento, cidade e estado;
+> - telefone internacional (`intl-tel-input`, Brasil primeiro): no Brasil vai para o pedido só com DDD e número, de fora vai no formato E.164;
+> - Pix e cartão em blocos de escolha, termos obrigatórios e botão "Pagar R$ X";
+> - no celular, barra fixa "Ver resumo do pedido" que abre o resumo por baixo.
+>
+> Ficaram de fora de propósito o cronômetro "produtos reservados" (urgência agressiva, contra o DNA, e o WooCommerce não reserva estoque), o boleto e o split de pagamento.
+>
+> **O teste também achou um erro fatal no Asaas.** Quando o woo-asaas falha, ele devolve `null`, e o WooCommerce 11 quebra ao ler esse retorno: o navegador só via "Failed to fetch". O plugin 0.3.0 trata isso, e a falha volta como 400 com a mensagem do gateway.
+>
 > **Falta:** chaves de sandbox do gateway no wp-admin local, que só quem tem a conta pode pôr. Com elas, rodar o roteiro de pagamento do README do plugin, os pagamentos com cartão e Pix, e o Lighthouse.
 
 - **Pedidos de ponta a ponta no sandbox do gateway escolhido:**

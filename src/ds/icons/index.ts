@@ -13,6 +13,17 @@ export {
   IconClose,
   IconAsterisk,
   IconGiftBox,
+  IconMail,
+  IconPhone,
+  IconCalendar,
+  IconBasket,
+  IconLock,
+  IconMapPin,
+  IconPackage,
+  IconCreditCard,
+  IconPix,
+  IconArrowLeft,
+  IconChevronUp,
 } from "./ui";
 
 export {

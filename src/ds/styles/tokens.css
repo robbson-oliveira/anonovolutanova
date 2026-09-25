@@ -156,6 +156,20 @@
   --text-stat--letter-spacing: -0.04em;
   --text-stat--font-weight: 600;
 
+  /* Formulários (checkout). A escala acima é a da landing — corpo de 20px,
+     tracking apertado — e fica grande e comprimida dentro de campos. Estes três
+     degraus são os da interface de formulário: 16px no campo (o mínimo para o
+     Safari do iPhone não dar zoom ao focar), rótulo um pouco menor, e a legenda
+     miúda do "ETAPA 1" dos passos. */
+  --text-field: 16px;
+  --text-field--line-height: 1.4;
+  --text-label: 15px;
+  --text-label--line-height: 1.3;
+  --text-label--font-weight: 500;
+  --text-caption: 11px;
+  --text-caption--line-height: 1.2;
+  --text-caption--letter-spacing: 0.06em;
+
   /* ---------------------------------------------------------------------
      Layout & espaçamento
      --------------------------------------------------------------------- */

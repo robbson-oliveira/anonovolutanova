@@ -31,52 +31,12 @@ export function maskCep(value: string): string {
   return d.length > 5 ? `${d.slice(0, 5)}-${d.slice(5)}` : d;
 }
 
-/** (27) 99279-4290 ou (27) 3279-4290. */
-export function maskPhone(value: string): string {
-  const d = onlyDigits(value).slice(0, 11);
-  if (d.length <= 2) return d.length ? `(${d}` : "";
-  if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
-  if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
-  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
-}
-
-export const isValidPhone = (value: string) => {
-  const d = onlyDigits(value);
-  return d.length === 10 || d.length === 11;
-};
-
 export const isValidEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value.trim());
 
 export const BR_STATES = [
   "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA",
   "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO",
 ] as const;
-
-export type BrAddress = {
-  postcode: string;
-  address_1: string;
-  number: string;
-  neighborhood: string;
-  address_2: string;
-  city: string;
-  state: string;
-};
-
-/**
- * Rótulos dos campos obrigatórios que faltam, na ordem do formulário. A Store
- * API recusa o pedido inteiro com um campo vazio, e só avisa na hora de pagar.
- */
-export function missingAddressFields(a: Partial<BrAddress>): string[] {
-  const filled = (v?: string) => Boolean(v?.trim());
-  const missing: string[] = [];
-  if (onlyDigits(a.postcode ?? "").length !== 8) missing.push("CEP");
-  if (!filled(a.address_1)) missing.push("rua");
-  if (!filled(a.number)) missing.push("número");
-  if (!filled(a.neighborhood)) missing.push("bairro");
-  if (!filled(a.city)) missing.push("cidade");
-  if (!BR_STATES.includes((a.state ?? "") as (typeof BR_STATES)[number])) missing.push("estado");
-  return missing;
-}
 
 /** "rua", "rua e número", "rua, número e cidade". */
 export function joinLabels(labels: string[]): string {

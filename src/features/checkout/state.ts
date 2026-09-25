@@ -1,19 +1,18 @@
 /**
  * Estado do checkout: tipos, validação por etapa e persistência.
- * Funções puras — o componente só as chama.
+ * Funções puras — os componentes só as chamam.
  */
 
 import {
+  BR_STATES,
   isValidCpf,
   isValidEmail,
-  isValidPhone,
   joinLabels,
-  missingAddressFields,
   onlyDigits,
-  type BrAddress,
 } from "@/lib/commerce/br";
 import type { StoreAddress } from "@/lib/commerce/store-api";
 import type { CardInput } from "@/lib/payments";
+import { phoneForStore } from "./phone";
 
 export type Step = "contato" | "entrega" | "pagamento";
 
@@ -23,49 +22,125 @@ export const STEPS: Array<{ key: Step; label: string }> = [
   { key: "pagamento", label: "Pagamento" },
 ];
 
+/** Telefone em E.164 e se o intl-tel-input o considera válido para o país. */
+export type Phone = { number: string; valid: boolean };
+
+/** Titular da compra (cobrança, nota fiscal, e-mails). */
 export type Contact = {
   email: string;
   firstName: string;
   lastName: string;
-  phone: string;
+  phone: Phone;
   cpf: string;
+  /** "dd/mm/aaaa", opcional salvo se o plugin exigir. */
+  birthDate: string;
+};
+
+/** Quem recebe a agenda. Começa igual ao titular; pode ser outra pessoa (presente). */
+export type Recipient = {
+  firstName: string;
+  lastName: string;
+  phone: Phone;
+};
+
+/** Os campos de endereço combinados: CEP, endereço, número, bairro, complemento, cidade e estado. */
+export type Address = {
+  postcode: string;
+  address_1: string;
+  number: string;
+  neighborhood: string;
+  address_2: string;
+  city: string;
+  state: string;
 };
 
 export type CheckoutForm = {
   contact: Contact;
-  address: BrAddress;
+  recipient: Recipient;
+  /** O destinatário foi editado à mão? Enquanto não, ele acompanha o titular. */
+  recipientTouched: boolean;
+  address: Address;
 };
 
+const EMPTY_PHONE: Phone = { number: "", valid: false };
+
 export const EMPTY_FORM: CheckoutForm = {
-  contact: { email: "", firstName: "", lastName: "", phone: "", cpf: "" },
+  contact: { email: "", firstName: "", lastName: "", phone: EMPTY_PHONE, cpf: "", birthDate: "" },
+  recipient: { firstName: "", lastName: "", phone: EMPTY_PHONE },
+  recipientTouched: false,
   address: { postcode: "", address_1: "", number: "", neighborhood: "", address_2: "", city: "", state: "" },
 };
 
 export type Errors<T> = Partial<Record<keyof T, string>>;
 
-export function validateContact(c: Contact, cpfRequired: boolean): Errors<Contact> {
+/** "dd/mm/aaaa" de uma data real, entre 1900 e hoje. */
+export function isValidBirthDate(value: string, now = new Date()): boolean {
+  const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value);
+  if (!m) return false;
+  const [d, mo, y] = [Number(m[1]), Number(m[2]), Number(m[3])];
+  const date = new Date(y, mo - 1, d);
+  return date.getFullYear() === y && date.getMonth() === mo - 1 && date.getDate() === d && y >= 1900 && date <= now;
+}
+
+export function maskBirthDate(value: string): string {
+  const d = onlyDigits(value).slice(0, 8);
+  if (d.length <= 2) return d;
+  if (d.length <= 4) return `${d.slice(0, 2)}/${d.slice(2)}`;
+  return `${d.slice(0, 2)}/${d.slice(2, 4)}/${d.slice(4)}`;
+}
+
+export function validateContact(
+  c: Contact,
+  rules: { cpfRequired: boolean; birthDateRequired: boolean },
+): Errors<Contact> {
   const e: Errors<Contact> = {};
   if (!isValidEmail(c.email)) e.email = "Informe um e-mail válido.";
   if (!c.firstName.trim()) e.firstName = "Informe seu nome.";
   if (!c.lastName.trim()) e.lastName = "Informe seu sobrenome.";
-  if (!isValidPhone(c.phone)) e.phone = "Informe um celular com DDD.";
-  if ((cpfRequired || c.cpf.trim()) && !isValidCpf(c.cpf)) e.cpf = "CPF inválido.";
+  if (!c.phone.valid) e.phone = "Informe um telefone válido, com DDD.";
+  if ((rules.cpfRequired || c.cpf.trim()) && !isValidCpf(c.cpf)) e.cpf = "CPF inválido.";
+  if ((rules.birthDateRequired || c.birthDate.trim()) && !isValidBirthDate(c.birthDate)) {
+    e.birthDate = "Data inválida (dd/mm/aaaa).";
+  }
   return e;
 }
 
-export function validateAddress(a: BrAddress): { errors: Errors<BrAddress>; summary: string | null } {
-  const missing = missingAddressFields(a);
-  const labelToField: Record<string, keyof BrAddress> = {
-    CEP: "postcode",
-    rua: "address_1",
-    número: "number",
-    bairro: "neighborhood",
-    cidade: "city",
-    estado: "state",
-  };
-  const errors: Errors<BrAddress> = {};
-  for (const label of missing) errors[labelToField[label]] = "Campo obrigatório.";
-  if (errors.postcode) errors.postcode = "CEP com 8 dígitos.";
+export function validateRecipient(r: Recipient): Errors<Recipient> {
+  const e: Errors<Recipient> = {};
+  if (!r.firstName.trim()) e.firstName = "Informe o nome de quem recebe.";
+  if (!r.lastName.trim()) e.lastName = "Informe o sobrenome.";
+  if (!r.phone.valid) e.phone = "Informe um telefone válido, com DDD.";
+  return e;
+}
+
+/**
+ * Campos obrigatórios do endereço que faltam. A Store API recusa o pedido
+ * inteiro com um campo vazio, e só avisa na hora de pagar. Bairro e
+ * complemento são opcionais (há CEP de cidade pequena sem bairro).
+ */
+export function validateAddress(a: Address): { errors: Errors<Address>; summary: string | null } {
+  const errors: Errors<Address> = {};
+  const missing: string[] = [];
+  if (onlyDigits(a.postcode).length !== 8) {
+    errors.postcode = "CEP com 8 dígitos.";
+    missing.push("CEP");
+  }
+  if (!a.address_1.trim()) {
+    errors.address_1 = "Informe o endereço.";
+    missing.push("endereço");
+  }
+  if (!a.number.trim()) {
+    errors.number = "Informe o número.";
+    missing.push("número");
+  }
+  if (!a.city.trim()) {
+    errors.city = "Informe a cidade.";
+    missing.push("cidade");
+  }
+  if (!BR_STATES.includes(a.state as (typeof BR_STATES)[number])) {
+    errors.state = "Escolha o estado.";
+    missing.push("estado");
+  }
   return { errors, summary: missing.length ? `Falta preencher: ${joinLabels(missing)}.` : null };
 }
 
@@ -100,14 +175,12 @@ export function luhn(digits: string): boolean {
 }
 
 /**
- * Endereço no formato da Store API. Cobrança = entrega (um endereço só no
- * formulário). Número e bairro vão à parte, na extensão `anln_checkout`,
- * porque o esquema de endereço da Store API não tem esses campos.
+ * Endereços no formato da Store API. Cobrança = titular; entrega =
+ * destinatário, no mesmo endereço. Número e bairro vão à parte, na extensão
+ * `anln_checkout`: o esquema de endereço da Store API não tem esses campos.
  */
 export function toStoreAddresses(form: CheckoutForm): { billing: StoreAddress; shipping: StoreAddress } {
-  const base: StoreAddress = {
-    first_name: form.contact.firstName.trim(),
-    last_name: form.contact.lastName.trim(),
+  const place = {
     company: "",
     address_1: form.address.address_1.trim(),
     address_2: form.address.address_2.trim(),
@@ -115,15 +188,35 @@ export function toStoreAddresses(form: CheckoutForm): { billing: StoreAddress; s
     state: form.address.state,
     postcode: onlyDigits(form.address.postcode),
     country: "BR",
-    phone: onlyDigits(form.contact.phone),
   };
-  return { billing: { ...base, email: form.contact.email.trim() }, shipping: base };
+  return {
+    billing: {
+      ...place,
+      first_name: form.contact.firstName.trim(),
+      last_name: form.contact.lastName.trim(),
+      phone: phoneForStore(form.contact.phone.number),
+      email: form.contact.email.trim(),
+    },
+    shipping: {
+      ...place,
+      first_name: form.recipient.firstName.trim(),
+      last_name: form.recipient.lastName.trim(),
+      phone: phoneForStore(form.recipient.phone.number),
+    },
+  };
 }
+
+/** "dd/mm/aaaa" → "aaaa-mm-dd" (ou vazio). */
+const isoDate = (br: string) => {
+  const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(br);
+  return m ? `${m[3]}-${m[2]}-${m[1]}` : "";
+};
 
 /** `extensions.anln_checkout`: o que o anln-storefront-bridge grava no pedido. */
 export function checkoutExtension(form: CheckoutForm) {
   return {
     cpf: onlyDigits(form.contact.cpf),
+    birthdate: isoDate(form.contact.birthDate),
     billing_number: form.address.number.trim(),
     billing_neighborhood: form.address.neighborhood.trim(),
     shipping_number: form.address.number.trim(),
@@ -131,9 +224,16 @@ export function checkoutExtension(form: CheckoutForm) {
   };
 }
 
+/** Uma linha: "Rua X, 212, Colombo - PR (CEP: 83407-280)". */
+export function addressLine(a: Address): string {
+  const cep = onlyDigits(a.postcode);
+  const parts = [a.address_1.trim(), a.number.trim(), a.address_2.trim()].filter(Boolean).join(", ");
+  return `${parts}${a.neighborhood.trim() ? `, ${a.neighborhood.trim()}` : ""}, ${a.city.trim()} - ${a.state} (CEP: ${cep.slice(0, 5)}-${cep.slice(5)})`;
+}
+
 // ----- Persistência -----
-// Contato e endereço sobrevivem a um recarregamento (sessionStorage, some ao
-// fechar a aba). O cartão NUNCA é guardado.
+// Contato, destinatário e endereço sobrevivem a um recarregamento
+// (sessionStorage, some ao fechar a aba). O cartão NUNCA é guardado.
 
 const STORAGE_KEY = "anln_checkout";
 
@@ -141,12 +241,18 @@ export function loadForm(): { form: CheckoutForm; step: Step } | null {
   try {
     const raw = window.sessionStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
-    const parsed = JSON.parse(raw) as { form?: CheckoutForm; step?: Step };
+    const parsed = JSON.parse(raw) as { form?: Partial<CheckoutForm>; step?: Step };
     if (!parsed.form) return null;
+    const f = parsed.form;
+    // Formato antigo guardava o telefone como string: descarta, pede de novo.
+    const phone = (p: unknown): Phone =>
+      p && typeof p === "object" && "number" in p ? (p as Phone) : EMPTY_PHONE;
     return {
       form: {
-        contact: { ...EMPTY_FORM.contact, ...parsed.form.contact },
-        address: { ...EMPTY_FORM.address, ...parsed.form.address },
+        contact: { ...EMPTY_FORM.contact, ...f.contact, phone: phone(f.contact?.phone) },
+        recipient: { ...EMPTY_FORM.recipient, ...f.recipient, phone: phone(f.recipient?.phone) },
+        recipientTouched: Boolean(f.recipientTouched),
+        address: { ...EMPTY_FORM.address, ...f.address },
       },
       step: STEPS.some((s) => s.key === parsed.step) ? parsed.step! : "contato",
     };

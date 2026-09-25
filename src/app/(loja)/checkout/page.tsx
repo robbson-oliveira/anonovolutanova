@@ -1,19 +1,21 @@
 import type { Metadata } from "next";
-import { Container } from "@ds/index";
 import { CheckoutPage } from "@/features/checkout/CheckoutPage";
-import { PageShell } from "@/features/shell/PageShell";
 
 export const metadata: Metadata = {
   title: "Finalizar compra",
   robots: { index: false, follow: false },
 };
 
+/**
+ * Sem cabeçalho e rodapé do site: só o logo, o formulário e o resumo — menos
+ * saídas no meio da compra, como no checkout de referência.
+ */
 export default function Checkout() {
   return (
-    <PageShell hideBuyButton>
-      <Container className="py-section-sm">
+    <div className="min-h-dvh bg-surface">
+      <div className="mx-auto w-full max-w-[1200px] px-4 py-8 sm:px-6 lg:py-10">
         <CheckoutPage />
-      </Container>
-    </PageShell>
+      </div>
+    </div>
   );
 }

@@ -155,3 +155,133 @@ export function IconGiftBox(props: IconProps) {
   );
 }
 /* eslint-enable no-restricted-syntax */
+
+/* -----------------------------------------------------------------------------
+   Ícones de formulário e checkout. Desenhados no grid 16x16 com o mesmo traço
+   de 1.5 dos glifos acima (IconPlus, IconCheck), para casar com eles. Não
+   existiam no wireframe: a landing não tem formulário.
+   -------------------------------------------------------------------------- */
+
+const STROKE = {
+  stroke: "currentColor",
+  strokeWidth: 1.5,
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+  fill: "none",
+} as const;
+
+/** E-mail (campo de e-mail) */
+export function IconMail(props: IconProps) {
+  return (
+    <IconBase viewBox={UI_BOX} fill="none" {...props}>
+      <rect x="2" y="3.5" width="12" height="9" rx="1.5" {...STROKE} />
+      <path d="m2.6 4.6 5.4 4 5.4-4" {...STROKE} />
+    </IconBase>
+  );
+}
+
+/** Telefone (campo de telefone) */
+export function IconPhone(props: IconProps) {
+  return (
+    <IconBase viewBox={UI_BOX} fill="none" {...props}>
+      <path
+        d="M5.2 2.5H3.8a1.3 1.3 0 0 0-1.3 1.4c.5 5.1 4.5 9.1 9.6 9.6a1.3 1.3 0 0 0 1.4-1.3v-1.4a1 1 0 0 0-.7-1l-1.9-.6a1 1 0 0 0-1 .3l-.7.8a7.5 7.5 0 0 1-3.5-3.5l.8-.7a1 1 0 0 0 .3-1l-.6-1.9a1 1 0 0 0-1-.7Z"
+        {...STROKE}
+      />
+    </IconBase>
+  );
+}
+
+/** Data (campo de data) */
+export function IconCalendar(props: IconProps) {
+  return (
+    <IconBase viewBox={UI_BOX} fill="none" {...props}>
+      <rect x="2.5" y="3.5" width="11" height="10" rx="1.5" {...STROKE} />
+      <path d="M2.5 6.8h11M5.5 2v3M10.5 2v3" {...STROKE} />
+    </IconBase>
+  );
+}
+
+/** Carrinho (cabeçalho do resumo do pedido) */
+export function IconBasket(props: IconProps) {
+  return (
+    <IconBase viewBox={UI_BOX} fill="none" {...props}>
+      <path d="M1.8 6.5h12.4l-1.3 6.1a1.3 1.3 0 0 1-1.3 1H4.4a1.3 1.3 0 0 1-1.3-1Z" {...STROKE} />
+      <path d="M5.2 6.5 7 2.5m3.8 4L9 2.5M6 9.2v2m2-2v2m2-2v2" {...STROKE} />
+    </IconBase>
+  );
+}
+
+/** Pagamento seguro (botão "Pagar") */
+export function IconLock(props: IconProps) {
+  return (
+    <IconBase viewBox={UI_BOX} fill="none" {...props}>
+      <rect x="3.2" y="7" width="9.6" height="6.8" rx="1.3" {...STROKE} />
+      <path d="M5.5 7V5.2a2.5 2.5 0 0 1 5 0V7" {...STROKE} />
+    </IconBase>
+  );
+}
+
+/** Endereço */
+export function IconMapPin(props: IconProps) {
+  return (
+    <IconBase viewBox={UI_BOX} fill="none" {...props}>
+      <path d="M8 14.2s4.6-4 4.6-7.6a4.6 4.6 0 0 0-9.2 0c0 3.6 4.6 7.6 4.6 7.6Z" {...STROKE} />
+      <circle cx="8" cy="6.6" r="1.6" {...STROKE} />
+    </IconBase>
+  );
+}
+
+/** Entrega (formas de entrega) */
+export function IconPackage(props: IconProps) {
+  return (
+    <IconBase viewBox={UI_BOX} fill="none" {...props}>
+      <path d="M8 1.8 13.6 4.8v6.4L8 14.2l-5.6-3V4.8Z" {...STROKE} />
+      <path d="M2.6 4.9 8 7.8l5.4-2.9M8 7.8v6.2M5.2 3.3l5.5 3" {...STROKE} />
+    </IconBase>
+  );
+}
+
+/** Cartão de crédito */
+export function IconCreditCard(props: IconProps) {
+  return (
+    <IconBase viewBox={UI_BOX} fill="none" {...props}>
+      <rect x="1.8" y="3.5" width="12.4" height="9" rx="1.5" {...STROKE} />
+      <path d="M1.8 6.6h12.4M4.5 10.2H7" {...STROKE} />
+    </IconBase>
+  );
+}
+
+/**
+ * Pix: um losango vazado, a forma geral do símbolo — não a marca registrada
+ * do Banco Central, que tem traçado próprio e não deve ser redesenhada.
+ */
+export function IconPix(props: IconProps) {
+  return (
+    <IconBase viewBox={UI_BOX} fill="none" {...props}>
+      <path
+        fill="currentColor"
+        fillRule="evenodd"
+        d="M8 1.6 14.4 8 8 14.4 1.6 8Zm0 3.4L5 8l3 3 3-3Z"
+      />
+    </IconBase>
+  );
+}
+
+/** Voltar */
+export function IconArrowLeft(props: IconProps) {
+  return (
+    <IconBase viewBox={UI_BOX} fill="none" {...props}>
+      <path d="M13 8H3m4-4L3 8l4 4" {...STROKE} />
+    </IconBase>
+  );
+}
+
+/** Abrir para cima (barra do resumo no celular) */
+export function IconChevronUp(props: IconProps) {
+  return (
+    <IconBase viewBox={UI_BOX} fill="none" {...props}>
+      <path d="M3.6 9.9 8 5.5l4.4 4.4" {...STROKE} />
+    </IconBase>
+  );
+}

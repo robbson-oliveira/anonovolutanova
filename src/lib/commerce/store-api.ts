@@ -57,6 +57,9 @@ export function isStoreApiError(value: unknown): value is StoreApiError {
 /** Mensagem legível de qualquer erro (a Store API lança objetos, não Error). */
 export function errorMessage(err: unknown, fallback: string): string {
   if (isStoreApiError(err) && err.message.trim()) return stripTags(err.message);
+  // fetch() sem resposta (rede caiu, ou o servidor quebrou sem CORS): o
+  // navegador só diz "Failed to fetch", em inglês e sem ajudar ninguém.
+  if (err instanceof TypeError) return "Não conseguimos falar com a loja. Confira sua conexão e tente de novo.";
   if (err instanceof Error && err.message.trim()) return err.message;
   return fallback;
 }

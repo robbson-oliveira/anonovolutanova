@@ -27,8 +27,6 @@ export function MobileSummaryBar({ total, children }: { total: number; children:
 
   return (
     <div className="lg:hidden">
-      {/* Espaço para o conteúdo não ficar atrás da barra fixa. */}
-      <div aria-hidden className="h-16" />
 
       <button
         type="button"

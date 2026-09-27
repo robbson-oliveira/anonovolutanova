@@ -30,7 +30,14 @@ export function Stepper({ current, onGo }: { current: Step; onGo: (step: Step) =
             </span>
             <span className="flex flex-col items-start leading-tight">
               <span className="hidden text-caption text-text-muted uppercase sm:inline">Etapa {i + 1}</span>
-              <span className={cn("text-label font-semibold", done || active ? "text-text-strong" : "text-text-muted")}>
+              <span
+                className={cn(
+                  "text-label font-semibold",
+                  done || active ? "text-text-strong" : "text-text-muted",
+                  // No celular não cabem os três nomes: fica o da etapa atual.
+                  !active && "max-sm:sr-only",
+                )}
+              >
                 {s.label}
               </span>
             </span>

@@ -169,6 +169,9 @@
   --text-caption: 11px;
   --text-caption--line-height: 1.2;
   --text-caption--letter-spacing: 0.06em;
+  /* Letra miúda de rodapé mínimo (checkout): copyright, contato, links legais. */
+  --text-fine: 13px;
+  --text-fine--line-height: 1.5;
 
   /* ---------------------------------------------------------------------
      Layout & espaçamento

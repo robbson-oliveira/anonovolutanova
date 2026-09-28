@@ -1,10 +1,11 @@
 "use client";
 
+import { Select } from "@ds/index";
 import { onlyDigits } from "@/lib/commerce/br";
 import type { CheckoutGateway } from "@/lib/commerce/bridge-api";
 import type { CardInput } from "@/lib/payments";
 import { formatBRL } from "@/lib/format";
-import { Field, SelectField } from "./Field";
+import { Field } from "./Field";
 import type { Errors } from "./state";
 
 const maskCardNumber = (v: string) => onlyDigits(v).slice(0, 19).replace(/(\d{4})(?=\d)/g, "$1 ");
@@ -89,19 +90,17 @@ export function CardForm({
         onChange={(e) => set({ cvv: onlyDigits(e.target.value).slice(0, 4) })}
         error={errors.cvv}
       />
-      <SelectField
+      <Select
         id="cc-installments"
         label="Parcelas"
-        value={card.installments}
-        onChange={(e) => set({ installments: Number(e.target.value) })}
+        value={String(card.installments)}
+        onValueChange={(v) => set({ installments: Number(v) })}
+        options={installmentOptions(gateway, total).map((n) => ({
+          value: String(n),
+          label: n === 1 ? `À vista — ${formatBRL(total)}` : `${n}x de ${formatBRL(total / n)} sem juros`,
+        }))}
         className="sm:col-span-2"
-      >
-        {installmentOptions(gateway, total).map((n) => (
-          <option key={n} value={n}>
-            {n === 1 ? `À vista — ${formatBRL(total)}` : `${n}x de ${formatBRL(total / n)} sem juros`}
-          </option>
-        ))}
-      </SelectField>
+      />
     </div>
   );
 }

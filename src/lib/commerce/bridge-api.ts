@@ -14,6 +14,8 @@ export type CheckoutGateway = {
   kind: GatewayKind;
   title: string;
   description: string;
+  /** Imagem do gateway no WooCommerce (`$gateway->icon`). Vazia em alguns plugins (woo-asaas). */
+  icon_url?: string | null;
   supports_tokenization: boolean;
   publishable_key: string;
   installments: { max: number; interest_free_up_to: number; monthly_rate_percent: number } | null;

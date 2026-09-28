@@ -242,6 +242,18 @@ export function IconPackage(props: IconProps) {
   );
 }
 
+/** Frete (selo de frete grátis, estimativa de entrega). As rodas interrompem
+ *  a linha do chão para o traço não atravessar os círculos. */
+export function IconTruck(props: IconProps) {
+  return (
+    <IconBase viewBox={UI_BOX} fill="none" {...props}>
+      <path d="M9.4 11.2v-7H1.8v7h1.4M5.9 11.2h4.3M9.4 6.4h2.5l2.3 2.5v2.3h-1.3" {...STROKE} />
+      <circle cx="4.55" cy="11.2" r="1.35" {...STROKE} />
+      <circle cx="11.55" cy="11.2" r="1.35" {...STROKE} />
+    </IconBase>
+  );
+}
+
 /** Cartão de crédito */
 export function IconCreditCard(props: IconProps) {
   return (
@@ -282,6 +294,35 @@ export function IconChevronUp(props: IconProps) {
   return (
     <IconBase viewBox={UI_BOX} fill="none" {...props}>
       <path d="M3.6 9.9 8 5.5l4.4 4.4" {...STROKE} />
+    </IconBase>
+  );
+}
+
+/** Abrir para baixo (seletor de lista). Par do IconChevronUp, mesmo traço. */
+export function IconChevronDown(props: IconProps) {
+  return (
+    <IconBase viewBox={UI_BOX} fill="none" {...props}>
+      <path d="M3.6 6.1 8 10.5l4.4-4.4" {...STROKE} />
+    </IconBase>
+  );
+}
+
+/** Boleto: o código de barras, em traços de larguras diferentes. */
+export function IconBarcode(props: IconProps) {
+  return (
+    <IconBase viewBox={UI_BOX} fill="none" {...props}>
+      <path d="M2.2 3.5v9M4.4 3.5v9M7.3 3.5v9M9.4 3.5v9M13.8 3.5v9" {...STROKE} />
+      <path d="M11.6 3.5v9" {...STROKE} strokeWidth={2.4} strokeLinecap="butt" />
+    </IconBase>
+  );
+}
+
+/** Forma de pagamento genérica (carteira): quando o gateway não publica imagem. */
+export function IconWallet(props: IconProps) {
+  return (
+    <IconBase viewBox={UI_BOX} fill="none" {...props}>
+      <path d="M12.6 5.2V3.9a1.1 1.1 0 0 0-1.1-1.1H3.3a1.5 1.5 0 0 0-1.5 1.5v7.9a1.5 1.5 0 0 0 1.5 1.5h9.4a1.5 1.5 0 0 0 1.5-1.5V6.7a1.5 1.5 0 0 0-1.5-1.5H3.3a1.5 1.5 0 0 1-1.5-1.5" {...STROKE} />
+      <circle cx="11.2" cy="9.4" r="0.8" fill="currentColor" />
     </IconBase>
   );
 }

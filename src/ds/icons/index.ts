@@ -20,10 +20,14 @@ export {
   IconLock,
   IconMapPin,
   IconPackage,
+  IconTruck,
   IconCreditCard,
   IconPix,
   IconArrowLeft,
   IconChevronUp,
+  IconChevronDown,
+  IconBarcode,
+  IconWallet,
 } from "./ui";
 
 export {

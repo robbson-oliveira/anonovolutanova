@@ -1,40 +1,78 @@
-import type { CheckoutConfig, CheckoutGateway } from "@/lib/commerce/bridge-api";
+import type { CheckoutConfig, CheckoutGateway, GatewayKind } from "@/lib/commerce/bridge-api";
 import { asaasAdapter } from "./asaas";
 import { mercadoPagoAdapter } from "./mercadopago";
-import type { PaymentAdapter } from "./types";
+import { offlineAdapter } from "./offline";
+import type { CardInput, PaymentAdapter } from "./types";
 
 export type { CardInput, PaymentAdapter } from "./types";
 
-const ADAPTERS: PaymentAdapter[] = [asaasAdapter, mercadoPagoAdapter];
+const ADAPTERS: PaymentAdapter[] = [asaasAdapter, mercadoPagoAdapter, offlineAdapter];
 
-export function adapterFor(gatewayId: string): PaymentAdapter | null {
-  return ADAPTERS.find((a) => a.gatewayIds.includes(gatewayId)) ?? null;
+/**
+ * O adaptador de um gateway: pelo id; e, para um gateway `offline` de id
+ * desconhecido (outro plugin de depósito, por exemplo), o offline — formas
+ * offline não pedem campos, por definição do WooCommerce.
+ */
+export function adapterFor(gateway: Pick<CheckoutGateway, "id" | "kind">): PaymentAdapter | null {
+  const byId = ADAPTERS.find((a) => a.gatewayIds.includes(gateway.id));
+  if (byId) return byId;
+  return gateway.kind === "offline" ? offlineAdapter : null;
 }
 
 export type PaymentOption = {
-  kind: "pix" | "card";
+  kind: GatewayKind;
   gateway: CheckoutGateway;
   adapter: PaymentAdapter;
 };
 
+/** O adaptador sabe montar o `payment_data` deste tipo de gateway? */
+function canBuild(adapter: PaymentAdapter, kind: GatewayKind): boolean {
+  switch (kind) {
+    case "pix":
+      return true;
+    case "card":
+      return adapter.supportsCard;
+    case "boleto":
+    case "offline":
+      return typeof adapter.plainPaymentData === "function";
+    default:
+      // Carteiras (Google Pay, Apple Pay…) exigem SDK próprio: nenhum adaptador ainda.
+      return false;
+  }
+}
+
 /**
- * As formas de pagamento que o checkout oferece: Pix e cartão, cada uma só se
- * houver um gateway ativo daquele tipo no WooCommerce E um adaptador que saiba
- * montá-la. O WooCommerce decide o que está ativo; o site só não mostra o que
- * ainda não sabe cobrar.
+ * As formas de pagamento que o checkout oferece, na ordem do WooCommerce: os
+ * gateways ativos (config do anln-storefront-bridge) que a Store API também
+ * aceita para este carrinho (`payment_methods`) E que um adaptador daqui sabe
+ * montar. O WooCommerce decide o que está ativo; o site só não mostra o que
+ * ainda não sabe cobrar, nem o que o WooCommerce recusaria no pedido.
+ *
+ * `cartMethods` ausente (carrinho ainda sem a lista) não filtra nada.
  */
-export function paymentOptions(config: CheckoutConfig | null): PaymentOption[] {
+export function paymentOptions(
+  config: CheckoutConfig | null,
+  cartMethods?: readonly string[] | null,
+): PaymentOption[] {
   if (!config) return [];
   const out: PaymentOption[] = [];
-  for (const kind of ["pix", "card"] as const) {
-    for (const gateway of config.gateways.filter((g) => g.kind === kind)) {
-      const adapter = adapterFor(gateway.id);
-      if (!adapter || (kind === "card" && !adapter.supportsCard)) continue;
-      out.push({ kind, gateway, adapter });
-      break;
-    }
+  for (const gateway of config.gateways) {
+    if (cartMethods && !cartMethods.includes(gateway.id)) continue;
+    const adapter = adapterFor(gateway);
+    if (!adapter || !canBuild(adapter, gateway.kind)) continue;
+    out.push({ kind: gateway.kind, gateway, adapter });
   }
   return out;
+}
+
+/** `payment_data` do `POST /checkout` para a forma escolhida. */
+export async function paymentDataFor(
+  option: PaymentOption,
+  card: CardInput,
+): Promise<Array<{ key: string; value: string }>> {
+  if (option.kind === "card") return option.adapter.cardPaymentData(card);
+  if (option.kind === "pix") return option.adapter.pixPaymentData();
+  return option.adapter.plainPaymentData?.() ?? [];
 }
 
 /** Desconto do gateway sobre uma base, na mesma regra que o plugin aplica ao pedido. */

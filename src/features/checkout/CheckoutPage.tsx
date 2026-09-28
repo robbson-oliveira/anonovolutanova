@@ -5,10 +5,12 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   Button,
+  Checkbox,
+  DateField,
   Heading,
   IconArrowLeft,
   IconArrowRight,
-  IconCalendar,
+  IconBarcode,
   IconCheck,
   IconCreditCard,
   IconLock,
@@ -16,14 +18,19 @@ import {
   IconMapPin,
   IconPackage,
   IconPix,
+  IconWallet,
+  RadioGroup,
+  Select,
   Text,
   cn,
+  type RadioOption,
+  type SelectOption,
 } from "@ds/index";
 import { BUY_URL, PRODUCT_NAME } from "@content/product";
 import { useCart } from "@/features/cart/CartProvider";
 import { orderAttribution } from "@/lib/attribution";
-import { BR_STATES, lookupCep, maskCep, maskCpf, onlyDigits } from "@/lib/commerce/br";
-import { getCheckoutConfig, type CheckoutConfig } from "@/lib/commerce/bridge-api";
+import { BR_STATES, BR_STATE_NAMES, lookupCep, maskCep, maskCnpj, maskCpf, normalizeCnpj, onlyDigits } from "@/lib/commerce/br";
+import { getCheckoutConfig, type CheckoutConfig, type GatewayKind } from "@/lib/commerce/bridge-api";
 import {
   errorMessage,
   fromMinor,
@@ -34,7 +41,13 @@ import {
 } from "@/lib/commerce/store-api";
 import { publicEnv } from "@/lib/env";
 import { formatBRL } from "@/lib/format";
-import { gatewayDiscount, paymentOptions, type CardInput } from "@/lib/payments";
+import {
+  gatewayDiscount,
+  paymentDataFor,
+  paymentOptions,
+  type CardInput,
+  type PaymentOption,
+} from "@/lib/payments";
 import { cartCoupon, cartTrackItems } from "@/lib/tracking/cart-items";
 import {
   savePurchaseSnapshot,
@@ -43,7 +56,7 @@ import {
   trackBeginCheckout,
 } from "@/lib/tracking/events";
 import { CardForm } from "./CardForm";
-import { Field, SelectField } from "./Field";
+import { Field } from "./Field";
 import { MobileSummaryBar } from "./MobileSummaryBar";
 import { OrderSummary } from "./OrderSummary";
 import { PhoneField } from "./PhoneField";
@@ -55,6 +68,7 @@ import {
   clearForm,
   loadForm,
   maskBirthDate,
+  quotedCep,
   saveForm,
   toStoreAddresses,
   validateAddress,
@@ -78,6 +92,41 @@ type ShippingState = {
 const EMPTY_CARD: CardInput = { holderName: "", number: "", expMonth: "", expYear: "", cvv: "", installments: 1 };
 const CEP_SEARCH_URL = "https://buscacepinter.correios.com.br/app/endereco/index.php";
 const logo = "/img/logo.png";
+
+const PERSON_TYPES: RadioOption[] = [
+  { value: "pf", label: "Pessoa física" },
+  { value: "pj", label: "Pessoa jurídica" },
+];
+
+/** "Espírito Santo (ES)"; o valor continua sendo a UF. */
+const STATE_OPTIONS: SelectOption[] = BR_STATES.map((uf) => ({ value: uf, label: `${BR_STATE_NAMES[uf]} (${uf})` }));
+
+/** Primeiro dia aceito na data de nascimento (o mesmo limite de isValidBirthDate). */
+const BIRTH_MIN = new Date(1900, 0, 1);
+// Calendário vazio abre 30 anos atrás: quem compra é adulto, e voltar
+// décadas mês a mês a partir de hoje seria o caminho mais longo.
+const BIRTH_DEFAULT_MONTH = new Date(new Date().getFullYear() - 30, 0, 1);
+
+/** Nome da forma quando o WooCommerce não manda título. */
+const KIND_LABEL: Record<GatewayKind, string> = {
+  pix: "Pix",
+  card: "Cartão de crédito",
+  boleto: "Boleto",
+  wallet: "Carteira digital",
+  offline: "Outra forma",
+};
+
+/** `payment_type` do GA4 para cada tipo de gateway. */
+const TRACK_PAYMENT_TYPE: Record<GatewayKind, string> = {
+  pix: "pix",
+  card: "credit_card",
+  boleto: "boleto",
+  wallet: "wallet",
+  offline: "offline",
+};
+
+/** Descrição do gateway em texto: o WooCommerce aceita HTML nela. */
+const plainText = (html: string) => html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
 
 /**
  * O WooCommerce devolve `redirect_url` em todo pedido. Só se segue quando ela
@@ -117,6 +166,44 @@ function Panel({ title, icon, children }: { title: string; icon?: React.ReactNod
   );
 }
 
+/** Ícone do DS para o tipo de gateway (quando o gateway não publica imagem). */
+function KindIcon({ kind }: { kind: GatewayKind }) {
+  if (kind === "pix") return <IconPix />;
+  if (kind === "card") return <IconCreditCard />;
+  if (kind === "boleto") return <IconBarcode />;
+  return <IconWallet />;
+}
+
+/**
+ * Imagem do gateway como o WooCommerce a publica (`icon_url`), num tamanho
+ * contido; sem imagem (o woo-asaas não publica) ou se ela não carregar, o
+ * ícone do DS para o tipo.
+ */
+function GatewayMark({ option }: { option: PaymentOption }) {
+  const [failed, setFailed] = useState(false);
+  const src = option.gateway.icon_url?.trim();
+  if (src && !failed) {
+    return (
+      // <img> e não next/image: a imagem vem do WordPress, com tamanho e
+      // formato que variam por plugin; aqui só se limita a caixa.
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={src}
+        alt={option.gateway.title || KIND_LABEL[option.kind]}
+        loading="lazy"
+        decoding="async"
+        onError={() => setFailed(true)}
+        className="block h-7 w-auto max-w-28 object-contain"
+      />
+    );
+  }
+  return (
+    <span aria-hidden className="text-lead text-action">
+      <KindIcon kind={option.kind} />
+    </span>
+  );
+}
+
 export function CheckoutPage() {
   const router = useRouter();
   const cart = useCart();
@@ -132,12 +219,42 @@ export function CheckoutPage() {
   const [shipping, setShipping] = useState<ShippingState>({ rates: [], packageId: 0, selected: "", loading: false, error: null });
   const [cep, setCep] = useState<{ loading: boolean; error: string | null }>({ loading: false, error: null });
 
-  const [payKind, setPayKind] = useState<"pix" | "card">("pix");
+  // Id do gateway escolhido (pode haver mais de um do mesmo tipo).
+  const [payId, setPayId] = useState("");
   const [card, setCard] = useState<CardInput>(EMPTY_CARD);
   const [expiry, setExpiry] = useState("");
-  const [acceptTerms, setAcceptTerms] = useState(false);
+  // Marcado de início; continua obrigatório (desmarcado, o erro aparece ao pagar).
+  const [acceptTerms, setAcceptTerms] = useState(true);
+  const [today] = useState(() => new Date());
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+
+  // ----- CEP -----
+
+  const fillFromCep = useCallback(async (value: string) => {
+    if (onlyDigits(value).length !== 8) return;
+    setCep({ loading: true, error: null });
+    try {
+      const found = await lookupCep(value);
+      if (!found) {
+        setCep({ loading: false, error: "CEP não encontrado. Confira os números." });
+        return;
+      }
+      setForm((f) => ({
+        ...f,
+        address: {
+          ...f.address,
+          address_1: found.logradouro || f.address.address_1,
+          neighborhood: found.bairro || f.address.neighborhood,
+          city: found.localidade || f.address.city,
+          state: found.uf || f.address.state,
+        },
+      }));
+      setCep({ loading: false, error: null });
+    } catch {
+      setCep({ loading: false, error: "Não foi possível consultar o CEP. Preencha o endereço à mão." });
+    }
+  }, []);
 
   // ----- Carregamento -----
 
@@ -147,8 +264,16 @@ export function CheckoutPage() {
       setForm(saved.form);
       setStep(saved.step);
     }
+    // CEP já cotado na home: adianta o endereço se o do checkout está vazio.
+    if (!onlyDigits(saved?.form.address.postcode ?? "")) {
+      const quoted = quotedCep();
+      if (quoted) {
+        setForm((f) => ({ ...f, address: { ...f.address, postcode: quoted } }));
+        void fillFromCep(quoted);
+      }
+    }
     setRestored(true);
-  }, []);
+  }, [fillFromCep]);
 
   useEffect(() => {
     if (restored) saveForm(form, step);
@@ -160,11 +285,13 @@ export function CheckoutPage() {
       .catch((err) => setConfigError(errorMessage(err, "Não foi possível carregar as formas de pagamento.")));
   }, []);
 
-  const options = useMemo(() => paymentOptions(config), [config]);
-  const chosen = options.find((o) => o.kind === payKind) ?? options[0] ?? null;
+  // Gateways ativos no WooCommerce que a Store API aceita para este carrinho.
+  const cartMethods = cart.cart?.payment_methods;
+  const options = useMemo(() => paymentOptions(config, cartMethods), [config, cartMethods]);
+  const chosen = options.find((o) => o.gateway.id === payId) ?? options[0] ?? null;
   useEffect(() => {
-    if (chosen && chosen.kind !== payKind) setPayKind(chosen.kind);
-  }, [chosen, payKind]);
+    if (chosen && chosen.gateway.id !== payId) setPayId(chosen.gateway.id);
+  }, [chosen, payId]);
 
   // begin_checkout: uma vez, quando o carrinho com itens chega.
   const beganCheckout = useRef(false);
@@ -254,33 +381,6 @@ export function CheckoutPage() {
   const selectedRate = shipping.rates.find((r) => r.rate_id === shipping.selected) ?? null;
   const minor = cart.cart?.totals.currency_minor_unit ?? 2;
 
-  // ----- CEP -----
-
-  const fillFromCep = async (value: string) => {
-    if (onlyDigits(value).length !== 8) return;
-    setCep({ loading: true, error: null });
-    try {
-      const found = await lookupCep(value);
-      if (!found) {
-        setCep({ loading: false, error: "CEP não encontrado. Confira os números." });
-        return;
-      }
-      setForm((f) => ({
-        ...f,
-        address: {
-          ...f.address,
-          address_1: found.logradouro || f.address.address_1,
-          neighborhood: found.bairro || f.address.neighborhood,
-          city: found.localidade || f.address.city,
-          state: found.uf || f.address.state,
-        },
-      }));
-      setCep({ loading: false, error: null });
-    } catch {
-      setCep({ loading: false, error: "Não foi possível consultar o CEP. Preencha o endereço à mão." });
-    }
-  };
-
   // ----- Navegação -----
 
   const go = (next: Step) => {
@@ -310,6 +410,14 @@ export function CheckoutPage() {
   const shippingKnown = step !== "contato" && Boolean(shipping.selected);
   const payable = orderTotal - pixDiscount;
 
+  // Boleto e formas offline: a descrição do gateway no WooCommerce vira o
+  // painel de instruções (boleto sem descrição ganha uma frase padrão).
+  const infoText =
+    chosen && (chosen.kind === "boleto" || chosen.kind === "offline")
+      ? plainText(chosen.gateway.description ?? "") ||
+        (chosen.kind === "boleto" ? "Ao confirmar a compra, mostramos o boleto para fazer o pagamento." : "")
+      : "";
+
   // ----- Pedido -----
 
   const submit = async () => {
@@ -335,11 +443,10 @@ export function CheckoutPage() {
 
       const trackItems = cartTrackItems(cart.cart);
       const coupon = cartCoupon(cart.cart);
-      const paymentType = chosen.kind === "pix" ? "pix" : "credit_card";
+      const paymentType = TRACK_PAYMENT_TYPE[chosen.kind];
       trackAddPaymentInfo(trackItems, paymentType, coupon);
 
-      const payment_data =
-        chosen.kind === "card" ? await chosen.adapter.cardPaymentData(card) : chosen.adapter.pixPaymentData();
+      const payment_data = await paymentDataFor(chosen, card);
 
       const result = await processCheckout({
         billing_address: billing,
@@ -439,6 +546,11 @@ export function CheckoutPage() {
         <p>
           {form.contact.firstName} {form.contact.lastName}
         </p>
+        {form.contact.personType === "pj" && form.contact.company.trim() ? (
+          <p className="text-text-muted">
+            {form.contact.company.trim()} · CNPJ {maskCnpj(form.contact.cnpj)}
+          </p>
+        ) : null}
         <p className="text-text-muted">{form.contact.phone.number}</p>
         <p className="text-text-muted">{form.contact.email}</p>
       </>
@@ -460,8 +572,16 @@ export function CheckoutPage() {
               <Field id="first-name" label="Nome" required autoComplete="given-name" value={form.contact.firstName} onChange={(e) => setContact({ firstName: e.target.value })} error={ce.firstName} />
               <Field id="last-name" label="Sobrenome" required autoComplete="family-name" value={form.contact.lastName} onChange={(e) => setContact({ lastName: e.target.value })} error={ce.lastName} />
               <PhoneField id="phone" label="Telefone" required value={form.contact.phone.number} onChange={(number, valid) => setContact({ phone: { number, valid } })} error={ce.phone} className="sm:col-span-2" />
-              <Field id="cpf" label="CPF" required={config?.cpf_required ?? true} inputMode="numeric" value={maskCpf(form.contact.cpf)} onChange={(e) => setContact({ cpf: onlyDigits(e.target.value) })} error={ce.cpf} className="sm:col-span-2" />
-              <Field id="birthdate" label="Data de nascimento" required={config?.birthdate_required ?? false} inputMode="numeric" placeholder="dd/mm/aaaa" autoComplete="bday" icon={<IconCalendar />} value={form.contact.birthDate} onChange={(e) => setContact({ birthDate: maskBirthDate(e.target.value) })} error={ce.birthDate} className="sm:col-span-2" />
+              <RadioGroup id="person-type" label="Comprando como" value={form.contact.personType} onValueChange={(v) => setContact({ personType: v === "pj" ? "pj" : "pf" })} options={PERSON_TYPES} className="sm:col-span-2" />
+              {form.contact.personType === "pj" ? (
+                <>
+                  <Field id="company" label="Razão social" required autoComplete="organization" value={form.contact.company} onChange={(e) => setContact({ company: e.target.value })} error={ce.company} className="sm:col-span-2" />
+                  <Field id="cnpj" label="CNPJ" required autoCapitalize="characters" spellCheck={false} placeholder="00.000.000/0000-00" value={maskCnpj(form.contact.cnpj)} onChange={(e) => setContact({ cnpj: normalizeCnpj(e.target.value) })} error={ce.cnpj} className="sm:col-span-2" />
+                </>
+              ) : (
+                <Field id="cpf" label="CPF" required={config?.cpf_required ?? true} inputMode="numeric" value={maskCpf(form.contact.cpf)} onChange={(e) => setContact({ cpf: onlyDigits(e.target.value) })} error={ce.cpf} className="sm:col-span-2" />
+              )}
+              <DateField id="birthdate" label="Data de nascimento" required={config?.birthdate_required ?? false} inputMode="numeric" autoComplete="bday" min={BIRTH_MIN} max={today} defaultMonth={BIRTH_DEFAULT_MONTH} value={form.contact.birthDate} onChange={(v) => setContact({ birthDate: maskBirthDate(v) })} error={ce.birthDate} className="sm:col-span-2" />
             </div>
           </section>
         ) : null}
@@ -513,14 +633,7 @@ export function CheckoutPage() {
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field id="city" label="Cidade" required autoComplete="shipping address-level2" value={form.address.city} onChange={(e) => setAddress({ city: e.target.value })} error={ae.city} />
-                <SelectField id="state" label="Estado" required autoComplete="shipping address-level1" value={form.address.state} onChange={(e) => setAddress({ state: e.target.value })} error={ae.state}>
-                  <option value="">Selecione</option>
-                  {BR_STATES.map((uf) => (
-                    <option key={uf} value={uf}>
-                      {uf}
-                    </option>
-                  ))}
-                </SelectField>
+                <Select id="state" label="Estado" required name="state" autoComplete="shipping address-level1" placeholder="Selecione" value={form.address.state} onValueChange={(uf) => setAddress({ state: uf })} options={STATE_OPTIONS} error={ae.state} />
               </div>
             </Panel>
 
@@ -606,9 +719,13 @@ export function CheckoutPage() {
                 </Text>
               ) : (
                 <>
-                  <div role="radiogroup" aria-label="Forma de pagamento" className="grid grid-cols-2 gap-3">
+                  <div
+                    role="radiogroup"
+                    aria-label="Forma de pagamento"
+                    className="grid grid-cols-2 gap-3 sm:grid-cols-[repeat(auto-fit,minmax(9.5rem,1fr))]"
+                  >
                     {options.map((o) => {
-                      const active = o.kind === chosen?.kind;
+                      const active = o.gateway.id === chosen?.gateway.id;
                       const rule = o.gateway.discount_rule;
                       const badge =
                         o.kind === "pix" && rule
@@ -620,24 +737,26 @@ export function CheckoutPage() {
                           : null;
                       return (
                         <button
-                          key={o.kind}
+                          key={o.gateway.id}
                           type="button"
                           role="radio"
                           aria-checked={active}
                           onClick={() => {
-                            setPayKind(o.kind);
+                            setPayId(o.gateway.id);
                             setSubmitError(null);
                             // Campos do cartão acabaram de aparecer: sem erro até tentar pagar com eles.
-                            if (o.kind !== payKind) setShowErrors((s) => ({ ...s, pagamento: false }));
+                            if (o.gateway.id !== chosen?.gateway.id) setShowErrors((s) => ({ ...s, pagamento: false }));
                           }}
                           className={cn(
-                            "flex min-h-28 cursor-pointer flex-col items-center justify-center gap-2 rounded-card border bg-surface-plain px-3 py-4 text-center",
+                            "flex min-h-28 min-w-0 cursor-pointer flex-col items-center justify-center gap-2 rounded-card border bg-surface-plain px-3 py-4 text-center",
                             "transition-colors [transition-duration:var(--duration-fast)]",
                             active ? "border-2 border-action" : "border-border hover:border-action/50",
                           )}
                         >
-                          <span className="text-lead text-action">{o.kind === "pix" ? <IconPix /> : <IconCreditCard />}</span>
-                          <span className="text-label font-medium text-text-strong">{o.kind === "pix" ? "Pix" : "Cartão de crédito"}</span>
+                          <GatewayMark option={o} />
+                          <span className="text-label font-medium break-words text-text-strong">
+                            {o.gateway.title || KIND_LABEL[o.kind]}
+                          </span>
                           {badge ? (
                             <span className="rounded-pill bg-surface-accent-soft px-2 py-0.5 text-caption font-bold text-text-strong">{badge}</span>
                           ) : o.kind === "card" && o.gateway.installments ? (
@@ -657,6 +776,16 @@ export function CheckoutPage() {
                       </span>
                       <p className="text-field font-medium text-text-strong">Pague de forma segura e instantânea</p>
                       <p className="text-label text-text-muted">Ao confirmar a compra, mostramos o código para fazer o pagamento.</p>
+                    </div>
+                  ) : null}
+
+                  {chosen && infoText ? (
+                    <div className="flex flex-col items-center gap-2 rounded-card border border-border px-4 py-6 text-center">
+                      <span className="text-h3 text-action">
+                        <KindIcon kind={chosen.kind} />
+                      </span>
+                      <p className="text-field font-medium text-text-strong">{chosen.gateway.title || KIND_LABEL[chosen.kind]}</p>
+                      <p className="text-label text-text-muted">{infoText}</p>
                     </div>
                   ) : null}
 
@@ -687,27 +816,19 @@ export function CheckoutPage() {
               </a>
               .
             </p>
-            <label className="flex cursor-pointer items-start gap-3 text-label text-text-strong">
-              <input
-                type="checkbox"
-                checked={acceptTerms}
-                onChange={(e) => setAcceptTerms(e.target.checked)}
-                className="mt-0.5 size-5 shrink-0 cursor-pointer accent-action"
-                aria-describedby={showErrors.pagamento && !acceptTerms ? "terms-error" : undefined}
-              />
-              <span>
-                Li e concordo com os{" "}
-                <a href="/termos-e-condicoes" target="_blank" className="text-action underline-offset-4 hover:underline">
-                  termos e condições
-                </a>
-                .<span className="text-accent"> *</span>
-              </span>
-            </label>
-            {showErrors.pagamento && !acceptTerms ? (
-              <span id="terms-error" className="text-label text-accent">
-                Para finalizar, é preciso aceitar os termos e condições.
-              </span>
-            ) : null}
+            <Checkbox
+              id="terms"
+              required
+              checked={acceptTerms}
+              onCheckedChange={setAcceptTerms}
+              error={showErrors.pagamento && !acceptTerms ? "Para finalizar, é preciso aceitar os termos e condições." : undefined}
+            >
+              Li e concordo com os{" "}
+              <a href="/termos-e-condicoes" target="_blank" className="text-action underline-offset-4 hover:underline">
+                termos e condições
+              </a>
+              .<span className="text-accent"> *</span>
+            </Checkbox>
 
             {submitError ? (
               <Text size="xs" tone="accent" role="alert">

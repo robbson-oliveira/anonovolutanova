@@ -10,6 +10,9 @@ import type { PaymentAdapter } from "./types";
  * escrever se o Mercado Pago for o escolhido em D3 — por isso `supportsCard`
  * é falso e o checkout não oferece cartão com este gateway por enquanto. O
  * storefront da Camila tem um ponto de partida em `lib/payments/tokenize-card.ts`.
+ *
+ * O boleto (woo-mercado-pago-ticket) pede a escolha do emissor e o documento
+ * em campos próprios; sem `plainPaymentData`, o checkout não o oferece.
  */
 export const mercadoPagoAdapter: PaymentAdapter = {
   gatewayIds: ["woo-mercado-pago-pix", "woo-mercado-pago-custom", "woo-mercado-pago-ticket"],

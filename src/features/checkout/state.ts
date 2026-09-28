@@ -5,6 +5,8 @@
 
 import {
   BR_STATES,
+  isValidCnpj,
+  normalizeCnpj,
   isValidCpf,
   isValidEmail,
   joinLabels,
@@ -25,13 +27,23 @@ export const STEPS: Array<{ key: Step; label: string }> = [
 /** Telefone em E.164 e se o intl-tel-input o considera válido para o país. */
 export type Phone = { number: string; valid: boolean };
 
+/** Pessoa física (CPF) ou jurídica (razão social + CNPJ). */
+export type PersonType = "pf" | "pj";
+
 /** Titular da compra (cobrança, nota fiscal, e-mails). */
 export type Contact = {
   email: string;
   firstName: string;
   lastName: string;
   phone: Phone;
+  /** Comprando como pessoa física ou jurídica. Decide CPF ou CNPJ. */
+  personType: PersonType;
+  /** Só dígitos. Vale para pessoa física. */
   cpf: string;
+  /** Razão social. Vale para pessoa jurídica. */
+  company: string;
+  /** Só dígitos. Vale para pessoa jurídica. */
+  cnpj: string;
   /** "dd/mm/aaaa", opcional salvo se o plugin exigir. */
   birthDate: string;
 };
@@ -65,7 +77,17 @@ export type CheckoutForm = {
 const EMPTY_PHONE: Phone = { number: "", valid: false };
 
 export const EMPTY_FORM: CheckoutForm = {
-  contact: { email: "", firstName: "", lastName: "", phone: EMPTY_PHONE, cpf: "", birthDate: "" },
+  contact: {
+    email: "",
+    firstName: "",
+    lastName: "",
+    phone: EMPTY_PHONE,
+    personType: "pf",
+    cpf: "",
+    company: "",
+    cnpj: "",
+    birthDate: "",
+  },
   recipient: { firstName: "", lastName: "", phone: EMPTY_PHONE },
   recipientTouched: false,
   address: { postcode: "", address_1: "", number: "", neighborhood: "", address_2: "", city: "", state: "" },
@@ -98,7 +120,13 @@ export function validateContact(
   if (!c.firstName.trim()) e.firstName = "Informe seu nome.";
   if (!c.lastName.trim()) e.lastName = "Informe seu sobrenome.";
   if (!c.phone.valid) e.phone = "Informe um telefone válido, com DDD.";
-  if ((rules.cpfRequired || c.cpf.trim()) && !isValidCpf(c.cpf)) e.cpf = "CPF inválido.";
+  if (c.personType === "pj") {
+    // Pessoa jurídica: razão social e CNPJ sempre. A regra do CPF não vale aqui.
+    if (!c.company.trim()) e.company = "Informe a razão social.";
+    if (!isValidCnpj(c.cnpj)) e.cnpj = "CNPJ inválido.";
+  } else if ((rules.cpfRequired || c.cpf.trim()) && !isValidCpf(c.cpf)) {
+    e.cpf = "CPF inválido.";
+  }
   if ((rules.birthDateRequired || c.birthDate.trim()) && !isValidBirthDate(c.birthDate)) {
     e.birthDate = "Data inválida (dd/mm/aaaa).";
   }
@@ -178,6 +206,7 @@ export function luhn(digits: string): boolean {
  * Endereços no formato da Store API. Cobrança = titular; entrega =
  * destinatário, no mesmo endereço. Número e bairro vão à parte, na extensão
  * `anln_checkout`: o esquema de endereço da Store API não tem esses campos.
+ * Pessoa jurídica: a razão social vai em `company` da cobrança.
  */
 export function toStoreAddresses(form: CheckoutForm): { billing: StoreAddress; shipping: StoreAddress } {
   const place = {
@@ -192,6 +221,7 @@ export function toStoreAddresses(form: CheckoutForm): { billing: StoreAddress; s
   return {
     billing: {
       ...place,
+      company: form.contact.personType === "pj" ? form.contact.company.trim() : "",
       first_name: form.contact.firstName.trim(),
       last_name: form.contact.lastName.trim(),
       phone: phoneForStore(form.contact.phone.number),
@@ -212,10 +242,18 @@ const isoDate = (br: string) => {
   return m ? `${m[3]}-${m[2]}-${m[1]}` : "";
 };
 
-/** `extensions.anln_checkout`: o que o anln-storefront-bridge grava no pedido. */
+/**
+ * `extensions.anln_checkout`: o que o anln-storefront-bridge grava no pedido.
+ * Pessoa física manda o CPF; jurídica manda CNPJ e razão social (e não o CPF).
+ */
 export function checkoutExtension(form: CheckoutForm) {
+  const c = form.contact;
+  const document =
+    c.personType === "pj"
+      ? { person_type: "pj" as const, cnpj: normalizeCnpj(c.cnpj), company: c.company.trim() }
+      : { person_type: "pf" as const, cpf: onlyDigits(c.cpf) };
   return {
-    cpf: onlyDigits(form.contact.cpf),
+    ...document,
     birthdate: isoDate(form.contact.birthDate),
     billing_number: form.address.number.trim(),
     billing_neighborhood: form.address.neighborhood.trim(),
@@ -247,9 +285,11 @@ export function loadForm(): { form: CheckoutForm; step: Step } | null {
     // Formato antigo guardava o telefone como string: descarta, pede de novo.
     const phone = (p: unknown): Phone =>
       p && typeof p === "object" && "number" in p ? (p as Phone) : EMPTY_PHONE;
+    // Formulário salvo antes da escolha PF/PJ não tem `personType`: é pessoa física.
+    const personType: PersonType = f.contact?.personType === "pj" ? "pj" : "pf";
     return {
       form: {
-        contact: { ...EMPTY_FORM.contact, ...f.contact, phone: phone(f.contact?.phone) },
+        contact: { ...EMPTY_FORM.contact, ...f.contact, personType, phone: phone(f.contact?.phone) },
         recipient: { ...EMPTY_FORM.recipient, ...f.recipient, phone: phone(f.recipient?.phone) },
         recipientTouched: Boolean(f.recipientTouched),
         address: { ...EMPTY_FORM.address, ...f.address },
@@ -266,6 +306,19 @@ export function saveForm(form: CheckoutForm, step: Step): void {
     window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ form, step }));
   } catch {
     // Sem storage: o formulário só não sobrevive ao recarregamento.
+  }
+}
+
+/**
+ * CEP cotado na home (`anln_cep`, localStorage, 8 dígitos) para adiantar o
+ * endereço do checkout. Vazio se não houver ou o storage não estiver acessível.
+ */
+export function quotedCep(): string {
+  try {
+    const d = onlyDigits(window.localStorage.getItem("anln_cep") ?? "");
+    return d.length === 8 ? d : "";
+  } catch {
+    return "";
   }
 }
 

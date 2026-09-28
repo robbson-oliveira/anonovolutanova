@@ -31,4 +31,10 @@ export type PaymentAdapter = {
    * navegador trocam o número do cartão por um token aqui.
    */
   cardPaymentData(card: CardInput): Promise<Array<{ key: string; value: string }>>;
+  /**
+   * `payment_data` de boleto e formas offline (depósito, cheque, na entrega),
+   * que não pedem campos no checkout. Ausente = o adaptador não sabe montar
+   * essas formas deste gateway, e o checkout não as oferece.
+   */
+  plainPaymentData?(): Array<{ key: string; value: string }>;
 };

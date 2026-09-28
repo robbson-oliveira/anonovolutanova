@@ -14,6 +14,9 @@ export const asaasAdapter: PaymentAdapter = {
   gatewayIds: ["asaas-pix", "asaas-credit-card", "asaas-ticket"],
   supportsCard: true,
   pixPaymentData: () => [],
+  // Boleto (asaas-ticket): o plugin gera o boleto com o CPF/CNPJ da cobrança,
+  // sem campos no checkout.
+  plainPaymentData: () => [],
   cardPaymentData: async (card) => [
     { key: "asaas_cc_name", value: card.holderName.trim() },
     { key: "asaas_cc_number", value: card.number.replace(/\D/g, "") },

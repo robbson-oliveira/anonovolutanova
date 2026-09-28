@@ -181,7 +181,9 @@ function KindIcon({ kind }: { kind: GatewayKind }) {
  */
 function GatewayMark({ option }: { option: PaymentOption }) {
   const [failed, setFailed] = useState(false);
-  const src = option.gateway.icon_url?.trim();
+  // Pix always shows the official mark: each plugin ships its own artwork
+  // (or none), and the Pix symbol is what shoppers look for.
+  const src = option.kind === "pix" ? undefined : option.gateway.icon_url?.trim();
   if (src && !failed) {
     return (
       // <img> e não next/image: a imagem vem do WordPress, com tamanho e

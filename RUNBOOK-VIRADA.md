@@ -37,7 +37,7 @@ Marque cada item ao concluir. **Não comece com pendência nas seções 1 e 2.**
   - cliente criado no painel do gateway.
 - [ ] Pix confirmado pelo webhook, por túnel (`cloudflared tunnel --url http://localhost:8088`), com a página de obrigado virando "Pedido confirmado!" e o `purchase` no `dataLayer`.
 - [ ] Teste no celular, pelo navegador do Instagram (abrir um link colado no Direct).
-- [ ] Lighthouse de `/`, `/comprar` e `/checkout` no celular, com os números anotados.
+- [ ] Lighthouse de `/` e `/checkout` no celular, com os números anotados.
 
 ## 3. Véspera
 

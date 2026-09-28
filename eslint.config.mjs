@@ -70,8 +70,6 @@ const eslintConfig = [
       "src/sections/Closing.tsx",
       "src/sections/Offer.tsx",
       "src/sections/Persona.tsx",
-      "src/sections/SiteFooter.tsx",
-      "src/sections/Testimonials.tsx",
     ],
     rules: {
       "no-restricted-syntax": [

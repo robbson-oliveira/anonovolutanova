@@ -27,13 +27,16 @@ const nextConfig: NextConfig = {
       },
 
       /* URLs do site antigo (WordPress/Elementor/WooCommerce) que o wireframe,
-         o Google e os links antigos ainda apontam. A loja agora é /comprar. */
+         o Google e os links antigos ainda apontam. A compra agora é a seção
+         #oferta da home. */
       ...["/shop", "/loja", "/carrinho", "/cart", "/finalizacao-de-compra", "/finalizar-compra", "/checkout-2"].map(
-        (source) => ({ source, destination: "/comprar", permanent: true }),
+        (source) => ({ source, destination: "/#oferta", permanent: true }),
       ),
-      { source: "/produto/:slug*", destination: "/comprar", permanent: true },
-      { source: "/product/:slug*", destination: "/comprar", permanent: true },
-      { source: "/categoria-produto/:slug*", destination: "/comprar", permanent: true },
+      // A antiga página de compra deste site. A query (?edicao=) vai junto.
+      { source: "/comprar", destination: "/#oferta", permanent: true },
+      { source: "/produto/:slug*", destination: "/#oferta", permanent: true },
+      { source: "/product/:slug*", destination: "/#oferta", permanent: true },
+      { source: "/categoria-produto/:slug*", destination: "/#oferta", permanent: true },
 
       /* Sem conta de cliente (D6) e sem AffiliateWP (D7). Temporários: a
          página do programa de afiliadas por cupom ainda vai existir. Lista

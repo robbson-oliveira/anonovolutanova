@@ -1,4 +1,4 @@
-import { CHECKOUT_URL, CYCLE_YEAR, priceLabel } from "@content/product";
+import { BUY_URL, CYCLE_YEAR, priceLabel } from "@content/product";
 const capaColor = "/img/capa-color.png";
 const capaClassica = "/img/capa-classica.png";
 const capaSolo = "/img/capa-solo.png";
@@ -118,7 +118,7 @@ function PriceCard({ thumbSrc }: { thumbSrc: CoverSrc }) {
       </div>
 
       <a
-        href={CHECKOUT_URL}
+        href={BUY_URL}
         className="flex h-[34px] w-[146px] items-center justify-center rounded-sm bg-action text-[15px] font-bold leading-[18px] text-on-action"
       >
         Comprar Agora

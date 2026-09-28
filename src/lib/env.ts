@@ -21,7 +21,7 @@ export const publicEnv = {
   ),
   /**
    * Liga o carrinho e o checkout headless. Fica desligado até a virada
-   * (Fase 7): antes disso /comprar termina no pedido pelo WhatsApp mesmo com o
+   * (Fase 7): antes disso a compra termina no pedido pelo WhatsApp mesmo com o
    * produto configurado. Só vale com ANLN_PRODUCT_ID definido no servidor.
    */
   checkoutEnabled: process.env.NEXT_PUBLIC_CHECKOUT_ENABLED === "true",

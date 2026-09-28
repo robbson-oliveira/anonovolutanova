@@ -19,7 +19,7 @@ import {
   Text,
   cn,
 } from "@ds/index";
-import { PRODUCT_NAME } from "@content/product";
+import { BUY_URL, PRODUCT_NAME } from "@content/product";
 import { useCart } from "@/features/cart/CartProvider";
 import { orderAttribution } from "@/lib/attribution";
 import { BR_STATES, lookupCep, maskCep, maskCpf, onlyDigits } from "@/lib/commerce/br";
@@ -411,7 +411,7 @@ export function CheckoutPage() {
           <Heading as="h1" level="subsection">
             Seu carrinho está vazio
           </Heading>
-          <Button href="/comprar" size="md" shape="block">
+          <Button href={BUY_URL} size="md" shape="block">
             Escolher minha agenda
             <IconArrowRight />
           </Button>
@@ -719,7 +719,7 @@ export function CheckoutPage() {
 
         <div className="flex flex-col-reverse items-stretch gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
           {step === "contato" ? (
-            <a href="/comprar" className="flex items-center justify-center gap-2 text-field text-text-muted hover:text-text-strong">
+            <a href={BUY_URL} className="flex items-center justify-center gap-2 text-field text-text-muted hover:text-text-strong">
               <IconArrowLeft />
               Voltar à loja
             </a>

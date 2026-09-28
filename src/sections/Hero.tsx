@@ -8,7 +8,7 @@ import {
   Text,
 } from "@ds/index";
 import { HERO, STATS } from "@content/home";
-import { CHECKOUT_URL } from "@content/product";
+import { BUY_URL } from "@content/product";
 import { BookStage } from "./BookStage";
 
 /**
@@ -79,7 +79,7 @@ export function Hero() {
 
             <Reveal variant="up" delay={240}>
               <Button
-                href={CHECKOUT_URL}
+                href={BUY_URL}
                 size="lg"
                 shape="block"
                 className="mt-[29px] h-[68px] w-full max-w-[425px]"

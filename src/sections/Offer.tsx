@@ -1,6 +1,6 @@
 import { Reveal, RevealGroup } from "@ds/index";
 import { OFFER } from "@content/offer";
-import { CHECKOUT_URL, installmentLabel, priceLabel } from "@content/product";
+import { BUY_URL, installmentLabel, priceLabel } from "@content/product";
 
 /* -----------------------------------------------------------------------------
    OFERTA — medido no wireframe (viewport 1440), section 1440x1266.
@@ -194,7 +194,7 @@ export function Offer() {
 
                 {/* botão */}
                 <a
-                  href={CHECKOUT_URL}
+                  href={BUY_URL}
                   style={{
                     position: "absolute",
                     left: 71.5,

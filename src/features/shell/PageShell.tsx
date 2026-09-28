@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Button, Container, IconArrowRight, Text } from "@ds/index";
 import { FOOTER } from "@content/home";
-import { CHECKOUT_URL, PRODUCT_NAME } from "@content/product";
+import { BUY_URL, PRODUCT_NAME } from "@content/product";
 import { CartButton } from "@/features/cart/CartButton";
 import { ConsentLink } from "./ConsentLink";
 
@@ -9,7 +9,7 @@ const logo = "/img/logo.png";
 
 const FOOTER_LINKS = [
   { label: "Início", href: "/" },
-  { label: "Comprar", href: CHECKOUT_URL },
+  { label: "Comprar", href: BUY_URL },
   { label: "Contato", href: "/contato" },
   { label: "Política de Privacidade", href: "/politica-de-privacidade" },
   { label: "Termos e Condições", href: "/termos-e-condicoes" },
@@ -41,7 +41,7 @@ export function PageShell({ children, hideBuyButton = false }: PageShellProps) {
           <div className="flex items-center gap-3">
             <CartButton />
             {hideBuyButton ? null : (
-              <Button href={CHECKOUT_URL} size="md" shape="block">
+              <Button href={BUY_URL} size="md" shape="block">
                 Comprar
                 <IconArrowRight />
               </Button>

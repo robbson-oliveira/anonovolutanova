@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Container, IconAccount, IconArrowRight, cn } from "@ds/index";
+import { Button, Container, IconArrowRight, cn } from "@ds/index";
 import { NAV_LINKS } from "@content/home";
-import { CHECKOUT_URL, PRODUCT_NAME } from "@content/product";
+import { BUY_URL, PRODUCT_NAME } from "@content/product";
+import { CartButton } from "@/features/cart/CartButton";
 const logo = "/img/logo.png";
 
 export function SiteHeader() {
@@ -47,17 +48,13 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <a
-            href="#conta"
-            aria-label="Área do cliente"
-            className="hidden size-11 place-items-center rounded-pill text-text-strong transition-colors [transition-duration:var(--duration-fast)] hover:text-accent lg:grid"
-          >
-            <IconAccount className="text-xl" />
-          </a>
+          {/* O wireframe tinha aqui o ícone da área do cliente; sem conta de
+              cliente (D6), o lugar é do carrinho — que só aparece com itens. */}
+          <CartButton />
           {/* shape="block": medido no wireframe, radius=12px (rounded-card),
               não pílula. O padrão do Button é pílula para botão de nav — este
               é a exceção confirmada, não os outros que ainda não medi. */}
-          <Button href={CHECKOUT_URL} size="md" shape="block">
+          <Button href={BUY_URL} size="md" shape="block">
             Comprar
             <IconArrowRight />
           </Button>

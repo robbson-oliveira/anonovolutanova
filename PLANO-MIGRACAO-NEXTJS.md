@@ -94,7 +94,7 @@ entrega:
 | D2 | **Domínios** | ✅ O Next assume `anonovolutanova.com.br`. O WordPress vai para **`admin.anonovolutanova.com.br`**. |
 | D3 | **Gateway** | 🟡 **Mercado Pago ou Asaas, em aberto.** A camada de pagamento é plugável e a escolha sai de um teste em sandbox (Fase 3.4). |
 | D4 | **Bridge** | ✅ **Fork** do `cm-storefront-bridge` com o prefixo do projeto: `anln` (Fase 3.3). |
-| D5 | **Home** | ✅ `/` continua servindo o **wireframe aprovado**. A home em React (`old/app-root/page.tsx`) fica fora deste plano. A Fase 2 só liga os botões do wireframe à loja. |
+| D5 | **Home** | 🔁 **Revista em 27/09/2026:** a home passou a ser a página em React (`src/app/(loja)/page.tsx`, com as seções de `src/sections/` refeitas para o celular), com a seção de produto (#oferta) no lugar da `/comprar`. O wireframe do Framer segue em `/wireframe`, só como referência. Antes: `/` servia o wireframe aprovado. |
 | D6 | **Conta do cliente** | ✅ Checkout **só como visitante**. |
 | D7 | **Afiliados** | ✅ **O AffiliateWP sai.** Cada afiliada recebe um **cupom exclusivo** (Fase 5.1). |
 
@@ -164,6 +164,8 @@ entrega:
 - `/design-system` pinta direto em Manrope e Yellowtail, sem troca de fonte, inclusive com o cache vazio.
 
 ### Fase 2 — Ligar o wireframe à loja (D5)
+
+> **🔁 Substituída em 27/09/2026.** A home agora é em React e a compra acontece na seção #oferta dela: escolhe a edição e a quantidade e segue direto para o checkout. A `/comprar` saiu; ela e as URLs antigas da loja redirecionam (308) para `/#oferta`, mantendo o `?edicao=`. O registro abaixo fica como histórico.
 
 > **✅ Feita em 24/09/2026**, ainda sem commit.
 >
@@ -456,9 +458,9 @@ precisa ser terminado. O outro é apagado.
   - Cupom de afiliada pelo link `?cupom=`.
   - Cupom inválido ou vencido.
   - Estoque de uma edição zerado no meio da compra.
-- **Botões de compra do wireframe:** todos os 7 levam a `/comprar`, no desktop e no celular.
+- **Botões de compra da home:** todos rolam até a seção #oferta, no desktop e no celular.
 - **Mobile primeiro:** o público chega pelo Instagram, inclusive pelo navegador embutido do Instagram.
-- **Lighthouse em `/`, `/comprar` e `/checkout`.**
+- **Lighthouse em `/` e `/checkout`.**
 - **E-mails do WooCommerce:** a marca e os links apontam para `anonovolutanova.com.br`, não para `admin.`.
 
 ### Fase 7 — Virada

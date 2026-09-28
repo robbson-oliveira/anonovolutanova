@@ -49,8 +49,11 @@ export type EditionId = (typeof EDITIONS)[number]["id"];
 export const FREE_SHIPPING_MIN_QTY = 4;
 export const SHIPPING_NOTICE = `Frete Grátis a partir de ${FREE_SHIPPING_MIN_QTY} unidades`;
 
-/** Página de compra. Todos os CTAs de compra do site levam para cá. */
-export const CHECKOUT_URL = "/comprar";
+/**
+ * Seção de produto da home. Todos os CTAs de compra do site levam para cá: na
+ * home só rolam até ela; nas outras páginas voltam para a home já nela.
+ */
+export const BUY_URL = "/#oferta";
 
 export const CONTACT = {
   whatsappNumber: "5527992794290",

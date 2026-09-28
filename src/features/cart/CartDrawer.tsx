@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { Button, Heading, IconArrowRight, IconClose, Text, cn } from "@ds/index";
-import { FREE_SHIPPING_MIN_QTY } from "@content/product";
+import { BUY_URL, FREE_SHIPPING_MIN_QTY } from "@content/product";
 import { fromMinor } from "@/lib/commerce/store-api";
 import { formatBRL } from "@/lib/format";
 import { CartItemRow } from "./CartItemRow";
@@ -72,7 +72,7 @@ export function CartDrawer() {
         {count === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 text-center">
             <Text tone="muted">Seu carrinho está vazio.</Text>
-            <Button href="/comprar" size="md" shape="block" onClick={closeDrawer}>
+            <Button href={BUY_URL} size="md" shape="block" onClick={closeDrawer}>
               Escolher minha agenda
             </Button>
           </div>

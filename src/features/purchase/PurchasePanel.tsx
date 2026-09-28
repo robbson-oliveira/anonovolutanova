@@ -26,17 +26,22 @@ const MAX_QTY = 49;
 
 type PurchasePanelProps = {
   offer: ProductOffer;
-  initialEdition?: EditionId;
+  /** Nível do título com o nome do produto dentro da seção onde o painel está. */
+  headingAs?: "h1" | "h2" | "h3";
 };
 
-export function PurchasePanel({ offer, initialEdition }: PurchasePanelProps) {
+export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
   const firstAvailable =
     offer.editions.find((e) => e.inStock)?.id ?? offer.editions[0].id;
-  const [editionId, setEditionId] = useState<EditionId>(
-    initialEdition && offer.editions.some((e) => e.id === initialEdition && e.inStock)
-      ? initialEdition
-      : firstAvailable,
-  );
+  const [editionId, setEditionId] = useState<EditionId>(firstAvailable);
+
+  // `?edicao=classica` (links antigos de /comprar e de divulgação) escolhe a
+  // edição. Lido no navegador para a home continuar estática.
+  useEffect(() => {
+    const requested = new URLSearchParams(window.location.search).get("edicao");
+    const match = offer.editions.find((e) => e.id === requested && e.inStock);
+    if (match) setEditionId(match.id);
+  }, [offer]);
   const [qty, setQty] = useState(1);
   const groupName = useId();
 
@@ -92,9 +97,9 @@ export function PurchasePanel({ offer, initialEdition }: PurchasePanelProps) {
               width={e.coverSize.width}
               height={e.coverSize.height}
               sizes="(min-width: 640px) 330px, 240px"
-              // A capa inicial é o LCP; a outra carrega junto para a troca ser imediata.
-              preload={e.id === editionId}
-              loading="eager"
+              // Na home o painel fica longe do topo: as duas capas carregam
+              // juntas quando a seção se aproxima, para a troca ser imediata.
+              loading="lazy"
               className={cn(
                 "block h-full w-auto max-w-full drop-shadow-xl",
                 "transition-opacity [transition-duration:var(--duration-fast)]",
@@ -110,7 +115,7 @@ export function PurchasePanel({ offer, initialEdition }: PurchasePanelProps) {
           <Badge tone="plain" icon={<IconSparkle />}>
             Edição Limitada
           </Badge>
-          <Heading as="h1" level="section">
+          <Heading as={headingAs} level={headingAs === "h1" ? "section" : "subsection"}>
             {offer.name}
           </Heading>
           <Text className="leading-snug">

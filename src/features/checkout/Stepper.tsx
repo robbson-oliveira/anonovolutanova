@@ -2,10 +2,10 @@ import { IconCheck, cn } from "@ds/index";
 import { STEPS, type Step } from "./state";
 
 /**
- * Passos do checkout, no padrão da referência: "ETAPA N" miúdo em cima do
- * nome, círculo cheio com check nas etapas feitas, anel com ponto na atual,
- * anel vazio nas seguintes, e traço pontilhado entre elas. Etapas já feitas
- * viram botão, para voltar e corrigir.
+ * Checkout steps, following the reference: a small "ETAPA N" above the name,
+ * a filled green circle with a check on completed steps, a ring with a dot on
+ * the current one, an empty ring on the next ones, and a dashed line between
+ * them. Completed steps become buttons, so the shopper can go back and fix.
  */
 export function Stepper({ current, onGo }: { current: Step; onGo: (step: Step) => void }) {
   const currentIdx = STEPS.findIndex((s) => s.key === current);
@@ -21,7 +21,7 @@ export function Stepper({ current, onGo }: { current: Step; onGo: (step: Step) =
               aria-hidden
               className={cn(
                 "grid size-8 shrink-0 place-items-center rounded-pill",
-                done && "bg-action text-on-action",
+                done && "bg-success text-on-success",
                 active && "border-2 border-action",
                 !done && !active && "border-2 border-border",
               )}

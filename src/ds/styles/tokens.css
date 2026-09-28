@@ -25,6 +25,7 @@
   --brand-moss-700: rgb(52 76 36);    /* botões, olho de seção */
   --brand-moss-600: rgb(56 79 37);    /* display do hero */
   --brand-moss-500: rgb(70 99 47);    /* hover do botão */
+  --brand-moss-100: rgb(52 76 36 / 0.15); /* moss-700 at 15%: text selection */
   --brand-sage-300: rgb(208 209 177); /* superfície da seção de oferta */
   --brand-clay-800: rgb(139 80 42);   /* cards da seção "Sobre" */
   --brand-amber-400: rgb(255 196 102);
@@ -67,6 +68,9 @@
   --brand-illus-ice: rgb(222 242 252);
   --brand-illus-ink: rgb(64 58 70);
   --brand-illus-steel: rgb(182 200 206);
+
+  /* Status — completed checkout steps */
+  --brand-green-500: rgb(34 197 94);
 
   /* ---------------------------------------------------------------------
      2. SEMÂNTICAS — o que os componentes consomem.
@@ -119,9 +123,14 @@
   --color-action-warm: var(--brand-flame-400);        /* botão quente do fechamento: início */
   --color-action-warm-end: var(--brand-gold-400);     /* ...e fim */
   --color-shadow: var(--brand-ink-900);               /* base das sombras desenhadas em SVG */
-  --color-on-accent: var(--brand-paper-100);          /* texto sobre o acento (seleção de texto) */
+  --color-selection: var(--brand-moss-100);           /* text selection background; light enough to keep the text's own color */
   --color-title-dim: var(--brand-amber-400);          /* palavras apagadas dos títulos do "Sobre": início */
   --color-title-dim-end: var(--brand-flame-500);      /* ...e fim do degradê */
+
+  /* Status: something finished (completed checkout step). Kept apart from
+     `action` so the stepper can signal completion without looking like a button. */
+  --color-success: var(--brand-green-500);
+  --color-on-success: var(--brand-paper-100);
 
   /* Ilustração da caixa de presente */
   --color-illus-gift-light: var(--brand-illus-peach);

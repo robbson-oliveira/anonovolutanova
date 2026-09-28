@@ -7,10 +7,12 @@ export function phoneForStore(e164: string): string {
   return e164.startsWith("+55") ? digits.slice(2) : e164;
 }
 
-/** Brazilian number for display: "(27) 99999-0000". Other countries stay in E.164. */
-export function formatPhone(e164: string): string {
-  if (!e164.startsWith("+55")) return e164;
-  const d = phoneForStore(e164);
-  if (d.length !== 10 && d.length !== 11) return e164;
-  return `(${d.slice(0, 2)}) ${d.slice(2, -4)}-${d.slice(-4)}`;
+/**
+ * Brazilian number for display: "(27) 99999-0000". Takes E.164 or the
+ * national digits WooCommerce stores; any other number is shown as it came.
+ */
+export function formatPhone(value: string): string {
+  const national = value.startsWith("+55") ? phoneForStore(value) : value.startsWith("+") ? "" : value.replace(/\D/g, "");
+  if (national.length !== 10 && national.length !== 11) return value;
+  return `(${national.slice(0, 2)}) ${national.slice(2, -4)}-${national.slice(-4)}`;
 }

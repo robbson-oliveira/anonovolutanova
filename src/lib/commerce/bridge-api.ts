@@ -30,6 +30,47 @@ export type CheckoutConfig = {
   currency: string;
 };
 
+/**
+ * What WooCommerce's order-received page lists about the order (bridge 0.5.0+).
+ * The Store API empties the cart once the order exists, so this is where the
+ * thank-you page reads contact, delivery, items and totals from.
+ */
+export type OrderSummary = {
+  number: string;
+  /** ISO 8601 with the store's offset. */
+  created_at: string;
+  customer: { first_name: string; last_name: string; company: string; email: string; phone: string };
+  shipping_address: {
+    first_name: string;
+    last_name: string;
+    address_1: string;
+    number: string;
+    neighborhood: string;
+    address_2: string;
+    city: string;
+    state: string;
+    postcode: string;
+  };
+  /** Null when nothing ships. */
+  shipping: { method: string; total: number } | null;
+  payment_method: { id: string; title: string };
+  items: Array<{
+    id: number;
+    product_id: number;
+    variation_id: number;
+    name: string;
+    quantity: number;
+    /** Line value before coupons. */
+    subtotal: number;
+    total: number;
+    /** Variation attributes, e.g. { name: "Edição", value: "Color" }. */
+    attributes: Array<{ name: string; value: string }>;
+  }>;
+  /** Order fees; the payment-method discount is a negative one. */
+  fees: Array<{ name: string; total: number }>;
+  totals: { subtotal: number; discount: number; shipping: number; total: number; currency: string };
+};
+
 export type PaymentInstructions = {
   order_id: number;
   status: string;
@@ -45,6 +86,8 @@ export type PaymentInstructions = {
       }
     | { type: "boleto"; gateway_id: string; gateway_title: string; boleto: { url: string } }
     | null;
+  /** Missing on bridges older than 0.5.0. */
+  order?: OrderSummary;
 };
 
 async function get<T>(path: string): Promise<T> {

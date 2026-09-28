@@ -4,20 +4,22 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { Button, IconCheck, IconClose, IconHeadset, cn } from "@ds/index";
-import { EDITIONS, INSTAGRAM_URL, PRODUCT_NAME, WHATSAPP_URL } from "@content/product";
-import { getPaymentInstructions, type PaymentInstructions } from "@/lib/commerce/bridge-api";
+import { INSTAGRAM_URL, PRODUCT_NAME, WHATSAPP_URL } from "@content/product";
+import { getPaymentInstructions, type OrderSummary, type PaymentInstructions } from "@/lib/commerce/bridge-api";
+import { onlyDigits } from "@/lib/commerce/br";
+import { editionOfCartItem } from "@/lib/commerce/editions";
 import { errorMessage } from "@/lib/commerce/store-api";
 import { formatBRL } from "@/lib/format";
 import { trackPurchaseOnce } from "@/lib/tracking/events";
 import { PaymentInstructionsPanel, PaymentInstructionsSkeleton, parsePixExpiry } from "./PaymentInstructionsPanel";
 import { formatPhone } from "./phone";
 import { PixCountdown, PixCountdownSkeleton } from "./PixCountdown";
-import { loadReceipt, type OrderReceipt } from "./receipt";
+import { addressLine } from "./state";
 
 /** How often to ask whether the payment went through, and for how long. */
 const POLL_MS = 5000;
 const POLL_FOR_MS = 30 * 60 * 1000;
-/** Usual Pix validity: the countdown ring's full length when the receipt is missing. */
+/** Usual Pix validity: the countdown ring's full length when the order date is unknown. */
 const PIX_WINDOW_MS = 30 * 60 * 1000;
 
 /**
@@ -27,9 +29,9 @@ const PIX_WINDOW_MS = 30 * 60 * 1000;
  * the summary of what was bought.
  *
  * The URL carries the order (`?order_id=&token=&payment=`, the token being
- * WooCommerce's order key). The bridge answers the payment status and, for
- * Pix, the QR and the copy-and-paste code; the page asks again until the
- * payment lands. The details come from the receipt the checkout saved.
+ * WooCommerce's order key). The bridge answers the payment status, the Pix
+ * QR and copy-and-paste code, and the order summary; the page asks again
+ * until the payment lands.
  */
 export function ThankYouPage() {
   const params = useSearchParams();
@@ -37,9 +39,6 @@ export function ThankYouPage() {
   const orderKey = params.get("token") ?? "";
   const paymentKind = params.get("payment") ?? "";
 
-  // Only rendered in the browser (useSearchParams bails the page out of the
-  // server render up to its Suspense), so reading sessionStorage here is safe.
-  const [receipt] = useState<OrderReceipt | null>(() => (orderId && orderKey ? loadReceipt(orderId, orderKey) : null));
   const [data, setData] = useState<PaymentInstructions | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -85,21 +84,22 @@ export function ThankYouPage() {
     );
   }
 
+  const order = data?.order ?? null;
   const failed = data?.payment_status === "failed";
   const instructions = data?.instructions ?? null;
   const pix = instructions?.type === "pix" ? instructions.pix : null;
-  const isPixOrder = paymentKind === "pix" || receipt?.payment.kind === "pix" || Boolean(pix);
+  const isPixOrder = paymentKind === "pix" || Boolean(pix);
   const loading = !data && !error;
 
   const pixDeadline = pix ? parsePixExpiry(pix.expires_at) : null;
-  const placedAt = receipt ? Date.parse(receipt.placedAt) : NaN;
+  const placedAt = order ? Date.parse(order.created_at) : NaN;
   const pixCountingDown = Boolean(pix) && data?.payment_status === "pending" && pixDeadline != null;
 
   return (
     <div className="flex flex-col">
-      <Banner orderId={orderId} firstName={receipt?.contact.firstName ?? ""} failed={failed} />
+      <Banner number={order?.number ?? String(orderId)} firstName={order?.customer.first_name.trim() ?? ""} failed={failed} />
 
-      <p className="mx-auto mt-4 max-w-[640px] text-center text-field leading-snug text-text">
+      <p className="mt-4 text-center text-field leading-snug text-text">
         {paid
           ? `Sua ${PRODUCT_NAME} já está reservada. Enviamos a confirmação por e-mail e avisamos quando o pedido sair para entrega.`
           : failed
@@ -139,36 +139,30 @@ export function ThankYouPage() {
         </div>
       ) : null}
 
-      {receipt ? (
-        // On a phone the summary comes first: what was bought and the total, right after the banner.
-        <div className="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:gap-14">
-          <div className="order-2 flex flex-col gap-6 lg:order-1">
-            <OrderDetails receipt={receipt} />
-            <Community />
-            <HelpRow />
-          </div>
-          <div className="order-1 lg:order-2 lg:border-l lg:border-border lg:pl-14">
-            <ReceiptSummary receipt={receipt} />
-          </div>
-        </div>
-      ) : (
-        <div className="mx-auto mt-10 flex w-full max-w-[720px] flex-col gap-6">
-          {data && data.total > 0 ? (
-            <div className="flex items-baseline justify-between rounded-card border border-border px-5 py-4">
-              <span className="text-field text-text-muted">Total do pedido</span>
-              <span className="text-h4 text-text-strong">{formatBRL(data.total)}</span>
-            </div>
-          ) : null}
+      {/* On a phone the summary comes first: what was bought and the total, right after the banner. */}
+      <div className="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:gap-14">
+        <div className="order-2 flex flex-col gap-6 lg:order-1">
+          {order ? <OrderDetails order={order} /> : loading ? <DetailsSkeleton /> : null}
           <Community />
           <HelpRow />
         </div>
-      )}
+        <div className="order-1 lg:order-2 lg:border-l lg:border-border lg:pl-14">
+          {order ? (
+            <OrderItems order={order} />
+          ) : loading ? (
+            <ItemsSkeleton />
+          ) : data ? (
+            // Bridge older than 0.5.0: no summary, only the total.
+            <TotalRow total={data.total} />
+          ) : null}
+        </div>
+      </div>
     </div>
   );
 }
 
 /** Green success banner of the reference; terracotta when the payment was refused. */
-function Banner({ orderId, firstName, failed }: { orderId: number; firstName: string; failed: boolean }) {
+function Banner({ number, firstName, failed }: { number: string; firstName: string; failed: boolean }) {
   return (
     <div
       className={cn(
@@ -176,12 +170,13 @@ function Banner({ orderId, firstName, failed }: { orderId: number; firstName: st
         failed ? "bg-accent text-text-on-inverse" : "bg-success text-on-success",
       )}
     >
-      <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-pill border-2 border-current text-h4 sm:size-11">
+      <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-pill border-2 border-current text-h4 sm:size-12">
         {failed ? <IconClose /> : <IconCheck />}
       </span>
-      <div className="flex flex-col gap-0.5">
-        <p className="text-label opacity-85">Pedido nº {orderId}</p>
-        <h1 className="text-h4">
+      <div className="flex flex-col gap-1">
+        <p className="text-label leading-tight opacity-90">Pedido nº {number}</p>
+        {/* text-current: the base style paints every heading dark green. */}
+        <h1 className="text-h3 text-current">
           {failed ? "Pagamento não concluído" : `Obrigado${firstName ? `, ${firstName}` : ""}!`}
         </h1>
       </div>
@@ -189,24 +184,34 @@ function Banner({ orderId, firstName, failed }: { orderId: number; firstName: st
   );
 }
 
+const fullName = (first: string, last: string) => `${first} ${last}`.trim();
+
+/** "Frete grátis" already says the price; repeating "Grátis" next to it reads twice. */
+const isFreeMethod = (method: string) => /gr[aá]tis/i.test(method);
+
 /** Contact / delivery / shipping / payment, the same frame as the checkout review. */
-function OrderDetails({ receipt }: { receipt: OrderReceipt }) {
-  const { contact, shipping } = receipt;
+function OrderDetails({ order }: { order: OrderSummary }) {
+  const { customer, shipping_address: to, shipping } = order;
+  const buyer = fullName(customer.first_name, customer.last_name);
+  const recipient = fullName(to.first_name, to.last_name);
+  const giftTo = recipient && recipient !== buyer ? recipient : "";
+  const address = addressLine({ ...to, postcode: onlyDigits(to.postcode) });
+
   const rows: Array<{ label: string; content: React.ReactNode }> = [
     {
       label: "Contato",
       content: (
         <>
-          <p>{contact.name}</p>
-          {contact.company ? <p className="text-text-muted">{contact.company}</p> : null}
-          {contact.phone ? (
-            <a href={`tel:${contact.phone}`} className="block text-action underline-offset-4 hover:underline">
-              {formatPhone(contact.phone)}
+          <p>{buyer}</p>
+          {customer.company ? <p className="text-text-muted">{customer.company}</p> : null}
+          {customer.phone ? (
+            <a href={`tel:${customer.phone.replace(/[^\d+]/g, "")}`} className="block text-action underline-offset-4 hover:underline">
+              {formatPhone(customer.phone)}
             </a>
           ) : null}
-          {contact.email ? (
-            <a href={`mailto:${contact.email}`} className="block break-all text-action underline-offset-4 hover:underline">
-              {contact.email}
+          {customer.email ? (
+            <a href={`mailto:${customer.email}`} className="block break-all text-action underline-offset-4 hover:underline">
+              {customer.email}
             </a>
           ) : null}
         </>
@@ -216,16 +221,22 @@ function OrderDetails({ receipt }: { receipt: OrderReceipt }) {
       label: "Entrega",
       content: (
         <>
-          {receipt.recipient ? <p>Para {receipt.recipient}</p> : null}
-          <p className={receipt.recipient ? "text-text-muted" : undefined}>{receipt.address}</p>
+          {giftTo ? <p>Para {giftTo}</p> : null}
+          <p className={giftTo ? "text-text-muted" : undefined}>{address}</p>
         </>
       ),
     },
     {
       label: "Envio",
-      content: shipping ? `${shipping.label} — ${shipping.price > 0 ? formatBRL(shipping.price) : "Grátis"}` : "—",
+      content: !shipping
+        ? "—"
+        : shipping.total > 0
+          ? `${shipping.method} — ${formatBRL(shipping.total)}`
+          : isFreeMethod(shipping.method)
+            ? shipping.method
+            : `${shipping.method} — Grátis`,
     },
-    { label: "Pagamento", content: receipt.payment.label },
+    { label: "Pagamento", content: order.payment_method.title || "—" },
   ];
 
   return (
@@ -267,10 +278,10 @@ function HelpRow() {
         </span>
       </p>
       <div className="flex flex-col gap-3 sm:flex-row">
-        <Button href="/" variant="secondary" shape="block" className="h-10 px-5">
+        <Button href="/" variant="secondary" shape="block" className="h-10! px-4! text-label!">
           Voltar ao site
         </Button>
-        <Button href={INSTAGRAM_URL} target="_blank" rel="noopener" shape="block" className="h-10 px-5">
+        <Button href={INSTAGRAM_URL} target="_blank" rel="noopener" shape="block" className="h-10! px-4! text-label!">
           Seguir no Instagram
         </Button>
       </div>
@@ -278,15 +289,19 @@ function HelpRow() {
   );
 }
 
-/** What was bought and the totals, frozen at the moment of the order. */
-function ReceiptSummary({ receipt }: { receipt: OrderReceipt }) {
+/** What was bought and the totals, as WooCommerce recorded them. */
+function OrderItems({ order }: { order: OrderSummary }) {
+  const { totals } = order;
   return (
     <section aria-label="Resumo do pedido" className="flex flex-col">
       <ul className="flex flex-col gap-5">
-        {receipt.items.map((item) => {
-          const edition = EDITIONS.find((e) => e.id === item.edition) ?? null;
+        {order.items.map((item) => {
+          const edition = editionOfCartItem({
+            variation: item.attributes.map((a) => ({ attribute: a.name, value: a.value })),
+            name: item.name,
+          });
           return (
-            <li key={item.key} className="flex items-start gap-4">
+            <li key={item.id} className="flex items-start gap-4">
               {edition ? (
                 <Image
                   src={edition.cover}
@@ -307,37 +322,51 @@ function ReceiptSummary({ receipt }: { receipt: OrderReceipt }) {
                   × {item.quantity}
                 </span>
               </div>
-              <p className="text-field font-semibold whitespace-nowrap text-text-strong">{formatBRL(item.total)}</p>
+              <p className="text-field font-semibold whitespace-nowrap text-text-strong">{formatBRL(item.subtotal)}</p>
             </li>
           );
         })}
       </ul>
 
       <dl className="mt-6 flex flex-col gap-3 border-t border-border pt-5 text-field text-text-muted">
-        <Row label="Subtotal" value={formatBRL(receipt.subtotal)} />
-        {receipt.coupon > 0 ? <Row label="Cupom" value={`−${formatBRL(receipt.coupon)}`} tone="action" /> : null}
-        {receipt.paymentDiscount > 0 ? (
-          <Row label="Desconto por forma de pagamento" value={`−${formatBRL(receipt.paymentDiscount)}`} tone="action" />
-        ) : null}
-        {receipt.shipping ? (
+        <Row label="Subtotal" value={formatBRL(totals.subtotal)} />
+        {totals.discount > 0 ? <Row label="Cupom" value={`−${formatBRL(totals.discount)}`} tone="action" /> : null}
+        {order.fees.map((fee, i) =>
+          fee.total < 0 ? (
+            <Row key={i} label={fee.name} value={`−${formatBRL(-fee.total)}`} tone="action" />
+          ) : (
+            <Row key={i} label={fee.name} value={formatBRL(fee.total)} />
+          ),
+        )}
+        {order.shipping ? (
           <div className="flex justify-between gap-4">
             <dt>Entrega</dt>
             <dd className="text-right text-text-strong">
-              {receipt.shipping.price > 0 ? formatBRL(receipt.shipping.price) : "Grátis"}{" "}
-              <span className="text-text-muted">via {receipt.shipping.label}</span>
+              {order.shipping.total > 0 ? formatBRL(order.shipping.total) : "Grátis"}
+              {order.shipping.total > 0 || !isFreeMethod(order.shipping.method) ? (
+                <span className="text-text-muted"> via {order.shipping.method}</span>
+              ) : null}
             </dd>
           </div>
         ) : null}
       </dl>
 
-      <div className="mt-5 flex items-center justify-between border-t border-border pt-5">
-        <span className="text-h4 text-text-strong">Total</span>
-        <span className="flex items-baseline gap-2">
-          <span className="rounded-sm bg-surface-muted px-1.5 py-0.5 text-caption font-medium text-text-muted uppercase">BRL</span>
-          <span className="text-h4 text-text-strong">{formatBRL(receipt.total)}</span>
-        </span>
+      <div className="mt-5 border-t border-border pt-5">
+        <TotalRow total={totals.total} />
       </div>
     </section>
+  );
+}
+
+function TotalRow({ total }: { total: number }) {
+  return (
+    <div className="flex items-center justify-between">
+      <span className="text-h4 text-text-strong">Total</span>
+      <span className="flex items-baseline gap-2">
+        <span className="rounded-sm bg-surface-muted px-1.5 py-0.5 text-caption font-medium text-text-muted uppercase">BRL</span>
+        <span className="text-h4 text-text-strong">{formatBRL(total)}</span>
+      </span>
+    </div>
   );
 }
 
@@ -346,6 +375,43 @@ function Row({ label, value, tone }: { label: string; value: string; tone?: "act
     <div className="flex justify-between gap-4">
       <dt>{label}</dt>
       <dd className={tone === "action" ? "text-action" : "text-text-strong"}>{value}</dd>
+    </div>
+  );
+}
+
+const bar = "animate-pulse rounded-sm bg-surface-muted";
+
+/** Placeholders with the shape of the details frame while the order is read. */
+function DetailsSkeleton() {
+  return (
+    <div aria-hidden className="divide-y divide-border rounded-card border border-border">
+      {[3, 1, 1, 1].map((lines, i) => (
+        <div key={i} className="flex gap-4 px-4 py-4 sm:px-5">
+          <span className={cn(bar, "h-4 w-20 shrink-0")} />
+          <span className="flex flex-1 flex-col gap-2">
+            {Array.from({ length: lines }, (_, j) => (
+              <span key={j} className={cn(bar, "h-4 w-full max-w-64")} />
+            ))}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ItemsSkeleton() {
+  return (
+    <div aria-hidden className="flex flex-col gap-5">
+      <div className="flex gap-4">
+        <span className={cn(bar, "h-20 w-14 shrink-0")} />
+        <span className="flex flex-1 flex-col gap-2">
+          <span className={cn(bar, "h-4 w-full max-w-52")} />
+          <span className={cn(bar, "h-4 w-24")} />
+        </span>
+      </div>
+      <span className={cn(bar, "mt-2 h-4 w-full")} />
+      <span className={cn(bar, "h-4 w-full")} />
+      <span className={cn(bar, "mt-2 h-6 w-full")} />
     </div>
   );
 }

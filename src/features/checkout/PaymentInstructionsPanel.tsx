@@ -126,7 +126,7 @@ function PixBody({ pix }: { pix: Pix }) {
               onFocus={(e) => e.currentTarget.select()}
               className="h-11 min-w-0 flex-1 rounded-xs border border-border bg-surface-muted px-3 font-mono text-fine text-text-strong"
             />
-            <Button type="button" shape="block" onClick={() => void copy()} className="shrink-0 px-4 text-label!">
+            <Button type="button" shape="block" onClick={() => void copy()} className="shrink-0 px-4! text-label!">
               {copied ? <IconCheck /> : <IconCopy />}
               {copied ? "Copiado" : "Copiar código"}
             </Button>

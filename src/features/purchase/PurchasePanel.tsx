@@ -19,6 +19,7 @@ import { whatsappUrlWith, type EditionId } from "@content/product";
 import type { ProductOffer } from "@/lib/commerce/offer-types";
 import { formatBRL } from "@/lib/format";
 import { useOptionalCart } from "@/features/cart/CartProvider";
+import { ShippingEstimate } from "./ShippingEstimate";
 import { item, trackAddToCart, trackViewItem } from "@/lib/tracking/events";
 
 /** Acima disso é revenda: o atendimento é pelo WhatsApp (B2B a partir de 50). */
@@ -82,13 +83,13 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
     `${offer.name} — ${edition.label}.`;
 
   return (
-    <div className="grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,520px)] lg:gap-16">
+    <div className="grid grid-cols-1 items-start gap-8 sm:gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,520px)] lg:gap-16">
       {/* Capa da edição escolhida. Mesma regra de paridade do BookCover do DS:
           altura fixa e largura automática, nunca object-fit — as duas capas
           têm proporções diferentes. Aqui via next/image porque os PNGs têm
           ~2,5 MB e a compra acontece no celular, vinda do Instagram. */}
       <div className="flex justify-center lg:sticky lg:top-8">
-        <div className="relative flex h-[340px] items-end justify-center sm:h-[480px]">
+        <div className="relative flex h-[260px] items-end justify-center sm:h-[480px]">
           {offer.editions.map((e) => (
             <Image
               key={e.id}
@@ -240,6 +241,13 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
           </Text>
         </div>
 
+        {/* Frete e prazo pelo CEP, com as formas de entrega do WooCommerce. A
+            cotação soma o que já está no carrinho: é esse pacote que vai
+            ser enviado (e é ele que alcança o frete grátis por quantidade). */}
+        {offer.checkoutEnabled && edition.variationId && !soldOut ? (
+          <ShippingEstimate variationId={edition.variationId} quantity={qty + (cart?.count ?? 0)} />
+        ) : null}
+
         {/* CTA — com o checkout desligado (NEXT_PUBLIC_CHECKOUT_ENABLED) ou sem o
             produto 2027 configurado, o pedido segue pelo WhatsApp. */}
         <div className="flex flex-col gap-3">
@@ -261,16 +269,19 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
                 {cart.busy ? "Adicionando…" : "Garantir minha agenda"}
                 <IconArrowRight />
               </Button>
-              <button
+              <Button
+                size="lg"
+                shape="block"
+                variant="outline"
                 type="button"
                 disabled={cart.busy || !edition.inStock}
                 onClick={async () => {
                   if (await addToCart()) cart.openDrawer();
                 }}
-                className="cursor-pointer text-sm font-semibold text-action underline-offset-4 hover:underline disabled:cursor-not-allowed disabled:opacity-50"
+                className="h-auto min-h-14 py-3 text-center leading-snug"
               >
                 Adicionar ao carrinho e escolher a outra edição
-              </button>
+              </Button>
               {cart.error ? (
                 <Text size="xs" tone="accent" role="alert" className="text-center">
                   {cart.error}

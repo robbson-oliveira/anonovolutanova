@@ -47,7 +47,8 @@ Site headless da Agenda Ano Novo, Luta Nova (anonovolutanova.com.br): landing
 page do produto com compra, carrinho e checkout próprios sobre um WordPress com
 WooCommerce. Histórico, decisões em aberto (D1–D7) e fases estão em
 `PLANO-MIGRACAO-NEXTJS.md`; o passo a passo da troca de domínio, em
-`RUNBOOK-VIRADA.md`.
+`RUNBOOK-VIRADA.md`; a instalação do WooCommerce, do bridge e do site do
+zero, no `README.md` (mude-o junto quando mudar um passo de configuração).
 
 | Namespace | Origem |
 | --- | --- |

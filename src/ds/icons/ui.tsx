@@ -328,3 +328,45 @@ export function IconWallet(props: IconProps) {
     </IconBase>
   );
 }
+
+/** Copy (Pix copy-and-paste code): two stacked sheets. */
+export function IconCopy(props: IconProps) {
+  return (
+    <IconBase viewBox={UI_BOX} fill="none" {...props}>
+      <rect x="5.4" y="5.4" width="8.4" height="8.4" rx="1.4" {...STROKE} />
+      <path d="M10.6 5.4V3.6a1.4 1.4 0 0 0-1.4-1.4H3.6a1.4 1.4 0 0 0-1.4 1.4v5.6a1.4 1.4 0 0 0 1.4 1.4h1.8" {...STROKE} />
+    </IconBase>
+  );
+}
+
+/** Waiting (payment not confirmed yet): a clock face. */
+export function IconClock(props: IconProps) {
+  return (
+    <IconBase viewBox={UI_BOX} fill="none" {...props}>
+      <circle cx="8" cy="8" r="6.2" {...STROKE} />
+      <path d="M8 4.6V8l2.3 1.5" {...STROKE} />
+    </IconBase>
+  );
+}
+
+/** Help / customer service: a headset. */
+export function IconHeadset(props: IconProps) {
+  return (
+    <IconBase viewBox={UI_BOX} fill="none" {...props}>
+      <path d="M2.4 10V8a5.6 5.6 0 0 1 11.2 0v2" {...STROKE} />
+      <rect x="2.2" y="8.8" width="2.8" height="4" rx="1" {...STROKE} />
+      <rect x="11" y="8.8" width="2.8" height="4" rx="1" {...STROKE} />
+      <path d="M12.4 12.8v.2a1.6 1.6 0 0 1-1.6 1.6H8.6" {...STROKE} />
+    </IconBase>
+  );
+}
+
+/** Opens in a new tab (boleto link). */
+export function IconExternal(props: IconProps) {
+  return (
+    <IconBase viewBox={UI_BOX} fill="none" {...props}>
+      <path d="M9.4 2.4h4.2v4.2M13.4 2.6 7.6 8.4" {...STROKE} />
+      <path d="M12 9.6v2.8a1.4 1.4 0 0 1-1.4 1.4H3.6a1.4 1.4 0 0 1-1.4-1.4V5.4A1.4 1.4 0 0 1 3.6 4h2.8" {...STROKE} />
+    </IconBase>
+  );
+}

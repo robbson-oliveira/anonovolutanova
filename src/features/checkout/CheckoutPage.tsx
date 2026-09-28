@@ -48,6 +48,7 @@ import {
   type CardInput,
   type PaymentOption,
 } from "@/lib/payments";
+import { editionOfCartItem } from "@/lib/commerce/editions";
 import { cartCoupon, cartTrackItems } from "@/lib/tracking/cart-items";
 import {
   savePurchaseSnapshot,
@@ -60,6 +61,7 @@ import { Field } from "./Field";
 import { MobileSummaryBar } from "./MobileSummaryBar";
 import { OrderSummary } from "./OrderSummary";
 import { PhoneField } from "./PhoneField";
+import { saveReceipt } from "./receipt";
 import { ReviewCard } from "./ReviewCard";
 import {
   EMPTY_FORM,
@@ -474,6 +476,41 @@ export function CheckoutPage() {
         items: trackItems,
       });
 
+      // The cart is gone after this: the thank-you page reads the order from here.
+      const paymentLabel = chosen.gateway.title || KIND_LABEL[chosen.kind];
+      const recipientName = `${recipient.firstName} ${recipient.lastName}`.trim();
+      const buyerName = `${form.contact.firstName} ${form.contact.lastName}`.trim();
+      saveReceipt({
+        orderId: result.order_id,
+        orderKey: result.order_key,
+        placedAt: new Date().toISOString(),
+        contact: {
+          firstName: form.contact.firstName.trim(),
+          name: buyerName,
+          company: form.contact.personType === "pj" ? form.contact.company.trim() : "",
+          phone: form.contact.phone.number,
+          email: form.contact.email.trim(),
+        },
+        recipient: recipientName !== buyerName ? recipientName : "",
+        address: addressLine(form.address),
+        shipping: selectedRate ? { label: selectedRate.name, price: fromMinor(selectedRate.price, minor) } : null,
+        payment: {
+          kind: chosen.kind,
+          label: chosen.kind === "card" && card.installments > 1 ? `${paymentLabel} em ${card.installments}x` : paymentLabel,
+        },
+        items: (cart.cart?.items ?? []).map((item) => ({
+          key: item.key,
+          edition: editionOfCartItem(item)?.id ?? null,
+          name: item.name,
+          quantity: item.quantity,
+          total: fromMinor(item.totals.line_subtotal, item.totals.currency_minor_unit ?? minor),
+        })),
+        subtotal: fromMinor(cart.cart?.totals.total_items, minor),
+        coupon: fromMinor(cart.cart?.totals.total_discount, minor),
+        paymentDiscount: pixDiscount,
+        total: payable,
+      });
+
       clearForm();
       cart.reset();
 
@@ -483,7 +520,7 @@ export function CheckoutPage() {
         return;
       }
       router.replace(
-        `/checkout/obrigado?pedido=${result.order_id}&chave=${encodeURIComponent(result.order_key)}&forma=${chosen.kind}`,
+        `/checkout/order-received?order_id=${result.order_id}&token=${encodeURIComponent(result.order_key)}&payment=${chosen.kind}`,
       );
     } catch (err) {
       setSubmitError(errorMessage(err, "Não foi possível finalizar o pedido. Tente de novo."));

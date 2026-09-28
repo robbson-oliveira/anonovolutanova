@@ -16,8 +16,9 @@ todo texto voltado ao público (legendas, copy do site, e-mails).
 - **Textos de interface em pt-BR** (o público é brasileiro): copy das seções,
   rótulos, mensagens de erro mostradas ao cliente, metadata de SEO. Também ficam
   em pt-BR os slugs de rota, que são URLs públicas (`/contato`,
-  `/checkout/obrigado`, `/politica-de-privacidade`), e os nomes de itens que
-  espelham o WooCommerce ou a marca (`classica`, `Edição Color`).
+  `/politica-de-privacidade`), e os nomes de itens que espelham o WooCommerce
+  ou a marca (`classica`, `Edição Color`). Exceção: a página de obrigado segue
+  o padrão do WooCommerce, `/checkout/order-received?order_id=&token=&payment=`.
 - **Nunca mencionar coautoria ou geração por IA**: nada de `Co-Authored-By:`,
   "Generated with Claude Code" ou equivalentes — nem no commit, nem em PR, nem
   em comentário de código.
@@ -78,7 +79,7 @@ bridge fazem parte de um contrato: mudar um lado exige mudar o outro.
 ## Estrutura
 
 - `src/app` — rotas. `(loja)/` agrupa a home, `/checkout` e
-  `/checkout/obrigado`, que compartilham o `CartProvider`; as institucionais
+  `/checkout/order-received`, que compartilham o `CartProvider`; as institucionais
   ficam fora dele e não criam sessão no WooCommerce. `/design-system` e
   `/lab` são páginas de revisão interna.
 - `src/sections` — as seções da home (`Hero`, `Product`, `Faq`…), compostas em

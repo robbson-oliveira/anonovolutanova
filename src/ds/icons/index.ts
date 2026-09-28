@@ -28,6 +28,10 @@ export {
   IconChevronDown,
   IconBarcode,
   IconWallet,
+  IconCopy,
+  IconClock,
+  IconHeadset,
+  IconExternal,
 } from "./ui";
 
 export {

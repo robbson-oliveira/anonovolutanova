@@ -211,7 +211,7 @@ export function Explore() {
                       aria-expanded={openSpot === i}
                       aria-label={s.title}
                       onClick={() => setOpenSpot(openSpot === i ? null : i)}
-                      className="relative grid size-7 -translate-x-1/2 -translate-y-1/2 cursor-pointer place-items-center rounded-pill bg-action text-on-action shadow-[0_2px_8px_rgb(0_0_0/0.2)] before:absolute before:-inset-2"
+                      className="relative grid size-7 -translate-x-1/2 -translate-y-1/2 cursor-pointer place-items-center rounded-pill bg-action text-on-action shadow-hotspot before:absolute before:-inset-2"
                     >
                       <span className="text-[14px] leading-none">+</span>
                     </button>

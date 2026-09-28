@@ -5,7 +5,6 @@ import { PRODUCT_NAME } from "@content/product";
 import { ConsentLink } from "@/features/shell/ConsentLink";
 
 const logo = "/img/logo.png";
-const textura = "/img/textura-rodape.png";
 
 /**
  * Os links do conteudo ainda sao as ancoras do wireframe (#privacidade...).
@@ -41,8 +40,7 @@ const linkClass =
 export function SiteFooter() {
   return (
     <footer
-      className="relative mx-auto w-full max-w-[1440px] bg-cover bg-bottom bg-no-repeat px-4 pb-12 sm:px-6 min-[1440px]:h-[654px] min-[1440px]:bg-[length:1440px_1539px] min-[1440px]:bg-[position:0_-885px] min-[1440px]:px-0 min-[1440px]:pb-0"
-      style={{ backgroundImage: `url(${textura})` }}
+      className="relative mx-auto w-full max-w-[1440px] bg-cover bg-bottom bg-no-repeat px-4 pb-12 sm:px-6 min-[1440px]:h-[654px] min-[1440px]:bg-[length:1440px_1539px] min-[1440px]:bg-[position:0_-885px] min-[1440px]:px-0 min-[1440px]:pb-0 bg-[url(/img/textura-rodape.png)]"
     >
       <RevealGroup className="flex flex-col items-center text-center">
         <Reveal variant="up">

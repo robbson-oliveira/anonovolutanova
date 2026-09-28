@@ -65,9 +65,7 @@ export function BookStage({
       {/* Clássica — assenta primeiro, fica atrás */}
       <div
         aria-hidden
-        data-motion="hero-book"
-        style={{ left: "42.9%", top: "14.6%" }}
-        className="absolute z-[2] w-[48%] origin-center [animation:ds-book-back-in_0.9s_var(--ease-out-soft)_both]"
+        className="absolute left-[42.9%] top-[14.6%] z-[2] w-[48%] origin-center animate-book-back-in motion-reduce:[animation-duration:1ms]"
       >
         <Cover
           src={classicaSrc}
@@ -79,9 +77,7 @@ export function BookStage({
       {/* Color — pousa sobre a outra, encosta e desliza girando na âncora */}
       <div
         aria-hidden
-        data-motion="hero-book"
-        style={{ left: "8.475%", top: "9.006%" }}
-        className="absolute z-[5] w-[45.64%] [transform-origin:70%_92%] [animation:ds-book-fan-out_var(--duration-book)_var(--ease-out-soft)_both]"
+        className="absolute left-[8.475%] top-[9.006%] z-[5] w-[45.64%] [transform-origin:70%_92%] animate-book-fan-out motion-reduce:[animation-duration:1ms]"
       >
         <Cover
           src={colorSrc}
@@ -128,9 +124,8 @@ function Cover({
 function PriceCard({ thumbSrc }: { thumbSrc: CoverSrc }) {
   return (
     <div
-      data-motion="hero-card"
       className={cn(
-        "pointer-events-auto absolute left-[30%] top-[57%] z-10 flex h-[119px] w-[191px] flex-col items-center justify-start gap-[3px] rounded-md bg-surface p-2.5 [animation:ds-pop-in_0.6s_var(--ease-overshoot)_2.1s_both] [box-shadow:0_4px_4px_rgb(0_0_0/0.1)]",
+        "pointer-events-auto absolute left-[30%] top-[57%] z-10 flex h-[119px] w-[191px] flex-col items-center justify-start gap-[3px] rounded-md bg-surface p-2.5 animate-pop-in motion-reduce:animate-none shadow-pop",
         "@max-[520px]/stage:inset-x-0 @max-[520px]/stage:top-auto @max-[520px]/stage:bottom-[2%] @max-[520px]/stage:mx-auto @max-[520px]/stage:h-auto @max-[520px]/stage:w-fit @max-[520px]/stage:max-w-[94%] @max-[520px]/stage:flex-row @max-[520px]/stage:gap-4 @max-[520px]/stage:py-2 @max-[520px]/stage:pl-4 @max-[520px]/stage:pr-2",
       )}
     >

@@ -187,8 +187,8 @@ export function AboutHeader() {
           href={BUY_URL}
           size="lg"
           shape="block"
-          className="h-[68px] w-[600px] max-w-full"
-          style={{ borderRadius: 10, fontSize: 16, lineHeight: "16px", letterSpacing: "-0.64px", fontWeight: 700 }}
+          // As medidas do botão vencem as do tamanho "lg" do Button (daí o !).
+          className="h-[68px] w-[600px] max-w-full rounded-[10px]! text-[16px]! leading-[16px]! font-bold! tracking-[-0.64px]!"
         >
           {ABOUT.cta}
         </Button>
@@ -261,13 +261,12 @@ export function FeatureCard({
         className="relative aspect-[586/600] w-full overflow-hidden rounded-card bg-surface-warm-card shadow-inset-card"
       >
         {/* Respiro do título (20 nas laterais, 60 no topo), na escala do card. */}
-        <div style={{ paddingInline: cardPx(20), paddingTop: cardPx(60) }}>
+        <div className="px-[calc(20*100cqw/586)] pt-[calc(60*100cqw/586)]">
           <Reveal variant="up">
             <h3
-              className="text-center font-bold tracking-[-0.04em]"
-              style={{ fontSize: cardPx(38), lineHeight: cardPx(38) }}
+              className="text-center text-[length:calc(38*100cqw/586)] leading-[calc(38*100cqw/586)] font-bold tracking-[-0.04em]"
             >
-              <span className="ds-title-dim">{feature.muted} </span>
+              <span className="bg-linear-182/srgb from-title-dim to-title-dim-end bg-clip-text text-transparent">{feature.muted} </span>
               <span className="text-text-on-warm">{feature.strong}</span>
             </h3>
           </Reveal>
@@ -305,8 +304,8 @@ export function FeatureCard({
                       y1="0.2196"
                       y2="0.7804"
                     >
-                      <stop offset="0" stopColor="#000" stopOpacity="1" />
-                      <stop offset="1" stopColor="#000" stopOpacity="0" />
+                      <stop offset="0" className="[stop-color:var(--color-shadow)] [stop-opacity:1]" />
+                      <stop offset="1" className="[stop-color:var(--color-shadow)] [stop-opacity:0]" />
                     </linearGradient>
                   </defs>
                   <path d={layer.wedge.path} fill={`url(#wedge-${j})`} />

@@ -12,8 +12,8 @@ const referencia = "/img/referencia-posicionamento.png";
  * Builder da animação das duas agendas do Hero.
  *
  * O palco renderizado é o BookStage real — não uma cópia — então tudo que se
- * vê aqui é exatamente o que a home produz. Os keyframes ficam em
- * ds/styles/base.css e os tempos/easings em ds/styles/tokens.css; esta página
+ * vê aqui é exatamente o que a home produz. Os keyframes e os tempos/easings
+ * ficam em ds/styles/tokens.css (utilitários animate-*); esta página
  * é só o instrumento para enxergá-los.
  *
  * Nada aqui recalcula transform à mão: os fantasmas congelam o próprio
@@ -506,10 +506,8 @@ export default function HeroAnimationLab() {
               </div>
             ))}
             <p className="text-[11px] leading-snug text-slate-500">
-              Keyframes em{" "}
-              <code className="font-mono">ds/styles/base.css</code>; durações e
-              easings em <code className="font-mono">ds/styles/tokens.css</code>
-              .
+              Keyframes, durações e easings em{" "}
+              <code className="font-mono">ds/styles/tokens.css</code>.
             </p>
           </Panel>
         </div>

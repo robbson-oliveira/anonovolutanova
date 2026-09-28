@@ -380,7 +380,7 @@ precisa ser terminado. O outro é apagado.
 >
 > **GTM e eventos:**
 > - Com `NEXT_PUBLIC_GTM_ID`, o GTM carrega em todas as páginas, inclusive no wireframe, com Consent Mode v2 negado por padrão.
-> - O aviso de cookies (`public/consent.js`) grava a escolha e atualiza o consentimento. O rodapé tem o link "Preferências de cookies".
+> - O aviso de cookies (hoje `src/features/shell/ConsentBanner.tsx`; era `public/consent.js`) grava a escolha e atualiza o consentimento. O rodapé tem o link "Preferências de cookies".
 > - Eventos GA4 no `dataLayer`: `view_item`, `add_to_cart`, `begin_checkout`, `add_shipping_info`, `add_payment_info` e `purchase`.
 > - O `purchase` sai só quando o pagamento é confirmado, uma vez por pedido.
 >

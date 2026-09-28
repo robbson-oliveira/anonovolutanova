@@ -3,6 +3,7 @@ import { REVEAL_READY_SCRIPT } from "@ds/index";
 import { PRODUCT_NAME } from "@content/product";
 import { publicEnv } from "@/lib/env";
 import { gtmHeadSnippet } from "@/lib/tracking/gtm";
+import { ConsentBanner } from "@/features/shell/ConsentBanner";
 import "./globals.css";
 
 /*
@@ -74,7 +75,7 @@ export default function RootLayout({
     // suppressHydrationWarning: os scripts abaixo marcam o <html> ANTES da
     // hidratação (de propósito, para não haver um quadro de animação solta
     // nem de fonte provisória). Sem isso o React acusa divergência.
-    <html lang="pt-BR" suppressHydrationWarning>
+    <html lang="pt-BR" className="scroll-smooth" suppressHydrationWarning>
       <head>
         <style dangerouslySetInnerHTML={{ __html: criticalFontCss }} />
         {FONT_FILES.map((f) => (
@@ -92,14 +93,14 @@ export default function RootLayout({
             contrário, que deixaria blocos invisíveis. */}
         <script dangerouslySetInnerHTML={{ __html: REVEAL_READY_SCRIPT }} />
         <script dangerouslySetInnerHTML={{ __html: fontReadinessScript }} />
-        {/* GTM com Consent Mode v2 (tudo negado até o aceite) e o aviso de
-            cookies — os mesmos arquivos que o wireframe usa (route.ts). */}
+        {/* GTM com Consent Mode v2 (tudo negado até o aceite). O aviso de
+            cookies é o <ConsentBanner>, no corpo. */}
         <script dangerouslySetInnerHTML={{ __html: gtmHeadSnippet(publicEnv.gtmId) }} />
-        {/* eslint-disable-next-line @next/next/no-css-tags -- CSS estático compartilhado com o wireframe */}
-        <link rel="stylesheet" href="/consent.css" />
-        <script src="/consent.js" defer />
       </head>
-      <body className="antialiased">{children}</body>
+      <body className="bg-surface-warm font-sans text-base leading-normal text-text antialiased">
+        {children}
+        <ConsentBanner />
+      </body>
     </html>
   );
 }

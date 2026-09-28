@@ -40,6 +40,9 @@ import { BookStage } from "./BookStage";
  *   ou invadir o texto. O container tem max 1380 com padding de 32px: a 1440
  *   a coluna continua em x=62, e entre 1024 e 1380 o texto não cola na borda.
  */
+/** Larguras medidas de cada número do bloco de estatísticas (365, 12, 100%). */
+const STAT_WIDTHS = ["w-[122px]", "w-[107px]", "w-[182px]"];
+
 export function Hero() {
   return (
     <section
@@ -55,8 +58,7 @@ export function Hero() {
               <Badge
                 tone="plain"
                 icon={<IconSparkle />}
-                className="h-9 gap-2.5 text-text"
-                style={{ fontWeight: 700 }}
+                className="h-9 gap-2.5 font-bold! text-text"
               >
                 {HERO.badge}
               </Badge>
@@ -101,8 +103,8 @@ export function Hero() {
                 href={BUY_URL}
                 size="lg"
                 shape="block"
-                className="mt-[29px] h-[68px] w-full max-w-[425px]"
-                style={{ borderRadius: 10, fontSize: 16, lineHeight: "16px", letterSpacing: "-0.64px", fontWeight: 700 }}
+                // As medidas do botão vencem as do tamanho "lg" do Button (daí o !).
+                className="mt-[29px] h-[68px] w-full max-w-[425px] rounded-[10px]! text-[16px]! leading-[16px]! font-bold! tracking-[-0.64px]!"
               >
                 {HERO.cta}
               </Button>
@@ -115,8 +117,7 @@ export function Hero() {
                     key={seal}
                     tone="plain"
                     icon={<IconSparkle />}
-                    className="h-9 gap-2.5 px-2.5 text-accent"
-                    style={{ fontWeight: 700, borderRadius: 10 }}
+                    className="h-9 gap-2.5 rounded-[10px]! px-2.5 font-bold! text-accent"
                   >
                     {seal}
                   </Badge>
@@ -129,7 +130,7 @@ export function Hero() {
                 {STATS.map((stat, i) => (
                   <div
                     key={stat.label}
-                    style={{ width: [122, 107, 182][i] }}
+                    className={STAT_WIDTHS[i]}
                   >
                     <dt className="sr-only">{stat.label}</dt>
                     <dd>

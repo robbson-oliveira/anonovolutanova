@@ -41,12 +41,9 @@ export function Persona() {
               className={
                 "m-0 grid list-none grid-cols-1 gap-6 rounded-[18px] px-5 py-8 " +
                 "sm:grid-cols-2 sm:gap-10 sm:px-10 sm:py-12 " +
-                "lg:grid-cols-3 xl:gap-[50px] xl:px-[60px] xl:py-20"
+                "lg:grid-cols-3 xl:gap-[50px] xl:px-[60px] xl:py-20 " +
+                "bg-linear-99/srgb from-surface-panel to-surface-panel-end"
               }
-              style={{
-                backgroundImage:
-                  "linear-gradient(99deg, rgb(231, 221, 194) 0%, rgb(240, 233, 214) 100%)",
-              }}
             >
               {PERSONA.items.map((item) => (
                 <li

@@ -48,6 +48,9 @@ export function PhoneField({ id, label, value, onChange, error, required, classN
       nationalMode: true,
       i18n: pt,
       countryNameLocale: "pt-BR",
+      // O invólucro é criado pela biblioteca: as classes entram por aqui (o
+      // `!` vence o `inline-block` da folha de estilo dela).
+      containerClass: "block! w-full",
     });
     itiRef.current = iti;
     if (valueRef.current) iti.setNumber(valueRef.current);
@@ -82,12 +85,19 @@ export function PhoneField({ id, label, value, onChange, error, required, classN
         {label}
         {required ? <span className="text-accent"> *</span> : null}
       </label>
-      <div className={cn("anln-phone relative", error && "anln-phone--error")}>
+      <div className="relative">
+        {/* Sem padding à esquerda: a biblioteca calcula e aplica o espaço da
+            bandeira + DDI no próprio campo. */}
         <input
           ref={inputRef}
           id={id}
           type="tel"
           autoComplete="tel"
+          className={cn(
+            "h-12 w-full rounded-card border bg-surface-plain pr-11 font-sans text-field text-text-strong",
+            "focus:border-action focus:outline-none",
+            error ? "border-accent" : "border-border",
+          )}
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? `${id}-error` : undefined}
         />

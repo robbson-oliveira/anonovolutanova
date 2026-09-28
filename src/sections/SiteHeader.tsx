@@ -27,8 +27,7 @@ export function SiteHeader() {
             src={logo}
             alt={PRODUCT_NAME}
             loading="eager"
-            className="w-auto"
-            style={{ height: "72px", width: "auto" }}
+            className="h-[72px] w-auto"
           />
         </a>
 

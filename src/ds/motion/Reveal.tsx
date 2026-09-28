@@ -16,11 +16,29 @@ type RevealProps = {
  * Entrada ao entrar na tela.
  *
  * A direção da falha é deliberada, e vem de um problema real do protótipo:
- * a animação já nasce aplicada no CSS, e o JS apenas a PAUSA (via o atributo
- * `data-reveal-ready` no <html>). Se o JS não rodar, tudo anima no load —
- * nada fica preso invisível. O contrário (JS que precisa rodar para revelar)
- * deixa a página em branco quando falha.
+ * a animação já nasce aplicada (classe `animate-reveal-*`), e o JS apenas a
+ * PAUSA (variante `reveal-armed:`, ligada pelo atributo `data-reveal-ready` no
+ * <html>). Se o JS não rodar, tudo anima no load — nada fica preso invisível.
+ * O contrário (JS que precisa rodar para revelar) deixa a página em branco
+ * quando falha.
+ *
+ * Movimento reduzido: não basta tirar a animação — é ela que traz o elemento
+ * ao estado visível. Sem ela o elemento fica no estado natural, que é
+ * exatamente o quadro final (opacidade 1, sem deslocamento).
  */
+const VARIANT_CLASS = {
+  up: "animate-reveal-up",
+  left: "animate-reveal-left",
+  right: "animate-reveal-right",
+  pop: "animate-reveal-pop",
+  forward: "animate-reveal-forward",
+} as const;
+
+const REVEAL_CLASS = cn(
+  "reveal-armed:[animation-play-state:paused]",
+  "reveal-armed:data-revealed:[animation-play-state:running]",
+  "motion-reduce:animate-none",
+);
 /**
  * Quando um bloco tem várias camadas que precisam entrar JUNTAS (um card com
  * páginas sobrepostas, por exemplo), o gatilho é o grupo inteiro — e não cada
@@ -113,10 +131,11 @@ export function Reveal({
   return (
     <Tag
       ref={ref as React.Ref<never>}
-      data-reveal={variant}
       data-revealed={revealed ? "" : undefined}
+      // O atraso vem por prop (escalona pares esquerda/direita): é valor de
+      // tempo de execução, por isso fica no style e não numa classe.
       style={delay ? { animationDelay: `${delay}ms` } : undefined}
-      className={cn(className)}
+      className={cn(VARIANT_CLASS[variant], REVEAL_CLASS, className)}
     >
       {children}
     </Tag>

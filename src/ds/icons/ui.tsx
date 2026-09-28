@@ -134,27 +134,25 @@ export function IconAsterisk(props: IconProps) {
 
 /**
  * Separador da esteira: a caixa. Única exceção ao contrato de currentColor
- * do resto do sistema — é uma ilustração colorida de propósito (6 tons fixos,
+ * do resto do sistema — é uma ilustração colorida de propósito (6 tons
  * extraídos do wireframe aprovado), não um glifo. Repintar por herança
- * destruiria o sombreado 3D que dá a leitura de caixa/pacote.
+ * destruiria o sombreado 3D que dá a leitura de caixa/pacote. Os tons são os
+ * tokens --color-illus-gift-* (tokens.css), para mudarem com a paleta.
  */
-/* eslint-disable no-restricted-syntax -- exceção documentada acima: cores
-   fixas da ilustração extraída do wireframe, não tokens de marca. */
 export function IconGiftBox(props: IconProps) {
   return (
     <IconBase fill="none" {...props}>
       <g fill="transparent">
-        <path fill="#FFCE94" d="M28.526.366 5.374 12.657a1.97 1.97 0 0 0-1.044 1.736v30.853c0 1.246.7 2.386 1.812 2.95l22.704 11.515c.724.368 1.58.368 2.304 0l22.705-11.515a3.31 3.31 0 0 0 1.811-2.95V14.393c0-.727-.401-1.395-1.044-1.736L31.47.366a3.14 3.14 0 0 0-2.944 0" />
-        <path fill="#FCB043" d="M29.913 60c.395 0 .79-.092 1.152-.276L53.77 48.209a3.31 3.31 0 0 0 1.811-2.95V14.406a1.95 1.95 0 0 0-.225-.904L29.913 27.053Z" />
-        <path fill="#E2791B" d="M29.998 27.054 4.555 13.502a1.95 1.95 0 0 0-.225.904v30.852c0 1.247.7 2.387 1.812 2.951l22.704 11.515c.357.181.751.276 1.152.276z" />
-        <path fill="#DEF2FC" d="m39.014 4.365-25.75 13.713v4.388c0 .421.232.808.604 1.006l4.475 2.385a.533.533 0 0 0 .784-.47v-4.096L44.916 7.498Z" />
-        <path fill="#403A46" d="m33.669 51.241 6.869-3.285a2.48 2.48 0 0 0 1.408-2.293l-.001-.03a1.09 1.09 0 0 0-1.588-.944l-6.688 3.434zm0 4.791 3.772-1.753a2.48 2.48 0 0 0 1.433-2.304 1.09 1.09 0 0 0-1.594-.942l-3.611 1.88Z" />
-        <path fill="#B6C8CE" d="M13.264 18.172v4.344c0 .421.232.808.604 1.006l4.475 2.385a.533.533 0 0 0 .784-.47v-4.096l.043-.023Z" />
+        <path className="fill-illus-gift-light" d="M28.526.366 5.374 12.657a1.97 1.97 0 0 0-1.044 1.736v30.853c0 1.246.7 2.386 1.812 2.95l22.704 11.515c.724.368 1.58.368 2.304 0l22.705-11.515a3.31 3.31 0 0 0 1.811-2.95V14.393c0-.727-.401-1.395-1.044-1.736L31.47.366a3.14 3.14 0 0 0-2.944 0" />
+        <path className="fill-illus-gift-side" d="M29.913 60c.395 0 .79-.092 1.152-.276L53.77 48.209a3.31 3.31 0 0 0 1.811-2.95V14.406a1.95 1.95 0 0 0-.225-.904L29.913 27.053Z" />
+        <path className="fill-illus-gift-shade" d="M29.998 27.054 4.555 13.502a1.95 1.95 0 0 0-.225.904v30.852c0 1.247.7 2.387 1.812 2.951l22.704 11.515c.357.181.751.276 1.152.276z" />
+        <path className="fill-illus-gift-ribbon" d="m39.014 4.365-25.75 13.713v4.388c0 .421.232.808.604 1.006l4.475 2.385a.533.533 0 0 0 .784-.47v-4.096L44.916 7.498Z" />
+        <path className="fill-illus-gift-detail" d="m33.669 51.241 6.869-3.285a2.48 2.48 0 0 0 1.408-2.293l-.001-.03a1.09 1.09 0 0 0-1.588-.944l-6.688 3.434zm0 4.791 3.772-1.753a2.48 2.48 0 0 0 1.433-2.304 1.09 1.09 0 0 0-1.594-.942l-3.611 1.88Z" />
+        <path className="fill-illus-gift-ribbon-shade" d="M13.264 18.172v4.344c0 .421.232.808.604 1.006l4.475 2.385a.533.533 0 0 0 .784-.47v-4.096l.043-.023Z" />
       </g>
     </IconBase>
   );
 }
-/* eslint-enable no-restricted-syntax */
 
 /* -----------------------------------------------------------------------------
    Ícones de formulário e checkout. Desenhados no grid 16x16 com o mesmo traço

@@ -6,7 +6,7 @@
  *
  * Todo consentimento começa NEGADO (LGPD): o GTM carrega, mas GA4 e Meta só
  * gravam cookies depois que a pessoa aceita no aviso de cookies
- * (`public/consent.js`), que chama `gtag('consent', 'update', …)`. Uma escolha
+ * (`src/features/shell/ConsentBanner.tsx`), que chama `gtag('consent', 'update', …)`. Uma escolha
  * já feita é reaplicada aqui, antes do GTM, para não haver página sem ela.
  */
 

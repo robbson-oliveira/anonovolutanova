@@ -48,6 +48,25 @@
   --brand-paper-200: rgb(245 247 249);
   --brand-line-200: rgb(26 37 16 / 0.1);
   --brand-line-inverse: rgb(255 255 255 / 0.14);
+  --brand-paper-300: rgb(214 214 214);  /* texto de apoio sobre o cartão verde do fechamento */
+
+  /* Areias — degradê do painel da persona */
+  --brand-sand-200: rgb(231 221 194);
+  --brand-sand-100: rgb(240 233 214);
+
+  /* Âmbares e laranjas — selo e botão do bloco de fechamento */
+  --brand-amber-500: rgb(230 170 60);
+  --brand-amber-600: rgb(225 153 36);
+  --brand-flame-400: rgb(255 122 47);
+  --brand-gold-400: rgb(244 211 143);
+
+  /* Ilustração da caixa de presente (esteira do topo) */
+  --brand-illus-peach: rgb(255 206 148);
+  --brand-illus-orange: rgb(252 176 67);
+  --brand-illus-rust: rgb(226 121 27);
+  --brand-illus-ice: rgb(222 242 252);
+  --brand-illus-ink: rgb(64 58 70);
+  --brand-illus-steel: rgb(182 200 206);
 
   /* ---------------------------------------------------------------------
      2. SEMÂNTICAS — o que os componentes consomem.
@@ -90,6 +109,27 @@
   --color-highlight: var(--brand-gold-500);
   --color-border: var(--brand-line-200);
   --color-border-inverse: var(--brand-line-inverse);
+
+  /* Papéis pontuais de seção (valores medidos no design aprovado) */
+  --color-surface-panel: var(--brand-sand-200);       /* painel da persona: início do degradê */
+  --color-surface-panel-end: var(--brand-sand-100);   /* ...e fim */
+  --color-text-on-inverse-muted: var(--brand-paper-300);
+  --color-highlight-strong: var(--brand-amber-500);   /* estrela do selo */
+  --color-highlight-deep: var(--brand-amber-600);     /* meio do degradê dourado do selo */
+  --color-action-warm: var(--brand-flame-400);        /* botão quente do fechamento: início */
+  --color-action-warm-end: var(--brand-gold-400);     /* ...e fim */
+  --color-shadow: var(--brand-ink-900);               /* base das sombras desenhadas em SVG */
+  --color-on-accent: var(--brand-paper-100);          /* texto sobre o acento (seleção de texto) */
+  --color-title-dim: var(--brand-amber-400);          /* palavras apagadas dos títulos do "Sobre": início */
+  --color-title-dim-end: var(--brand-flame-500);      /* ...e fim do degradê */
+
+  /* Ilustração da caixa de presente */
+  --color-illus-gift-light: var(--brand-illus-peach);
+  --color-illus-gift-side: var(--brand-illus-orange);
+  --color-illus-gift-shade: var(--brand-illus-rust);
+  --color-illus-gift-ribbon: var(--brand-illus-ice);
+  --color-illus-gift-detail: var(--brand-illus-ink);
+  --color-illus-gift-ribbon-shade: var(--brand-illus-steel);
 
   /* ---------------------------------------------------------------------
      Tipografia — medidas computadas do design aprovado
@@ -201,6 +241,16 @@
   --shadow-float: 0 18px 44px rgb(26 37 16 / 0.14);
   --shadow-book: -14px 18px 28px rgb(0 0 0 / 0.24);
   --shadow-book-back: 0 12px 24px rgb(0 0 0 / 0.22);
+  --shadow-pop: 0 4px 4px rgb(0 0 0 / 0.1);          /* cartão de preço sobre as agendas do hero */
+  --shadow-hotspot: 0 2px 8px rgb(0 0 0 / 0.2);      /* marcadores "+" sobre a capa */
+  --shadow-cta-warm: 0 12px 24px rgb(0 0 0 / 0.3);   /* botão quente do fechamento */
+
+  /* Sombras de `filter: drop-shadow()` (uma camada, sem spread) — entrada em
+     leque das agendas no hero, quadro a quadro. */
+  --drop-shadow-book-rest: 0 4px 8px rgb(0 0 0 / 0.05);
+  --drop-shadow-book-land: -4px 8px 14px rgb(0 0 0 / 0.18);
+  --drop-shadow-book-touch: -5px 9px 16px rgb(0 0 0 / 0.19);
+  --drop-shadow-book-slide: -11px 15px 24px rgb(0 0 0 / 0.22);
 
   /* ---------------------------------------------------------------------
      Movimento
@@ -215,4 +265,155 @@
   --duration-book: 2500ms;
   --duration-ticker: 34s;
   --duration-edition: 6s;
+
+  /* Animações do sistema, como utilitários do Tailwind (`animate-reveal-up`,
+     `animate-ticker`...). Os @keyframes ficam aqui junto: o Tailwind só os
+     emite quando alguma classe `animate-*` correspondente é usada. Portados
+     do design aprovado; duração e easing vêm dos tokens acima. */
+  --animate-reveal-up: ds-reveal-up var(--duration-reveal) var(--ease-enter) both;
+  --animate-reveal-left: ds-reveal-left var(--duration-reveal) var(--ease-enter) both;
+  --animate-reveal-right: ds-reveal-right var(--duration-reveal) var(--ease-enter) both;
+  --animate-reveal-pop: ds-reveal-pop var(--duration-reveal) var(--ease-enter) both;
+  --animate-reveal-forward: ds-reveal-forward 1.15s var(--ease-enter) both;
+  --animate-ticker: ds-ticker var(--duration-ticker) linear infinite;
+  --animate-progress-fill: ds-progress-fill var(--duration-edition) linear forwards;
+  --animate-book-back-in: ds-book-back-in 0.9s var(--ease-out-soft) both;
+  --animate-book-fan-out: ds-book-fan-out var(--duration-book) var(--ease-out-soft) both;
+  --animate-pop-in: ds-pop-in 0.6s var(--ease-overshoot) 2.1s both;
+
+  @keyframes ds-reveal-up {
+    from {
+      opacity: 0;
+      transform: translateY(28px);
+      filter: blur(6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+      filter: blur(0);
+    }
+  }
+
+  @keyframes ds-reveal-left {
+    from {
+      opacity: 0;
+      transform: translateX(-56px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes ds-reveal-right {
+    from {
+      opacity: 0;
+      transform: translateX(56px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes ds-reveal-pop {
+    from {
+      opacity: 0;
+      transform: translateY(38px) scale(0.88);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* A página de citação nasce longe, pequena e girada — vem para frente até
+     a posição natural. Portado do wireframe (rvForward). */
+  @keyframes ds-reveal-forward {
+    from {
+      opacity: 0.6;
+      transform: translateX(240px) translateY(211px) scale(0.4) rotate(19deg) rotateY(27deg);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Esteira: o conteúdo é duplicado, então -50% cai exatamente na cópia e o
+     loop volta sem salto. */
+  @keyframes ds-ticker {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* Barra de progresso do seletor de edição */
+  @keyframes ds-progress-fill {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  /* Hero — entrada em leque das duas agendas. As porcentagens e ângulos são
+     o resultado aprovado; não são arbitrários. */
+  @keyframes ds-book-back-in {
+    0% {
+      opacity: 0;
+      transform: translate(10%, 20%) scale(0.93) rotate(10.5deg);
+      filter: drop-shadow(var(--drop-shadow-book-rest));
+    }
+    100% {
+      opacity: 1;
+      transform: translate(0, 0) scale(1) rotate(16.7deg);
+      filter: drop-shadow(var(--shadow-book-back));
+    }
+  }
+
+  @keyframes ds-book-fan-out {
+    /* entra junto com a de trás */
+    0% {
+      opacity: 0;
+      transform: translate(65%, 22%) scale(0.92) rotate(13.5deg);
+      filter: drop-shadow(var(--drop-shadow-book-rest));
+    }
+    /* assenta sobre a de trás */
+    28% {
+      opacity: 1;
+      transform: translate(58.5%, 7.5%) scale(1) rotate(19.5deg);
+      filter: drop-shadow(var(--drop-shadow-book-land));
+    }
+    /* toque físico */
+    34% {
+      transform: translate(58.5%, 7.5%) scale(1.01) rotate(19.5deg);
+      filter: drop-shadow(var(--drop-shadow-book-touch));
+    }
+    /* desliza arrastando e já vai girando na âncora */
+    65% {
+      transform: translate(14%, 1.8%) scale(1.01) rotate(11.5deg);
+      filter: drop-shadow(var(--drop-shadow-book-slide));
+    }
+    100% {
+      opacity: 1;
+      transform: translate(0%, 0%) scale(1) rotate(6.5deg);
+      filter: drop-shadow(var(--shadow-book));
+    }
+  }
+
+  @keyframes ds-pop-in {
+    0% {
+      opacity: 0;
+      transform: translateY(20px) scale(0.85);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
 }

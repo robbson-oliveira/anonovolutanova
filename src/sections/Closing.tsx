@@ -2,7 +2,6 @@ import { Reveal, RevealGroup } from "@ds/index";
 import { CLOSING } from "@content/home";
 import { BUY_URL } from "@content/product";
 
-const textura = "/img/textura-rodape.png";
 
 /**
  * Bloco de fechamento — medido no wireframe (viewport 1440):
@@ -29,8 +28,7 @@ export function Closing() {
   return (
     <section
       id="fechamento-bloco"
-      className="relative mx-auto w-full max-w-[1440px] bg-cover bg-top bg-no-repeat px-4 pb-16 pt-2 sm:px-6 md:pb-24 lg:px-10 min-[1440px]:h-[885px] min-[1440px]:bg-[length:1440px_1539px] min-[1440px]:bg-[position:0_0] min-[1440px]:px-[81px] min-[1440px]:pb-0 min-[1440px]:pt-[9px]"
-      style={{ backgroundImage: `url(${textura})` }}
+      className="relative mx-auto w-full max-w-[1440px] bg-cover bg-top bg-no-repeat px-4 pb-16 pt-2 sm:px-6 md:pb-24 lg:px-10 min-[1440px]:h-[885px] min-[1440px]:bg-[length:1440px_1539px] min-[1440px]:bg-[position:0_0] min-[1440px]:px-[81px] min-[1440px]:pb-0 min-[1440px]:pt-[9px] bg-[url(/img/textura-rodape.png)]"
     >
       <RevealGroup>
         <Reveal variant="up">
@@ -40,17 +38,11 @@ export function Closing() {
               <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden className="shrink-0">
                 <path
                   d="M8 0l1.9 5.2L15 7l-5.1 1.8L8 14l-1.9-5.2L1 7l5.1-1.8z"
-                  fill="rgb(230, 170, 60)"
+                  fill="var(--color-highlight-strong)"
                 />
               </svg>
               <span
-                className="whitespace-nowrap text-xs font-bold text-transparent"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(225deg, var(--color-highlight) 0%, rgb(225,153,36) 38.5%, var(--color-highlight) 100%)",
-                  WebkitBackgroundClip: "text",
-                  backgroundClip: "text",
-                }}
+                className="whitespace-nowrap bg-linear-225/srgb from-highlight via-highlight-deep via-[38.5%] to-highlight bg-clip-text text-xs font-bold text-transparent"
               >
                 {CLOSING.badge}
               </span>
@@ -62,8 +54,7 @@ export function Closing() {
 
             {/* min-h no desktop: 247 + 184 = 431, onde o wireframe poe os botoes */}
             <p
-              className="mt-5 max-w-[626px] text-base min-[1440px]:min-h-[184px]"
-              style={{ color: "rgb(214, 214, 214)" }}
+              className="mt-5 max-w-[626px] text-base text-text-on-inverse-muted min-[1440px]:min-h-[184px]"
             >
               {CLOSING.paragraph}
             </p>
@@ -71,12 +62,7 @@ export function Closing() {
             <div className="mt-10 flex w-full flex-col items-stretch gap-[15px] md:w-auto md:flex-row md:items-center min-[1440px]:mt-0">
               <a
                 href={BUY_URL}
-                className="flex min-h-[68px] items-center justify-center rounded-[9px] px-5 py-3 text-base font-bold tracking-[-0.4px] text-text-on-inverse no-underline md:w-[361px]"
-                style={{
-                  background:
-                    "linear-gradient(62deg, rgb(255,122,47) 0%, rgb(255,122,47) 42%, rgb(244,211,143) 100%)",
-                  boxShadow: "rgba(0, 0, 0, 0.3) 0px 12px 24px 0px",
-                }}
+                className="flex min-h-[68px] items-center justify-center rounded-[9px] px-5 py-3 text-base font-bold tracking-[-0.4px] text-text-on-inverse no-underline shadow-cta-warm bg-linear-62/srgb from-action-warm from-42% to-action-warm-end md:w-[361px]"
               >
                 {CLOSING.primaryCta}
               </a>

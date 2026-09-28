@@ -138,10 +138,20 @@ bridge fazem parte de um contrato: mudar um lado exige mudar o outro.
   movendo a pasta). Componente novo do DS entra exportado em `src/ds/index.ts`.
 - **Nenhuma cor escrita em componente.** Toda cor vem de token semântico de
   `src/ds/styles/tokens.css` (`bg-surface`, `text-text-strong`, `bg-action`…).
-  O ESLint transforma hex, `rgb()`/`rgba()` e `-[#…]` do Tailwind em erro em
-  `src/**`. Os arquivos da fase Lovable listados no `eslint.config.mjs` são
-  débito conhecido (aviso, não erro): ao tokenizar um, tire-o da lista; não
-  acrescente arquivos nela.
+  O ESLint transforma em erro, em `src/**`: hex, `rgb()`/`rgba()` (também em
+  template strings), `-[#…]` do Tailwind e as cores nomeadas da paleta padrão
+  (`text-white`, `bg-slate-800`…). A única exceção é o laboratório
+  `src/app/lab/**`, que é ferramenta de desenvolvimento.
+- **Estilo com classes do Tailwind, sem CSS solto.** Nada de arquivo `.css`
+  com classes próprias nem `style={{…}}` com valor fixo: medida do wireframe
+  vira classe arbitrária (`h-[68px]`, `tracking-[-0.64px]`, `left-[42.9%]`),
+  degradê vira `bg-linear-<ângulo>/srgb from-… to-…`, e para vencer uma classe
+  do DS use o `!` do Tailwind (`rounded-[10px]!`). `style` só para valor que
+  vem de dado ou prop em tempo de execução (posições de camadas, atraso do
+  `<Reveal>`, duração da esteira). O CSS que resta: tokens e animações
+  (`--animate-*` com os `@keyframes`) em `tokens.css`; padrões de elemento e a
+  variante `reveal-armed:` em `base.css`; e a pele do intl-tel-input em
+  `PhoneField.css`, porque aquele HTML é gerado pela biblioteca.
 - Tokens em duas camadas: **primitivas** (`--brand-*`, só valores) e
   **semânticas** (`--color-*`, o papel). Componente usa só semântica; uma
   troca de paleta mexe só nas primitivas. `action` (verde, fundo de botão) e
@@ -150,8 +160,9 @@ bridge fazem parte de um contrato: mudar um lado exige mudar o outro.
   Variantes como mapas `Record<Variant, string>` (ver `Button.tsx`).
 - Ícones: seguir o contrato de `src/ds/icons/CONTRIBUTING.md` (`currentColor`,
   `1em`, decorativos por padrão).
-- Animação de entrada com `<Reveal>`: o CSS já nasce animado e o JS só pausa,
-  para que nada fique invisível se o JS falhar. Seções com `Reveal` lateral
+- Animação de entrada com `<Reveal>`: o elemento já nasce animado
+  (`animate-reveal-*`) e o JS só pausa (variante `reveal-armed:`), para que
+  nada fique invisível se o JS falhar. Seções com `Reveal` lateral
   usam `overflow-x-clip` (não `hidden`) para o deslocamento não alargar a
   página no celular.
 - Portar algo do wireframe: usar a skill `.agents/skills/wireframe-para-design-system`
@@ -181,7 +192,8 @@ bridge fazem parte de um contrato: mudar um lado exige mudar o outro.
 - O site só publica eventos GA4 de e-commerce no `dataLayer`
   (`src/lib/tracking/events.ts`); quem decide o destino são as tags do GTM.
   Não carregue `gtag.js` nem pixels direto no código.
-- Consent Mode v2 começa negado; o banner é `public/consent.js`.
+- Consent Mode v2 começa negado; o banner é `src/features/shell/ConsentBanner.tsx`
+  (o link "Preferências de cookies" o reabre pelo evento `anln:consent-open`).
 - Cookies de atribuição (`anln_cupom`, `anln_origem`) não guardam dado
   pessoal. Não coloque dado pessoal em cookie, URL ou evento de tracking.
 

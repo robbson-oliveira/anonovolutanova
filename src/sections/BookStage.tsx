@@ -1,3 +1,4 @@
+import { cn } from "@ds/index";
 import { BUY_URL, CYCLE_YEAR, priceLabel } from "@content/product";
 const capaColor = "/img/capa-color.png";
 const capaClassica = "/img/capa-classica.png";
@@ -17,6 +18,14 @@ type BookStageProps = {
   colorSrc?: CoverSrc;
   classicaSrc?: CoverSrc;
   thumbSrc?: CoverSrc;
+  /**
+   * Palco fluido: ocupa a largura de quem o contém (até STAGE_SIZE) em vez
+   * dos 740px fixos. As agendas já são porcentagens do palco, então reescalam
+   * sozinhas; o card de preço troca de forma quando o palco fica estreito
+   * (ver PriceCard). O padrão continua fixo porque o lab e o catálogo medem
+   * o palco a 740px.
+   */
+  fluid?: boolean;
 };
 
 /**
@@ -29,19 +38,33 @@ type BookStageProps = {
  * O componente é só o palco 740×740; onde ele fica na página é decisão de
  * quem o usa (o Hero o posiciona sangrando para fora do container). Para
  * ajustar a animação isoladamente, ver app/lab/hero-animation.
+ *
+ * Em telas menores o Hero usa `fluid`: o palco encolhe junto com a coluna e
+ * vira um container query (`@container/stage`). Abaixo de 520px de palco o
+ * card de preço deixa de ser o cartão flutuante sobre a capa e vira uma barra
+ * no pé do palco — com 191px fixos ele cobriria metade das agendas num
+ * celular. A 740px (lab, catálogo e desktop) nada disso se aplica.
+ *
+ * Só as capas são decorativas (aria-hidden); o card de compra fica acessível,
+ * porque um link focável dentro de aria-hidden some para o leitor de tela mas
+ * continua recebendo o foco do teclado.
  */
 export function BookStage({
   colorSrc = capaColor,
   classicaSrc = capaClassica,
   thumbSrc = capaSolo,
+  fluid = false,
 }: BookStageProps) {
   return (
     <div
-      aria-hidden
-      className="pointer-events-none relative aspect-square w-[740px]"
+      className={cn(
+        "@container/stage pointer-events-none relative aspect-square",
+        fluid ? "w-full max-w-[740px]" : "w-[740px]",
+      )}
     >
       {/* Clássica — assenta primeiro, fica atrás */}
       <div
+        aria-hidden
         data-motion="hero-book"
         style={{ left: "42.9%", top: "14.6%" }}
         className="absolute z-[2] w-[48%] origin-center [animation:ds-book-back-in_0.9s_var(--ease-out-soft)_both]"
@@ -55,6 +78,7 @@ export function BookStage({
 
       {/* Color — pousa sobre a outra, encosta e desliza girando na âncora */}
       <div
+        aria-hidden
         data-motion="hero-book"
         style={{ left: "8.475%", top: "9.006%" }}
         className="absolute z-[5] w-[45.64%] [transform-origin:70%_92%] [animation:ds-book-fan-out_var(--duration-book)_var(--ease-out-soft)_both]"
@@ -92,18 +116,28 @@ function Cover({
  *
  * O botão não usa a primitiva <Button> de propósito: nenhum tamanho dela bate
  * com 34px de altura e raio 5, e mexer na primitiva mudaria o site inteiro —
- * fora do escopo deste componente.
+ * fora do escopo deste componente. A área de toque passa de 44px por um
+ * ::before invisível, sem mudar os 34px desenhados.
+ *
+ * Palco estreito (< 520px, só com `fluid`): os valores medidos acima ficam
+ * como estão e as classes `@max-[520px]/stage:` os sobrescrevem — o card vira
+ * uma barra horizontal centralizada no pé do palco, sem a miniatura (as
+ * agendas estão logo acima) e com o botão em 44px de altura. Ficou em
+ * "max" de propósito: o valor sem prefixo continua sendo o do wireframe.
  */
 function PriceCard({ thumbSrc }: { thumbSrc: CoverSrc }) {
   return (
     <div
       data-motion="hero-card"
-      className="pointer-events-auto absolute left-[30%] top-[57%] z-10 flex h-[119px] w-[191px] flex-col items-center justify-start gap-[3px] rounded-md bg-surface p-2.5 [animation:ds-pop-in_0.6s_var(--ease-overshoot)_2.1s_both] [box-shadow:0_4px_4px_rgb(0_0_0/0.1)]"
+      className={cn(
+        "pointer-events-auto absolute left-[30%] top-[57%] z-10 flex h-[119px] w-[191px] flex-col items-center justify-start gap-[3px] rounded-md bg-surface p-2.5 [animation:ds-pop-in_0.6s_var(--ease-overshoot)_2.1s_both] [box-shadow:0_4px_4px_rgb(0_0_0/0.1)]",
+        "@max-[520px]/stage:inset-x-0 @max-[520px]/stage:top-auto @max-[520px]/stage:bottom-[2%] @max-[520px]/stage:mx-auto @max-[520px]/stage:h-auto @max-[520px]/stage:w-fit @max-[520px]/stage:max-w-[94%] @max-[520px]/stage:flex-row @max-[520px]/stage:gap-4 @max-[520px]/stage:py-2 @max-[520px]/stage:pl-4 @max-[520px]/stage:pr-2",
+      )}
     >
       <div className="flex items-center">
         {/* Slot de 45px: no wireframe a miniatura transborda um pouco a
             própria caixa, e o texto começa 45px depois do início do slot. */}
-        <div className="relative h-[55px] w-[45px] shrink-0">
+        <div className="relative h-[55px] w-[45px] shrink-0 @max-[520px]/stage:hidden">
           <Thumb src={thumbSrc} />
         </div>
 
@@ -119,7 +153,7 @@ function PriceCard({ thumbSrc }: { thumbSrc: CoverSrc }) {
 
       <a
         href={BUY_URL}
-        className="flex h-[34px] w-[146px] items-center justify-center rounded-sm bg-action text-[15px] font-bold leading-[18px] text-on-action"
+        className="relative flex h-[34px] w-[146px] shrink-0 items-center justify-center rounded-sm bg-action text-[15px] font-bold leading-[18px] text-on-action before:absolute before:inset-x-0 before:-inset-y-[5px] @max-[520px]/stage:h-11"
       >
         Comprar Agora
       </a>

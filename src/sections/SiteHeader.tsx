@@ -47,16 +47,18 @@ export function SiteHeader() {
           </ul>
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           {/* O wireframe tinha aqui o ícone da área do cliente; sem conta de
               cliente (D6), o lugar é do carrinho — que só aparece com itens. */}
           <CartButton />
           {/* shape="block": medido no wireframe, radius=12px (rounded-card),
               não pílula. O padrão do Button é pílula para botão de nav — este
               é a exceção confirmada, não os outros que ainda não medi. */}
-          <Button href={BUY_URL} size="md" shape="block">
+          {/* No celular, sem a seta e com menos respiro: com o carrinho à mostra,
+              os três botões precisam caber ao lado do logo. */}
+          <Button href={BUY_URL} size="md" shape="block" className="max-sm:px-4">
             Comprar
-            <IconArrowRight />
+            <IconArrowRight className="max-sm:hidden" />
           </Button>
           <button
             type="button"

@@ -24,8 +24,8 @@ produção, no [`RUNBOOK-VIRADA.md`](RUNBOOK-VIRADA.md).
 
 ```
  navegador ──────────────► anonovolutanova.com.br (Next.js)
-     │                         │  no servidor: preço, estoque e variações
-     │                         │  (Store API) e páginas institucionais (wp/v2)
+     │                         │  no servidor: preço, estoque e imagem das
+     │                         │  edições (Store API) e páginas institucionais (wp/v2)
      │                         ▼
      └── direto, com CORS ─► admin.anonovolutanova.com.br (WordPress + WooCommerce)
          carrinho, frete,        ├─ wc/store/v1          Store API do WooCommerce
@@ -96,15 +96,16 @@ O script ([`setup.sh`](dev/wordpress/setup.sh) e [`setup.php`](dev/wordpress/set
 2. grava usuário e senha do wp-admin em `dev/wordpress/.admin-password` (fora do git);
 3. instala e ativa WooCommerce, Asaas (`woo-asaas`), Mercado Pago
    (`woocommerce-mercadopago`) e o `anln-storefront-bridge`;
-4. configura a loja para o Brasil, cria o produto 2027, a zona de frete, o cupom
-   `MARIANA10` e as opções do bridge.
+4. configura a loja para o Brasil, cria os produtos 2027 (um por edição, com a
+   capa do site como imagem principal), a zona de frete, o cupom `MARIANA10` e as
+   opções do bridge.
 
 | O quê | Onde |
 | --- | --- |
 | wp-admin | http://localhost:8088/wp-admin |
 | Store API | http://localhost:8088/wp-json/wc/store/v1 |
 | Bridge | http://localhost:8088/wp-json/anln-storefront/v1/checkout/config |
-| Produto 2027 | id **10**; variações Color e Clássica, R$ 109,90, 50 em estoque cada |
+| Produtos 2027 | dois produtos simples, Edição Color e Edição Clássica, R$ 109,90, 50 em estoque cada. O `setup.sh` mostra os ids no fim |
 
 **3. Ligue o site a ele.** Crie o `.env.local` na raiz deste repositório (fora do
 git):
@@ -113,8 +114,13 @@ git):
 NEXT_PUBLIC_WP_URL=http://localhost:8088
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 NEXT_PUBLIC_CHECKOUT_ENABLED=true
-ANLN_PRODUCT_ID=10
+ANLN_PRODUCT_COLOR=23
+ANLN_PRODUCT_CLASSIC=25
+ANLN_HOME_COMMING_SOON=false
+ANLN_PRECHECKOUT=true
 ```
+
+Use os ids que o `setup.sh` mostrou (ele imprime as duas linhas prontas).
 
 **4. Instale as dependências e suba o site:**
 
@@ -175,27 +181,32 @@ inicial. Depois, em *WooCommerce → Configurações*:
 | **Contas e privacidade** | **Permitir que clientes façam pedidos sem uma conta**: sim. O checkout do site é só de visitante. |
 | **Visibilidade do site** | **Ao vivo** (o ambiente local desliga o modo "Em breve"). |
 
-### 4.3 Produto 2027
+### 4.3 Produtos 2027
 
-Em *Produtos → Adicionar novo*:
+Cada edição é um **produto simples** próprio, com preço, estoque e imagem
+principal. Em *Produtos → Adicionar novo*, crie os dois:
 
-1. **Nome:** `Agenda Ano Novo, Luta Nova 2027`. Tipo: **Produto variável**.
-2. **Atributos** → *Adicionar novo* (atributo personalizado):
-   - Nome: **`Edição`**
-   - Valores: **`Color | Clássica`**
-   - Marque **Usado para variações** e **Visível na página do produto**.
+1. **Nome:** `Agenda Ano Novo, Luta Nova 2027 — Edição Color` e
+   `Agenda Ano Novo, Luta Nova 2027 — Edição Clássica`. Tipo: **Produto simples**.
+2. **Atributos** (opcional, só informativo para a loja) → *Adicionar novo*:
+   **`Edição`** com o valor **`Color`** num produto e **`Clássica`** no outro.
 
-   > ⚠️ Os nomes precisam ser exatamente esses, com acento. O site reconhece as
-   > edições por eles (`src/lib/commerce/editions.ts`); outro nome faz a edição
-   > sumir da página.
-3. **Variações** → *Gerar variações*. Em cada uma:
-   - SKU (no local: `ANLN-2027-COLOR` e `ANLN-2027-CLASSICA`; o do produto pai, `ANLN-2027`);
+   > O site sabe qual produto é cada edição pelo id (`ANLN_PRODUCT_COLOR` e
+   > `ANLN_PRODUCT_CLASSIC`). No carrinho e no pedido só chega o nome, então
+   > mantenha "Edição Color" e "Edição Clássica" nele: é o que faz o resumo
+   > mostrar "Edição: Color" (`src/lib/commerce/editions.ts`).
+3. Em cada um:
+   - SKU (no local: `ANLN-2027-COLOR` e `ANLN-2027-CLASSICA`);
    - preço normal **109,90** (o mesmo de `src/content/product.ts`);
    - **Gerenciar estoque** marcado, com a quantidade disponível;
    - **peso e dimensões do pacote**. Sem eles a Frenet não cota frete. O ambiente
-     local usa 0,5 kg e 22 × 16 × 3 cm; em produção, use as medidas reais.
-4. Publique e **anote o id do produto** (aparece na URL do editor, `post=<id>`).
-   Ele vira o `ANLN_PRODUCT_ID` do site.
+     local usa 0,5 kg e 22 × 16 × 3 cm; em produção, use as medidas reais;
+   - **imagem do produto**: é a miniatura que o site mostra na escolha da edição,
+     no carrinho, no checkout e na página de obrigado. Sem imagem, o site usa a
+     capa guardada nele.
+4. Publique e **anote o id de cada produto** (aparece na URL do editor,
+   `post=<id>`). O da Color vira o `ANLN_PRODUCT_COLOR` do site; o da Clássica,
+   o `ANLN_PRODUCT_CLASSIC`.
 
 ### 4.4 Frete
 
@@ -334,11 +345,21 @@ Modelo em [`.env.example`](.env.example). Localmente, em `.env.local`.
 | `NEXT_PUBLIC_SITE_URL` | `https://anonovolutanova.com.br` | build | URL canônica (sitemap, Open Graph, JSON-LD) |
 | `NEXT_PUBLIC_CHECKOUT_ENABLED` | `true` | build | Liga carrinho e checkout. `false`: a compra termina no WhatsApp |
 | `NEXT_PUBLIC_GTM_ID` | `GTM-XXXXXXX` | build | Google Tag Manager. Vazio: eventos só no `dataLayer` |
-| `ANLN_PRODUCT_ID` | `10` | execução (servidor) | Id do produto 2027 (seção 4.3) |
+| `NEXT_PUBLIC_WHATSAPP_CHAT_NUMBER` | `5527992794290` | build | Número que recebe as mensagens do chat do WhatsApp da página "Em breve". Vazio: `5527992794290` |
+| `ANLN_PRODUCT_COLOR` | `23` | execução (servidor) | Id do produto da Edição Color (seção 4.3) |
+| `ANLN_PRODUCT_CLASSIC` | `25` | execução (servidor) | Id do produto da Edição Clássica (seção 4.3) |
+| `ANLN_HOME_COMMING_SOON` | `true` | execução (servidor) | A home mostra a página "Em breve" (a do Grupo VIP) no lugar da landing page |
+| `ANLN_PRECHECKOUT` | `true` | execução (servidor) | Abre a página `/carrinho` (escolha da edição e carrinho antes do checkout). Desligada, `/carrinho` leva à oferta da home |
 
-O checkout só liga com `NEXT_PUBLIC_CHECKOUT_ENABLED=true` **e** `ANLN_PRODUCT_ID`
-definido. As `NEXT_PUBLIC_*` entram no código do navegador na hora do build:
-mudar uma delas exige **build novo**, não só reiniciar.
+O checkout só liga com `NEXT_PUBLIC_CHECKOUT_ENABLED=true` **e** os dois
+`ANLN_PRODUCT_*` definidos. As `NEXT_PUBLIC_*` entram no código do navegador na hora do build:
+mudar uma delas exige **build novo**, não só reiniciar. As `ANLN_*` são lidas pelo
+servidor a cada pedido (`src/proxy.ts`) ou a cada minuto (a oferta): basta
+reiniciar o container.
+
+As duas chaves combinam. Com `ANLN_HOME_COMMING_SOON=true` e `ANLN_PRECHECKOUT=true`,
+a home fica em "Em breve" e o link `/carrinho` (divulgado no Grupo VIP, por exemplo
+com `?cupom=`) vende direto.
 
 ### Comandos
 
@@ -355,11 +376,11 @@ As `NEXT_PUBLIC_*` vão como `--build-arg` (no Easypanel, "Build Args"). Sem
 `NEXT_PUBLIC_WP_URL`, o build falha de propósito.
 
 ```bash
-docker build --build-arg NEXT_PUBLIC_WP_URL=https://admin.anonovolutanova.com.br --build-arg NEXT_PUBLIC_SITE_URL=https://anonovolutanova.com.br --build-arg NEXT_PUBLIC_CHECKOUT_ENABLED=true --build-arg NEXT_PUBLIC_GTM_ID=GTM-XXXXXXX -t anonovolutanova .
+docker build --build-arg NEXT_PUBLIC_WP_URL=https://admin.anonovolutanova.com.br --build-arg NEXT_PUBLIC_SITE_URL=https://anonovolutanova.com.br --build-arg NEXT_PUBLIC_CHECKOUT_ENABLED=true --build-arg NEXT_PUBLIC_GTM_ID=GTM-XXXXXXX --build-arg NEXT_PUBLIC_WHATSAPP_CHAT_NUMBER=5527992794290 -t anonovolutanova .
 ```
 
 ```bash
-docker run --rm -p 3000:3000 -e ANLN_PRODUCT_ID=10 anonovolutanova
+docker run --rm -p 3000:3000 -e ANLN_PRODUCT_COLOR=23 -e ANLN_PRODUCT_CLASSIC=25 -e ANLN_PRECHECKOUT=true anonovolutanova
 ```
 
 ## 6. Conferir a instalação
@@ -367,11 +388,11 @@ docker run --rm -p 3000:3000 -e ANLN_PRODUCT_ID=10 anonovolutanova
 Troque `WP` pela URL do WordPress (`http://localhost:8088` no local) e `SITE` pela
 origem do site (`http://localhost:3000` no local).
 
-**Produto com as duas edições** (preço, estoque e `variations` com `Color` e
-`Clássica`):
+**Os produtos das duas edições** (cada um `"type":"simple"`, com preço, estoque,
+o atributo `Edição` e a imagem em `images`; troque pelos seus ids):
 
 ```bash
-curl -s WP/wp-json/wc/store/v1/products/10
+curl -s "WP/wp-json/wc/store/v1/products?include=23,25"
 ```
 
 **Configuração do checkout** (gateways por tipo, parcelas, desconto do Pix,
@@ -395,15 +416,16 @@ curl -si -X OPTIONS WP/wp-json/anln-storefront/v1/checkout/config -H "Origin: SI
 curl -si WP/wp-json/wc/store/v1/cart -H "Origin: SITE"
 ```
 
-**Frete sem carrinho** (o `variation_id` sai da resposta do produto; no local, 11 é
-a Color). Com `quantity` 4, só o frete grátis deve aparecer:
+**Frete sem carrinho** (o campo se chama `variation_id`, mas recebe o id do
+produto simples; no local, 23 é a Color). Com `quantity` 4, só o frete grátis deve
+aparecer:
 
 ```bash
-curl -s -X POST WP/wp-json/anln-storefront/v1/shipping/estimate -H "Content-Type: application/json" -d "{\"variation_id\":11,\"quantity\":1,\"postcode\":\"01310100\"}"
+curl -s -X POST WP/wp-json/anln-storefront/v1/shipping/estimate -H "Content-Type: application/json" -d "{\"variation_id\":23,\"quantity\":1,\"postcode\":\"01310100\"}"
 ```
 
-**No navegador:** abra o site, adicione as duas edições, calcule o frete e vá até
-o checkout. Com um gateway em sandbox, faça um Pix e um cartão e confira no
+**No navegador:** abra o site (ou `/carrinho`, com `ANLN_PRECHECKOUT=true`),
+adicione as duas edições, calcule o frete e vá até o checkout. Com um gateway em sandbox, faça um Pix e um cartão e confira no
 wp-admin o pedido com CPF, número, bairro e "Origem". O roteiro completo de teste
 de pagamento está no `README.md` do plugin, em "Roteiro de teste no sandbox".
 
@@ -412,14 +434,16 @@ de pagamento está no `README.md` do plugin, em "Roteiro de teste no sandbox".
 | Sintoma | Causa provável |
 | --- | --- |
 | `/wp-json/…` dá 404 | Links permanentes em "Simples" (4.1). No Docker local, falta o `.htaccess`: rode o `setup.sh` de novo |
-| O site mostra "pedir pelo WhatsApp" em vez do carrinho | `NEXT_PUBLIC_CHECKOUT_ENABLED` não é `true` no build ou `ANLN_PRODUCT_ID` está vazio (5) |
+| O site mostra "pedir pelo WhatsApp" em vez do carrinho | `NEXT_PUBLIC_CHECKOUT_ENABLED` não é `true` no build, falta `ANLN_PRODUCT_COLOR` ou `ANLN_PRODUCT_CLASSIC`, ou um dos ids não é de produto simples publicado (4.3, 5) |
 | Erro de CORS no console do navegador | A origem do site não está em *Avançado → CORS* do bridge. Desde a versão 0.4.1, a lista vazia bloqueia o site |
 | O carrinho esvazia a cada página | O `Cart-Token` não chega ao JavaScript: CORS de outro plugin ou do servidor sobrescrevendo o do bridge (suba a prioridade do CORS), ou `/wp-json/` em cache |
 | Nenhuma forma de pagamento no checkout | Gateway inativo ou sem chaves (4.6) |
 | O cartão do Mercado Pago não aparece | Esperado: o site ainda só aceita Pix por ele (4.6) |
 | Frete grátis não aparece com 4 unidades | O método "Frete grátis" tem requisito próprio, ou não está na zona Brasil (4.4) |
-| Nenhum frete cotado | Variações sem peso ou dimensões, ou CEP fora de toda zona de entrega (4.3, 4.4) |
-| Uma edição some da página | O atributo não se chama `Edição` ou os valores não são `Color` e `Clássica` (4.3) |
+| Nenhum frete cotado | Produtos sem peso ou dimensões, ou CEP fora de toda zona de entrega (4.3, 4.4) |
+| O resumo do pedido mostra o nome inteiro do produto em vez de "Edição: Color" | O nome do produto no WooCommerce não traz "Edição Color" ou "Edição Clássica" (4.3) |
+| A miniatura mostra a capa antiga | O produto não tem imagem no WooCommerce (4.3) |
+| `/carrinho` volta para a home | `ANLN_PRECHECKOUT` não é `true` no ambiente do servidor (5) |
 | O Pix não confirma | O webhook não chega ao WordPress: URL errada no painel do gateway, ou WordPress em `localhost` sem túnel (4.6) |
 | O WordPress redireciona para si mesmo | "URL do site" do bridge preenchida antes da virada (4.7) |
 | Mudei uma `NEXT_PUBLIC_*` e nada mudou | Ela é lida no build: gere um build novo (5) |

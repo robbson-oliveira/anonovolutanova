@@ -55,7 +55,8 @@ export type ShippingEstimate = {
 };
 
 export type ShippingEstimateInput = {
-  variationId: number;
+  /** The edition's simple product. */
+  productId: number;
   quantity: number;
   /** Com ou sem máscara: só os dígitos seguem. */
   postcode: string;
@@ -115,7 +116,9 @@ export async function estimateShipping(
   if (postcode.length !== 8) throw new ShippingEstimateError("anln_invalid_postcode", 400);
 
   const body = new URLSearchParams({
-    variation_id: String(input.variationId),
+    // The bridge's field keeps its name from the variable-product days; it
+    // takes a simple product id just the same.
+    variation_id: String(input.productId),
     quantity: String(Math.max(1, Math.floor(input.quantity) || 1)),
     postcode,
     country: "BR",

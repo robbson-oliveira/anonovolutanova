@@ -21,8 +21,8 @@ Marque cada item ao concluir. **Não comece com pendência nas seções 1 e 2.**
   - tag do GA4 (evento de configuração mais os eventos de e-commerce do `dataLayer`: `view_item`, `add_to_cart`, `begin_checkout`, `add_shipping_info`, `add_payment_info`, `purchase`);
   - Meta Pixel com os eventos equivalentes;
   - Consent Mode ligado. Os acionadores de consentimento são `anln_consent_granted` e `anln_consent_denied`.
-- [ ] **Cupons das afiliadas criados no WooCommerce de produção:** um por afiliada, com "uso individual" e restritos ao produto 2027. Lista de afiliadas exportada do AffiliateWP.
-- [ ] **Produto 2027 criado em produção:** variável, com o atributo **Edição** com os valores `Color` e `Clássica` (exatamente esses nomes: o site reconhece as edições por eles), R$ 109,90 e estoque por variação. Anotar o **id** do produto.
+- [ ] **Cupons das afiliadas criados no WooCommerce de produção:** um por afiliada, com "uso individual" e restritos aos dois produtos 2027. Lista de afiliadas exportada do AffiliateWP.
+- [ ] **Produtos 2027 criados em produção:** dois produtos **simples**, um por edição, com "Edição Color" e "Edição Clássica" no nome e o atributo **Edição** com o valor `Color` ou `Clássica` (o nome com a edição é o que o carrinho e o pedido mostram), R$ 109,90, estoque próprio, peso e dimensões, e a **imagem principal** (é a miniatura do site). Anotar o **id** de cada um (vão para `ANLN_PRODUCT_COLOR` e `ANLN_PRODUCT_CLASSIC`).
 - [ ] **Zona de entrega Brasil** com o método "Frete grátis" **sem requisito**, ao lado da Frenet.
 
 ## 2. Homologação (ambiente local em Docker, `dev/wordpress`)
@@ -52,7 +52,10 @@ Marque cada item ao concluir. **Não comece com pendência nas seções 1 e 2.**
   | `NEXT_PUBLIC_SITE_URL` | `https://anonovolutanova.com.br` | build |
   | `NEXT_PUBLIC_CHECKOUT_ENABLED` | `false` por enquanto (liga no passo 4.7) | build |
   | `NEXT_PUBLIC_GTM_ID` | `GTM-…` | build |
-  | `ANLN_PRODUCT_ID` | id do produto 2027 | execução |
+  | `ANLN_PRODUCT_COLOR` | id do produto da Edição Color | execução |
+  | `ANLN_PRODUCT_CLASSIC` | id do produto da Edição Clássica | execução |
+  | `ANLN_HOME_COMMING_SOON` | `true` enquanto a home for a página "Em breve"; `false` para abrir a landing page | execução |
+  | `ANLN_PRECHECKOUT` | `true` para abrir `/carrinho` (venda pelo link do Grupo VIP) | execução |
 
 - [ ] **Comissões em aberto do AffiliateWP** pagas ou registradas. Afiliadas avisadas do link novo: `https://anonovolutanova.com.br/?cupom=CODIGO`.
 

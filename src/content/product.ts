@@ -55,6 +55,14 @@ export const SHIPPING_NOTICE = `Frete Grátis a partir de ${FREE_SHIPPING_MIN_QT
  */
 export const BUY_URL = "/#oferta";
 
+/**
+ * Where the store flow sends someone back to choose an edition (empty cart,
+ * "voltar" in the checkout). With ANLN_PRECHECKOUT it is the cart page;
+ * without it the proxy redirects this address to BUY_URL, so the links can
+ * point here either way.
+ */
+export const CART_URL = "/carrinho";
+
 export const CONTACT = {
   whatsappNumber: "5527992794290",
   whatsappLabel: "+55 27 99279-4290",

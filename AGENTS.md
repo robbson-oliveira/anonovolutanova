@@ -79,14 +79,15 @@ bridge fazem parte de um contrato: mudar um lado exige mudar o outro.
 
 ## Estrutura
 
-- `src/app` — rotas. `(loja)/` agrupa a home, `/checkout` e
+- `src/app` — rotas. `(loja)/` agrupa a home, `/carrinho`, `/checkout` e
   `/checkout/order-received`, que compartilham o `CartProvider`; as institucionais
-  ficam fora dele e não criam sessão no WooCommerce. `/design-system` e
+  e `/em-breve` ficam fora dele e não criam sessão no WooCommerce. `/design-system` e
   `/lab` são páginas de revisão interna.
 - `src/sections` — as seções da home (`Hero`, `Product`, `Faq`…), compostas em
   `src/app/(loja)/page.tsx`.
-- `src/features/<área>` — blocos com estado e regra de negócio: `cart`,
-  `checkout`, `purchase`, `shell`.
+- `src/features/<área>` — blocos com estado e regra de negócio: `cart`
+  (inclusive a página `/carrinho`), `checkout`, `coming-soon` (a página
+  "Em breve"), `purchase`, `shell`.
 - `src/ds` — design system (ver abaixo).
 - `src/content` — copy e dados estáticos do produto. `product.ts` é a fonte
   única de ano do ciclo, nome, preço, parcelas e edições; nunca repita esses
@@ -96,8 +97,8 @@ bridge fazem parte de um contrato: mudar um lado exige mudar o outro.
   `types.ts`), `tracking/` (GTM e eventos GA4), `wordpress/`, `attribution.ts`,
   `env.ts`/`env.server.ts`, `format.ts`, `legacy-urls.ts`.
 - `src/proxy.ts` — substituto do middleware no Next 16: guarda `?cupom=` e a
-  origem da visita em cookies e responde 410 para o conteúdo antigo do
-  WordPress.
+  origem da visita em cookies, responde 410 para o conteúdo antigo do
+  WordPress e aplica as chaves de loja a cada pedido (ver "Loja e checkout").
 - `public/wireframe/` — export do Framer aprovado, **só referência visual**
   (servido em `/wireframe`). `old/` — histórico da prototipagem. Nenhum dos
   dois é código do app; não edite nem importe deles.
@@ -170,22 +171,43 @@ bridge fazem parte de um contrato: mudar um lado exige mudar o outro.
 - Portar algo do wireframe: usar a skill `.agents/skills/wireframe-para-design-system`
   — toda medida vem do HTML ou do DOM medido, nunca de estimativa.
 - Fontes locais (Manrope e Yellowtail em `public/fonts`), declaradas inline em
-  `src/app/layout.tsx`; não troque por `next/font`.
+  `src/app/layout.tsx`; não troque por `next/font`. As da página "Em breve"
+  (Cormorant Garamond, Jost e Inter) são declaradas só nela
+  (`ComingSoonPage.tsx`), para a landing page não baixá-las.
+- A página "Em breve" copia o teaser do Framer que está no ar, com paleta
+  própria (tokens `soon-*` e `whatsapp-*`) e os breakpoints dele: base = celular,
+  `md:` = tablet, `min-[75rem]:` = desktop. Em rem, não `min-[1200px]`: o
+  Tailwind 4 não ordena px contra o `md` (rem) e o desktop perde para o tablet.
 
 ## Loja e checkout
 
 - O checkout só liga com `NEXT_PUBLIC_CHECKOUT_ENABLED=true` **e**
-  `ANLN_PRODUCT_ID` definido; sem isso, a compra termina no pedido pelo
+  `ANLN_PRODUCT_COLOR`/`ANLN_PRODUCT_CLASSIC` definidos; sem isso, a compra termina no pedido pelo
   WhatsApp. Todo fluxo novo precisa respeitar os dois estados.
-- `getProductOffer()` lê preço, estoque e variações da Store API e cai para
-  `src/content/product.ts` se o WordPress não responder: a home precisa
-  continuar abrindo com o WordPress fora do ar.
+- Chaves de servidor, lidas pelo `proxy.ts` a cada pedido (trocar exige só
+  reiniciar, e as páginas continuam estáticas): `ANLN_HOME_COMMING_SOON`
+  reescreve `/` para `/em-breve`; `ANLN_PRECHECKOUT` abre `/carrinho` (sem ela,
+  `/carrinho` redireciona para `/#oferta`). O nome `COMMING` é o que está
+  configurado nos ambientes; não corrija só de um lado. Links do fluxo de compra
+  que voltam à escolha da edição usam `CART_URL` (`/carrinho`), que funciona
+  com a chave ligada ou desligada.
+- `getProductOffer()` lê preço, estoque e a imagem principal dos produtos da
+  Store API e cai para `src/content/product.ts` se o WordPress não responder:
+  a home precisa continuar abrindo com o WordPress fora do ar.
 - `Cart-Token` é a identidade do carrinho (localStorage). Não troque por
   cookie: é o que mantém o carrinho entre domínios no Safari/iOS.
 - Gateway (D3) ainda em aberto: pagamento passa pelos adaptadores de
   `src/lib/payments/`. O checkout não pode depender de um gateway específico.
-- Edições reconhecidas pelo atributo **Edição** com os valores `Color` e
-  `Clássica` no WooCommerce (`lib/commerce/editions.ts`).
+- Cada edição é um **produto simples** no WooCommerce (não há produto
+  variável), mapeado pelo id em `ANLN_PRODUCT_COLOR` e `ANLN_PRODUCT_CLASSIC`
+  (`serverEnv.products`). No carrinho e no pedido só o nome chega, e é por ele
+  ("Edição Color") que as linhas ganham o rótulo da edição (`lib/commerce/editions.ts`).
+  O campo `variation_id` da cotação de frete do bridge recebe o id do produto
+  simples.
+- Miniatura de produto = imagem principal do produto no WooCommerce, com a capa
+  local como reserva (`features/cart/ProductThumb.tsx`), na escolha da edição,
+  no carrinho, no checkout e na página de obrigado (`image` do resumo do
+  pedido do bridge).
 - Frete grátis é por **quantidade** (`FREE_SHIPPING_MIN_QTY`), regra que o
   bridge aplica no WooCommerce.
 

@@ -26,7 +26,7 @@ import {
   type RadioOption,
   type SelectOption,
 } from "@ds/index";
-import { BUY_URL, PRODUCT_NAME } from "@content/product";
+import { CART_URL, PRODUCT_NAME } from "@content/product";
 import { useCart } from "@/features/cart/CartProvider";
 import { orderAttribution } from "@/lib/attribution";
 import { BR_STATES, BR_STATE_NAMES, lookupCep, maskCep, maskCnpj, maskCpf, normalizeCnpj, onlyDigits } from "@/lib/commerce/br";
@@ -496,7 +496,8 @@ export function CheckoutPage() {
   // ----- Render -----
 
   const header = (
-    // <a> e não <Link>: "/" é o wireframe (HTML puro), não uma página React.
+    // <a>, not <Link>: the proxy decides what "/" serves ("Em breve" or the
+    // landing page), and a client navigation would skip it.
     // eslint-disable-next-line @next/next/no-html-link-for-pages
     <a href="/" aria-label="Voltar ao site" className="w-fit">
       <Image src={logo} alt={PRODUCT_NAME} width={1086} height={1448} sizes="42px" preload className="block h-14 w-auto" />
@@ -520,7 +521,7 @@ export function CheckoutPage() {
           <Heading as="h1" level="subsection">
             Seu carrinho está vazio
           </Heading>
-          <Button href={BUY_URL} size="md" shape="block">
+          <Button href={CART_URL} size="md" shape="block">
             Escolher minha agenda
             <IconArrowRight />
           </Button>
@@ -842,7 +843,7 @@ export function CheckoutPage() {
 
         <div className="flex flex-col-reverse items-stretch gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
           {step === "contato" ? (
-            <a href={BUY_URL} className="flex items-center justify-center gap-2 text-field text-text-muted hover:text-text-strong">
+            <a href={CART_URL} className="flex items-center justify-center gap-2 text-field text-text-muted hover:text-text-strong">
               <IconArrowLeft />
               Voltar à loja
             </a>

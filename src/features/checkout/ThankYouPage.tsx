@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { Button, IconCheck, IconClose, IconHeadset, cn } from "@ds/index";
 import { INSTAGRAM_URL, PRODUCT_NAME, WHATSAPP_URL } from "@content/product";
 import { getPaymentInstructions, type OrderSummary, type PaymentInstructions } from "@/lib/commerce/bridge-api";
+import { ProductThumb } from "@/features/cart/ProductThumb";
 import { onlyDigits } from "@/lib/commerce/br";
 import { editionOfCartItem } from "@/lib/commerce/editions";
+import { mainImage } from "@/lib/commerce/product-image";
 import { errorMessage } from "@/lib/commerce/store-api";
 import { formatBRL } from "@/lib/format";
 import { trackPurchaseOnce } from "@/lib/tracking/events";
@@ -302,17 +303,12 @@ function OrderItems({ order }: { order: OrderSummary }) {
           });
           return (
             <li key={item.id} className="flex items-start gap-4">
-              {edition ? (
-                <Image
-                  src={edition.cover}
-                  alt=""
-                  aria-hidden
-                  width={edition.coverSize.width}
-                  height={edition.coverSize.height}
-                  sizes="48px"
-                  className="block h-20 w-auto shrink-0 drop-shadow-md"
-                />
-              ) : null}
+              <ProductThumb
+                image={mainImage(item.image ? [{ src: item.image }] : [])}
+                fallback={edition}
+                sizes="80px"
+                className="size-20"
+              />
               <div className="flex min-w-0 flex-1 flex-col gap-1.5">
                 <p className="text-field font-medium text-text-strong">{PRODUCT_NAME}</p>
                 <p className="text-label text-text-muted">

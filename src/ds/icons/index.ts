@@ -32,6 +32,9 @@ export {
   IconClock,
   IconHeadset,
   IconExternal,
+  IconWhatsApp,
+  IconSend,
+  IconSmile,
 } from "./ui";
 
 export {

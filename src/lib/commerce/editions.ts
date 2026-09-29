@@ -13,7 +13,12 @@ export function editionFromAttribute(value: string): EditionId | null {
   return null;
 }
 
-/** A edição de um item do carrinho, pelos atributos da variação. */
+/**
+ * The edition of a cart or order item, for its label and fallback cover. Each
+ * edition is a simple product, and the cart only carries its name ("… —
+ * Edição Color"); attributes still count first, for orders placed while the
+ * product was variable. Unrecognized, the item shows its own name.
+ */
 export function editionOfCartItem(item: {
   variation: Array<{ attribute: string; value: string }>;
   name: string;

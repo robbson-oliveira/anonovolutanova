@@ -10,28 +10,29 @@ import {
 } from "@content/product";
 import { publicEnv } from "@/lib/env";
 import { serverEnv } from "@/lib/env.server";
-import { editionFromAttribute } from "./editions";
 import type { ProductOffer } from "./offer-types";
+import { mainImage, type StoreImage } from "./product-image";
 
-export type { EditionOffer, ProductOffer } from "./offer-types";
+export type { EditionOffer, ProductImage, ProductOffer } from "./offer-types";
 
 /**
- * A oferta da página de compra: preço, parcelas e, por edição, estoque e o id
- * da variação no WooCommerce.
+ * A oferta da página de compra: preço, parcelas e, por edição, estoque, o id
+ * do produto no WooCommerce e a imagem principal dele.
  *
- * Com `ANLN_PRODUCT_ID` definido, lê o produto variável 2027 pela Store API
- * (revalida a cada minuto: o estoque é limitado de verdade). Sem ele, ou se o
- * WordPress não responder, usa `src/content/product.ts` — e aí não há como
- * vender pelo site, então `checkoutEnabled` fica falso e a página cai no
- * pedido pelo WhatsApp.
+ * Each edition is its own simple product, mapped by id (ANLN_PRODUCT_COLOR,
+ * ANLN_PRODUCT_CLASSIC) and read from the Store API with a one-minute
+ * revalidation: stock is genuinely limited. Without both ids, or if WordPress
+ * does not answer, the offer comes from `src/content/product.ts` — and then
+ * nothing can be sold on the site, so `checkoutEnabled` stays false and the
+ * page falls back to ordering on WhatsApp.
  */
 export async function getProductOffer(): Promise<ProductOffer> {
   const fallback = staticOffer();
-  const productId = serverEnv.productId;
-  if (!productId) return fallback;
+  const ids = serverEnv.products;
+  if (EDITIONS.some((e) => !ids[e.id])) return fallback;
 
   try {
-    const fromStore = await storeOffer(productId);
+    const fromStore = await storeOffer(ids as Record<EditionId, number>);
     return fromStore ?? fallback;
   } catch {
     return fallback;
@@ -52,7 +53,8 @@ function staticOffer(): ProductOffer {
       coverSize: e.coverSize,
       description: e.description,
       inStock: true,
-      variationId: null,
+      productId: null,
+      image: null,
     })),
     checkoutEnabled: false,
   };
@@ -61,44 +63,37 @@ function staticOffer(): ProductOffer {
 type StoreProduct = {
   id: number;
   name: string;
+  type: string;
   is_in_stock: boolean;
+  is_purchasable: boolean;
   prices: { price: string; currency_minor_unit: number };
-  variations?: Array<{ id: number; attributes: Array<{ name: string; value: string }> }>;
+  images?: StoreImage[];
 };
 
-async function storeOffer(productId: number): Promise<ProductOffer | null> {
+async function storeOffer(ids: Record<EditionId, number>): Promise<ProductOffer | null> {
   const base = `${publicEnv.wpUrl}/wp-json/wc/store/v1/products`;
   const init = { next: { revalidate: 60 }, signal: AbortSignal.timeout(10_000) } as const;
 
-  const parentRes = await fetch(`${base}/${productId}`, init);
-  if (!parentRes.ok) return null;
-  const parent = (await parentRes.json()) as StoreProduct;
-
-  const variationIds = (parent.variations ?? []).map((v) => v.id);
-  if (!variationIds.length) return null;
-
-  // Estoque e preço de cada variação (a resposta do pai não traz por variação).
-  const variations = await Promise.all(
-    variationIds.map(async (id) => {
-      const res = await fetch(`${base}/${id}`, init);
-      return res.ok ? ((await res.json()) as StoreProduct) : null;
+  const entries = await Promise.all(
+    EDITIONS.map(async (e) => {
+      const res = await fetch(`${base}/${ids[e.id]}`, init);
+      return [e.id, res.ok ? ((await res.json()) as StoreProduct) : null] as const;
     }),
   );
 
-  const byEdition = new Map<EditionId, { variationId: number; inStock: boolean; price: number }>();
-  for (const v of parent.variations ?? []) {
-    const edition = v.attributes.map((a) => editionFromAttribute(a.value)).find(Boolean) ?? null;
-    const detail = variations.find((d) => d?.id === v.id);
-    if (!edition || !detail) continue;
+  const byEdition = new Map<EditionId, { product: StoreProduct; price: number }>();
+  for (const [edition, product] of entries) {
+    // A variable product here would add its parent to the cart, which the
+    // Store API refuses: only simple products are sold.
+    if (!product || product.type !== "simple") continue;
     byEdition.set(edition, {
-      variationId: v.id,
-      inStock: detail.is_in_stock,
-      price: Number(detail.prices.price) / 10 ** detail.prices.currency_minor_unit,
+      product,
+      price: Number(product.prices.price) / 10 ** product.prices.currency_minor_unit,
     });
   }
 
-  // Sem as duas edições mapeadas, o produto no WooCommerce não está como o
-  // site espera: melhor não vender do que vender a edição errada.
+  // Sem as duas edições mapeadas, o WooCommerce não está como o site espera:
+  // melhor não vender do que vender a edição errada.
   if (EDITIONS.some((e) => !byEdition.has(e.id))) return null;
 
   const fallback = staticOffer();
@@ -113,10 +108,14 @@ async function storeOffer(productId: number): Promise<ProductOffer | null> {
       amount: Math.round((price / installmentCount) * 100) / 100,
     },
     editions: fallback.editions.map((e) => {
-      const live = byEdition.get(e.id)!;
-      return { ...e, inStock: live.inStock, variationId: live.variationId };
+      const { product } = byEdition.get(e.id)!;
+      return {
+        ...e,
+        inStock: product.is_in_stock && product.is_purchasable,
+        productId: product.id,
+        image: mainImage(product.images),
+      };
     }),
     checkoutEnabled: publicEnv.checkoutEnabled,
   };
 }
-

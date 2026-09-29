@@ -22,9 +22,15 @@ export const publicEnv = {
   /**
    * Liga o carrinho e o checkout headless. Fica desligado até a virada
    * (Fase 7): antes disso a compra termina no pedido pelo WhatsApp mesmo com o
-   * produto configurado. Só vale com ANLN_PRODUCT_ID definido no servidor.
+   * produto configurado. Só vale com ANLN_PRODUCT_COLOR e
+   * ANLN_PRODUCT_CLASSIC definidos no servidor.
    */
   checkoutEnabled: process.env.NEXT_PUBLIC_CHECKOUT_ENABLED === "true",
   /** Container do Google Tag Manager (GTM-XXXX). Vazio: sem GTM, só dataLayer. */
   gtmId: process.env.NEXT_PUBLIC_GTM_ID || "",
+  /**
+   * Phone the chat widget of the "Em breve" page sends messages to, with
+   * country and area code (only its digits count).
+   */
+  whatsappChatNumber: (process.env.NEXT_PUBLIC_WHATSAPP_CHAT_NUMBER || "5527992794290").replace(/\D/g, ""),
 } as const;

@@ -21,9 +21,9 @@ MSYS_NO_PATHCONV=1 docker compose -f dev/wordpress/docker-compose.yml --profile 
 | Site / wp-admin | http://localhost:8088 · http://localhost:8088/wp-admin |
 | Store API | http://localhost:8088/wp-json/wc/store/v1 |
 | Plugin | http://localhost:8088/wp-json/anln-storefront/v1/checkout/config |
-| Produto 2027 | id **10**; variações Color (11) e Clássica (12), R$ 109,90, 50 em estoque cada |
+| Produtos 2027 | dois produtos simples, "— Edição Color" e "— Edição Clássica", R$ 109,90, 50 em estoque cada, com a capa do site (`public/img`) como imagem principal. O `setup.sh` mostra os ids no fim |
 | Frete | zona Brasil: "PAC (teste local)" R$ 24,90 e "Frete grátis" (liberado pelo plugin a partir de 4 unidades) |
-| Cupom | `MARIANA10`, 10%, só no produto 2027 |
+| Cupom | `MARIANA10`, 10%, só nos produtos 2027 |
 
 ## Ligar o Next a ele
 
@@ -32,8 +32,14 @@ MSYS_NO_PATHCONV=1 docker compose -f dev/wordpress/docker-compose.yml --profile 
 ```
 NEXT_PUBLIC_WP_URL=http://localhost:8088
 NEXT_PUBLIC_CHECKOUT_ENABLED=true
-ANLN_PRODUCT_ID=10
+ANLN_PRODUCT_COLOR=23
+ANLN_PRODUCT_CLASSIC=25
+ANLN_PRECHECKOUT=true
 ```
+
+Troque `23` e `25` pelos ids que o `setup.sh` mostrou (ele já imprime as duas linhas). Um banco criado antes da troca
+para produtos simples tinha o produto variável (id 10): o `setup.sh` o manda para
+a lixeira e cria os dois produtos no lugar.
 
 O CORS aceita qualquer `http://localhost:<porta>`: o plugin de ajustes locais (`mu-plugins/anln-local-dev.php`) cuida disso só neste ambiente. Ele também descarta os e-mails, que vão para o `debug.log`.
 

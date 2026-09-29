@@ -1,15 +1,16 @@
 "use client";
 
-import Image from "next/image";
-import { IconMinus, IconPlus, cn } from "@ds/index";
+import { IconMinus, IconPlus } from "@ds/index";
 import { editionOfCartItem } from "@/lib/commerce/editions";
+import { mainImage } from "@/lib/commerce/product-image";
 import { fromMinor, type StoreCartItem } from "@/lib/commerce/store-api";
 import { formatBRL } from "@/lib/format";
+import { ProductThumb } from "./ProductThumb";
 
 /**
- * Uma linha do carrinho: capa da edição, nome, quantidade e total da linha.
- * A capa vem dos arquivos do site (não das imagens do WordPress), achada pela
- * edição da variação.
+ * Uma linha do carrinho: miniatura, nome, quantidade e total da linha. The
+ * miniature is the product's main image in WooCommerce, with the edition's
+ * local cover as the fallback.
  */
 export function CartItemRow({
   item,
@@ -29,17 +30,12 @@ export function CartItemRow({
 
   return (
     <li className="flex items-center gap-4">
-      {edition ? (
-        <Image
-          src={edition.cover}
-          alt=""
-          aria-hidden
-          width={edition.coverSize.width}
-          height={edition.coverSize.height}
-          sizes="48px"
-          className={cn("block w-auto shrink-0", compact ? "h-16" : "h-20")}
-        />
-      ) : null}
+      <ProductThumb
+        image={mainImage(item.images)}
+        fallback={edition}
+        sizes={compact ? "64px" : "80px"}
+        className={compact ? "size-16" : "size-20"}
+      />
       <div className="flex min-w-0 flex-1 flex-col gap-2">
         <span className="text-sm font-bold leading-tight text-text-strong">
           {edition ? edition.label : item.name}

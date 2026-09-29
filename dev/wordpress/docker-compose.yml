@@ -67,6 +67,8 @@ services:
       - ../../../anln-storefront-bridge:/var/www/html/wp-content/plugins/anln-storefront-bridge
       - ./mu-plugins:/var/www/html/wp-content/mu-plugins
       - ./:/setup
+      # As capas do site viram a imagem principal dos produtos (setup.php).
+      - ../../public/img:/site-img:ro
 
 volumes:
   db:

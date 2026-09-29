@@ -1,11 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import { IconBasket, IconClose, IconMinus, IconPlus } from "@ds/index";
 import { PRODUCT_NAME } from "@content/product";
 import { useCart } from "@/features/cart/CartProvider";
 import { CouponForm } from "@/features/cart/CouponForm";
+import { ProductThumb } from "@/features/cart/ProductThumb";
 import { editionOfCartItem } from "@/lib/commerce/editions";
+import { mainImage } from "@/lib/commerce/product-image";
 import { fromMinor, type StoreCartItem } from "@/lib/commerce/store-api";
 import { formatBRL } from "@/lib/format";
 
@@ -94,17 +95,7 @@ function SummaryItem({
 
   return (
     <li className="flex gap-4">
-      {edition ? (
-        <Image
-          src={edition.cover}
-          alt=""
-          aria-hidden
-          width={edition.coverSize.width}
-          height={edition.coverSize.height}
-          sizes="56px"
-          className="block h-24 w-auto shrink-0 drop-shadow-md"
-        />
-      ) : null}
+      <ProductThumb image={mainImage(item.images)} fallback={edition} sizes="96px" className="size-24" />
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         <div className="flex items-start justify-between gap-3">
           <span className="text-field font-medium text-text-strong">{PRODUCT_NAME}</span>

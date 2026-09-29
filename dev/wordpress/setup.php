@@ -4,8 +4,9 @@
  * procura antes de criar, e ajusta o que já existe.
  *
  * Espelha o que a produção vai ter (PLANO-MIGRACAO-NEXTJS.md, Fase 3):
- *  - produto variável "Agenda Ano Novo, Luta Nova 2027", atributo Edição
- *    (Color | Clássica), R$ 109,90, estoque por variação;
+ *  - um produto simples por edição ("Agenda Ano Novo, Luta Nova 2027 —
+ *    Edição Color" e "— Edição Clássica"), atributo Edição, R$ 109,90,
+ *    estoque próprio e a capa como imagem principal;
  *  - zona Brasil com um frete pago de teste (no lugar da Frenet, que exige
  *    conta) e o "Frete grátis" sem requisito, que o bridge libera a partir de
  *    4 unidades;
@@ -42,51 +43,89 @@ foreach ( $options as $key => $value ) {
 }
 $log( 'WooCommerce: Brasil, BRL, visitante' );
 
-// ----- Produto 2027 -----
-$sku       = 'ANLN-2027';
-$parent_id = wc_get_product_id_by_sku( $sku );
-$parent    = $parent_id ? wc_get_product( $parent_id ) : new WC_Product_Variable();
+// ----- Produtos 2027: um produto simples por edição -----
+require_once ABSPATH . 'wp-admin/includes/file.php';
+require_once ABSPATH . 'wp-admin/includes/media.php';
+require_once ABSPATH . 'wp-admin/includes/image.php';
 
-$attribute = new WC_Product_Attribute();
-$attribute->set_name( 'Edição' );
-$attribute->set_options( [ 'Color', 'Clássica' ] );
-$attribute->set_visible( true );
-$attribute->set_variation( true );
+// The 2027 agenda used to be one variable product. Its variations hold the
+// SKUs the simple products take now: free them and send it to the trash.
+$legacy_id = wc_get_product_id_by_sku( 'ANLN-2027' );
+$legacy    = $legacy_id ? wc_get_product( $legacy_id ) : null;
+if ( $legacy && $legacy->is_type( 'variable' ) ) {
+	foreach ( $legacy->get_children() as $child_id ) {
+		$child = wc_get_product( $child_id );
+		if ( $child ) {
+			$child->set_sku( '' );
+			$child->save();
+		}
+	}
+	$legacy->set_sku( '' );
+	$legacy->save();
+	$legacy->delete( false );
+	$log( "Produto variável antigo (id {$legacy_id}) na lixeira" );
+}
 
-$parent->set_name( 'Agenda Ano Novo, Luta Nova 2027' );
-$parent->set_slug( 'agenda-ano-novo-luta-nova-2027' );
-$parent->set_sku( $sku );
-$parent->set_status( 'publish' );
-$parent->set_catalog_visibility( 'visible' );
-$parent->set_short_description( 'Agenda católica 2027 inspirada em São Josemaria Escrivá.' );
-$parent->set_attributes( [ $attribute ] );
-$parent_id = $parent->save();
+/**
+ * Upload a cover from public/img (mounted at /site-img) as the product image.
+ */
+$attach_cover = static function ( string $file, string $title ): int {
+	$source = '/site-img/' . $file;
+	if ( ! is_readable( $source ) ) {
+		return 0;
+	}
+	$tmp = wp_tempnam( $file );
+	copy( $source, $tmp );
+	$id = media_handle_sideload( [ 'name' => $file, 'tmp_name' => $tmp ], 0, $title );
+	return is_wp_error( $id ) ? 0 : (int) $id;
+};
 
 $editions = [
-	'Color'    => 'ANLN-2027-COLOR',
-	'Clássica' => 'ANLN-2027-CLASSICA',
+	'Color'    => [ 'sku' => 'ANLN-2027-COLOR', 'slug' => 'color', 'cover' => 'capa-color.png', 'env' => 'ANLN_PRODUCT_COLOR' ],
+	'Clássica' => [ 'sku' => 'ANLN-2027-CLASSICA', 'slug' => 'classica', 'cover' => 'capa-classica.png', 'env' => 'ANLN_PRODUCT_CLASSIC' ],
 ];
-foreach ( $editions as $value => $variation_sku ) {
-	$variation_id = wc_get_product_id_by_sku( $variation_sku );
-	$variation    = $variation_id ? wc_get_product( $variation_id ) : new WC_Product_Variation();
-	$variation->set_parent_id( $parent_id );
-	// Atributo personalizado: a chave é o nome sanitizado ("edicao").
-	$variation->set_attributes( [ sanitize_title( 'Edição' ) => $value ] );
-	$variation->set_sku( $variation_sku );
-	$variation->set_regular_price( '109.90' );
-	$variation->set_manage_stock( true );
-	if ( ! $variation_id ) {
-		$variation->set_stock_quantity( 50 );
+$product_ids = [];
+$env_lines   = [];
+foreach ( $editions as $value => $edition ) {
+	$id      = wc_get_product_id_by_sku( $edition['sku'] );
+	$product = $id ? wc_get_product( $id ) : new WC_Product_Simple();
+
+	// Informational attribute (not for variations): how the site tells the
+	// editions apart, together with the product name.
+	$attribute = new WC_Product_Attribute();
+	$attribute->set_name( 'Edição' );
+	$attribute->set_options( [ $value ] );
+	$attribute->set_visible( true );
+	$attribute->set_variation( false );
+
+	$name = "Agenda Ano Novo, Luta Nova 2027 — Edição {$value}";
+	$product->set_name( $name );
+	$product->set_slug( 'agenda-ano-novo-luta-nova-2027-' . $edition['slug'] );
+	$product->set_sku( $edition['sku'] );
+	$product->set_status( 'publish' );
+	$product->set_catalog_visibility( 'visible' );
+	$product->set_short_description( 'Agenda católica 2027 inspirada em São Josemaria Escrivá.' );
+	$product->set_attributes( [ $attribute ] );
+	$product->set_regular_price( '109.90' );
+	$product->set_manage_stock( true );
+	if ( ! $id ) {
+		$product->set_stock_quantity( 50 );
 	}
-	$variation->set_weight( '0.5' );
-	$variation->set_length( '22' );
-	$variation->set_width( '16' );
-	$variation->set_height( '3' );
-	$variation->set_status( 'publish' );
-	$variation->save();
+	$product->set_weight( '0.5' );
+	$product->set_length( '22' );
+	$product->set_width( '16' );
+	$product->set_height( '3' );
+	if ( ! $product->get_image_id() ) {
+		$image_id = $attach_cover( $edition['cover'], $name );
+		if ( $image_id ) {
+			$product->set_image_id( $image_id );
+		}
+	}
+	$id            = $product->save();
+	$product_ids[] = $id;
+	$env_lines[]   = $edition['env'] . '=' . $id;
 }
-WC_Product_Variable::sync( $parent_id );
-$log( "Produto 2027: id {$parent_id} (use ANLN_PRODUCT_ID={$parent_id})" );
+$log( 'Produtos 2027: use ' . implode( ' e ', $env_lines ) );
 
 // ----- Frete: zona Brasil -----
 $zone = null;
@@ -127,17 +166,15 @@ if ( ! in_array( 'free_shipping', $methods, true ) ) {
 $log( 'Frete: zona Brasil com PAC (teste) e Frete grátis' );
 
 // ----- Cupom de afiliada -----
-$code = 'mariana10';
-if ( ! wc_get_coupon_id_by_code( $code ) ) {
-	$coupon = new WC_Coupon();
-	$coupon->set_code( $code );
-	$coupon->set_description( 'Afiliada: Mariana (teste local)' );
-	$coupon->set_discount_type( 'percent' );
-	$coupon->set_amount( 10 );
-	$coupon->set_individual_use( true );
-	$coupon->set_product_ids( [ $parent_id ] );
-	$coupon->save();
-}
+$code   = 'mariana10';
+$coupon = new WC_Coupon( wc_get_coupon_id_by_code( $code ) );
+$coupon->set_code( $code );
+$coupon->set_description( 'Afiliada: Mariana (teste local)' );
+$coupon->set_discount_type( 'percent' );
+$coupon->set_amount( 10 );
+$coupon->set_individual_use( true );
+$coupon->set_product_ids( $product_ids );
+$coupon->save();
 $log( 'Cupom: MARIANA10 (10%)' );
 
 // ----- anln-storefront-bridge -----

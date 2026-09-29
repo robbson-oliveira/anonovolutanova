@@ -19,6 +19,7 @@ import { whatsappUrlWith, type EditionId } from "@content/product";
 import type { ProductOffer } from "@/lib/commerce/offer-types";
 import { formatBRL } from "@/lib/format";
 import { useOptionalCart } from "@/features/cart/CartProvider";
+import { ProductThumb } from "@/features/cart/ProductThumb";
 import { ShippingEstimate } from "./ShippingEstimate";
 import { item, trackAddToCart, trackViewItem } from "@/lib/tracking/events";
 
@@ -67,14 +68,14 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
     trackViewItem(
       offer.editions
         .filter((e) => e.inStock)
-        .map((e) => item(e.variationId ?? e.id, e.label, offer.price, 1)),
+        .map((e) => item(e.productId ?? e.id, e.label, offer.price, 1)),
     );
   }, [offer]);
 
   const addToCart = async () => {
-    if (!cart || !edition.variationId) return false;
-    const ok = await cart.add(edition.variationId, qty);
-    if (ok) trackAddToCart([item(edition.variationId, edition.label, offer.price, qty)]);
+    if (!cart || !edition.productId) return false;
+    const ok = await cart.add(edition.productId, qty);
+    if (ok) trackAddToCart([item(edition.productId, edition.label, offer.price, qty)]);
     return ok;
   };
 
@@ -153,16 +154,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
                     onChange={() => setEditionId(e.id)}
                     className="sr-only"
                   />
-                  <Image
-                    src={e.cover}
-                    alt=""
-                    aria-hidden
-                    width={e.coverSize.width}
-                    height={e.coverSize.height}
-                    sizes="56px"
-                    loading="eager"
-                    className="block h-[72px] w-auto"
-                  />
+                  <ProductThumb image={e.image} fallback={e} sizes="72px" className="size-[72px]" />
                   <span className="flex flex-col gap-1">
                     <span className="text-sm font-bold text-text-strong">{e.label}</span>
                     <span className="text-xs leading-snug text-text-muted">
@@ -244,8 +236,8 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
         {/* Frete e prazo pelo CEP, com as formas de entrega do WooCommerce. A
             cotação soma o que já está no carrinho: é esse pacote que vai
             ser enviado (e é ele que alcança o frete grátis por quantidade). */}
-        {offer.checkoutEnabled && edition.variationId && !soldOut ? (
-          <ShippingEstimate variationId={edition.variationId} quantity={qty + (cart?.count ?? 0)} />
+        {offer.checkoutEnabled && edition.productId && !soldOut ? (
+          <ShippingEstimate productId={edition.productId} quantity={qty + (cart?.count ?? 0)} />
         ) : null}
 
         {/* CTA — com o checkout desligado (NEXT_PUBLIC_CHECKOUT_ENABLED) ou sem o
@@ -255,7 +247,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
             <Button href={whatsappUrlWith(`Olá! Quero entrar na lista de espera da ${offer.name}.`)} size="lg" shape="block" target="_blank" rel="noopener">
               Entrar na lista de espera
             </Button>
-          ) : offer.checkoutEnabled && cart && edition.variationId ? (
+          ) : offer.checkoutEnabled && cart && edition.productId ? (
             <>
               <Button
                 size="lg"

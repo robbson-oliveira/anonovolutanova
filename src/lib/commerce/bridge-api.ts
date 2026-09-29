@@ -65,6 +65,8 @@ export type OrderSummary = {
     total: number;
     /** Variation attributes, e.g. { name: "Edição", value: "Color" }. */
     attributes: Array<{ name: string; value: string }>;
+    /** URL of the product's main image; "" without one (older bridges omit it). */
+    image?: string;
   }>;
   /** Order fees; the payment-method discount is a negative one. */
   fees: Array<{ name: string; total: number }>;

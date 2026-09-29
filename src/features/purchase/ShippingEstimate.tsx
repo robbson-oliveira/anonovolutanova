@@ -26,10 +26,10 @@ import { ShippingOptionsDialog } from "./ShippingOptionsDialog";
 /** Espera antes de recotar uma troca de edição ou de quantidade (cliques no +/−). */
 const REQUOTE_DELAY_MS = 400;
 
-type Quote = { data: Estimate; cep: string; variationId: number; quantity: number };
+type Quote = { data: Estimate; cep: string; productId: number; quantity: number };
 type Outcome = "ok" | "error" | "stale";
 
-const lineKey = (variationId: number, quantity: number, cep: string) => `${variationId}|${quantity}|${cep}`;
+const lineKey = (productId: number, quantity: number, cep: string) => `${productId}|${quantity}|${cep}`;
 
 /** Título do card: "Chegará grátis até dia 5 de outubro", "Receba até dia 5 de outubro"… */
 function headline(rate: ShippingRate): string {
@@ -39,8 +39,8 @@ function headline(rate: ShippingRate): string {
 }
 
 type ShippingEstimateProps = {
-  /** Variação (edição) no WooCommerce. Sem ela o card não aparece. */
-  variationId: number;
+  /** The edition's product in WooCommerce. Without it the card does not show. */
+  productId: number;
   quantity: number;
 };
 
@@ -56,7 +56,7 @@ type ShippingEstimateProps = {
  *    troca de CEP e a escolha da forma de entrega (`anln_shipping_rate`), que
  *    o checkout lê para marcar a mesma.
  */
-export function ShippingEstimate({ variationId, quantity }: ShippingEstimateProps) {
+export function ShippingEstimate({ productId, quantity }: ShippingEstimateProps) {
   // localStorage via useSyncExternalStore: o servidor (e a hidratação) veem "",
   // o navegador lê o valor guardado logo em seguida, sem descompasso.
   const storedCep = useSyncExternalStore(subscribeShippingStorage, readStoredCep, () => "");
@@ -82,24 +82,24 @@ export function ShippingEstimate({ variationId, quantity }: ShippingEstimateProp
   const seq = useRef(0);
   const inFlight = useRef<AbortController | null>(null);
 
-  const runQuote = useCallback(async (cep: string, variation: number, qty: number): Promise<Outcome> => {
+  const runQuote = useCallback(async (cep: string, product: number, qty: number): Promise<Outcome> => {
     // Uma cotação nova invalida a anterior: cancela o fetch e, se a resposta
     // já estiver a caminho, o número de sequência a descarta.
     inFlight.current?.abort();
     const controller = new AbortController();
     inFlight.current = controller;
     const id = ++seq.current;
-    const key = lineKey(variation, qty, cep);
+    const key = lineKey(product, qty, cep);
     lastKey.current = key;
     setPending(true);
 
     try {
-      const data = await estimateShipping({ variationId: variation, quantity: qty, postcode: cep }, controller.signal);
+      const data = await estimateShipping({ productId: product, quantity: qty, postcode: cep }, controller.signal);
       if (id !== seq.current || controller.signal.aborted) return "stale";
       acceptedCep.current = cep;
       acceptedKey.current = key;
       targetCep.current = cep;
-      setQuote({ data, cep, variationId: variation, quantity: qty });
+      setQuote({ data, cep, productId: product, quantity: qty });
       setQuoteError(null);
       setCepError(null);
       writeStoredCep(cep);
@@ -136,24 +136,24 @@ export function ShippingEstimate({ variationId, quantity }: ShippingEstimateProp
   // com espera nas trocas seguintes, para uma sequência de cliques no + virar
   // uma consulta só.
   useEffect(() => {
-    if (!variationId) return;
+    if (!productId) return;
     // CEP guardado diferente do aceito: retomada ao montar, ou outra aba trocou.
     if (storedCep && storedCep !== acceptedCep.current) {
       acceptedCep.current = storedCep;
       targetCep.current = storedCep;
     }
     const cep = targetCep.current;
-    if (!cep || lineKey(variationId, quantity, cep) === lastKey.current) return;
+    if (!cep || lineKey(productId, quantity, cep) === lastKey.current) return;
 
     const delay = lastKey.current === null ? 0 : REQUOTE_DELAY_MS;
     const timer = window.setTimeout(() => {
       // Relido na hora: um CEP digitado nesse meio-tempo já vale para esta linha.
       const current = targetCep.current;
-      if (!current || lineKey(variationId, quantity, current) === lastKey.current) return;
-      void runQuote(current, variationId, quantity);
+      if (!current || lineKey(productId, quantity, current) === lastKey.current) return;
+      void runQuote(current, productId, quantity);
     }, delay);
     return () => window.clearTimeout(timer);
-  }, [storedCep, variationId, quantity, runQuote]);
+  }, [storedCep, productId, quantity, runQuote]);
 
   // Saiu da página no meio de uma cotação: cancela o fetch.
   useEffect(() => {
@@ -164,15 +164,15 @@ export function ShippingEstimate({ variationId, quantity }: ShippingEstimateProp
   const submitCep = async (digits: string) => {
     setCepError(null);
     targetCep.current = digits;
-    return (await runQuote(digits, variationId, quantity)) === "ok";
+    return (await runQuote(digits, productId, quantity)) === "ok";
   };
 
   const retry = () => {
     const cep = targetCep.current || storedCep;
-    if (cep) void runQuote(cep, variationId, quantity);
+    if (cep) void runQuote(cep, productId, quantity);
   };
 
-  if (!variationId) return null;
+  if (!productId) return null;
 
   const data = quote?.data ?? null;
   const rates = data?.rates ?? [];
@@ -181,7 +181,7 @@ export function ShippingEstimate({ variationId, quantity }: ShippingEstimateProp
 
   // Frete grátis por quantidade. Enquanto a cotação é de outra linha (antes da
   // primeira, ou nos 400ms depois de mudar a quantidade), vale a regra local.
-  const isCurrentLine = quote !== null && quote.variationId === variationId && quote.quantity === quantity;
+  const isCurrentLine = quote !== null && quote.productId === productId && quote.quantity === quantity;
   const minQty = data?.free_shipping.min_qty || FREE_SHIPPING_MIN_QTY;
   const qualifies =
     isCurrentLine && data

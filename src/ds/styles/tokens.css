@@ -71,6 +71,26 @@
 
   /* Status — completed checkout steps */
   --brand-green-500: rgb(34 197 94);
+  --brand-green-100: rgb(220 252 231); /* light green: "Em estoque" seal */
+  --brand-green-700: rgb(21 128 61);   /* text on the light green */
+
+  /* "Em breve" page (the Framer teaser at anonovolutanova.com.br, measured
+     from its computed styles): deep sea blue on watercolor, with gold. */
+  --brand-sea-700: rgb(19 79 99);      /* headline and paragraph */
+  --brand-sea-800: rgb(25 80 108);     /* VIP group button */
+  --brand-ochre-500: rgb(192 153 85);  /* eyebrow, divider and the 15% note */
+  --brand-paper-glow: rgb(255 255 255 / 0.5); /* halo behind the gold note */
+
+  /* WhatsApp chat widget of the same page */
+  --brand-whatsapp-500: rgb(59 196 93);    /* floating button and panel header */
+  --brand-whatsapp-400: rgb(37 211 102);   /* send button, message typed */
+  --brand-whatsapp-600: rgb(34 191 91);    /* send button hover */
+  --brand-whatsapp-mint: rgb(240 255 222); /* header text */
+  --brand-whatsapp-sand: rgb(242 238 233); /* panel, under the doodle wallpaper */
+  --brand-whatsapp-teal: rgb(90 149 128);  /* sender name */
+  --brand-whatsapp-ink: rgb(24 31 35);     /* message text */
+  --brand-steel-300: rgb(201 208 214);     /* send button disabled, placeholder */
+  --brand-steel-400: rgb(162 162 163);     /* message time */
 
   /* ---------------------------------------------------------------------
      2. SEMÂNTICAS — o que os componentes consomem.
@@ -131,6 +151,29 @@
      `action` so the stepper can signal completion without looking like a button. */
   --color-success: var(--brand-green-500);
   --color-on-success: var(--brand-paper-100);
+  --color-success-soft: var(--brand-green-100);
+  --color-on-success-soft: var(--brand-green-700);
+
+  /* "Em breve" page. Its own palette on purpose: it copies the teaser that
+     is live today, which predates the landing page colors. */
+  --color-soon-ink: var(--brand-sea-700);
+  --color-soon-action: var(--brand-sea-800);
+  --color-on-soon-action: var(--brand-paper-100);
+  --color-soon-gold: var(--brand-ochre-500);
+  --color-soon-glow: var(--brand-paper-glow);
+
+  /* WhatsApp chat widget */
+  --color-whatsapp: var(--brand-whatsapp-500);
+  --color-on-whatsapp: var(--brand-paper-100);
+  --color-whatsapp-header-text: var(--brand-whatsapp-mint);
+  --color-whatsapp-panel: var(--brand-whatsapp-sand);
+  --color-whatsapp-bubble: var(--brand-paper-100);
+  --color-whatsapp-sender: var(--brand-whatsapp-teal);
+  --color-whatsapp-text: var(--brand-whatsapp-ink);
+  --color-whatsapp-time: var(--brand-steel-400);
+  --color-whatsapp-send: var(--brand-whatsapp-400);
+  --color-whatsapp-send-hover: var(--brand-whatsapp-600);
+  --color-whatsapp-idle: var(--brand-steel-300);
 
   /* Ilustração da caixa de presente */
   --color-illus-gift-light: var(--brand-illus-peach);
@@ -146,6 +189,10 @@
   --font-sans: var(--font-manrope), "Manrope", ui-sans-serif, system-ui, sans-serif;
   /* Manuscrita dos mockups de pagina interna. Segunda familia do design aprovado. */
   --font-script: var(--font-yellowtail), "Yellowtail", ui-serif, cursive;
+  /* "Em breve" page only; declared there, not in the root layout. */
+  --font-serif: "Cormorant Garamond", ui-serif, Georgia, serif;
+  --font-jost: "Jost", ui-sans-serif, system-ui, sans-serif;
+  --font-inter: "Inter", ui-sans-serif, system-ui, sans-serif;
 
   /* H1 do hero: 80px desktop · 54 tablet · 50 mobile */
   --text-display: clamp(50px, 5.6vw, 80px);
@@ -253,6 +300,8 @@
   --shadow-pop: 0 4px 4px rgb(0 0 0 / 0.1);          /* cartão de preço sobre as agendas do hero */
   --shadow-hotspot: 0 2px 8px rgb(0 0 0 / 0.2);      /* marcadores "+" sobre a capa */
   --shadow-cta-warm: 0 12px 24px rgb(0 0 0 / 0.3);   /* botão quente do fechamento */
+  --shadow-whatsapp-panel: 0 5px 40px rgb(0 0 0 / 0.16);      /* chat panel of the "Em breve" page */
+  --shadow-whatsapp-button: 0 16px 24px rgb(73 104 126 / 0.16); /* its floating button */
 
   /* Sombras de `filter: drop-shadow()` (uma camada, sem spread) — entrada em
      leque das agendas no hero, quadro a quadro. */
@@ -289,6 +338,13 @@
   --animate-book-back-in: ds-book-back-in 0.9s var(--ease-out-soft) both;
   --animate-book-fan-out: ds-book-fan-out var(--duration-book) var(--ease-out-soft) both;
   --animate-pop-in: ds-pop-in 0.6s var(--ease-overshoot) 2.1s both;
+  /* "Em breve" page, from the Framer appear effects: blocks rise 97px (a
+     spring with damping 30 and stiffness 97 settles in about 1.2s), the
+     headline words rise 16px one after the other, the chat button 100px. */
+  --animate-soon-rise: ds-soon-rise 1.2s var(--ease-enter) both;
+  --animate-soon-word: ds-soon-word 0.4s var(--ease-enter) both;
+  --animate-soon-float: ds-soon-float 0.9s var(--ease-enter) both;
+  --animate-soon-panel: ds-soon-panel 0.25s var(--ease-enter) both;
 
   @keyframes ds-reveal-up {
     from {
@@ -412,6 +468,50 @@
       opacity: 1;
       transform: translate(0%, 0%) scale(1) rotate(6.5deg);
       filter: drop-shadow(var(--shadow-book));
+    }
+  }
+
+  @keyframes ds-soon-rise {
+    from {
+      opacity: 0;
+      transform: translateY(97px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes ds-soon-word {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes ds-soon-float {
+    from {
+      opacity: 0;
+      transform: translateY(100px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes ds-soon-panel {
+    from {
+      opacity: 0;
+      transform: translateY(12px) scale(0.97);
+    }
+    to {
+      opacity: 1;
+      transform: none;
     }
   }
 

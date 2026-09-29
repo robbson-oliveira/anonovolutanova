@@ -19,6 +19,7 @@
  */
 
 import { publicEnv } from "@/lib/env";
+import type { StoreImage } from "./product-image";
 
 const BASE = `${publicEnv.wpUrl}/wp-json/wc/store/v1`;
 const CART_TOKEN_KEY = "anln_cart_token";
@@ -85,7 +86,7 @@ export type StoreCartItem = {
   id: number;
   quantity: number;
   name: string;
-  images: Array<{ id: number; src: string; thumbnail: string; alt: string }>;
+  images: Array<StoreImage & { id: number }>;
   variation: Array<{ attribute: string; value: string }>;
   quantity_limits?: { minimum: number; maximum: number; multiple_of: number; editable: boolean };
   prices: { price: string; currency_minor_unit: number };
@@ -207,7 +208,7 @@ async function request<T>(path: string, options: RequestOptions = {}, isRetry = 
 
 export const getCart = () => request<StoreCart>("/cart");
 
-/** `id` é o da variação (edição): a Store API aceita a variação direto. */
+/** `id` is the edition's simple product. */
 export const addCartItem = (input: { id: number; quantity: number }) =>
   request<StoreCart>("/cart/add-item", { method: "POST", body: input });
 

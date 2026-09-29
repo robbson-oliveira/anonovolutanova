@@ -20,7 +20,8 @@ type CartContextValue = {
   openDrawer: () => void;
   closeDrawer: () => void;
   refresh: () => Promise<StoreCart | null>;
-  add: (variationId: number, quantity: number) => Promise<boolean>;
+  /** Adds units of an edition, by its product id. */
+  add: (productId: number, quantity: number) => Promise<boolean>;
   setQuantity: (key: string, quantity: number) => Promise<void>;
   remove: (key: string) => Promise<void>;
   applyCoupon: (code: string) => Promise<boolean>;
@@ -128,10 +129,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       openDrawer: () => setDrawerOpen(true),
       closeDrawer: () => setDrawerOpen(false),
       refresh,
-      add: async (variationId, quantity) =>
+      add: async (productId, quantity) =>
         Boolean(
           await run(
-            () => storeApi.addCartItem({ id: variationId, quantity }),
+            () => storeApi.addCartItem({ id: productId, quantity }),
             "Não foi possível adicionar ao carrinho.",
           ),
         ),

@@ -6,11 +6,44 @@ import {
   attributionFromRequest,
   couponFromUrl,
 } from "@/lib/attribution";
+import { serverEnv } from "@/lib/env.server";
 import { GONE_HTML, isGone } from "@/lib/legacy-urls";
 
+
 /**
- * Roda antes de toda página (inclusive a home, que é o wireframe em HTML puro)
- * e guarda em cookie o que chega pela URL e precisa sobreviver até o checkout:
+ * The store's feature switches, read on each request so that flipping one
+ * takes a restart and not a rebuild (the pages behind them stay static):
+ *
+ * - ANLN_HOME_COMMING_SOON: `/` shows the "Em breve" page (a rewrite: the
+ *   address stays `/`). Off, `/em-breve` itself sends visitors to the home.
+ * - ANLN_PRECHECKOUT: `/carrinho` is the pre-checkout page. Off, it goes to
+ *   the offer on the home, as the old WordPress cart URL always did.
+ *
+ * Returns null when the request goes on to its own page.
+ */
+function switchRoute(request: NextRequest): NextResponse | null {
+  const { pathname, search } = request.nextUrl;
+  // The query goes along: `?cupom=` and the UTMs still count on the next page.
+  const to = (path: string, hash = "") => new URL(path + search + hash, request.url);
+
+  if (pathname === "/" && serverEnv.homeComingSoon) {
+    return NextResponse.rewrite(to("/em-breve"));
+  }
+  if (pathname === "/em-breve" && !serverEnv.homeComingSoon) {
+    return NextResponse.redirect(to("/"));
+  }
+  if ((pathname === "/carrinho" || pathname === "/cart") && !serverEnv.precheckout) {
+    return NextResponse.redirect(to("/", "#oferta"));
+  }
+  if (pathname === "/cart") {
+    return NextResponse.redirect(to("/carrinho"), 308);
+  }
+  return null;
+}
+
+/**
+ * Roda antes de toda página e guarda em cookie o que chega pela URL e precisa
+ * sobreviver até o checkout:
  *
  * - `?cupom=CODIGO`: o link de cada afiliada. O carrinho aplica sozinho quando
  *   tiver itens (CartProvider), para a seguidora que chega pelo Stories não
@@ -31,7 +64,7 @@ export function proxy(request: NextRequest) {
     });
   }
 
-  const response = NextResponse.next();
+  const response = switchRoute(request) ?? NextResponse.next();
   const cookieOptions = {
     maxAge: COOKIE_MAX_AGE,
     path: "/",

@@ -41,9 +41,9 @@ function push(event: string, ecommerce: Ecommerce): void {
 
 const round = (n: number) => Math.round(n * 100) / 100;
 
-export function item(variationId: number | string, editionLabel: string, price: number, quantity: number): TrackItem {
+export function item(productId: number | string, editionLabel: string, price: number, quantity: number): TrackItem {
   return {
-    item_id: String(variationId),
+    item_id: String(productId),
     item_name: PRODUCT_NAME,
     item_variant: editionLabel,
     price: round(price),
@@ -55,6 +55,9 @@ const valueOf = (items: TrackItem[]) => round(items.reduce((s, i) => s + i.price
 
 export const trackViewItem = (items: TrackItem[]) =>
   push("view_item", { currency: "BRL", value: valueOf(items), items });
+
+export const trackViewCart = (items: TrackItem[]) =>
+  push("view_cart", { currency: "BRL", value: valueOf(items), items });
 
 export const trackAddToCart = (items: TrackItem[]) =>
   push("add_to_cart", { currency: "BRL", value: valueOf(items), items });

@@ -28,8 +28,10 @@ const nextConfig: NextConfig = {
 
       /* URLs do site antigo (WordPress/Elementor/WooCommerce) que o wireframe,
          o Google e os links antigos ainda apontam. A compra agora é a seção
-         #oferta da home. */
-      ...["/shop", "/loja", "/carrinho", "/cart", "/finalizacao-de-compra", "/finalizar-compra", "/checkout-2"].map(
+         #oferta da home. `/carrinho` and `/cart` are not here: the proxy
+         decides at request time, since ANLN_PRECHECKOUT turns /carrinho into
+         a page. */
+      ...["/shop", "/loja", "/finalizacao-de-compra", "/finalizar-compra", "/checkout-2"].map(
         (source) => ({ source, destination: "/#oferta", permanent: true }),
       ),
       // A antiga página de compra deste site. A query (?edicao=) vai junto.

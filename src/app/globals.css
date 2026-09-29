@@ -7,7 +7,8 @@
 @source "../ds";
 @source "../sections";
 @source "../content";
-@source "../routes";
+@source "../app";
+@source "../features";
 
 /* As fontes locais e os nomes usados pelos tokens entram inline no HTML
-   inicial em `src/routes/__root.tsx`, antes das folhas de estilo. */
+   inicial em `src/app/layout.tsx`, antes das folhas de estilo. */

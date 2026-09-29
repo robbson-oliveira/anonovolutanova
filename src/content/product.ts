@@ -27,12 +27,52 @@ export const installmentLabel = `Ou ${PRICE.installments}x de ${BRL.format(
 )}`;
 
 export const EDITIONS = [
-  { id: "color", label: "Edição Color" },
-  { id: "classica", label: "Edição Clássica" },
+  {
+    id: "color",
+    label: "Edição Color",
+    cover: "/img/capa-color.png",
+    coverSize: { width: 1036, height: 1519 },
+    description: "Capa em aquarela, com os patos à água.",
+  },
+  {
+    id: "classica",
+    label: "Edição Clássica",
+    cover: "/img/capa-classica.png",
+    coverSize: { width: 1085, height: 1519 },
+    description: "Capa azul-marinho com detalhes em dourado.",
+  },
 ] as const;
 
-export const SHIPPING_NOTICE = "Frete Grátis a partir de 4 unidades";
+export type EditionId = (typeof EDITIONS)[number]["id"];
 
-export const CHECKOUT_URL = "#comprar";
-export const WHATSAPP_URL = "#whatsapp";
+/** Regra comercial: frete grátis a partir desta quantidade de agendas. */
+export const FREE_SHIPPING_MIN_QTY = 4;
+export const SHIPPING_NOTICE = `Frete Grátis a partir de ${FREE_SHIPPING_MIN_QTY} unidades`;
+
+/**
+ * Seção de produto da home. Todos os CTAs de compra do site levam para cá: na
+ * home só rolam até ela; nas outras páginas voltam para a home já nela.
+ */
+export const BUY_URL = "/#oferta";
+
+/**
+ * Where the store flow sends someone back to choose an edition (empty cart,
+ * "voltar" in the checkout). With ANLN_PRECHECKOUT it is the cart page;
+ * without it the proxy redirects this address to BUY_URL, so the links can
+ * point here either way.
+ */
+export const CART_URL = "/carrinho";
+
+export const CONTACT = {
+  whatsappNumber: "5527992794290",
+  whatsappLabel: "+55 27 99279-4290",
+  email: "contato@anonovolutanova.com.br",
+  hours: "Segunda a sexta-feira, das 9h às 18h.",
+} as const;
+
+export const WHATSAPP_URL = `https://wa.me/${CONTACT.whatsappNumber}`;
 export const INSTAGRAM_URL = "https://www.instagram.com/anonovolutanova";
+
+/** Link do WhatsApp com a mensagem já escrita. */
+export const whatsappUrlWith = (message: string) =>
+  `${WHATSAPP_URL}?text=${encodeURIComponent(message)}`;

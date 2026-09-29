@@ -2,7 +2,11 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  ...(process.env.NEXT_EXPORT ? { output: "export" as const, distDir: "dist", images: { unoptimized: true } } : {}),
+
+  // Servidor autocontido para a imagem Docker; a Vercel ignora a opção.
+  // O checkout vai precisar de servidor, então export estático não serve.
+  output: "standalone",
+
   images: {
     // Capas e logo são PNG com canal alfa; formatos modernos preservam alfa.
     formats: ["image/avif", "image/webp"],
@@ -21,6 +25,40 @@ const nextConfig: NextConfig = {
         destination: "/wireframe/wireframe-v2.html",
         permanent: false,
       },
+
+      /* URLs do site antigo (WordPress/Elementor/WooCommerce) que o wireframe,
+         o Google e os links antigos ainda apontam. A compra agora é a seção
+         #oferta da home. `/carrinho` and `/cart` are not here: the proxy
+         decides at request time, since ANLN_PRECHECKOUT turns /carrinho into
+         a page. */
+      ...["/shop", "/loja", "/finalizacao-de-compra", "/finalizar-compra", "/checkout-2"].map(
+        (source) => ({ source, destination: "/#oferta", permanent: true }),
+      ),
+      // A antiga página de compra deste site. A query (?edicao=) vai junto.
+      { source: "/comprar", destination: "/#oferta", permanent: true },
+      { source: "/produto/:slug*", destination: "/#oferta", permanent: true },
+      { source: "/product/:slug*", destination: "/#oferta", permanent: true },
+      { source: "/categoria-produto/:slug*", destination: "/#oferta", permanent: true },
+
+      /* Sem conta de cliente (D6) e sem AffiliateWP (D7). Temporários: a
+         página do programa de afiliadas por cupom ainda vai existir. Lista
+         tirada do sitemap público do WordPress em 24/09/2026. */
+      ...[
+        "/my-account/:path*",
+        "/minha-conta/:path*",
+        "/area-afiliado/:path*",
+        "/affiliate-login/:path*",
+        "/registro-de-afiliados/:path*",
+        "/conteudos-para-divulgacao/:path*",
+        "/obrigado-pelo-seu-registro/:path*",
+      ].map((source) => ({ source, destination: "/contato", permanent: false })),
+    ];
+  },
+
+  async rewrites() {
+    return [
+      // O guia de estilo é um HTML estático; a URL curta continua valendo.
+      { source: "/style-guide", destination: "/style-guide-agenda-2027.html" },
     ];
   },
 

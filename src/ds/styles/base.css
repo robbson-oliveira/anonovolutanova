@@ -1,21 +1,16 @@
 /* =============================================================================
-   BASE — normalização e defaults do design system
+   BASE — o pouco que não cabe em classe
+   =============================================================================
+   O estilo do site é feito com classes do Tailwind. Aqui ficam só:
+     - padrões de elemento que valem para a página inteira (títulos, parágrafo,
+       seleção de texto, foco) — a camada `base` é o lugar que o Tailwind
+       indica para isso;
+     - a variante `reveal-armed:`, usada pelo <Reveal>.
+   Fundo, cor e fonte do corpo estão em classes no <body> (app/layout.tsx), e
+   as animações são utilitários `animate-*` definidos em tokens.css.
    ========================================================================== */
 
 @layer base {
-  html {
-    -webkit-font-smoothing: antialiased;
-    scroll-behavior: smooth;
-  }
-
-  body {
-    background-color: var(--color-surface-warm);
-    color: var(--color-text);
-    font-family: var(--font-sans);
-    font-size: var(--text-base);
-    line-height: 1.5;
-  }
-
   h1,
   h2,
   h3,
@@ -29,8 +24,7 @@
   }
 
   ::selection {
-    background: var(--color-accent);
-    color: var(--color-on-accent);
+    background: var(--color-selection);
   }
 
   :focus-visible {
@@ -40,209 +34,8 @@
   }
 }
 
-/* =============================================================================
-   MOVIMENTO — keyframes do sistema.
-   Portados do design aprovado. Duração e easing vêm de token, nunca literais.
-   ========================================================================== */
-
-@keyframes ds-reveal-up {
-  from {
-    opacity: 0;
-    transform: translateY(28px);
-    filter: blur(6px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-    filter: blur(0);
-  }
-}
-
-@keyframes ds-reveal-left {
-  from {
-    opacity: 0;
-    transform: translateX(-56px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@keyframes ds-reveal-right {
-  from {
-    opacity: 0;
-    transform: translateX(56px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@keyframes ds-reveal-pop {
-  from {
-    opacity: 0;
-    transform: translateY(38px) scale(0.88);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-/* A página de citação nasce longe, pequena e girada — vem para frente até a
-   posição natural. Portado do wireframe (rvForward). */
-@keyframes ds-reveal-forward {
-  from {
-    opacity: 0.6;
-    transform: translateX(240px) translateY(211px) scale(0.4) rotate(19deg)
-      rotateY(27deg);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-/* Esteira: o conteúdo é duplicado, então -50% cai exatamente na cópia
-   e o loop volta sem salto. */
-@keyframes ds-ticker {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-/* Barra de progresso do seletor de edição */
-@keyframes ds-progress-fill {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
-}
-
-/* -----------------------------------------------------------------------------
-   Hero — entrada em leque das duas agendas.
-   As porcentagens e ângulos são o resultado aprovado; não são arbitrários.
-   -------------------------------------------------------------------------- */
-@keyframes ds-book-back-in {
-  0% {
-    opacity: 0;
-    transform: translate(10%, 20%) scale(0.93) rotate(10.5deg);
-    filter: drop-shadow(0 4px 8px rgb(0 0 0 / 0.05));
-  }
-  100% {
-    opacity: 1;
-    transform: translate(0, 0) scale(1) rotate(16.7deg);
-    filter: drop-shadow(var(--shadow-book-back));
-  }
-}
-
-@keyframes ds-book-fan-out {
-  /* entra junto com a de trás */
-  0% {
-    opacity: 0;
-    transform: translate(65%, 22%) scale(0.92) rotate(13.5deg);
-    filter: drop-shadow(0 4px 8px rgb(0 0 0 / 0.05));
-  }
-  /* assenta sobre a de trás */
-  28% {
-    opacity: 1;
-    transform: translate(58.5%, 7.5%) scale(1) rotate(19.5deg);
-    filter: drop-shadow(-4px 8px 14px rgb(0 0 0 / 0.18));
-  }
-  /* toque físico */
-  34% {
-    transform: translate(58.5%, 7.5%) scale(1.01) rotate(19.5deg);
-    filter: drop-shadow(-5px 9px 16px rgb(0 0 0 / 0.19));
-  }
-  /* desliza arrastando e já vai girando na âncora */
-  65% {
-    transform: translate(14%, 1.8%) scale(1.01) rotate(11.5deg);
-    filter: drop-shadow(-11px 15px 24px rgb(0 0 0 / 0.22));
-  }
-  100% {
-    opacity: 1;
-    transform: translate(0%, 0%) scale(1) rotate(6.5deg);
-    filter: drop-shadow(var(--shadow-book));
-  }
-}
-
-@keyframes ds-pop-in {
-  0% {
-    opacity: 0;
-    transform: translateY(20px) scale(0.85);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* =============================================================================
-   REVEAL — contrato do componente <Reveal>
-   O elemento nasce com a animação aplicada e PAUSADA; o observer só a solta.
-   Se o JS falhar, `data-reveal` sem `data-ready` continua rodando: nada
-   fica invisível por acidente. Essa direção da falha é deliberada.
-   ========================================================================== */
-[data-reveal] {
-  animation-duration: var(--duration-reveal);
-  animation-timing-function: var(--ease-enter);
-  animation-fill-mode: both;
-}
-[data-reveal="up"] {
-  animation-name: ds-reveal-up;
-}
-[data-reveal="left"] {
-  animation-name: ds-reveal-left;
-}
-[data-reveal="right"] {
-  animation-name: ds-reveal-right;
-}
-[data-reveal="pop"] {
-  animation-name: ds-reveal-pop;
-}
-[data-reveal="forward"] {
-  animation-name: ds-reveal-forward;
-  animation-duration: 1.15s;
-}
-
-html[data-reveal-ready] [data-reveal] {
-  animation-play-state: paused;
-}
-html[data-reveal-ready] [data-reveal][data-revealed] {
-  animation-play-state: running;
-}
-
-/* Movimento reduzido: não basta remover a animação — é ela que traz o
-   elemento ao estado visível. Forçamos o estado FINAL. */
-@media (prefers-reduced-motion: reduce) {
-  [data-reveal],
-  [data-motion] {
-    animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-    filter: none !important;
-  }
-}
-
-/* =============================================================================
-   Título com realce palavra a palavra (cards da seção "Sobre")
-   As palavras ainda não realçadas usam gradiente âmbar→laranja recortado no
-   texto; as realçadas viram creme sólido. Valores extraídos do design aprovado.
-   ========================================================================== */
-.ds-title-dim {
-  background-image: linear-gradient(
-    182deg,
-    var(--brand-amber-400),
-    var(--brand-flame-500)
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
+/* Reveal: o elemento nasce com a animação aplicada e, quando o script do
+   <head> marca o documento (`data-reveal-ready`), ela fica PAUSADA até o
+   observer soltá-la. Se o JS falhar, a marca não existe e tudo anima no load:
+   nada fica invisível por acidente. Essa direção da falha é deliberada. */
+@custom-variant reveal-armed (:where(html[data-reveal-ready]) &);

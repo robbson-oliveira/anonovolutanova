@@ -7,10 +7,11 @@ type MarqueeProps = {
   className?: string;
   /** Duração da volta completa, em segundos. Sobrescreve o token padrão. */
   duration?: number;
-  /** Renderiza máscaras de fade nas laterais. Útil para esteiras curtas. */
+  /**
+   * Renderiza máscaras de fade nas laterais, na cor da superfície escura (a
+   * da barra do topo). Útil para esteiras curtas.
+   */
   fade?: boolean;
-  /** Cor base das máscaras de fade. Padrão: a cor de fundo do pai. */
-  fadeColor?: string;
 };
 
 /**
@@ -30,7 +31,6 @@ export function Marquee({
   className,
   duration,
   fade = false,
-  fadeColor,
 }: MarqueeProps) {
   const renderRun = (hidden: boolean) =>
     items.map((item, i) => (
@@ -51,12 +51,11 @@ export function Marquee({
   return (
     <div
       className={cn("group relative overflow-hidden", className)}
-      data-motion="marquee"
     >
       <ul
         className={cn(
           "flex w-max items-center",
-          "[animation:ds-ticker_var(--duration-ticker)_linear_infinite]",
+          "animate-ticker motion-reduce:animate-none",
           "group-hover:[animation-play-state:paused]",
         )}
         style={animationStyle}
@@ -68,21 +67,11 @@ export function Marquee({
       {fade && (
         <>
           <div
-            className="pointer-events-none absolute inset-y-0 left-0 w-10"
-            style={{
-              backgroundImage: fadeColor
-                ? `linear-gradient(to right, ${fadeColor}, transparent)`
-                : "linear-gradient(to right, var(--color-surface-inverse), transparent)",
-            }}
+            className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-linear-90/srgb from-surface-inverse to-transparent"
             aria-hidden="true"
           />
           <div
-            className="pointer-events-none absolute inset-y-0 right-0 w-10"
-            style={{
-              backgroundImage: fadeColor
-                ? `linear-gradient(to left, ${fadeColor}, transparent)`
-                : "linear-gradient(to left, var(--color-surface-inverse), transparent)",
-            }}
+            className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-linear-270/srgb from-surface-inverse to-transparent"
             aria-hidden="true"
           />
         </>

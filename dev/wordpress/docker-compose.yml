@@ -1,0 +1,75 @@
+# WordPress + WooCommerce local para desenvolver e testar o checkout headless.
+# Faz o papel do admin.anonovolutanova.com.br. Ver dev/wordpress/README.md.
+#
+#   docker compose -f dev/wordpress/docker-compose.yml up -d
+#   docker compose -f dev/wordpress/docker-compose.yml run --rm wpcli bash /setup/setup.sh
+
+name: anln-wp
+
+services:
+  db:
+    image: mariadb:lts
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: wordpress
+      MARIADB_USER: wordpress
+      MARIADB_PASSWORD: wordpress
+      MARIADB_ROOT_PASSWORD: root
+    volumes:
+      - db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  wordpress:
+    image: wordpress:php8.3-apache
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8088:80"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DEBUG: "1"
+      WORDPRESS_CONFIG_EXTRA: |
+        define( 'WP_HOME', 'http://localhost:8088' );
+        define( 'WP_SITEURL', 'http://localhost:8088' );
+        define( 'WP_ENVIRONMENT_TYPE', 'local' );
+        define( 'WP_DEBUG_LOG', true );
+        define( 'WP_DEBUG_DISPLAY', false );
+    volumes:
+      - wp:/var/www/html
+      # O plugin é montado direto da pasta de trabalho: edição lá vale aqui.
+      - ../../../anln-storefront-bridge:/var/www/html/wp-content/plugins/anln-storefront-bridge
+      - ./mu-plugins:/var/www/html/wp-content/mu-plugins
+
+  # WP-CLI com o mesmo volume. Não sobe sozinho: `run --rm wpcli …`.
+  wpcli:
+    image: wordpress:cli-php8.3
+    profiles: ["cli"]
+    user: "33:33"
+    depends_on:
+      - wordpress
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+      WP_CLI_CACHE_DIR: /tmp/wp-cli-cache
+    volumes:
+      - wp:/var/www/html
+      - ../../../anln-storefront-bridge:/var/www/html/wp-content/plugins/anln-storefront-bridge
+      - ./mu-plugins:/var/www/html/wp-content/mu-plugins
+      - ./:/setup
+      # As capas do site viram a imagem principal dos produtos (setup.php).
+      - ../../public/img:/site-img:ro
+
+volumes:
+  db:
+  wp:

@@ -61,7 +61,7 @@ export function Accordion({
                 onClick={() => setOpen(isOpen ? null : i)}
                 className={cn(
                   "flex w-full cursor-pointer items-center justify-between gap-6 text-left",
-                  cards ? "px-7 py-6" : "py-6",
+                  cards ? "px-5 py-6 md:px-7" : "py-6",
                 )}
               >
                 <span
@@ -88,7 +88,7 @@ export function Accordion({
               role="region"
               aria-labelledby={buttonId}
               hidden={!isOpen}
-              className={cn(cards ? "px-7 pb-7" : "pb-7")}
+              className={cn(cards ? "px-5 pb-7 md:px-7" : "pb-7")}
             >
               {cards && <div className="mb-5 border-t border-dashed border-border" />}
               <div className="max-w-prose text-base text-text">

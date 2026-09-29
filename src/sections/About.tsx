@@ -6,10 +6,9 @@ import {
   IconSparkle,
   Reveal,
   RevealGroup,
-  Text,
 } from "@ds/index";
 import { ABOUT } from "@content/home";
-import { CHECKOUT_URL } from "@content/product";
+import { BUY_URL } from "@content/product";
 const planoDeVida = "/img/interna-plano-de-vida.png";
 const metasAnuais = "/img/interna-metas-anuais.png";
 const agendaDiaria = "/img/interna-agenda-diaria.png";
@@ -25,7 +24,11 @@ const datasObra = "/img/interna-datas-obra.png";
  *
  * Todas as medidas abaixo foram lidas no wireframe (public/wireframe/
  * wireframe-v2.html) com o card em 586 × 600 px: `box` é a caixa da página em
- * px, relativa ao canto superior esquerdo do card. Não escalar.
+ * px, relativa ao canto superior esquerdo do card. Não mexer nos números: eles
+ * são a "prancheta" de 586 px. Na tela, o FeatureCard converte cada medida em
+ * fração da largura do card (`cardPx`), então com o card em 586 px o resultado
+ * é exatamente o do wireframe e, num card mais estreito, a composição inteira
+ * encolhe junto, sem nada vazar.
  */
 type Layer = {
   /** Página (PNG). Ausente quando a camada é só uma forma vetorial. */
@@ -181,11 +184,11 @@ export function AboutHeader() {
 
       <Reveal variant="up" delay={180} className="mt-[27px] w-full">
         <Button
-          href={CHECKOUT_URL}
+          href={BUY_URL}
           size="lg"
           shape="block"
-          className="h-[68px] w-[600px] max-w-full"
-          style={{ borderRadius: 10, fontSize: 16, lineHeight: "16px", letterSpacing: "-0.64px", fontWeight: 700 }}
+          // As medidas do botão vencem as do tamanho "lg" do Button (daí o !).
+          className="h-[68px] w-[600px] max-w-full rounded-[10px]! text-[16px]! leading-[16px]! font-bold! tracking-[-0.64px]!"
         >
           {ABOUT.cta}
         </Button>
@@ -194,13 +197,27 @@ export function AboutHeader() {
   );
 }
 
+/**
+ * Seção "Sobre": cabeçalho centralizado + grade de quatro FeatureCards.
+ *
+ * Desktop (≥ 1440): exatamente o wireframe — duas colunas de 586 px com 28 de
+ * vão, a grade ocupando os 1200 px do Container (por isso o `-mx-10`, que
+ * devolve à grade o respiro interno do Container, como já acontecia antes).
+ *
+ * Telas menores: a coluna nunca passa de 586 px, mas pode encolher até a
+ * largura disponível — e o card encolhe proporcionalmente (ver FeatureCard).
+ *   < 1024  uma coluna, card com a largura do conteúdo (máx. 586)
+ *   ≥ 1024  duas colunas fluidas, que chegam a 586 px a partir de ~1330
+ * No celular a seção dispensa o próprio respiro lateral (o Container já dá
+ * 24 px) e usa respiros verticais menores.
+ */
 export function About() {
   return (
-    <section id="sobre" className="bg-surface-gold px-6 pb-24 pt-24 md:px-16">
+    <section id="sobre" className="bg-surface-gold py-16 md:px-16 md:py-24">
       <Container>
         <AboutHeader />
 
-        <ul className="mt-20 grid justify-center gap-7 lg:grid-cols-[repeat(2,586px)]">
+        <ul className="mt-12 grid grid-cols-[minmax(0,586px)] justify-center gap-7 md:mt-20 lg:-mx-10 lg:grid-cols-[repeat(2,minmax(0,586px))]">
           {FEATURES.map((feature, i) => (
             <FeatureCard key={feature.strong} feature={feature} index={i} />
           ))}
@@ -212,9 +229,22 @@ export function About() {
 
 
 /**
- * Um box da seção "O que a torna especial" — 586 × 600 px, exatamente como no
- * wireframe. A animação de entrada (Reveal) vem junto: alterna lado e ganha
- * atraso conforme a coluna. Reutilizado pelo catálogo.
+ * Converte uma medida da prancheta de 586 px em fração da largura do card.
+ * O `li` do FeatureCard é um container de consulta (`@container`), então
+ * 100cqw é a largura real do card: com ele em 586 px, `cardPx(20)` dá 20 px.
+ */
+const cardPx = (px: number) => `calc(${px} * 100cqw / ${CARD_W})`;
+
+/**
+ * Um box da seção "O que a torna especial" — 586 × 600 px no desktop,
+ * exatamente como no wireframe. A animação de entrada (Reveal) vem junto:
+ * alterna lado e ganha atraso conforme a coluna. Reutilizado pelo catálogo.
+ *
+ * Em telas menores o card não quebra nem esconde nada: ele vira uma prancheta
+ * proporcional. A largura é a da coluna (máx. 586), a altura segue a
+ * proporção 586:600, e título, respiros, páginas e letra manuscrita são
+ * medidos em `cardPx` — a composição inteira encolhe junto, como uma imagem.
+ * Num celular de 360 px o título fica em ~20 px.
  */
 export function FeatureCard({
   feature,
@@ -225,14 +255,22 @@ export function FeatureCard({
 }) {
   void index;
   return (
-    <li>
-      <RevealGroup as="article" className="relative h-[600px] w-[586px] max-w-full overflow-hidden rounded-[12px] bg-surface-warm-card px-5 pt-[60px] shadow-inset-card">
-        <Reveal variant="up">
-          <h3 className="text-center text-[38px] font-bold leading-[38px] tracking-[-0.04em]">
-            <span className="ds-title-dim">{feature.muted} </span>
-            <span className="text-text-on-warm">{feature.strong}</span>
-          </h3>
-        </Reveal>
+    <li className="@container w-[586px] max-w-full">
+      <RevealGroup
+        as="article"
+        className="relative aspect-[586/600] w-full overflow-hidden rounded-card bg-surface-warm-card shadow-inset-card"
+      >
+        {/* Respiro do título (20 nas laterais, 60 no topo), na escala do card. */}
+        <div className="px-[calc(20*100cqw/586)] pt-[calc(60*100cqw/586)]">
+          <Reveal variant="up">
+            <h3
+              className="text-center text-[length:calc(38*100cqw/586)] leading-[calc(38*100cqw/586)] font-bold tracking-[-0.04em]"
+            >
+              <span className="bg-linear-182/srgb from-title-dim to-title-dim-end bg-clip-text text-transparent">{feature.muted} </span>
+              <span className="text-text-on-warm">{feature.strong}</span>
+            </h3>
+          </Reveal>
+        </div>
 
         {feature.layers.map((layer, j) => {
           const content = (
@@ -255,7 +293,7 @@ export function FeatureCard({
                   width={layer.box.w}
                   height={layer.wedge.h}
                   viewBox={`0 0 ${layer.box.w} ${layer.wedge.h}`}
-                  className="block"
+                  className="block h-auto w-full"
                   style={{ opacity: layer.wedge.opacity }}
                 >
                   <defs>
@@ -266,8 +304,8 @@ export function FeatureCard({
                       y1="0.2196"
                       y2="0.7804"
                     >
-                      <stop offset="0" stopColor="#000" stopOpacity="1" />
-                      <stop offset="1" stopColor="#000" stopOpacity="0" />
+                      <stop offset="0" className="[stop-color:var(--color-shadow)] [stop-opacity:1]" />
+                      <stop offset="1" className="[stop-color:var(--color-shadow)] [stop-opacity:0]" />
                     </linearGradient>
                   </defs>
                   <path d={layer.wedge.path} fill={`url(#wedge-${j})`} />
@@ -281,7 +319,11 @@ export function FeatureCard({
             <div
               key={j}
               className="absolute"
-              style={{ width: layer.box.w, left: layer.box.x, top: layer.box.y }}
+              style={{
+                width: cardPx(layer.box.w),
+                left: cardPx(layer.box.x),
+                top: cardPx(layer.box.y),
+              }}
             >
               {layer.anim ? (
                 <Reveal variant={layer.anim.variant} delay={layer.anim.delay}>
@@ -313,9 +355,9 @@ function Handwriting({
           key={item}
           className="absolute whitespace-nowrap font-script text-text-strong"
           style={{
-            top: top + i * step,
-            left,
-            fontSize: size,
+            top: cardPx(top + i * step),
+            left: cardPx(left),
+            fontSize: cardPx(size),
             lineHeight: 1,
           }}
         >

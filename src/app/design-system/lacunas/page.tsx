@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import {
   Badge,
@@ -26,7 +27,6 @@ import { Quote } from "@sections/Quote";
 
 import { Persona } from "@sections/Persona";
 import { Testimonials } from "@sections/Testimonials";
-import { Offer } from "@sections/Offer";
 import { Closing } from "@sections/Closing";
 import { Explore } from "@sections/Explore";
 import { Liturgical } from "@sections/Liturgical";
@@ -35,8 +35,6 @@ import { AboutHeader } from "@sections/About";
 
 
 import { STATS } from "@content/home";
-import { OFFER } from "@content/offer";
-import { installmentLabel, priceLabel } from "@content/product";
 
 /* -----------------------------------------------------------------------------
    Inventário das peças da home que ainda não têm ficha no catálogo — agora com
@@ -338,124 +336,6 @@ function DemoChecklist() {
   );
 }
 
-/**
- * Painel externo da seção de oferta, extraído do CSS real do wireframe
- * (classes .framer-1gvz3z6 / .framer-1h0xv8m / .framer-52glac em
- * wireframe-v2.html) em vez de estimado por print — o painel aparece cinza
- * na captura porque o wireframe roda inteiro com filter:grayscale(100%);
- * a cor real do fundo é #d0d1b1, que já é --brand-sage-300 /
- * --color-surface-sage no token, a mesma usada em bg-surface-sage no
- * Offer.tsx real. O que falta no site é a FORMA: no wireframe título +
- * parágrafo + card de preço ficam dentro de um único painel recuado com
- * canto arredondado, não um fundo de seção de ponta a ponta.
- *
- * border-radius e padding-top são responsivos, valores lidos direto das
- * media queries do arquivo (não arbitrados):
- *   >=1200px .......... radius 90px, padding-top 208px
- *   768-1199px ........ radius 67px, padding-top 180px
- *   <768px ............. radius 24px, padding-top 78px, + padding lateral 20px
- * 768px bate com o breakpoint `md` padrão do Tailwind; 1200px não tem
- * breakpoint padrão equivalente, por isso o arbitrário `min-[1200px]:`.
- */
-function DemoOfertaPainel() {
-  return (
-    <div
-      className={cn(
-        "bg-surface-sage px-5 pt-[78px] pb-10",
-        "rounded-[24px] md:rounded-[67px] min-[1200px]:rounded-[90px]",
-        "md:px-0 md:pt-[180px] min-[1200px]:pt-[208px]",
-      )}
-    >
-      <Reveal variant="up" className="mx-auto max-w-[720px] text-center">
-        <Heading as="h2">{OFFER.title}</Heading>
-        <Text className="mx-auto mt-5 max-w-[560px]">{OFFER.paragraph}</Text>
-      </Reveal>
-      <div className="mx-auto mt-16 max-w-[800px]">
-        <DemoOferta />
-      </div>
-    </div>
-  );
-}
-
-/**
- * Bloco de oferta fiel ao wireframe: painel claro arredondado, título escuro
- * centralizado, cartão escuro cobrindo as duas imagens inclinadas (capa à
- * esquerda, página interna à direita), caixa interna com selo + preço +
- * parcelamento, botão laranja em degradê, ícones de pagamento e checklist.
- * É uma montagem de auditoria — não altera a seção Offer do site.
- */
-function DemoOferta() {
-  return (
-    <div className="relative overflow-hidden rounded-[24px] bg-[#EDEDED]">
-      {/* Palco: as duas peças ocupam quase toda a área, o cartão fica por cima
-          e sangra para fora do topo e da base — como no wireframe. */}
-      <div className="relative mx-auto flex min-h-[520px] w-full items-center justify-center px-4 py-10">
-        <img
-          src="/img/capa-solo.png"
-          alt=""
-          aria-hidden
-          className="pointer-events-none absolute bottom-[-6%] left-[-2%] w-[46%] -rotate-[4deg]"
-        />
-        <img
-          src="/img/interna-oferta.png"
-          alt=""
-          aria-hidden
-          className="pointer-events-none absolute bottom-[-8%] right-[-2%] w-[46%] rotate-[3deg]"
-        />
-
-        <div className="relative z-10 w-full max-w-[380px] rounded-[20px] bg-[#3B3B3B] p-5 shadow-float">
-          <div className="rounded-[14px] bg-white/10 px-6 py-5 text-center">
-            <span className="inline-flex items-center gap-2 text-sm text-white/85">
-              <IconSparkle /> {OFFER.badge}
-            </span>
-            <p className="mt-2 text-[2.6rem] font-bold leading-none tracking-[-0.04em] text-white">
-              {priceLabel}
-            </p>
-            <p className="mt-2 text-sm text-white/60">{installmentLabel}</p>
-          </div>
-
-          {/* Botão neutro claro, não o degradê laranja do site. */}
-          <a
-            href="#comprar"
-            className="mt-3 block rounded-[12px] bg-white/25 py-4 text-center text-base font-semibold text-white"
-          >
-            {OFFER.cta}
-          </a>
-
-          <ul className="mt-4 flex items-center justify-center gap-3 opacity-70">
-            {["mc", "visa", "elo", "pix"].map((m) => (
-              <li
-                key={m}
-                aria-hidden
-                className="h-4 w-8 rounded-[3px] bg-white/70"
-              />
-            ))}
-          </ul>
-
-          <p className="mt-7 text-[0.95rem] font-semibold text-white">
-            {OFFER.listTitle}
-          </p>
-          <ul className="mt-4 space-y-4">
-            {OFFER.list.map((item) => (
-              <li
-                key={item}
-                className="flex items-start gap-3 text-[0.9rem] leading-snug text-white/85"
-              >
-                <span
-                  aria-hidden
-                  className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-white/25 text-white"
-                >
-                  <IconCheck className="text-[0.6rem]" />
-                </span>
-                {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 
 /* --------------------------------- conteúdo -------------------------------- */
@@ -562,10 +442,7 @@ const GRUPOS: Grupo[] = [
         demo: (
           /* Palco de 1440px reduzido para caber na ficha, sem cortar a coluna. */
           <div className="-mx-6 h-[810px] overflow-hidden">
-            <div
-              className="w-[1440px] origin-top-left"
-              style={{ transform: "scale(0.9431)" }}
-            >
+            <div className="w-[1440px] origin-top-left scale-[0.9431]">
               <Hero />
             </div>
           </div>
@@ -648,6 +525,7 @@ const GRUPOS: Grupo[] = [
         larga: true,
         demo: <EscalaWireframe altura={902}><Persona /></EscalaWireframe>,
         demoNota:
+          // eslint-disable-next-line no-restricted-syntax -- medida do wireframe documentada em texto, não estilo aplicado
           "Painel raio 18, degradê 99° de #e7ddc2 a #f0e9d6, padding 80/60, grade de 3 colunas com gap 50. Ícone 60\u00d760 raio 14, 24px até o texto (239px, 20/24, peso 500, ls -0,4).",
       },
       {
@@ -659,17 +537,18 @@ const GRUPOS: Grupo[] = [
         larga: true,
         demo: <EscalaWireframe altura={936}><Testimonials /></EscalaWireframe>,
         demoNota:
+          // eslint-disable-next-line no-restricted-syntax -- medida do wireframe documentada em texto, não estilo aplicado
           "Card raio 12, sombra 0 1px 2px rgba(0,0,0,.1), padding 42, conteúdo 421px com gap 30. Avatar 60\u00d760 raio 12, gap 12; nome e cidade 24/24 peso 700 (cidade #868686); estrelas 124\u00d721; citação 20/24. Setas de 58px.",
       },
       {
         nome: "Oferta e Condições Especiais",
         onde: "Antes do FAQ",
         falta:
-          "Painel de 1440\u00d71266 com raio 90, capa girada -2°, página interna girada 3° e cartão escuro de 537\u00d7774 sobreposto com selo, preço, botão, pagamentos e checklist.",
+          "Resolvida pela seção de produto da home (src/sections/Product.tsx, #oferta), que substituiu a antiga Offer.tsx com escolha de edição, quantidade, frete e compra direta. Medidas originais do wireframe: painel de 1440\u00d71266 com raio 90, capa girada -2°, página interna girada 3° e cartão escuro de 537\u00d7774 sobreposto com selo, preço, botão, pagamentos e checklist.",
         prioridade: "alta",
         larga: true,
-        demo: <EscalaWireframe altura={1266}><Offer /></EscalaWireframe>,
         demoNota:
+          // eslint-disable-next-line no-restricted-syntax -- medida do wireframe documentada em texto, não estilo aplicado
           "Camadas medidas: cartão em x451,5 / y492, raio 24 no topo, fundo #374E24, sombra 0 22px 15,1px rgba(0,0,0,.5). Preço 394\u00d7180 raio 12 sobre rgba(129,136,77,.3); botão 394\u00d772 em degradê 62°; pagamentos 128\u00d721; checklist com ícones de 32px e texto de 306px.",
       },
     ],
@@ -690,6 +569,7 @@ const GRUPOS: Grupo[] = [
         larga: true,
         demo: <EscalaWireframe altura={885}><Closing /></EscalaWireframe>,
         demoNota:
+          // eslint-disable-next-line no-restricted-syntax -- medida do wireframe documentada em texto, não estilo aplicado
           "Cartão em x81 / y9, fundo #344C24, padding 141px 0. Selo 16/16 em degradê dourado (y151); título 30/30 ls -1,2 (y197); texto 626px em 20/24 #d6d6d6 (y247); botão 361\u00d768 raio 9 em degradê 62° com sombra 0 12px 24px; link 225\u00d768 raio 10; \u201cEnvio Imediato!\u201d em y549.",
       },
       {
@@ -701,6 +581,7 @@ const GRUPOS: Grupo[] = [
         larga: true,
         demo: <EscalaWireframe altura={654}><SiteFooter /></EscalaWireframe>,
         demoNota:
+          // eslint-disable-next-line no-restricted-syntax -- medida do wireframe documentada em texto, não estilo aplicado
           "Logo centralizada no topo; apoio 391px em 20/24 #5e5c58 (y172); links 16/16 peso 700 ls -0,64 #1a2510 com gap 36 (y321); créditos 391px em 20/24 (y420); nota social 354px em 12/14,4 (y492).",
       },
     ],
@@ -874,6 +755,19 @@ function Preview({
     </figure>
   );
 }
+
+export const metadata: Metadata = {
+  title: { absolute: "Lacunas do Design System | Ano Novo, Luta Nova" },
+  description:
+    "Levantamento das peças da home que ainda não estão documentadas no design system da Agenda Ano Novo, Luta Nova.",
+  openGraph: {
+    title: "Lacunas do Design System | Ano Novo, Luta Nova",
+    description:
+      "Levantamento das peças da home que ainda não estão documentadas no design system.",
+    type: "website",
+  },
+  twitter: { card: "summary" },
+};
 
 export default function DesignSystemLacunasPage() {
   return (

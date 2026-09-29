@@ -1,0 +1,44 @@
+/*
+ * Pele do intl-tel-input com os tokens do design system.
+ *
+ * Só o que a biblioteca gera sozinha fica aqui: bandeira, código do país e a
+ * lista de países — que no celular abre em tela cheia, anexada ao <body>, fora
+ * de qualquer elemento nosso. O campo em si e o invólucro usam classes do
+ * Tailwind em PhoneField.tsx.
+ *
+ * Bandeiras: o sprite 2x em qualquer densidade de tela (o 1x fica borrado
+ * ampliado), e a altura declarada junto da largura — a variável de altura da
+ * biblioteca é calculada na raiz e não acompanha a largura sobrescrita aqui.
+ */
+.iti,
+.iti--fullscreen-popup {
+  --iti-flag-width: 28px;
+  --iti-flag-height: 21px;
+  --iti-border-color: var(--color-border);
+  --iti-dropdown-bg: var(--color-surface-plain);
+  --iti-hover-color: var(--color-surface-muted);
+  --iti-icon-color: var(--color-text-muted);
+}
+
+.iti__flag {
+  --iti-path-flags-1x: var(--iti-path-flags-2x);
+  border-radius: 3px;
+}
+
+.iti__selected-dial-code {
+  color: var(--color-text-strong);
+  font-size: var(--text-field);
+}
+
+.iti__dropdown-content {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-float);
+  font-family: var(--font-sans);
+  font-size: var(--text-label);
+}
+
+.iti__search-input {
+  font-family: var(--font-sans);
+  font-size: var(--text-field);
+}

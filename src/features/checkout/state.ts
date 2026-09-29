@@ -270,17 +270,42 @@ export function addressLine(a: Address): string {
 }
 
 // ----- Persistência -----
-// Contato, destinatário e endereço sobrevivem a um recarregamento
-// (sessionStorage, some ao fechar a aba). O cartão NUNCA é guardado.
+// Contact, recipient and address are kept in localStorage as they are typed,
+// so leaving the checkout (or closing the tab) and coming back fills them in
+// again. They expire after STORAGE_TTL_MS and are cleared once the order is
+// placed. The card is NEVER stored.
 
 const STORAGE_KEY = "anln_checkout";
+/** A form untouched for this long is dropped: a shared computer should not keep someone's CPF forever. */
+const STORAGE_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+
+type StoredForm = { form?: Partial<CheckoutForm>; step?: Step; savedAt?: number };
+
+/**
+ * The saved form. Before localStorage it lived in sessionStorage; a form
+ * still there moves over on the first read.
+ */
+function readStored(): StoredForm | null {
+  if (typeof window === "undefined") return null;
+  const raw = window.localStorage.getItem(STORAGE_KEY);
+  if (raw) return JSON.parse(raw) as StoredForm;
+
+  const legacy = window.sessionStorage.getItem(STORAGE_KEY);
+  if (!legacy) return null;
+  window.sessionStorage.removeItem(STORAGE_KEY);
+  window.localStorage.setItem(STORAGE_KEY, legacy);
+  return JSON.parse(legacy) as StoredForm;
+}
 
 export function loadForm(): { form: CheckoutForm; step: Step } | null {
   try {
-    const raw = window.sessionStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw) as { form?: Partial<CheckoutForm>; step?: Step };
-    if (!parsed.form) return null;
+    const parsed = readStored();
+    if (!parsed?.form) return null;
+    // Legacy entries have no `savedAt`: they are recent (a session's worth).
+    if (parsed.savedAt && Date.now() - parsed.savedAt > STORAGE_TTL_MS) {
+      clearForm();
+      return null;
+    }
     const f = parsed.form;
     // Formato antigo guardava o telefone como string: descarta, pede de novo.
     const phone = (p: unknown): Phone =>
@@ -302,10 +327,12 @@ export function loadForm(): { form: CheckoutForm; step: Step } | null {
 }
 
 export function saveForm(form: CheckoutForm, step: Step): void {
+  if (typeof window === "undefined") return;
   try {
-    window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ form, step }));
+    const stored: StoredForm = { form, step, savedAt: Date.now() };
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
   } catch {
-    // Sem storage: o formulário só não sobrevive ao recarregamento.
+    // Sem storage (aba anônima, storage bloqueado): o formulário só não sobrevive à saída.
   }
 }
 
@@ -323,7 +350,9 @@ export function quotedCep(): string {
 }
 
 export function clearForm(): void {
+  if (typeof window === "undefined") return;
   try {
+    window.localStorage.removeItem(STORAGE_KEY);
     window.sessionStorage.removeItem(STORAGE_KEY);
   } catch {
     // idem

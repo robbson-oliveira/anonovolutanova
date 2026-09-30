@@ -82,10 +82,16 @@ import {
 } from "./state";
 import { Stepper } from "./Stepper";
 
+/**
+ * What the checkout tracks about shipping on its own. The rates themselves are
+ * read from the cart on every render: a coupon applied or removed in the
+ * summary changes them (free shipping by coupon) without any address change.
+ */
 type ShippingState = {
-  rates: StoreShippingRate[];
-  packageId: number;
-  selected: string;
+  /** Rates were quoted for the typed address (before that, the cart holds the store's own estimate). */
+  loaded: boolean;
+  /** Rate picked by the customer while the Store API confirms it. */
+  choosing: string | null;
   loading: boolean;
   error: string | null;
 };
@@ -219,7 +225,7 @@ export function CheckoutPage() {
   const [config, setConfig] = useState<CheckoutConfig | null>(null);
   const [configError, setConfigError] = useState<string | null>(null);
 
-  const [shipping, setShipping] = useState<ShippingState>({ rates: [], packageId: 0, selected: "", loading: false, error: null });
+  const [shipping, setShipping] = useState<ShippingState>({ loaded: false, choosing: null, loading: false, error: null });
   const [cep, setCep] = useState<{ loading: boolean; error: string | null }>({ loading: false, error: null });
 
   // Id do gateway escolhido (pode haver mais de um do mesmo tipo).
@@ -328,7 +334,19 @@ export function CheckoutPage() {
   const recipientValid = Object.keys(recipientErrors).length === 0;
   const addressValid = !address.summary;
   const needsShipping = cart.cart?.needs_shipping ?? true;
-  const shippingValid = recipientValid && addressValid && (!needsShipping || Boolean(shipping.selected));
+  // Rates and the chosen one come from the cart, which the Store API returns
+  // after every change (address, quantity, coupon), so a coupon that grants
+  // free shipping shows up here right away.
+  const ratePackage = shipping.loaded ? cart.cart?.shipping_rates[0] : undefined;
+  const rates: StoreShippingRate[] = ratePackage?.shipping_rates ?? [];
+  const selectedRate =
+    rates.find((r) => r.rate_id === shipping.choosing) ?? rates.find((r) => r.selected) ?? rates[0] ?? null;
+  const shippingError =
+    shipping.error ??
+    (shipping.loaded && !shipping.loading && needsShipping && !rates.length
+      ? "Não encontramos opções de entrega para este CEP."
+      : null);
+  const shippingValid = recipientValid && addressValid && (!needsShipping || Boolean(selectedRate));
   const cardErrors = validateCard(card);
 
   // ----- Frete -----
@@ -337,17 +355,8 @@ export function CheckoutPage() {
     setShipping((s) => ({ ...s, loading: true, error: null }));
     try {
       const { billing, shipping: shippingAddress } = toStoreAddresses(current);
-      const next = await updateCustomer({ billing_address: billing, shipping_address: shippingAddress });
-      cart.replace(next);
-      const pkg = next.shipping_rates[0];
-      const rates = pkg?.shipping_rates ?? [];
-      setShipping({
-        rates,
-        packageId: pkg?.package_id ?? 0,
-        selected: rates.find((r) => r.selected)?.rate_id ?? rates[0]?.rate_id ?? "",
-        loading: false,
-        error: rates.length || !next.needs_shipping ? null : "Não encontramos opções de entrega para este CEP.",
-      });
+      cart.replace(await updateCustomer({ billing_address: billing, shipping_address: shippingAddress }));
+      setShipping({ loaded: true, choosing: null, loading: false, error: null });
     } catch (err) {
       setShipping((s) => ({ ...s, loading: false, error: errorMessage(err, "Não foi possível calcular o frete.") }));
     }
@@ -376,16 +385,15 @@ export function CheckoutPage() {
   }, [step, addressValid, form, cart.cart, cart.count, loadRates]);
 
   const chooseRate = async (rateId: string) => {
-    setShipping((s) => ({ ...s, selected: rateId, loading: true, error: null }));
+    setShipping((s) => ({ ...s, choosing: rateId, loading: true, error: null }));
     try {
-      cart.replace(await selectShippingRate({ package_id: shipping.packageId, rate_id: rateId }));
-      setShipping((s) => ({ ...s, loading: false }));
+      cart.replace(await selectShippingRate({ package_id: ratePackage?.package_id ?? 0, rate_id: rateId }));
+      setShipping((s) => ({ ...s, choosing: null, loading: false }));
     } catch (err) {
-      setShipping((s) => ({ ...s, loading: false, error: errorMessage(err, "Não foi possível escolher o frete.") }));
+      setShipping((s) => ({ ...s, choosing: null, loading: false, error: errorMessage(err, "Não foi possível escolher o frete.") }));
     }
   };
 
-  const selectedRate = shipping.rates.find((r) => r.rate_id === shipping.selected) ?? null;
   const minor = cart.cart?.totals.currency_minor_unit ?? 2;
 
   // ----- Navegação -----
@@ -414,7 +422,7 @@ export function CheckoutPage() {
   const orderTotal = fromMinor(cart.cart?.totals.total_price, minor);
   // O desconto do Pix só entra no resumo depois que a forma de pagamento é escolhida.
   const pixDiscount = step === "pagamento" && chosen?.kind === "pix" ? gatewayDiscount(chosen.gateway, orderTotal) : 0;
-  const shippingKnown = step !== "contato" && Boolean(shipping.selected);
+  const shippingKnown = step !== "contato" && Boolean(selectedRate);
   const payable = orderTotal - pixDiscount;
 
   // Boleto e formas offline: a descrição do gateway no WooCommerce vira o
@@ -445,8 +453,8 @@ export function CheckoutPage() {
       const { billing, shipping: shippingAddress } = toStoreAddresses(formForStore);
       // Reenvia endereço e frete: o total do servidor é o que vale.
       await updateCustomer({ billing_address: billing, shipping_address: shippingAddress });
-      if (shipping.selected) {
-        await selectShippingRate({ package_id: shipping.packageId, rate_id: shipping.selected });
+      if (selectedRate) {
+        await selectShippingRate({ package_id: ratePackage?.package_id ?? 0, rate_id: selectedRate.rate_id });
       }
 
       const trackItems = cartTrackItems(cart.cart);
@@ -659,15 +667,15 @@ export function CheckoutPage() {
                 <Text size="xs" tone="muted" className="leading-snug">
                   {showErrors.entrega && address.summary ? address.summary : "Informe o CEP e o endereço para ver as opções de entrega."}
                 </Text>
-              ) : shipping.loading && !shipping.rates.length ? (
+              ) : shipping.loading && !rates.length ? (
                 <Text size="xs" tone="muted">
                   Calculando o frete…
                 </Text>
               ) : null}
               {addressValid
-                ? shipping.rates.map((rate) => {
+                ? rates.map((rate) => {
                     const price = fromMinor(rate.price, minor);
-                    const active = rate.rate_id === shipping.selected;
+                    const active = rate.rate_id === selectedRate?.rate_id;
                     return (
                       <label
                         key={rate.rate_id}
@@ -691,9 +699,9 @@ export function CheckoutPage() {
                     );
                   })
                 : null}
-              {shipping.error ? (
+              {shippingError ? (
                 <Text size="xs" tone="accent" role="alert">
-                  {shipping.error}
+                  {shippingError}
                 </Text>
               ) : null}
             </div>

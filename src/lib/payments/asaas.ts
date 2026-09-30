@@ -1,14 +1,17 @@
 import type { PaymentAdapter } from "./types";
 
 /**
- * Asaas (plugin woo-asaas). O cartão não é tokenizado no navegador: o plugin
- * recebe os campos no checkout e cobra pela API do Asaas. Os nomes são os do
- * formulário clássico do plugin; o anln-storefront-bridge os entrega ao
- * gateway (AsaasStoreApiCompat), porque a Store API manda JSON e o plugin lê
- * formulário.
+ * Asaas (plugin wc-asaas-store-api, which replaced woo-asaas with the same
+ * gateway ids and field names). The card is not tokenized in the browser: the
+ * plugin takes the fields in the Store API checkout and charges through the
+ * Asaas API. With the old woo-asaas, the anln-storefront-bridge hands them to
+ * the gateway instead (AsaasStoreApiCompat).
  *
- * O número vai do navegador direto para o WordPress por HTTPS — o mesmo
- * caminho do checkout clássico. Nunca passa pelo servidor do Next.
+ * The CPF/CNPJ goes in `extensions.anln_checkout`, not in the plugin's
+ * `asaas/document` field, which the bridge turns off.
+ *
+ * The card number goes from the browser straight to WordPress over HTTPS,
+ * the same path as the classic checkout. It never reaches the Next server.
  */
 export const asaasAdapter: PaymentAdapter = {
   gatewayIds: ["asaas-pix", "asaas-credit-card", "asaas-ticket"],

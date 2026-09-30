@@ -58,7 +58,7 @@ export function PaymentInstructionsPanel({ instructions, status }: PaymentInstru
       ) : instructions.type === "pix" ? (
         <PixBody pix={instructions.pix} />
       ) : (
-        <BoletoBody url={instructions.boleto.url} />
+        <BoletoBody url={instructions.boleto.url} digitableLine={instructions.boleto.digitable_line ?? ""} />
       )}
     </section>
   );
@@ -85,19 +85,44 @@ function StatusBadge({ status }: { status: PaymentStatus }) {
   );
 }
 
-function PixBody({ pix }: { pix: Pix }) {
+/** Read-only code with a copy button: the Pix copy-and-paste code or the boleto's linha digitável. */
+function CopyField({ id, label, value, display }: { id: string; label: string; value: string; display?: string }) {
   const [copied, setCopied] = useState(false);
-  const expires = parsePixExpiry(pix.expires_at);
 
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(pix.qr_code);
+      await navigator.clipboard.writeText(value);
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
     } catch {
       // No clipboard permission: the code is still selectable in the field.
     }
   };
+
+  return (
+    <>
+      <label htmlFor={id} className="text-fine font-medium text-text-muted">
+        {label}
+      </label>
+      <div className="flex gap-2">
+        <input
+          id={id}
+          readOnly
+          value={display ?? value}
+          onFocus={(e) => e.currentTarget.select()}
+          className="h-11 min-w-0 flex-1 rounded-xs border border-border bg-surface-muted px-3 font-mono text-fine text-text-strong"
+        />
+        <Button type="button" shape="block" onClick={() => void copy()} className="shrink-0 px-4! text-label!">
+          {copied ? <IconCheck /> : <IconCopy />}
+          {copied ? "Copiado" : "Copiar código"}
+        </Button>
+      </div>
+    </>
+  );
+}
+
+function PixBody({ pix }: { pix: Pix }) {
+  const expires = parsePixExpiry(pix.expires_at);
 
   return (
     <div className="mt-5 grid items-start gap-6 sm:grid-cols-[auto_minmax(0,1fr)]">
@@ -115,22 +140,7 @@ function PixBody({ pix }: { pix: Pix }) {
 
       <div className="flex min-w-0 flex-col gap-4">
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="pix-code" className="text-fine font-medium text-text-muted">
-            Pix copia e cola
-          </label>
-          <div className="flex gap-2">
-            <input
-              id="pix-code"
-              readOnly
-              value={pix.qr_code}
-              onFocus={(e) => e.currentTarget.select()}
-              className="h-11 min-w-0 flex-1 rounded-xs border border-border bg-surface-muted px-3 font-mono text-fine text-text-strong"
-            />
-            <Button type="button" shape="block" onClick={() => void copy()} className="shrink-0 px-4! text-label!">
-              {copied ? <IconCheck /> : <IconCopy />}
-              {copied ? "Copiado" : "Copiar código"}
-            </Button>
-          </div>
+          <CopyField id="pix-code" label="Pix copia e cola" value={pix.qr_code} />
           {expires ? (
             <p className="text-fine text-text-muted">
               Este código expira em{" "}
@@ -154,12 +164,29 @@ function PixBody({ pix }: { pix: Pix }) {
   );
 }
 
-function BoletoBody({ url }: { url: string }) {
+/**
+ * "00190.00009 02819.136009 66281.313172 6 00000000010000", the grouping
+ * printed on the boleto, from the 47 digits; anything else as it came.
+ */
+function formatDigitableLine(line: string): string {
+  const m = /^(\d{5})(\d{5})(\d{5})(\d{6})(\d{5})(\d{6})(\d)(\d{14})$/.exec(line);
+  return m ? `${m[1]}.${m[2]} ${m[3]}.${m[4]} ${m[5]}.${m[6]} ${m[7]} ${m[8]}` : line;
+}
+
+/** The boleto link, and the linha digitável to copy when the gateway sends it (bridge 0.5.0+, Asaas Store API). */
+function BoletoBody({ url, digitableLine }: { url: string; digitableLine: string }) {
   return (
     <div className="mt-5 flex flex-col items-start gap-3">
       <p className="text-label text-text-muted">
-        Seu boleto foi gerado. Abra, imprima ou copie o código de barras para pagar em qualquer banco, lotérica ou app.
+        {digitableLine
+          ? "Seu boleto foi gerado. Copie a linha digitável para pagar no app do banco, ou abra o boleto para pagar em qualquer banco ou lotérica."
+          : "Seu boleto foi gerado. Abra o boleto para pagar no app do banco, em qualquer banco ou lotérica."}
       </p>
+      {digitableLine ? (
+        <div className="flex w-full flex-col gap-1.5">
+          <CopyField id="boleto-line" label="Linha digitável" value={digitableLine} display={formatDigitableLine(digitableLine)} />
+        </div>
+      ) : null}
       <Button href={url} target="_blank" rel="noopener noreferrer" shape="block">
         <IconExternal />
         Visualizar boleto

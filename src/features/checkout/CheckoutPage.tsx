@@ -23,6 +23,7 @@ import {
   Select,
   Text,
   cn,
+  toast,
   type RadioOption,
   type SelectOption,
 } from "@ds/index";
@@ -230,6 +231,10 @@ export function CheckoutPage() {
   const [today] = useState(() => new Date());
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  // Toast of the last failed "Pagar", dismissed on retry so copies don't
+  // stack. Each failure gets a fresh id: reusing one right after dismissing
+  // it can land on the toast sonner is still removing.
+  const submitErrorToast = useRef<string | number | undefined>(undefined);
 
   // ----- CEP -----
 
@@ -425,6 +430,7 @@ export function CheckoutPage() {
   const submit = async () => {
     setShowErrors({ contato: true, entrega: true, pagamento: true });
     setSubmitError(null);
+    if (submitErrorToast.current !== undefined) toast.dismiss(submitErrorToast.current);
     if (!contactValid) return go("contato");
     if (!shippingValid) return go("entrega");
     if (!chosen) {
@@ -486,7 +492,11 @@ export function CheckoutPage() {
         `/checkout/order-received?order_id=${result.order_id}&token=${encodeURIComponent(result.order_key)}&payment=${chosen.kind}`,
       );
     } catch (err) {
-      setSubmitError(errorMessage(err, "Não foi possível finalizar o pedido. Tente de novo."));
+      const message = errorMessage(err, "Não foi possível finalizar o pedido. Tente de novo.");
+      setSubmitError(message);
+      // The inline alert sits below the fold on phones; the toast makes the
+      // failure visible wherever the buyer is.
+      submitErrorToast.current = toast.error("Não foi possível finalizar a compra", { description: message });
       // O pedido pode ter consumido estoque ou mudado o carrinho.
       void cart.refresh();
       setSubmitting(false);

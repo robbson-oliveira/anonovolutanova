@@ -14,11 +14,21 @@ export type CheckoutGateway = {
   kind: GatewayKind;
   title: string;
   description: string;
-  /** Imagem do gateway no WooCommerce (`$gateway->icon`). Vazia em alguns plugins (woo-asaas). */
+  /** Imagem do gateway no WooCommerce (`$gateway->icon`). Vazia em alguns plugins (Asaas). */
   icon_url?: string | null;
   supports_tokenization: boolean;
   publishable_key: string;
-  installments: { max: number; interest_free_up_to: number; monthly_rate_percent: number } | null;
+  /**
+   * Card only. With the Asaas Store API plugin, `max` and `interest_free_up_to`
+   * come from the gateway settings, which is what charges the interest.
+   */
+  installments: {
+    max: number;
+    interest_free_up_to: number;
+    monthly_rate_percent: number;
+    /** Smallest installment, in BRL (bridge 0.5.0+). */
+    min_installment_value?: number;
+  } | null;
   discount_rule: { type: "percent"; percent: number } | { type: "fixed"; amount: number } | null;
 };
 
@@ -86,7 +96,13 @@ export type PaymentInstructions = {
         gateway_title: string;
         pix: { qr_code_base64: string; qr_code: string; expires_at: string };
       }
-    | { type: "boleto"; gateway_id: string; gateway_title: string; boleto: { url: string } }
+    | {
+        type: "boleto";
+        gateway_id: string;
+        gateway_title: string;
+        /** `digitable_line`: the linha digitável (bridge 0.5.0+); "" when the gateway plugin has none (woo-asaas). */
+        boleto: { url: string; digitable_line?: string };
+      }
     | null;
   /** Missing on bridges older than 0.5.0. */
   order?: OrderSummary;

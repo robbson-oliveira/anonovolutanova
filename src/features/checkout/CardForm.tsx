@@ -17,15 +17,22 @@ function parseExpiry(value: string): { expMonth: string; expYear: string; displa
   return { expMonth: d.slice(0, 2), expYear: d.length === 4 ? `20${d.slice(2)}` : "", display };
 }
 
+/** Asaas API floor, for bridges older than 0.5.0 that don't send the minimum. */
+const DEFAULT_MIN_INSTALLMENT = 5;
+
 /**
- * Parcelas: até o máximo do gateway, e só as sem juros. O site anuncia
- * "3x sem juros"; parcelas com juros exigiriam mostrar o valor final de cada
- * uma, que depende da taxa do gateway.
+ * Installments up to the gateway's maximum, interest-free ones only: the site
+ * advertises "3x sem juros", and showing interest-bearing ones would mean
+ * showing each final amount, which depends on the gateway's rate.
+ *
+ * The minimum installment value is the gateway's too: below it the Asaas
+ * plugin offers fewer installments, and a count it doesn't offer fails.
  */
 function installmentOptions(gateway: CheckoutGateway, total: number) {
   const rules = gateway.installments ?? { max: 1, interest_free_up_to: 1, monthly_rate_percent: 0 };
   const max = Math.max(1, Math.min(rules.max, rules.interest_free_up_to));
-  return Array.from({ length: max }, (_, i) => i + 1).filter((n) => n === 1 || total / n >= 5);
+  const minValue = rules.min_installment_value ?? DEFAULT_MIN_INSTALLMENT;
+  return Array.from({ length: max }, (_, i) => i + 1).filter((n) => n === 1 || total / n >= minValue);
 }
 
 export function CardForm({

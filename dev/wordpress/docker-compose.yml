@@ -45,8 +45,10 @@ services:
         define( 'WP_DEBUG_DISPLAY', false );
     volumes:
       - wp:/var/www/html
-      # O plugin é montado direto da pasta de trabalho: edição lá vale aqui.
+      # The bridge and the Asaas plugin are mounted straight from their working
+      # folders (siblings of this repository): an edit there applies here.
       - ../../../anln-storefront-bridge:/var/www/html/wp-content/plugins/anln-storefront-bridge
+      - ../../../wc-asaas-store-api:/var/www/html/wp-content/plugins/wc-asaas-store-api
       - ./mu-plugins:/var/www/html/wp-content/mu-plugins
 
   # WP-CLI com o mesmo volume. Não sobe sozinho: `run --rm wpcli …`.
@@ -65,6 +67,7 @@ services:
     volumes:
       - wp:/var/www/html
       - ../../../anln-storefront-bridge:/var/www/html/wp-content/plugins/anln-storefront-bridge
+      - ../../../wc-asaas-store-api:/var/www/html/wp-content/plugins/wc-asaas-store-api
       - ./mu-plugins:/var/www/html/wp-content/mu-plugins
       - ./:/setup
       # As capas do site viram a imagem principal dos produtos (setup.php).

@@ -94,8 +94,9 @@ O script ([`setup.sh`](dev/wordpress/setup.sh) e [`setup.php`](dev/wordpress/set
 
 1. instala o WordPress em pt-BR, com fuso de São Paulo e links permanentes `/%postname%/`;
 2. grava usuário e senha do wp-admin em `dev/wordpress/.admin-password` (fora do git);
-3. instala e ativa WooCommerce, Asaas (`woo-asaas`), Mercado Pago
-   (`woocommerce-mercadopago`) e o `anln-storefront-bridge`;
+3. instala e ativa WooCommerce e Mercado Pago (`woocommerce-mercadopago`), e
+   ativa o `anln-storefront-bridge` e o Asaas (`wc-asaas-store-api`), os dois
+   montados das pastas irmãs deste repositório (ver `dev/wordpress/README.md`);
 4. configura a loja para o Brasil, cria os produtos 2027 (um por edição, com a
    capa do site como imagem principal), a zona de frete, o cupom `MARIANA10` e as
    opções do bridge.
@@ -242,18 +243,26 @@ aparece no checkout quando está **ativo e com chaves**.
 
 | Gateway | Plugin | Ids | O que o site aceita hoje |
 | --- | --- | --- | --- |
-| **Asaas** | `woo-asaas` | `asaas-pix`, `asaas-credit-card`, `asaas-ticket` | Pix, cartão (à vista e parcelado) e boleto |
+| **Asaas** | `wc-asaas-store-api` | `asaas-pix`, `asaas-credit-card`, `asaas-ticket` | Pix, cartão (à vista e parcelado) e boleto |
 | **Mercado Pago** | `woocommerce-mercadopago` | `woo-mercado-pago-pix`, `woo-mercado-pago-custom`, `woo-mercado-pago-ticket` | só Pix (cartão e boleto ainda não foram escritos no site) |
 
 **Asaas:**
 
-1. Instale e ative o **Asaas Gateway for WooCommerce** (`woo-asaas`).
-2. Pegue a chave de API no painel do Asaas, em *Integrações*. Para testes, use uma
+1. Instale o `anln-storefront-bridge` 0.5.0 ou mais novo **antes** do plugin do
+   Asaas (ver 4.7): é ele que desliga o campo obrigatório de CPF/CNPJ que o plugin
+   do Asaas cria na Store API, e sem isso todo checkout do site volta erro.
+2. Instale e ative o **Asaas Gateway for WooCommerce - Store API**
+   (`wc-asaas-store-api`), pelo zip do repositório dele. Ele substitui o antigo
+   `woo-asaas`: ao ser ativado, desativa o `woo-asaas` e reaproveita a chave de API,
+   o webhook e os clientes dele.
+3. Pegue a chave de API no painel do Asaas, em *Integrações*. Para testes, use uma
    conta de [sandbox.asaas.com](https://sandbox.asaas.com).
-3. Em *WooCommerce → Configurações → Pagamentos*, abra **Asaas Pix**, **Asaas
+4. Em *WooCommerce → Configurações → Pagamentos*, abra **Asaas Pix**, **Asaas
    Cartão de Crédito** (e **Boleto**, se for usar). Escolha o ambiente
-   (**Sandbox** ou **Produção**), cole a chave e ative.
-4. **Webhook.** O Pix e o boleto só são confirmados pelo webhook. Cadastre no
+   (**Sandbox** ou **Produção**), cole a chave e ative. No cartão, configure as
+   parcelas como o site anuncia (até 3x, sem juros): o checkout mostra só as
+   parcelas sem juros configuradas no gateway, que é quem cobra os juros.
+5. **Webhook.** O Pix e o boleto só são confirmados pelo webhook. Cadastre no
    painel do Asaas a URL `https://<domínio-do-wordpress>/asaas-webhook/` (em
    produção, `https://admin.anonovolutanova.com.br/asaas-webhook/`), seguindo o que
    a tela de configuração do plugin pede para autenticar o webhook.

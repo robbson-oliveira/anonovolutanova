@@ -1,6 +1,8 @@
 # WordPress local (Docker)
 
-Faz o papel do `admin.anonovolutanova.com.br` no desenvolvimento: WooCommerce 11 com o produto 2027, frete, cupom de afiliada e o plugin **anln-storefront-bridge** montado direto da pasta dele (`../anln-storefront-bridge`, irmã deste repositório). Uma edição no plugin vale na hora, sem reinstalar.
+Faz o papel do `admin.anonovolutanova.com.br` no desenvolvimento: WooCommerce 11 com o produto 2027, frete, cupom de afiliada e dois plugins montados direto das pastas deles, irmãs deste repositório: o **anln-storefront-bridge** (`../anln-storefront-bridge`) e o **Asaas Gateway for WooCommerce - Store API** (`../wc-asaas-store-api`). Uma edição em qualquer um dos dois vale na hora, sem reinstalar.
+
+O plugin do Asaas ainda não está no WordPress.org: clone o repositório dele ao lado deste e rode `composer install` na pasta `admin/` dele antes de subir (sem o `admin/vendor`, o wp-admin mostra um aviso e os gateways não carregam). Um banco criado antes da troca tinha o `woo-asaas` ativo: o `setup.sh` o desativa, e o plugin novo reaproveita a chave de API e o webhook dele.
 
 ## Subir
 
@@ -51,6 +53,7 @@ Asaas e Mercado Pago já vêm instalados e ativos, mas **sem chaves**. Sem chave
   1. Crie uma conta em [sandbox.asaas.com](https://sandbox.asaas.com) e copie a chave de API em *Integrações*.
   2. Em *WooCommerce → Configurações → Pagamentos*, abra **Asaas Pix** e **Asaas Cartão de Crédito**.
   3. Escolha o ambiente **Sandbox**, cole a chave e ative.
+  4. Em **Asaas Cartão de Crédito**, deixe as parcelas como o site anuncia (até 3x, sem juros). O checkout mostra só as parcelas sem juros configuradas ali, porque é o plugin quem cobra os juros.
 - **Mercado Pago:** use as credenciais **de teste** da conta de desenvolvedor.
 
 **Confirmação de pagamento:**

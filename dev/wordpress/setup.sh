@@ -52,11 +52,14 @@ HTACCESS
 
 echo "» Plugins"
 wp plugin is-installed woocommerce || wp plugin install woocommerce
-wp plugin is-installed woo-asaas || wp plugin install woo-asaas
 wp plugin is-installed woocommerce-mercadopago || wp plugin install woocommerce-mercadopago
-wp plugin activate woocommerce woo-asaas woocommerce-mercadopago anln-storefront-bridge
+# The Asaas plugin is mounted from ../wc-asaas-store-api (docker-compose.yml).
+# It replaces woo-asaas, which older local databases still have active: while
+# both are active the new one loads no gateways.
+if wp plugin is-active woo-asaas 2>/dev/null; then wp plugin deactivate woo-asaas; fi
+wp plugin activate woocommerce wc-asaas-store-api woocommerce-mercadopago anln-storefront-bridge
 wp plugin delete hello akismet >/dev/null 2>&1 || true
-wp language plugin install woocommerce woo-asaas woocommerce-mercadopago pt_BR >/dev/null 2>&1 || true
+wp language plugin install woocommerce woocommerce-mercadopago pt_BR >/dev/null 2>&1 || true
 
 echo "» Loja (WooCommerce, produto 2027, frete, cupom, bridge)"
 wp eval-file /setup/setup.php

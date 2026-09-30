@@ -55,8 +55,24 @@ export function isStoreApiError(value: unknown): value is StoreApiError {
   return Boolean(value && typeof value === "object" && "code" in value && "message" in value);
 }
 
+/**
+ * Buyer errors the anln-storefront-bridge raises on checkout. Its REST
+ * messages are in English (a rule of that plugin), so the storefront words
+ * them for the customer.
+ */
+const BRIDGE_CHECKOUT_MESSAGES: Record<string, string> = {
+  anln_missing_cpf: "Informe o CPF de quem está comprando.",
+  anln_invalid_cpf: "O CPF informado não é válido. Confira os números.",
+  anln_invalid_cnpj: "O CNPJ informado não é válido. Confira os números.",
+  anln_missing_company: "Informe a razão social da empresa.",
+  anln_invalid_person_type: "Escolha se a compra é como pessoa física ou empresa.",
+  anln_missing_birthdate: "Informe a data de nascimento.",
+  anln_invalid_birthdate: "A data de nascimento não é válida. Use o formato dd/mm/aaaa.",
+};
+
 /** Mensagem legível de qualquer erro (a Store API lança objetos, não Error). */
 export function errorMessage(err: unknown, fallback: string): string {
+  if (isStoreApiError(err) && BRIDGE_CHECKOUT_MESSAGES[err.code]) return BRIDGE_CHECKOUT_MESSAGES[err.code];
   if (isStoreApiError(err) && err.message.trim()) return stripTags(err.message);
   // fetch() sem resposta (rede caiu, ou o servidor quebrou sem CORS): o
   // navegador só diz "Failed to fetch", em inglês e sem ajudar ninguém.

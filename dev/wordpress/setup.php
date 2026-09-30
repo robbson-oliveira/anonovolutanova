@@ -184,3 +184,15 @@ update_option( 'anln_bridge_free_shipping_hide_paid', '1' );
 update_option( 'anln_bridge_max_installments', '3' );
 update_option( 'anln_bridge_interest_free_installments', '3' );
 $log( 'Bridge: CORS localhost, frete grátis a partir de 4, 3x sem juros' );
+
+// ----- Asaas (wc-asaas-store-api) -----
+// The card gateway charges its own installment interest, so the bridge reads
+// the installments from it, not from its options above. Only set when missing:
+// the API key and the rest of the gateway are configured in wp-admin.
+$asaas_card = get_option( 'woocommerce_asaas-credit-card_settings', array() );
+$asaas_card = is_array( $asaas_card ) ? $asaas_card : array();
+if ( empty( $asaas_card['max_installments'] ) ) {
+	$asaas_card['max_installments'] = '3';
+	update_option( 'woocommerce_asaas-credit-card_settings', $asaas_card );
+}
+$log( 'Asaas: cartão em até ' . $asaas_card['max_installments'] . 'x (juros por parcela no wp-admin)' );

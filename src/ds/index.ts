@@ -33,6 +33,7 @@ export { Select, type SelectOption } from "@ds/primitives/Select";
 export { RadioGroup, type RadioOption } from "@ds/primitives/RadioGroup";
 export { Checkbox } from "@ds/primitives/Checkbox";
 export { DateField } from "@ds/primitives/DateField";
+export { Toaster, toast } from "@ds/primitives/Toaster";
 
 export { Reveal, RevealGroup, REVEAL_READY_SCRIPT } from "@ds/motion/Reveal";
 export { Counter } from "@ds/motion/Counter";

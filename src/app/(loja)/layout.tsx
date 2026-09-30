@@ -1,3 +1,4 @@
+import { Toaster } from "@ds/index";
 import { CartDrawer } from "@/features/cart/CartDrawer";
 import { CartProvider } from "@/features/cart/CartProvider";
 
@@ -11,6 +12,7 @@ export default function LojaLayout({ children }: { children: React.ReactNode }) 
     <CartProvider>
       {children}
       <CartDrawer />
+      <Toaster />
     </CartProvider>
   );
 }

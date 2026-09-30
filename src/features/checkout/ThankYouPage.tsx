@@ -22,6 +22,7 @@ const POLL_MS = 5000;
 const POLL_FOR_MS = 30 * 60 * 1000;
 /** Usual Pix validity: the countdown ring's full length when the order date is unknown. */
 const PIX_WINDOW_MS = 30 * 60 * 1000;
+const PIX_COUNTDOWN_MAX_MS = 24 * 60 * 60 * 1000;
 
 /**
  * Thank-you page, following the reference: a green "Obrigado" banner with
@@ -94,7 +95,11 @@ export function ThankYouPage() {
 
   const pixDeadline = pix ? parsePixExpiry(pix.expires_at) : null;
   const placedAt = order ? Date.parse(order.created_at) : NaN;
-  const pixCountingDown = Boolean(pix) && data?.payment_status === "pending" && pixDeadline != null;
+  // Asaas dates the QR Code a year past the due date: a countdown that long
+  // says nothing, so the ring only shows for a window of up to a day.
+  const pixWindowMs = pixDeadline == null || Number.isNaN(placedAt) ? PIX_WINDOW_MS : Math.max(1, pixDeadline - placedAt);
+  const pixCountingDown =
+    Boolean(pix) && data?.payment_status === "pending" && pixDeadline != null && pixWindowMs <= PIX_COUNTDOWN_MAX_MS;
 
   return (
     <div className="flex flex-col">
@@ -124,7 +129,7 @@ export function ThankYouPage() {
           ) : (
             <PixCountdown
               deadline={pixDeadline!}
-              totalMs={Number.isNaN(placedAt) ? PIX_WINDOW_MS : Math.max(1, pixDeadline! - placedAt)}
+              totalMs={pixWindowMs}
             />
           )}
         </div>

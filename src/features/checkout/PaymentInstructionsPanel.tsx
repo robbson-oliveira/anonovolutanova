@@ -144,7 +144,7 @@ function PixBody({ pix }: { pix: Pix }) {
           {expires ? (
             <p className="text-fine text-text-muted">
               Este código expira em{" "}
-              {new Date(expires).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}.
+              {new Date(expires).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" })}.
             </p>
           ) : null}
         </div>

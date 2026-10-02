@@ -345,6 +345,23 @@
   --animate-soon-word: ds-soon-word 0.4s var(--ease-enter) both;
   --animate-soon-float: ds-soon-float 0.9s var(--ease-enter) both;
   --animate-soon-panel: ds-soon-panel 0.25s var(--ease-enter) both;
+  --animate-processing-enter: ds-processing-enter 200ms ease-out both;
+  --animate-processing-ring: ds-processing-rotate 2s linear infinite, ds-processing-dash 1.5s linear infinite;
+
+  @keyframes ds-processing-rotate {
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes ds-processing-enter {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes ds-processing-dash {
+    0% { stroke-dasharray: 0 150; stroke-dashoffset: 0; }
+    50% { stroke-dasharray: 42 150; stroke-dashoffset: -16; }
+    100% { stroke-dasharray: 42 150; stroke-dashoffset: -59; }
+  }
 
   @keyframes ds-reveal-up {
     from {

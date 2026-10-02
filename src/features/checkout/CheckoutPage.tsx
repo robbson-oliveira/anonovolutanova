@@ -19,6 +19,7 @@ import {
   IconPackage,
   IconPix,
   IconWallet,
+  ProcessingOverlay,
   RadioGroup,
   Select,
   Text,
@@ -436,6 +437,7 @@ export function CheckoutPage() {
   // ----- Pedido -----
 
   const submit = async () => {
+    if (submitting) return;
     setShowErrors({ contato: true, entrega: true, pagamento: true });
     setSubmitError(null);
     if (submitErrorToast.current !== undefined) toast.dismiss(submitErrorToast.current);
@@ -531,7 +533,8 @@ export function CheckoutPage() {
     );
   }
 
-  if (cart.count === 0) {
+  // Keep progress visible after resetting the cart and until navigation finishes.
+  if (cart.count === 0 && !submitting) {
     return (
       <div className="flex flex-col gap-8">
         {header}
@@ -580,6 +583,7 @@ export function CheckoutPage() {
 
   return (
     <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,460px)] lg:gap-12">
+      <ProcessingOverlay open={submitting} label="Processando seu pedido…" />
       <div className="flex min-w-0 flex-col gap-8">
         {header}
         <h1 className="sr-only">Finalizar compra</h1>
@@ -681,7 +685,7 @@ export function CheckoutPage() {
                         key={rate.rate_id}
                         className={cn(
                           "flex cursor-pointer items-center gap-3 rounded-card border bg-surface-plain px-4 py-4 sm:px-5",
-                          "transition-colors [transition-duration:var(--duration-fast)]",
+                          "transition-colors duration-(--duration-fast)",
                           active ? "border-action" : "border-border hover:border-action/50",
                         )}
                       >
@@ -770,12 +774,12 @@ export function CheckoutPage() {
                           }}
                           className={cn(
                             "flex min-h-28 min-w-0 cursor-pointer flex-col items-center justify-center gap-2 rounded-card border bg-surface-plain px-3 py-4 text-center",
-                            "transition-colors [transition-duration:var(--duration-fast)]",
+                            "transition-colors duration-(--duration-fast)",
                             active ? "border-2 border-action" : "border-border hover:border-action/50",
                           )}
                         >
                           <GatewayMark option={o} />
-                          <span className="text-label font-medium break-words text-text-strong">
+                          <span className="text-label font-medium wrap-break-word text-text-strong">
                             {o.gateway.title || KIND_LABEL[o.kind]}
                           </span>
                           {badge ? (

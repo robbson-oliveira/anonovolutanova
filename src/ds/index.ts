@@ -21,6 +21,7 @@ export {
   type EditionOption,
 } from "@ds/primitives/EditionSelector";
 export { BookCover } from "@ds/primitives/BookCover";
+export { ProcessingOverlay } from "@ds/primitives/ProcessingOverlay";
 
 // Formulário (checkout): mesma moldura de 48px dos campos do checkout.
 export {

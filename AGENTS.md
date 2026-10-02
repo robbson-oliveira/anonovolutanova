@@ -187,7 +187,9 @@ bridge fazem parte de um contrato: mudar um lado exige mudar o outro.
 - Chaves de servidor, lidas pelo `proxy.ts` a cada pedido (trocar exige só
   reiniciar, e as páginas continuam estáticas): `ANLN_HOME_COMMING_SOON`
   reescreve `/` para `/em-breve`; `ANLN_PRECHECKOUT` abre `/carrinho` (sem ela,
-  `/carrinho` redireciona para `/#oferta`). O nome `COMMING` é o que está
+  `/carrinho` redireciona para `/#oferta`); `ANLN_HOME_DEV_PASSWORD` abre
+  `/home-dev`, a landing page atrás de Basic Auth, cujo cookie (`anln_home_dev`)
+  mostra a landing page também em `/` para quem entrou (`src/lib/home-dev.ts`). O nome `COMMING` é o que está
   configurado nos ambientes; não corrija só de um lado. Links do fluxo de compra
   que voltam à escolha da edição usam `CART_URL` (`/carrinho`), que funciona
   com a chave ligada ou desligada.

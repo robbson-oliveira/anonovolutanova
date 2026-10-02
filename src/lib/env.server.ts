@@ -31,4 +31,9 @@ export const serverEnv = {
    * before the checkout. Off, `/carrinho` redirects to the landing offer.
    */
   precheckout: process.env.ANLN_PRECHECKOUT === "true",
+  /**
+   * Password of `/home-dev`, the landing page behind a login while `/` is the
+   * "Em breve" page (`src/lib/home-dev.ts`). Unset, `/home-dev` is a 404.
+   */
+  homeDevPassword: process.env.ANLN_HOME_DEV_PASSWORD?.trim() || null,
 } as const;

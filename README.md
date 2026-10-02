@@ -358,6 +358,7 @@ Modelo em [`.env.example`](.env.example). Localmente, em `.env.local`.
 | `ANLN_PRODUCT_COLOR` | `23` | execução (servidor) | Id do produto da Edição Color (seção 4.3) |
 | `ANLN_PRODUCT_CLASSIC` | `25` | execução (servidor) | Id do produto da Edição Clássica (seção 4.3) |
 | `ANLN_HOME_COMMING_SOON` | `true` | execução (servidor) | A home mostra a página "Em breve" (a do Grupo VIP) no lugar da landing page |
+| `ANLN_HOME_DEV_PASSWORD` | uma senha longa | execução (servidor) | Senha de `/home-dev`, a landing page atrás de login enquanto a home está em "Em breve". Vazia: `/home-dev` dá 404 |
 | `ANLN_PRECHECKOUT` | `true` | execução (servidor) | Abre a página `/carrinho` (escolha da edição e carrinho antes do checkout). Desligada, `/carrinho` leva à oferta da home |
 
 O checkout só liga com `NEXT_PUBLIC_CHECKOUT_ENABLED=true` **e** os dois
@@ -369,6 +370,13 @@ reiniciar o container.
 As duas chaves combinam. Com `ANLN_HOME_COMMING_SOON=true` e `ANLN_PRECHECKOUT=true`,
 a home fica em "Em breve" e o link `/carrinho` (divulgado no Grupo VIP, por exemplo
 com `?cupom=`) vende direto.
+
+Para revisar a landing page com a home em "Em breve", defina
+`ANLN_HOME_DEV_PASSWORD` e abra `/home-dev`. O navegador pede usuário e senha
+(o usuário pode ser qualquer um). Depois do login, um cookie de 30 dias mostra
+a landing page também em `/`, só para esse navegador, para que os links de
+volta à home, a oferta, o carrinho e o checkout funcionem. Para sair, apague o
+cookie `anln_home_dev`. Trocar a senha encerra todas as sessões.
 
 ### Comandos
 

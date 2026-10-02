@@ -21,8 +21,8 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # NEXT_PUBLIC_* entram no bundle do navegador na hora do build: precisam chegar
 # como --build-arg (no Easypanel, "Build Args"), não só como variável de
 # ambiente de execução. As ANLN_* (ANLN_PRODUCT_COLOR, ANLN_PRODUCT_CLASSIC,
-# ANLN_HOME_COMMING_SOON, ANLN_PRECHECKOUT) são só do servidor e ficam no
-# ambiente de execução.
+# ANLN_HOME_COMMING_SOON, ANLN_HOME_DEV_PASSWORD, ANLN_PRECHECKOUT) são só do
+# servidor e ficam no ambiente de execução.
 ARG NEXT_PUBLIC_WP_URL
 ARG NEXT_PUBLIC_SITE_URL
 ARG NEXT_PUBLIC_CHECKOUT_ENABLED

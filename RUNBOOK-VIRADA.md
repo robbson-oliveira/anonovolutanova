@@ -55,6 +55,7 @@ Marque cada item ao concluir. **Não comece com pendência nas seções 1 e 2.**
   | `ANLN_PRODUCT_COLOR` | id do produto da Edição Color | execução |
   | `ANLN_PRODUCT_CLASSIC` | id do produto da Edição Clássica | execução |
   | `ANLN_HOME_COMMING_SOON` | `true` enquanto a home for a página "Em breve"; `false` para abrir a landing page | execução |
+  | `ANLN_HOME_DEV_PASSWORD` | senha de `/home-dev` (landing page para revisão enquanto a home é "Em breve"); vazia depois da virada | execução |
   | `ANLN_PRECHECKOUT` | `true` para abrir `/carrinho` (venda pelo link do Grupo VIP) | execução |
 
 - [ ] **Comissões em aberto do AffiliateWP** pagas ou registradas. Afiliadas avisadas do link novo: `https://anonovolutanova.com.br/?cupom=CODIGO`.

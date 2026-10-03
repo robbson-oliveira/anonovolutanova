@@ -53,7 +53,7 @@ export function ComingSoonPage() {
         {fontCss}
       </style>
 
-      <main className="relative isolate flex min-h-dvh w-full flex-col items-center justify-center overflow-hidden bg-surface pt-40 md:pt-[111px]">
+      <main className="relative isolate flex min-h-dvh w-full flex-col items-center justify-center overflow-hidden bg-surface pt-40 md:pt-[111px] min-[75rem]:pb-24">
         <picture>
           <source media="(max-width: 767.98px)" srcSet={phoneSrcSet} />
           <source media="(min-width: 768px)" srcSet={wideSrcSet} />
@@ -134,7 +134,7 @@ export function ComingSoonPage() {
                     {COMING_SOON.cta}
                   </a>
                   <p
-                    className={`w-full max-w-[250px] font-serif text-[16px] leading-[1.4] font-bold text-soon-gold [text-shadow:0_1px_48px_var(--color-soon-glow)] md:w-[96%] md:max-w-[400px] md:text-[17px] min-[75rem]:w-full min-[75rem]:text-[20px] ${rise}`}
+                    className={`w-full max-w-[250px] font-serif text-[16px] leading-[1.4] font-bold text-white md:text-soon-gold [text-shadow:0_1px_48px_var(--color-soon-glow)] md:w-[96%] md:max-w-[400px] md:text-[17px] min-[75rem]:w-full min-[75rem]:text-[20px] ${rise}`}
                   >
                     {COMING_SOON.note}
                   </p>

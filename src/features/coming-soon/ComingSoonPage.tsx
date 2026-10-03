@@ -53,7 +53,7 @@ export function ComingSoonPage() {
         {fontCss}
       </style>
 
-      <main className="relative isolate flex min-h-dvh w-full flex-col items-center justify-center overflow-hidden bg-surface pt-40 md:pt-[111px]">
+      <main className="relative isolate flex min-h-dvh w-full flex-col items-center justify-center overflow-hidden bg-surface pt-40 md:pt-[111px] min-[75rem]:pb-24">
         <picture>
           <source media="(max-width: 767.98px)" srcSet={phoneSrcSet} />
           <source media="(min-width: 768px)" srcSet={wideSrcSet} />

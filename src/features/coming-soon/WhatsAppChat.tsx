@@ -94,7 +94,7 @@ export function WhatsAppChat() {
   };
 
   return (
-    <div className="fixed right-[26px] bottom-[30px] z-40 flex flex-col items-end gap-4 font-inter animate-soon-float motion-reduce:animate-none md:right-9 md:bottom-10 min-[75rem]:right-[50px] min-[75rem]:bottom-[50px]">
+    <div className="fixed right-[26px] bottom-[30px] z-40 hidden flex-col items-end gap-4 font-inter animate-soon-float motion-reduce:animate-none md:flex md:right-9 md:bottom-10 min-[75rem]:right-[50px] min-[75rem]:bottom-[50px]">
       {open ? (
         <section
           id={panelId}

@@ -1,3 +1,5 @@
+import { PRODUCT_NAME } from "./product";
+
 /**
  * Copy of the "Em breve" page (ANLN_HOME_COMMING_SOON), exactly as the Framer
  * teaser live at anonovolutanova.com.br writes it.
@@ -16,9 +18,8 @@ export const COMING_SOON = {
   /** Invite link of the VIP group on WhatsApp. */
   vipGroupUrl: "https://chat.whatsapp.com/Kn1btAz7w6xDRdpRengSiO",
   description:
-    "A Agenda Ano Novo, Luta Nova combina organização diária com propósito " +
-    "espiritual e foco em crescimento pessoal. Descubra uma agenda prática, " +
-    "inspiradora e feita para transformar o seu novo ano.",
+    "A santidade se constrói nas pequenas coisas, um dia de cada vez. " +
+    `A ${PRODUCT_NAME}, inspirada em São Josemaria Escrivá, une organização e vida espiritual.`,
 } as const;
 
 /** The chat widget in the corner of the page. */

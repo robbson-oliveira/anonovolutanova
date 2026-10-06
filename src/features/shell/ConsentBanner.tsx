@@ -80,7 +80,7 @@ export function ConsentBanner() {
     <div
       role="dialog"
       aria-label="Aviso de cookies"
-      className="fixed inset-x-4 bottom-4 z-[2147483000] mx-auto flex max-w-[560px] flex-wrap items-center gap-x-5 gap-y-3 rounded-card bg-surface-inverse px-5 py-4 font-sans text-label leading-snug font-normal text-text-on-inverse shadow-float"
+      className="fixed inset-x-4 bottom-4 z-[2147483000] mx-auto flex max-w-[560px] flex-wrap items-center gap-x-5 gap-y-3 rounded-card bg-surface-consent px-5 py-4 font-sans text-label leading-snug font-normal text-text-on-inverse shadow-float"
     >
       <p className="m-0 flex-[1_1_260px]">
         Usamos cookies para entender como o site é usado e melhorar a sua experiência. Você escolhe.{" "}

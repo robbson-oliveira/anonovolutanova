@@ -194,7 +194,7 @@ export function ShippingEstimate({ productId, quantity }: ShippingEstimateProps)
     <span
       className={cn(
         "inline-flex items-center gap-1.5 self-start rounded-pill px-2.5 py-1 text-caption font-bold uppercase",
-        qualifies ? "bg-action text-on-action" : "bg-surface-sage text-text-strong",
+        qualifies ? "bg-action text-on-action" : "bg-badge text-on-badge",
       )}
     >
       <IconTruck className="size-3.5" />

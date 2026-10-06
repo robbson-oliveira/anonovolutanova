@@ -3,6 +3,7 @@ import { getProductOffer } from "@/lib/commerce/offer";
 import { CartPage } from "@/features/cart/CartPage";
 import { PrecheckoutHeader } from "@/features/cart/PrecheckoutHeader";
 import { CheckoutFooter } from "@/features/checkout/CheckoutFooter";
+import { STORE_FLOW_THEME } from "@/features/shell/store-flow-theme";
 
 export const metadata: Metadata = {
   title: "Carrinho",
@@ -15,8 +16,8 @@ export const metadata: Metadata = {
  * landing page's offer block, the edition choice and the cart, and the
  * checkout's small footer: few ways out in the middle of a purchase.
  *
- * The action color (buttons, progress bar, checks) is swapped to petrol blue and the
- * shipping badge to bronze with white text, here only, by overriding the semantic token on the wrapper.
+ * The purchase flow colors (petrol blue action, bronze shipping badge) come
+ * from STORE_FLOW_THEME, applied on the wrapper.
  *
  * Price and stock come from WooCommerce (getProductOffer revalidates every
  * minute), as on the landing page.
@@ -25,7 +26,7 @@ export default async function Carrinho() {
   const offer = await getProductOffer();
 
   return (
-    <div className="flex min-h-dvh flex-col bg-surface-plain [--color-action-hover:var(--brand-petrol-700)] [--color-badge:var(--brand-bronze-600)] [--color-on-badge:var(--brand-paper-100)] [--color-action:var(--brand-petrol-900)]">
+    <div className={`flex min-h-dvh flex-col bg-surface-plain ${STORE_FLOW_THEME}`}>
       <PrecheckoutHeader />
       <main className="mx-auto w-full max-w-[1200px] flex-1 px-4 py-8 sm:px-6 lg:py-12">
         <CartPage offer={offer} />

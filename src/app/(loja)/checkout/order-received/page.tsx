@@ -4,6 +4,7 @@ import Image from "next/image";
 import { PRODUCT_NAME } from "@content/product";
 import { CheckoutFooter } from "@/features/checkout/CheckoutFooter";
 import { ThankYouPage } from "@/features/checkout/ThankYouPage";
+import { STORE_FLOW_THEME } from "@/features/shell/store-flow-theme";
 
 export const metadata: Metadata = {
   title: "Pedido recebido",
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
  */
 export default function OrderReceived() {
   return (
-    <div className="flex min-h-dvh flex-col bg-surface-plain">
+    <div className={`flex min-h-dvh flex-col bg-surface-plain ${STORE_FLOW_THEME}`}>
       <header className="flex justify-center py-6 sm:py-8">
         {/* <a>, not <Link>: same entry to the site as the checkout logo. */}
         {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}

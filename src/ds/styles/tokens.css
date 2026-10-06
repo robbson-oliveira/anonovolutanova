@@ -78,6 +78,8 @@
      from its computed styles): deep sea blue on watercolor, with gold. */
   --brand-sea-700: rgb(19 79 99);      /* headline and paragraph */
   --brand-sea-800: rgb(25 80 108);     /* VIP group button */
+  --brand-petrol-900: rgb(0 59 81);    /* cart page action color (#003B51) */
+  --brand-petrol-700: rgb(0 84 112);   /* its hover */
   --brand-ochre-500: rgb(192 153 85);  /* eyebrow, divider and the 15% note */
   --brand-paper-glow: rgb(255 255 255 / 0.5); /* halo behind the gold note */
 

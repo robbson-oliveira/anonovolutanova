@@ -80,6 +80,7 @@
   --brand-sea-800: rgb(25 80 108);     /* VIP group button */
   --brand-petrol-900: rgb(0 59 81);    /* cart page action color (#003B51) */
   --brand-petrol-700: rgb(0 84 112);   /* its hover */
+  --brand-bronze-600: rgb(153 110 34); /* cart shipping badge (#996E22) */
   --brand-ochre-500: rgb(192 153 85);  /* eyebrow, divider and the 15% note */
   --brand-paper-glow: rgb(255 255 255 / 0.5); /* halo behind the gold note */
 
@@ -104,6 +105,8 @@
   --color-surface-muted: var(--brand-paper-200);
   --color-surface-warm: var(--brand-cream-100);
   --color-surface-sage: var(--brand-sage-300);
+  --color-badge: var(--brand-sage-300);              /* shipping badge background */
+  --color-on-badge: var(--brand-moss-900);           /* shipping badge text and icon */
   --color-surface-inverse: var(--brand-moss-800);
   --color-surface-inverse-soft: var(--brand-moss-700);
   --color-surface-accent-soft: var(--brand-gold-300);

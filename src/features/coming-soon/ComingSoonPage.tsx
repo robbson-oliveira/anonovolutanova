@@ -124,6 +124,22 @@ export function ComingSoonPage() {
                   {COMING_SOON.paragraph}
                 </p>
 
+                {/* VIP group closed — keep the button for reuse in a new form.
+                <div className={`flex w-full flex-col items-center pl-px ${rise}`}>
+                  <a
+                    href={COMING_SOON.vipGroupUrl}
+                    target="_blank"
+                    rel="noopener"
+                    className="flex h-[68px] w-full items-center justify-center rounded-pill bg-soon-action px-2.5 text-center font-sans text-[16px] leading-none font-bold text-on-soon-action transition-transform duration-[450ms] ease-overshoot hover:scale-110 md:w-[81%] min-[75rem]:w-[425px]"
+                  >
+                    {COMING_SOON.cta}
+                  </a>
+                  <p className={`w-full max-w-[250px] font-serif text-[16px] leading-[1.4] font-bold text-white md:text-soon-gold [text-shadow:0_1px_48px_var(--color-soon-glow)] md:w-[96%] md:max-w-[400px] md:text-[17px] min-[75rem]:w-full min-[75rem]:text-[20px] ${rise}`}>
+                    {COMING_SOON.note}
+                  </p>
+                </div>
+                */}
+
               </div>
             </div>
           </div>

@@ -124,7 +124,7 @@ export function ComingSoonPage() {
                   {COMING_SOON.paragraph}
                 </p>
 
-                <div className={`flex w-full flex-col items-center gap-1.5 pl-px ${rise}`}>
+                <div className={`flex w-full flex-col items-center pl-px ${rise}`}>
                   <a
                     href={COMING_SOON.vipGroupUrl}
                     target="_blank"
@@ -133,11 +133,6 @@ export function ComingSoonPage() {
                   >
                     {COMING_SOON.cta}
                   </a>
-                  <p
-                    className={`w-full max-w-[250px] font-serif text-[16px] leading-[1.4] font-bold text-white md:text-soon-gold [text-shadow:0_1px_48px_var(--color-soon-glow)] md:w-[96%] md:max-w-[400px] md:text-[17px] min-[75rem]:w-full min-[75rem]:text-[20px] ${rise}`}
-                  >
-                    {COMING_SOON.note}
-                  </p>
                 </div>
               </div>
             </div>

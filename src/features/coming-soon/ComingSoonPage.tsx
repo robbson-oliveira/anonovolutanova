@@ -124,16 +124,6 @@ export function ComingSoonPage() {
                   {COMING_SOON.paragraph}
                 </p>
 
-                <div className={`flex w-full flex-col items-center pl-px ${rise}`}>
-                  <a
-                    href={COMING_SOON.vipGroupUrl}
-                    target="_blank"
-                    rel="noopener"
-                    className="flex h-[68px] w-full items-center justify-center rounded-pill bg-soon-action px-2.5 text-center font-sans text-[16px] leading-none font-bold text-on-soon-action transition-transform duration-[450ms] ease-overshoot hover:scale-110 md:w-[81%] min-[75rem]:w-[425px]"
-                  >
-                    {COMING_SOON.cta}
-                  </a>
-                </div>
               </div>
             </div>
           </div>

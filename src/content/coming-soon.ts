@@ -13,9 +13,6 @@ export const COMING_SOON = {
    */
   headline: ["Algo novo ", "está chegando"],
   paragraph: "Uma nova jornada está sendo preparada para inspirar o seu próximo ano.",
-  cta: "ENTRAR NO GRUPO VIP",
-  /** Invite link of the VIP group on WhatsApp. */
-  vipGroupUrl: "https://chat.whatsapp.com/Kn1btAz7w6xDRdpRengSiO",
   description:
     "A santidade se constrói nas pequenas coisas, um dia de cada vez. " +
     `A ${PRODUCT_NAME}, inspirada em São Josemaria Escrivá, une organização e vida espiritual.`,

@@ -27,7 +27,6 @@
   --brand-moss-600: rgb(18 69 86);     /* display do hero */
   --brand-moss-500: rgb(28 88 108);    /* hover do botão */
   --brand-moss-100: rgb(15 63 79 / 0.15); /* moss-700 at 15%: text selection */
-  --brand-sand-footer: rgb(234 229 217); /* base bege do rodapé, sob a aquarela */
   --brand-sage-300: rgb(208 209 177); /* superfície da seção de oferta */
   --brand-clay-800: rgb(139 80 42);   /* cards da seção "Sobre" */
   --brand-amber-400: rgb(255 196 102);
@@ -40,7 +39,7 @@
   --brand-clay-100: rgb(157 79 35 / 0.22);
 
   /* Cremes e dourados */
-  --brand-cream-100: rgb(255 245 235); /* fundo da página */
+  --brand-cream-100: rgb(234 228 217); /* fundo da página (#EAE4D9) */
   --brand-gold-300: rgb(239 220 179);
   --brand-gold-500: rgb(239 200 134);
 
@@ -108,7 +107,7 @@
   --color-surface-muted: var(--brand-paper-200);
   --color-surface-warm: var(--brand-cream-100);
   --color-surface-sage: var(--brand-sage-300);
-  --color-surface-footer: var(--brand-sand-footer);
+  --color-surface-footer: var(--brand-cream-100);
   /* Máscara da aquarela do rodapé (Figma 960:14): sobe de ~1% a ~37% de opacidade. */
   --mask-footer-aquarela: linear-gradient(to bottom, rgb(0 0 0 / 0.014), rgb(0 0 0 / 0.366));
   --color-badge: var(--brand-sage-300);              /* shipping badge background */

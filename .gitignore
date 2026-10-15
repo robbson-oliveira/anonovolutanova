@@ -30,3 +30,14 @@ anonovolutanova.framer.website.zip
 anonovolutanova.framer.website/
 /imagens 2027/
 *.h2d
+
+# Saidas da skill wireframe-para-react: capturas de comparacao geradas sob
+# demanda para conferir uma seccao portada. Descartaveis.
+comparacao.png
+._wf_*.png
+devlog*.txt
+
+# Projeto separado (site de depoimentos, construido e versionado a parte no
+# Lovable/GitHub proprio: github.com/robbson-oliveira/inspira-sua-historia).
+# Nao faz parte do site principal, fica so em disco como referencia local.
+depoimentos/

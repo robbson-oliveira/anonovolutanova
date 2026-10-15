@@ -4,8 +4,6 @@ import { FOOTER } from "@content/home";
 import { PRODUCT_NAME } from "@content/product";
 import { ConsentLink } from "@/features/shell/ConsentLink";
 
-const logo = "/img/logo.png";
-
 /**
  * Os links do conteudo ainda sao as ancoras do wireframe (#privacidade...).
  * Aqui eles vao para as paginas reais. "Afiliados" nao tem pagina propria: cai
@@ -20,74 +18,92 @@ const HREFS: Record<string, string> = {
 };
 
 const linkClass =
-  "inline-flex min-h-11 items-center px-1 text-xs font-bold leading-[22px] text-text-strong no-underline underline-offset-4 hover:underline min-[1440px]:min-h-0 min-[1440px]:px-0";
+  "inline-flex min-h-11 items-center px-1 text-base font-bold leading-4 tracking-[-0.04em] text-text-strong no-underline underline-offset-4 hover:underline min-[1440px]:min-h-0 min-[1440px]:px-0";
+
+/** O Figma quebra o copyright em duas linhas e tira o ponto depois de "Nova". */
+const [copyrightLinha1, copyrightLinha2] = FOOTER.copyright.split(". ");
 
 /**
- * Rodape — medido no wireframe (viewport 1440): faixa de 1440x654 que continua
- * a mesma textura do fechamento (deslocada -885px), logo 106x141 centralizado,
- * texto de apoio 391px em y=172, linha de links 16/22 com gap 36 em y=321,
- * copyright 391px em y=420 e nota social 354px em y=492.
+ * Rodape — Figma "Agenda Campanha 2026-2027", no 960:2 (frame de 1920x1173).
  *
- * A partir de 1440px esses valores valem ao pixel: o conteudo corre em fluxo e
- * as alturas minimas dos blocos de texto seguram cada linha no seu y. O botao
- * "Preferências de cookies" (exigido pelo aviso de cookies) entra no fim da
- * linha de links, com o mesmo estilo deles.
+ * Fundo: aquarela (`bg-aquarela.png`) sobre o bege #eae5d9, com a mesma mascara
+ * do Figma — um degrade que vai de ~1% a ~37% de opacidade, de cima para baixo.
+ * O fundo sangra a largura toda; o conteudo fica numa coluna de 1440px.
+ * A aquarela e `cover` ancorada em 80% da altura, que e onde o Figma a corta
+ * (as ondas do rodape, nao o ceu vazio da parte de cima da imagem).
  *
- * Abaixo de 1440px: largura fluida com respiro lateral, textura em `cover`
- * (ancorada embaixo, onde estao os vitrais), links quebrando em linhas
- * centralizadas com alvo de toque de 44px, e a nota social sobe de 12 para 13px.
+ * Conteudo (medidas do Figma, coluna de 1440px, y relativo ao logo): logo 106x143
+ * em 0, frase de 391px em 172 (20/24), links 16px bold em 324, copyright 20/24
+ * em 420 e nota da ADEC 12/14,4 em 491. Dos 1440px para cima os valores valem ao
+ * pixel — as margens abaixo somam essas distancias.
+ *
+ * Abaixo de 1440px: respiro lateral fluido, distancias verticais menores, frase
+ * e copyright em 18px, links quebrando em linhas centralizadas com alvo de
+ * toque de 44px e a nota da ADEC em 13px (12px e pequeno demais no celular).
  */
 export function SiteFooter() {
   return (
-    <footer
-      className="relative mx-auto w-full max-w-[1440px] bg-cover bg-bottom bg-no-repeat px-4 pb-12 sm:px-6 min-[1440px]:h-[654px] min-[1440px]:bg-[length:1440px_1539px] min-[1440px]:bg-[position:0_-885px] min-[1440px]:px-0 min-[1440px]:pb-0 bg-[url(/img/textura-rodape.png)]"
-    >
-      <RevealGroup className="flex flex-col items-center text-center">
-        <Reveal variant="up">
-          <Image
-            src={logo}
-            alt={PRODUCT_NAME}
-            width={1086}
-            height={1448}
-            sizes="106px"
-            className="block h-[141px] w-[106px] object-contain"
-          />
-        </Reveal>
+    <footer className="relative isolate w-full overflow-hidden bg-surface-footer">
+      <div
+        aria-hidden
+        className="absolute inset-0 -z-10 bg-[url(/img/footer/bg-aquarela.png)] bg-cover bg-[position:center_80%] bg-no-repeat [mask-image:var(--mask-footer-aquarela)]"
+      />
 
-        {/* min-h no desktop: 172 + 149 = 321, onde o wireframe poe os links */}
-        <Reveal variant="up" delay={80} className="mt-[31px] min-[1440px]:min-h-[149px]">
-          <p className="max-w-[391px] text-base text-text">{FOOTER.tagline}</p>
-        </Reveal>
+      {/* No Figma o fechamento e o rodape dividem o mesmo fundo; aqui o fechamento
+          tem o proprio (creme com vitral), entao a aquarela nasce do creme. */}
+      <div
+        aria-hidden
+        className="absolute inset-x-0 top-0 -z-10 h-48 bg-gradient-to-b from-surface to-transparent"
+      />
 
-        <Reveal variant="up" delay={140} className="mt-8 w-full min-[1440px]:mt-0">
-          <nav
-            aria-label="Rodapé"
-            className="flex flex-wrap items-center justify-center gap-x-5 min-[1440px]:gap-x-9"
-          >
-            {FOOTER.links.map((link) => (
-              <a key={link.label} href={HREFS[link.href] ?? link.href} className={linkClass}>
-                {link.label}
-              </a>
-            ))}
-            <ConsentLink className={linkClass} />
-          </nav>
-        </Reveal>
+      <div className="mx-auto w-full max-w-[1440px] px-4 pb-20 pt-20 sm:px-6 md:pb-32 md:pt-28 min-[1440px]:px-0 min-[1440px]:pb-[231px] min-[1440px]:pt-[120px]">
+        <RevealGroup className="flex flex-col items-center text-center">
+          <Reveal variant="up">
+            <Image
+              src="/img/footer/logo-footer.svg"
+              alt={PRODUCT_NAME}
+              width={106}
+              height={143}
+              unoptimized
+              className="block h-[143px] w-[106px]"
+            />
+          </Reveal>
 
-        {/* min-h no desktop: 420 + 72 = 492, onde entra a nota social */}
-        <Reveal
-          variant="up"
-          delay={200}
-          className="mt-8 min-[1440px]:mt-[77px] min-[1440px]:min-h-[72px]"
-        >
-          <p className="max-w-[391px] text-base text-text">{FOOTER.copyright}</p>
-        </Reveal>
+          {/* min-h no desktop: 172 + 72 = 244, e os links ficam 80px abaixo */}
+          <Reveal variant="up" delay={80} className="mt-7 min-[1440px]:mt-[29px]">
+            <p className="max-w-[391px] text-lg leading-6 text-text min-[768px]:text-xl">
+              {FOOTER.tagline}
+            </p>
+          </Reveal>
 
-        <Reveal variant="up" delay={260} className="mt-4 min-[1440px]:mt-0">
-          <p className="max-w-[354px] text-fine text-text min-[1440px]:text-[12px] min-[1440px]:leading-[14.4px]">
-            {FOOTER.socialNote}
-          </p>
-        </Reveal>
-      </RevealGroup>
+          <Reveal variant="up" delay={140} className="mt-10 w-full min-[1440px]:mt-20">
+            <nav
+              aria-label="Rodapé"
+              className="flex flex-wrap items-center justify-center gap-x-5 min-[1440px]:gap-x-10"
+            >
+              {FOOTER.links.map((link) => (
+                <a key={link.label} href={HREFS[link.href] ?? link.href} className={linkClass}>
+                  {link.label}
+                </a>
+              ))}
+              <ConsentLink className={linkClass} />
+            </nav>
+          </Reveal>
+
+          <Reveal variant="up" delay={200} className="mt-10 min-[1440px]:mt-20">
+            <p className="max-w-[391px] text-lg leading-6 text-text min-[768px]:text-xl">
+              <span className="block">{copyrightLinha1}</span>
+              <span className="block">{copyrightLinha2}</span>
+            </p>
+          </Reveal>
+
+          <Reveal variant="up" delay={260} className="mt-6 min-[1440px]:mt-[23px]">
+            <p className="max-w-[354px] text-fine text-text min-[1440px]:text-[12px] min-[1440px]:leading-[14.4px]">
+              {FOOTER.socialNote}
+            </p>
+          </Reveal>
+        </RevealGroup>
+      </div>
     </footer>
   );
 }

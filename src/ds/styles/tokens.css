@@ -19,13 +19,15 @@
      1. PRIMITIVAS — valores literais. Só este bloco muda numa troca de paleta.
      --------------------------------------------------------------------- */
 
-  /* Verdes — é o verde, não a terracota, que carrega a ação no design */
-  --brand-moss-900: rgb(26 37 16);    /* títulos de seção */
-  --brand-moss-800: rgb(35 51 25);    /* barra do topo, superfícies escuras */
-  --brand-moss-700: rgb(52 76 36);    /* botões, olho de seção */
-  --brand-moss-600: rgb(56 79 37);    /* display do hero */
-  --brand-moss-500: rgb(70 99 47);    /* hover do botão */
-  --brand-moss-100: rgb(52 76 36 / 0.15); /* moss-700 at 15%: text selection */
+  /* Primário — o petróleo #0F3F4F carrega a ação no design. Os nomes "moss" são
+     históricos (era verde-musgo até 15/10/2026); só os valores mudaram. */
+  --brand-moss-900: rgb(8 38 49);      /* títulos de seção */
+  --brand-moss-800: rgb(11 49 62);     /* barra do topo, superfícies escuras */
+  --brand-moss-700: rgb(15 63 79);     /* botões, olho de seção */
+  --brand-moss-600: rgb(18 69 86);     /* display do hero */
+  --brand-moss-500: rgb(28 88 108);    /* hover do botão */
+  --brand-moss-100: rgb(15 63 79 / 0.15); /* moss-700 at 15%: text selection */
+  --brand-sand-footer: rgb(234 229 217); /* base bege do rodapé, sob a aquarela */
   --brand-sage-300: rgb(208 209 177); /* superfície da seção de oferta */
   --brand-clay-800: rgb(139 80 42);   /* cards da seção "Sobre" */
   --brand-amber-400: rgb(255 196 102);
@@ -106,6 +108,9 @@
   --color-surface-muted: var(--brand-paper-200);
   --color-surface-warm: var(--brand-cream-100);
   --color-surface-sage: var(--brand-sage-300);
+  --color-surface-footer: var(--brand-sand-footer);
+  /* Máscara da aquarela do rodapé (Figma 960:14): sobe de ~1% a ~37% de opacidade. */
+  --mask-footer-aquarela: linear-gradient(to bottom, rgb(0 0 0 / 0.014), rgb(0 0 0 / 0.366));
   --color-badge: var(--brand-sage-300);              /* shipping badge background */
   --color-on-badge: var(--brand-moss-900);           /* shipping badge text and icon */
   --color-surface-inverse: var(--brand-moss-800);
@@ -117,7 +122,7 @@
 
   /* Texto */
   --color-text: var(--brand-ink-600);
-  --color-text-strong: var(--brand-moss-900);
+  --color-text-strong: var(--brand-moss-700);
   --color-text-muted: var(--brand-ink-400);
   --color-text-on-inverse: var(--brand-paper-100);
   --color-text-display: var(--brand-moss-600);

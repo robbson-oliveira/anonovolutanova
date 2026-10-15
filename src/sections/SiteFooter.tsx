@@ -5,9 +5,10 @@ import { PRODUCT_NAME } from "@content/product";
 import { ConsentLink } from "@/features/shell/ConsentLink";
 
 /**
- * Os links do conteudo ainda sao as ancoras do wireframe (#privacidade...).
- * Aqui eles vao para as paginas reais. "Afiliados" nao tem pagina propria: cai
- * no contato. "Sobre" leva o "/" para funcionar tambem fora da home.
+ * The content links are still the wireframe anchors (#privacidade...); here they
+ * point to the real pages. "Afiliados" has no page of its own and falls back to
+ * the contact page. "Sobre" keeps the leading "/" so it also works outside the
+ * home page.
  */
 const HREFS: Record<string, string> = {
   "#sobre": "/#sobre",
@@ -20,26 +21,26 @@ const HREFS: Record<string, string> = {
 const linkClass =
   "inline-flex min-h-11 items-center px-1 text-base font-bold leading-4 tracking-[-0.04em] text-text-strong no-underline underline-offset-4 hover:underline min-[1440px]:min-h-0 min-[1440px]:px-0";
 
-/** O Figma quebra o copyright em duas linhas e tira o ponto depois de "Nova". */
-const [copyrightLinha1, copyrightLinha2] = FOOTER.copyright.split(". ");
+/** Figma splits the copyright in two lines and drops the period after "Nova". */
+const [copyrightLine1, copyrightLine2] = FOOTER.copyright.split(". ");
 
 /**
- * Rodape — Figma "Agenda Campanha 2026-2027", no 960:2 (frame de 1920x1173).
+ * Footer — Figma "Agenda Campanha 2026-2027", node 960:2 (1920x1173 frame).
  *
- * Fundo: aquarela (`bg-aquarela.png`) sobre o bege #eae5d9, com a mesma mascara
- * do Figma — um degrade que vai de ~1% a ~37% de opacidade, de cima para baixo.
- * O fundo sangra a largura toda; o conteudo fica numa coluna de 1440px.
- * A aquarela e `cover` ancorada em 80% da altura, que e onde o Figma a corta
- * (as ondas do rodape, nao o ceu vazio da parte de cima da imagem).
+ * Background: watercolor (`bg-aquarela.png`) over the #eae5d9 beige, with the
+ * same mask as Figma: a top-to-bottom gradient from ~1% to ~37% opacity. It
+ * bleeds full width while the content sits in a 1440px column. The watercolor
+ * is `cover` anchored at 80% of its height, which is where Figma crops it (the
+ * waves, not the empty sky at the top of the image).
  *
- * Conteudo (medidas do Figma, coluna de 1440px, y relativo ao logo): logo 106x143
- * em 0, frase de 391px em 172 (20/24), links 16px bold em 324, copyright 20/24
- * em 420 e nota da ADEC 12/14,4 em 491. Dos 1440px para cima os valores valem ao
- * pixel — as margens abaixo somam essas distancias.
+ * Content (Figma measurements, 1440px column, y relative to the logo): 106x143
+ * logo at 0, 391px tagline at 172 (20/24), 16px bold links at 324, copyright
+ * 20/24 at 420 and the ADEC note 12/14.4 at 491. From 1440px up these values
+ * hold to the pixel; the margins below add up to those distances.
  *
- * Abaixo de 1440px: respiro lateral fluido, distancias verticais menores, frase
- * e copyright em 18px, links quebrando em linhas centralizadas com alvo de
- * toque de 44px e a nota da ADEC em 13px (12px e pequeno demais no celular).
+ * Below 1440px: fluid side padding, shorter vertical gaps, tagline and
+ * copyright at 18px, links wrapping into centered rows with 44px touch
+ * targets, and the ADEC note at 13px (12px is too small on a phone).
  */
 export function SiteFooter() {
   return (
@@ -49,11 +50,12 @@ export function SiteFooter() {
         className="absolute inset-0 -z-10 bg-[url(/img/footer/bg-aquarela.png)] bg-cover bg-[position:center_80%] bg-no-repeat [mask-image:var(--mask-footer-aquarela)]"
       />
 
-      {/* No Figma o fechamento e o rodape dividem o mesmo fundo; aqui o fechamento
-          tem o proprio (creme com vitral), entao a aquarela nasce do creme. */}
+      {/* In Figma the closing block and the footer share one background; here the
+          closing block has its own (cream with stained glass), so the
+          watercolor fades in from that cream. */}
       <div
         aria-hidden
-        className="absolute inset-x-0 top-0 -z-10 h-48 bg-gradient-to-b from-surface to-transparent"
+        className="absolute inset-x-0 top-0 -z-10 h-48 bg-linear-to-b from-surface to-transparent"
       />
 
       <div className="mx-auto w-full max-w-[1440px] px-4 pb-20 pt-20 sm:px-6 md:pb-32 md:pt-28 min-[1440px]:px-0 min-[1440px]:pb-[231px] min-[1440px]:pt-[120px]">
@@ -69,7 +71,6 @@ export function SiteFooter() {
             />
           </Reveal>
 
-          {/* min-h no desktop: 172 + 72 = 244, e os links ficam 80px abaixo */}
           <Reveal variant="up" delay={80} className="mt-7 min-[1440px]:mt-[29px]">
             <p className="max-w-[391px] text-lg leading-6 text-text min-[768px]:text-xl">
               {FOOTER.tagline}
@@ -92,8 +93,8 @@ export function SiteFooter() {
 
           <Reveal variant="up" delay={200} className="mt-10 min-[1440px]:mt-20">
             <p className="max-w-[391px] text-lg leading-6 text-text min-[768px]:text-xl">
-              <span className="block">{copyrightLinha1}</span>
-              <span className="block">{copyrightLinha2}</span>
+              <span className="block">{copyrightLine1}</span>
+              <span className="block">{copyrightLine2}</span>
             </p>
           </Reveal>
 

@@ -3,8 +3,9 @@ import { CYCLE_YEAR } from "@content/product";
 export const OFFER = {
   title: "Oferta e Condições Especiais",
   paragraph:
-    `A edição ${CYCLE_YEAR - 1} esgotou rapidamente. A de ${CYCLE_YEAR} chega ` +
-    "com mais recursos, mesmo valor e ainda mais propósito.",
+    `${CYCLE_YEAR} já começou por aqui. A nova edição será produzida em ` +
+    "quantidade limitada — então não espere o momento perfeito para garantir " +
+    "a sua. Patos à água!",
   badge: "Edição Limitada",
   cta: "Comprar Agora",
   listTitle: "Uma agenda completa:",

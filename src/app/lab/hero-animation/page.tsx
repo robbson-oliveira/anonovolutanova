@@ -12,8 +12,8 @@ const referencia = "/img/referencia-posicionamento.png";
  * Builder da animação das duas agendas do Hero.
  *
  * O palco renderizado é o BookStage real — não uma cópia — então tudo que se
- * vê aqui é exatamente o que a home produz. Os keyframes ficam em
- * ds/styles/base.css e os tempos/easings em ds/styles/tokens.css; esta página
+ * vê aqui é exatamente o que a home produz. Os keyframes e os tempos/easings
+ * ficam em ds/styles/tokens.css (utilitários animate-*); esta página
  * é só o instrumento para enxergá-los.
  *
  * Nada aqui recalcula transform à mão: os fantasmas congelam o próprio
@@ -58,6 +58,50 @@ const FALLBACK_DURATION = 2700;
 
 const srcOf = (src: CoverSrc) => src;
 
+/**
+ * Tamanho natural de public/img/referencia-posicionamento.png. A referência
+ * NÃO é quadrada e é um recorte fechado nas duas agendas — ela não tem a
+ * folga do palco nem o cartão de preço. Por isso ela é desenhada no tamanho
+ * real dela e ancorada no canto do palco: escala 1,00 = 1px da referência
+ * vale 1px do palco de 740. Espremer com object-contain dentro do quadrado
+ * (como era antes) inventava uma escala que não correspondia a nada.
+ */
+const REF_NATURAL = { width: 1017, height: 989 };
+
+/**
+ * Calibragem medida no navegador com a animação congelada no último frame:
+ * compara a caixa das capas da referência com a caixa das capas do BookStage
+ * real. Com estes números a referência abre já encaixada.
+ */
+const REF_CALIBRATION = { scale: 0.817, x: -47, y: -73 };
+
+/**
+ * Versão do ajuste salvo. Subir a versão sempre que REF_CALIBRATION mudar:
+ * assim um ajuste antigo guardado no navegador não sobrescreve a calibragem
+ * nova logo depois da tela abrir (era isso que fazia a referência "encolher"
+ * um instante depois de carregar).
+ */
+const REF_STORAGE_KEY = "lab.hero-animation.ref-align.v3";
+
+type RefAlign = { scale: number; x: number; y: number };
+
+function loadRefAlign(): RefAlign {
+  if (typeof window === "undefined") return REF_CALIBRATION;
+  try {
+    const raw = window.localStorage.getItem(REF_STORAGE_KEY);
+    if (!raw) return REF_CALIBRATION;
+    const parsed = JSON.parse(raw) as Partial<RefAlign>;
+    const ok = (n: unknown): n is number =>
+      typeof n === "number" && Number.isFinite(n);
+    if (ok(parsed.scale) && ok(parsed.x) && ok(parsed.y)) {
+      return { scale: parsed.scale, x: parsed.x, y: parsed.y };
+    }
+  } catch {
+    /* storage indisponível ou corrompido: cai na calibragem */
+  }
+  return REF_CALIBRATION;
+}
+
 export default function HeroAnimationLab() {
   const [runId, setRunId] = useState(0);
   const [assets, setAssets] = useState(DEFAULT_ASSETS);
@@ -70,9 +114,38 @@ export default function HeroAnimationLab() {
   const [showRef, setShowRef] = useState(true);
   const [refOpacity, setRefOpacity] = useState(0.4);
   const [refBlend, setRefBlend] = useState<"normal" | "difference">("normal");
-  const [refScale, setRefScale] = useState(1);
-  const [refX, setRefX] = useState(0);
-  const [refY, setRefY] = useState(0);
+  const [refScale, setRefScale] = useState(REF_CALIBRATION.scale);
+  const [refX, setRefX] = useState(REF_CALIBRATION.x);
+  const [refY, setRefY] = useState(REF_CALIBRATION.y);
+
+  // Estado salvo só é lido depois da hidratação, para não divergir do SSR.
+  useEffect(() => {
+    const saved = loadRefAlign();
+    setRefScale(saved.scale);
+    setRefX(saved.x);
+    setRefY(saved.y);
+  }, []);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(
+        REF_STORAGE_KEY,
+        JSON.stringify({ scale: refScale, x: refX, y: refY }),
+      );
+    } catch {
+      /* sem storage: o ajuste só não sobrevive ao reload */
+    }
+  }, [refScale, refX, refY]);
+
+  // URLs temporárias pertencem ao laboratório. Liberá-las apenas ao sair evita
+  // tanto vazamento de memória quanto quebrar uma imagem ainda em renderização.
+  useEffect(
+    () => () => {
+      for (const url of assetUrlsRef.current) URL.revokeObjectURL(url);
+      assetUrlsRef.current.clear();
+    },
+    [],
+  );
 
   const [showInitial, setShowInitial] = useState(false);
   const [showFinal, setShowFinal] = useState(false);
@@ -82,6 +155,7 @@ export default function HeroAnimationLab() {
   const [panelOpen, setPanelOpen] = useState(false);
 
   const liveRef = useRef<HTMLDivElement>(null);
+  const assetUrlsRef = useRef<Set<string>>(new Set());
 
   const liveAnimations = useCallback((): Animation[] => {
     const el = liveRef.current;
@@ -137,16 +211,19 @@ export default function HeroAnimationLab() {
     setTime(value);
     for (const a of liveAnimations()) {
       a.pause();
-      a.currentTime = value;
+      const endTime = Number(a.effect?.getComputedTiming().endTime ?? value);
+      a.currentTime = Math.min(value, endTime);
     }
   }
 
   function swapAsset(key: AssetKey, file: File) {
     const url = URL.createObjectURL(file);
+    assetUrlsRef.current.add(url);
     setAssets((prev) => {
       const old = prev[key];
       if (typeof old === "string" && old.startsWith("blob:")) {
         URL.revokeObjectURL(old);
+        assetUrlsRef.current.delete(old);
       }
       return { ...prev, [key]: url };
     });
@@ -158,6 +235,7 @@ export default function HeroAnimationLab() {
       const old = prev[key];
       if (typeof old === "string" && old.startsWith("blob:")) {
         URL.revokeObjectURL(old);
+        assetUrlsRef.current.delete(old);
       }
       return { ...prev, [key]: DEFAULT_ASSETS[key] };
     });
@@ -281,11 +359,11 @@ export default function HeroAnimationLab() {
             <Slider
               label="Escala"
               value={refScale}
-              min={0.5}
+              min={0.3}
               max={1.8}
-              step={0.01}
+              step={0.001}
               onChange={setRefScale}
-              readout={refScale.toFixed(2)}
+              readout={refScale.toFixed(3)}
               disabled={!showRef}
             />
             <Slider
@@ -308,16 +386,43 @@ export default function HeroAnimationLab() {
               readout={`${refY}px`}
               disabled={!showRef}
             />
+            <div className="rounded border border-slate-800 bg-slate-950 px-2.5 py-2 text-[11px] leading-snug text-slate-400">
+              <p>
+                Referência natural:{" "}
+                <span className="font-mono text-slate-200">
+                  {REF_NATURAL.width}×{REF_NATURAL.height}
+                </span>{" "}
+                · palco{" "}
+                <span className="font-mono text-slate-200">
+                  {STAGE_SIZE}×{STAGE_SIZE}
+                </span>
+              </p>
+              <p>
+                Na tela:{" "}
+                <span className="font-mono text-slate-200">
+                  {Math.round(REF_NATURAL.width * refScale)}×
+                  {Math.round(REF_NATURAL.height * refScale)}
+                </span>{" "}
+                em{" "}
+                <span className="font-mono text-slate-200">
+                  {refX},{refY}
+                </span>
+              </p>
+              <p className="mt-1 text-slate-500">
+                Escala 1,000 = 1px da referência para 1px do palco. Seu ajuste
+                fica salvo neste navegador.
+              </p>
+            </div>
             <button
               type="button"
               onClick={() => {
-                setRefScale(1);
-                setRefX(0);
-                setRefY(0);
+                setRefScale(REF_CALIBRATION.scale);
+                setRefX(REF_CALIBRATION.x);
+                setRefY(REF_CALIBRATION.y);
               }}
               className="w-full rounded border border-slate-700 px-3 py-1.5 text-[11px] text-slate-300 hover:bg-slate-800"
             >
-              Zerar alinhamento
+              Voltar à calibragem
             </button>
           </Panel>
 
@@ -380,6 +485,17 @@ export default function HeroAnimationLab() {
             </p>
           </Panel>
 
+          <Panel title="Peça compartilhada">
+            <p className="text-[11px] leading-snug text-slate-400">
+              O palco aqui é o próprio{" "}
+              <code className="font-mono text-slate-200">BookStage</code> — a
+              mesma peça usada no Hero do site e exibida no catálogo do design
+              system (<code className="font-mono">/design-system/lacunas</code>
+              ). Este laboratório é o pai: quem ajusta, ajusta aqui. Nunca
+              duplicar a animação em outro arquivo.
+            </p>
+          </Panel>
+
           <Panel title="Onde editar">
             {KEYFRAME_SOURCES.map((k) => (
               <div key={k.name} className="text-[11px] leading-snug">
@@ -390,10 +506,8 @@ export default function HeroAnimationLab() {
               </div>
             ))}
             <p className="text-[11px] leading-snug text-slate-500">
-              Keyframes em{" "}
-              <code className="font-mono">ds/styles/base.css</code>; durações e
-              easings em <code className="font-mono">ds/styles/tokens.css</code>
-              .
+              Keyframes, durações e easings em{" "}
+              <code className="font-mono">ds/styles/tokens.css</code>.
             </p>
           </Panel>
         </div>
@@ -468,19 +582,24 @@ export default function HeroAnimationLab() {
 
                 {showRef && (
                   <div
-                    className="pointer-events-none absolute inset-0 z-30"
+                    className="pointer-events-none absolute left-0 top-0 z-30"
                     style={{
                       opacity: refOpacity,
                       mixBlendMode: refBlend,
                     }}
                   >
+                    {/* Tamanho natural + origem no canto do palco: a escala do
+                        painel vira uma medida real, não um encaixe implícito. */}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={srcOf(assets.referencia)}
                       alt=""
-                      className="h-full w-full object-contain"
                       style={{
+                        width: REF_NATURAL.width,
+                        height: REF_NATURAL.height,
+                        maxWidth: "none",
                         transform: `translate(${refX}px, ${refY}px) scale(${refScale})`,
+                        transformOrigin: "top left",
                       }}
                     />
                   </div>

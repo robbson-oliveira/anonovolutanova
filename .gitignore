@@ -7,6 +7,7 @@ site/old/
 Thumbs.db
 desktop.ini
 .DS_Store
+.history
 
 # Dependencias / build (para a fase Next.js)
 node_modules/

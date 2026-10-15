@@ -21,8 +21,22 @@ export {
   type EditionOption,
 } from "@ds/primitives/EditionSelector";
 export { BookCover } from "@ds/primitives/BookCover";
+export { ProcessingOverlay } from "@ds/primitives/ProcessingOverlay";
 
-export { Reveal, REVEAL_READY_SCRIPT } from "@ds/motion/Reveal";
+// Formulário (checkout): mesma moldura de 48px dos campos do checkout.
+export {
+  FieldLabel,
+  FieldMessage,
+  fieldControlClass,
+  fieldDescribedBy,
+} from "@ds/primitives/FormField";
+export { Select, type SelectOption } from "@ds/primitives/Select";
+export { RadioGroup, type RadioOption } from "@ds/primitives/RadioGroup";
+export { Checkbox } from "@ds/primitives/Checkbox";
+export { DateField } from "@ds/primitives/DateField";
+export { Toaster, toast } from "@ds/primitives/Toaster";
+
+export { Reveal, RevealGroup, REVEAL_READY_SCRIPT } from "@ds/motion/Reveal";
 export { Counter } from "@ds/motion/Counter";
 
 export { cn } from "@ds/utils/cn";
@@ -34,6 +48,7 @@ export {
   IconArrowRight,
   IconCheck,
   IconPlus,
+  IconMinus,
   IconChevronLeft,
   IconChevronRight,
   IconStar,
@@ -41,6 +56,28 @@ export {
   IconClose,
   IconAsterisk,
   IconGiftBox,
+  IconMail,
+  IconPhone,
+  IconCalendar,
+  IconBasket,
+  IconLock,
+  IconMapPin,
+  IconPackage,
+  IconTruck,
+  IconCreditCard,
+  IconPix,
+  IconArrowLeft,
+  IconChevronUp,
+  IconChevronDown,
+  IconBarcode,
+  IconWallet,
+  IconCopy,
+  IconClock,
+  IconHeadset,
+  IconExternal,
+  IconWhatsApp,
+  IconSend,
+  IconSmile,
   IconOitavario,
   IconNovenaImaculada,
   IconSeteDomingosSaoJose,

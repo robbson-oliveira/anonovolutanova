@@ -1,0 +1,5 @@
+# Scripts that run inside Linux containers must keep LF line endings,
+# even when checked out on Windows with core.autocrlf=true.
+*.sh text eol=lf
+Dockerfile text eol=lf
+dev/wordpress/** text eol=lf

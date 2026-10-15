@@ -5,14 +5,14 @@ export const NAV_LINKS = [
   { label: "Sobre", href: "#sobre" },
   { label: "O que tem dentro", href: "#explore" },
   { label: "Depoimentos", href: "#depoimentos" },
-  { label: "Afiliados", href: "#afiliados" },
+  { label: "Afiliados", href: "/contato" },
   { label: "FAQ", href: "#faq" },
 ] as const;
 
 export const HERO = {
   badge: "Edição Limitada",
   title: ["Ano Novo,", "Luta Nova"],
-  subtitle: "Viva o caminho de santidade no dia a dia",
+  subtitle: "Menos cálculo. Mais confiança. Patos à água!",
   paragraph:
     `Chegou a hora de garantir a sua Agenda Ano Novo, Luta Nova ${CYCLE_YEAR}. ` +
     "Inspirada por São Josemaria Escrivá, ela é o convite para lançar-se à água " +
@@ -29,10 +29,10 @@ export const STATS = [
 
 export const ABOUT = {
   eyebrow: "O que a torna especial?",
-  title: "Mais que uma agenda. Um caminho de santidade em cada página.",
+  title: "Mais que uma agenda. Um impulso para transformar propósito em ação.",
   paragraph:
     `A Agenda ${CYCLE_YEAR} une organização e vida espiritual, ajudando você a ` +
-    "viver com presença de Deus e foco no essencial.",
+    "dar passos concretos naquilo que realmente importa.",
   cta: `Garantir minha Agenda ${CYCLE_YEAR}`,
   features: [
     {
@@ -68,7 +68,7 @@ export const ABOUT = {
 
 export const EXPLORE = {
   eyebrow: "Explore a Agenda",
-  title: "Por dentro: um caminho de santidade, mês a mês e dia após dia",
+  title: "Por dentro: um convite à ação, mês a mês e dia após dia.",
   tabs: [
     "Capa",
     "Propósitos do Mês e Calendário",
@@ -128,7 +128,7 @@ export const LITURGICAL = {
 } as const;
 
 export const PERSONA = {
-  title: "Feita para quem quer viver com propósito",
+  title: "Feita para quem quer sair da margem",
   paragraph:
     "A Agenda Ano Novo, Luta Nova é para quem busca unir fé e vida prática, " +
     "para quem acredita que organizar o tempo é também cuidar da alma.",
@@ -144,13 +144,12 @@ export const PERSONA = {
 
 export const CLOSING = {
   badge: "Edição Limitada",
-  title: "Com a confiança de quem se lança à água",
+  title: "Patos à água! Garanta a sua.",
   paragraph:
-    "São Josemaria Escrivá ensinava: lança-te à água como os patos. A vida " +
-    "espiritual cresce quando trocamos o excesso de cálculo pela confiança e " +
-    `damos o primeiro passo, mesmo sem garantias. A Agenda ${CYCLE_YEAR} foi ` +
-    "feita para acompanhar cada passo da sua luta diária — unindo oração, " +
-    "trabalho e alegria.",
+    "São Josemaria gostava de usar uma imagem muito simples: os patos que se " +
+    "lançam à água sem medo. Assim é a vida de quem confia — dá o primeiro " +
+    `passo e deixa Deus conduzir. A Agenda ${CYCLE_YEAR} acompanha essa ` +
+    "caminhada, dia após dia.",
   primaryCta: `Garantir minha Agenda ${CYCLE_YEAR}`,
   secondaryCta: "Saiba Mais",
   seal: "Envio Imediato!",
@@ -163,7 +162,7 @@ export const FOOTER = {
   links: [
     { label: "Sobre", href: "#sobre" },
     { label: "Contato", href: "#contato" },
-    { label: "Afiliados", href: "#afiliados" },
+    { label: "Afiliados", href: "/contato" },
     { label: "Política de Privacidade", href: "#privacidade" },
     { label: "Termos de Uso", href: "#termos" },
   ],

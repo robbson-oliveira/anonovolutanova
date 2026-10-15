@@ -1,6 +1,6 @@
 import { cn } from "@ds/utils/cn";
 
-type Variant = "primary" | "secondary" | "ghost" | "inverse";
+type Variant = "primary" | "secondary" | "outline" | "ghost" | "inverse";
 type Size = "md" | "lg";
 /**
  * O design aprovado usa duas formas: pílula nos botões de navegação e
@@ -17,6 +17,9 @@ const variants: Record<Variant, string> = {
   primary: "bg-action text-on-action hover:bg-action-hover",
   secondary:
     "bg-surface-plain text-text-strong border border-border hover:border-action hover:text-action",
+  // Par do primary: mesma forma, só o contorno. Para a ação secundária ao lado dele.
+  outline:
+    "border-2 border-action bg-transparent text-action hover:bg-action hover:text-on-action",
   ghost: "text-text-on-inverse hover:opacity-80",
   inverse: "bg-surface-plain text-text-strong hover:bg-surface-muted",
 };

@@ -76,12 +76,11 @@ export function EditionSelector({
               <span
                 key={`${value}-${restartCount}`}
                 aria-hidden
-                data-motion="edition-progress"
                 onAnimationEnd={advance}
-                style={{ animationPlayState: paused ? "paused" : "running" }}
                 className={cn(
                   "absolute -bottom-[3px] left-0 h-[3px] w-full origin-left bg-accent",
-                  "[animation:ds-progress-fill_var(--duration-edition)_linear_forwards]",
+                  "animate-progress-fill motion-reduce:animate-none",
+                  paused && "[animation-play-state:paused]",
                 )}
               />
             )}

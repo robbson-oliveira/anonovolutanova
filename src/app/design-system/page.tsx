@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import {
   Accordion,
   Badge,
@@ -30,6 +31,7 @@ import { EditionSelectorDemo } from "./EditionSelectorDemo";
 import { Metrics } from "./TokenMetrics";
 import { AxisNav } from "./AxisNav";
 import { TopBar } from "@sections/TopBar";
+import { FEATURES, FeatureCard } from "@sections/About";
 import { SiteHeader } from "@sections/SiteHeader";
 import { Hero } from "@sections/Hero";
 import { SiteFooter } from "@sections/SiteFooter";
@@ -257,6 +259,17 @@ const AXES = [
  * tira de cor sobre rótulo. A sombra só aparece onde ela É o conteúdo sendo
  * demonstrado (Componentes, Elevação) — em todo o resto o wrapper é plano.
  */
+export const metadata: Metadata = {
+  title: { absolute: "Design System | Ano Novo, Luta Nova" },
+  description: "Catálogo visual do design system da Agenda Ano Novo, Luta Nova 2027.",
+  openGraph: {
+    title: "Design System | Ano Novo, Luta Nova",
+    description: "Catálogo visual do design system da Agenda Ano Novo, Luta Nova 2027.",
+    type: "website",
+  },
+  twitter: { card: "summary" },
+};
+
 export default function DesignSystemPage() {
   return (
     <>
@@ -372,7 +385,14 @@ export default function DesignSystemPage() {
             </Note>
 
             <div>
+              <Row label="TopBar" meta="faixa fixa · marquee centralizada · fade lateral">
+                <div className="w-full overflow-hidden rounded-lg">
+                  <TopBar sticky={false} />
+                </div>
+              </Row>
+
               <Row label="Button" meta="4 variantes">
+
                 <div className="flex flex-wrap items-center gap-3">
                   <Button>Primário</Button>
                   <Button variant="secondary">Secundário</Button>
@@ -424,13 +444,25 @@ export default function DesignSystemPage() {
                 />
               </Row>
 
-              <Row label="Accordion">
+              <Row label="Accordion" meta="variant cards · numerado">
                 <Accordion
+                  variant="cards"
+                  numbered
                   defaultOpen={0}
                   items={[
                     {
                       question: "A agenda é entregue na minha cidade?",
-                      answer: <p>Sim, enviamos para todo o Brasil.</p>,
+                      answer: (
+                        <p>
+                          Sim! Enviamos para todo o Brasil. Na hora do pedido,
+                          você informa o endereço e nós cuidamos do envio com
+                          todo carinho.
+                        </p>
+                      ),
+                    },
+                    {
+                      question: "Qual é o tamanho e o acabamento da agenda?",
+                      answer: <p>Formato A5, capa dura e espiral wire-o.</p>,
                     },
                     {
                       question: "Como posso pagar?",
@@ -440,8 +472,23 @@ export default function DesignSystemPage() {
                 />
               </Row>
 
-              <Row label="EditionSelector" last>
+
+              <Row label="EditionSelector">
                 <EditionSelectorDemo />
+              </Row>
+
+              <Row label="FeatureCard" last meta="4 cards · 586×600 · animação por camadas">
+                <Text className="mx-auto mb-4 max-w-[620px]">
+                  Os quatro boxes de destaque da seção “O que a torna especial”:
+                  medidas exatas do wireframe (586×600), grade de duas colunas e a
+                  animação de entrada por camadas, compartilhando um único gatilho
+                  de scroll por card.
+                </Text>
+                <ul className="mt-8 grid justify-center gap-7 lg:grid-cols-[repeat(2,586px)]">
+                  {FEATURES.map((feature, i) => (
+                    <FeatureCard key={feature.strong} feature={feature} index={i} />
+                  ))}
+                </ul>
               </Row>
             </div>
           </AxisSection>
@@ -670,6 +717,7 @@ export default function DesignSystemPage() {
               ))}
             </div>
           </AxisSection>
+
         </main>
         <SiteFooter />
       </div>

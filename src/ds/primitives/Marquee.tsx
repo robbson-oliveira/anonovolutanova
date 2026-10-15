@@ -5,6 +5,13 @@ type MarqueeProps = {
   /** Espaço entre itens, em px. Vira margem do item, não `gap`. */
   gap?: number;
   className?: string;
+  /** Duração da volta completa, em segundos. Sobrescreve o token padrão. */
+  duration?: number;
+  /**
+   * Renderiza máscaras de fade nas laterais, na cor da superfície escura (a
+   * da barra do topo). Útil para esteiras curtas.
+   */
+  fade?: boolean;
 };
 
 /**
@@ -18,7 +25,13 @@ type MarqueeProps = {
  *
  * A duplicata é `aria-hidden`: o leitor de tela ouve a frase uma vez.
  */
-export function Marquee({ items, gap = 28, className }: MarqueeProps) {
+export function Marquee({
+  items,
+  gap = 28,
+  className,
+  duration,
+  fade = false,
+}: MarqueeProps) {
   const renderRun = (hidden: boolean) =>
     items.map((item, i) => (
       <li
@@ -31,21 +44,39 @@ export function Marquee({ items, gap = 28, className }: MarqueeProps) {
       </li>
     ));
 
+  const animationStyle = duration
+    ? { animationDuration: `${duration}s` }
+    : undefined;
+
   return (
     <div
       className={cn("group relative overflow-hidden", className)}
-      data-motion="marquee"
     >
       <ul
         className={cn(
           "flex w-max items-center",
-          "[animation:ds-ticker_var(--duration-ticker)_linear_infinite]",
+          "animate-ticker motion-reduce:animate-none",
           "group-hover:[animation-play-state:paused]",
         )}
+        style={animationStyle}
       >
         {renderRun(false)}
         {renderRun(true)}
       </ul>
+
+      {fade && (
+        <>
+          <div
+            className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-linear-90/srgb from-surface-inverse to-transparent"
+            aria-hidden="true"
+          />
+          <div
+            className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-linear-270/srgb from-surface-inverse to-transparent"
+            aria-hidden="true"
+          />
+        </>
+      )}
     </div>
   );
 }
+

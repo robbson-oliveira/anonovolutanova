@@ -8,116 +8,147 @@ import {
   Text,
 } from "@ds/index";
 import { HERO, STATS } from "@content/home";
-import { CHECKOUT_URL } from "@content/product";
+import { BUY_URL } from "@content/product";
 import { BookStage } from "./BookStage";
+
+/**
+ * Primeira dobra. Todo o ritmo vertical abaixo foi MEDIDO no wireframe
+ * (public/wireframe/wireframe-v2.html) em viewport 1440, com o topo da seção
+ * em y=42:
+ *   coluna de texto  x=62 (= (1440-1316)/2); selo 57px e título 96px abaixo
+ *                    do fim do cabeçalho (padding-top 29, altura total 859)
+ *   selo             36px de altura
+ *   título           2 linhas de 80px, 3px abaixo do selo
+ *   subtítulo        30px, 19px abaixo do título
+ *   parágrafo        540px de largura, 19px abaixo do subtítulo
+ *   botão            425 × 68, raio 10, 29px abaixo do parágrafo
+ *   selos            36px, 10px abaixo do botão
+ *   números          29px abaixo dos selos, alinhados pela base
+ *   palco            740 × 740; capa colorida em x=653,5 / y=4 da seção
+ *
+ * Telas menores (mobile first; a 1440 tudo acima vale ao pixel):
+ *   < 768   uma coluna. O palco entra no fluxo logo depois do subtítulo, em
+ *           largura total (até 480px), para a agenda aparecer na primeira
+ *           dobra; parágrafo, botão, selos e números vêm depois. O palco é o
+ *           mesmo BookStage em modo `fluid` (o card de preço vira barra).
+ *   ≥ 768   duas colunas, como a variante tablet do wireframe: texto em até
+ *           54% e o palco absoluto à direita, centralizado na altura.
+ *   ≥ 1024  o palco volta ao topo, 67,5/740 da própria altura acima da coluna.
+ *   Em qualquer largura ≥ 768 o palco começa em min(600px, 54%) e termina 24px
+ *   além do container — a 1316px de container isso dá exatamente os 740px e o
+ *   x=600 medidos; abaixo disso ele encolhe pela direita em vez de ser cortado
+ *   ou invadir o texto. O container tem max 1380 com padding de 32px: a 1440
+ *   a coluna continua em x=62, e entre 1024 e 1380 o texto não cola na borda.
+ */
+/** Larguras medidas de cada número do bloco de estatísticas (365, 12, 100%). */
+const STAT_WIDTHS = ["w-[122px]", "w-[107px]", "w-[182px]"];
 
 export function Hero() {
   return (
     <section
       id="inicio"
-      className="relative overflow-hidden bg-surface px-6 md:px-16"
+      className="relative overflow-hidden bg-surface pb-16 pt-[29px] md:pb-24 lg:pb-[221px]"
     >
-      {/* O palco sangra para fora do container e passa da borda direita da
-          janela. É a composição aprovada: as agendas não são uma "imagem ao
-          lado do texto", elas atravessam o limite da página. O posicionamento
-          mora aqui, não no BookStage — o componente é só o palco 740×740. */}
-      <div className="absolute left-[46%] top-2 hidden lg:block">
-        <BookStage />
-      </div>
-
-      {/* Medido direto no design aprovado, não estimado: a coluna de texto
-          do Hero segue esquerda=(viewport-1316)/2 — testado em 4 larguras de
-          1538 a 3000px, erro zero nas quatro. NÃO é o --container-content de
-          1200px do resto do site. O header (SiteHeader.tsx) usa essa MESMA
-          medida agora — o logo precisa cair na borda do texto, então os dois
-          compartilham max-w-[1316px] + px-6 lg:px-0. Antes o header tinha
-          seu próprio 1390px, e o logo ficava ~23px à direita do texto.
-
-          A medição não tinha padding nenhum somado ao teto (a fórmula bate
-          exata sem termo extra) — daí o `px-6 lg:px-0`: só existe gutter
-          abaixo de 1024px, faixa em que o teto de 1316px ainda não entra em
-          jogo. Empilhar `md:px-16` por cima do teto foi o erro da primeira
-          tentativa: empurrava o texto 64px além do medido e criava a
-          sobreposição de novo, só que em todas as larguras.
-
-          A seção não pode ganhar esse teto de largura ela mesma — o
-          BookStage acima depende do padding desta <section> para o
-          posicionamento em porcentagem, e mudar isso desalinha a animação
-          toda. Em vez disso: cancela o padding da seção só para este ramo
-          (-mx-6 md:-mx-16) e reaplica a centralização medida, a partir da
-          viewport inteira de novo. */}
-      <div className="relative z-10 -mx-6 md:-mx-16">
-        <div className="mx-auto max-w-[1316px] px-6 lg:px-0">
-          <div className="flex min-h-[720px] max-w-[540px] flex-col justify-center py-20">
-        <Reveal variant="up">
-          <Badge tone="plain" icon={<IconSparkle />}>
-            {HERO.badge}
-          </Badge>
-        </Reveal>
-
-        <Reveal variant="up" delay={60}>
-          <Heading as="h1" level="display" tone="display" className="mt-4">
-            {HERO.title.map((line) => (
-              <span key={line} className="block">
-                {line}
-              </span>
-            ))}
-          </Heading>
-        </Reveal>
-
-        <Reveal variant="up" delay={120}>
-          <p className="mt-4 text-h3 text-accent">
-            {HERO.subtitle}
-          </p>
-        </Reveal>
-
-        <Reveal variant="up" delay={180}>
-          {/* text-wrap: pretty evita a linha órfã no fim do parágrafo —
-              era um ajuste explícito do design aprovado. */}
-          <Text className="mt-5 text-pretty">{HERO.paragraph}</Text>
-        </Reveal>
-
-        <Reveal variant="up" delay={240}>
-          <Button
-            href={CHECKOUT_URL}
-            size="lg"
-            shape="block"
-            className="mt-8 w-full max-w-[425px]"
-          >
-            {HERO.cta}
-          </Button>
-        </Reveal>
-
-        <Reveal variant="up" delay={280}>
-          <div className="mt-6 flex flex-wrap items-center gap-6">
-            {HERO.seals.map((seal) => (
-              <Badge key={seal} tone="plain" icon={<IconSparkle />}>
-                {seal}
+      <div className="mx-auto w-full max-w-[1380px] px-6 md:px-8">
+        {/* isolate: o palco fica atrás do texto (-z-10) sem cair para trás
+            do fundo da seção. */}
+        <div className="relative isolate">
+          <div className="flex flex-col md:max-w-[min(647.5px,54%)]">
+            <Reveal variant="up">
+              <Badge
+                tone="plain"
+                icon={<IconSparkle />}
+                className="h-9 gap-2.5 font-bold! text-text"
+              >
+                {HERO.badge}
               </Badge>
-            ))}
-          </div>
-        </Reveal>
+            </Reveal>
 
-        <Reveal variant="up" delay={320}>
-          <dl className="mt-12 flex flex-wrap gap-x-12 gap-y-6">
-            {STATS.map((stat) => (
-              <div key={stat.label} className="max-w-[150px]">
-                <dt className="sr-only">{stat.label}</dt>
-                <dd>
-                  <span className="block text-stat text-accent">
-                    <Counter value={stat.value} suffix={stat.suffix} />
+            <Reveal variant="up" delay={60}>
+              <Heading
+                as="h1"
+                level="display"
+                tone="display"
+                className="mt-[3px]"
+              >
+                {HERO.title.map((line) => (
+                  <span key={line} className="block">
+                    {line}
                   </span>
-                  <span className="mt-2 block text-sm text-text">
-                    {stat.label}
-                  </span>
-                </dd>
+                ))}
+              </Heading>
+            </Reveal>
+
+            <Reveal variant="up" delay={120}>
+              <p className="mt-[19px] text-h3 text-accent">{HERO.subtitle}</p>
+            </Reveal>
+
+            {/* Palco. No celular fica no fluxo, entre o subtítulo e o
+                parágrafo; a partir de md sai do fluxo e sangra para fora do
+                container, como no wireframe. Não pode ir dentro de um Reveal:
+                o transform dele viraria o bloco de contenção do absoluto. */}
+            <div className="mx-auto mt-2 w-full max-w-[480px] md:absolute md:-right-6 md:left-[min(600px,54%)] md:top-1/2 md:-z-10 md:mx-0 md:mt-0 md:w-auto md:max-w-none md:-translate-y-1/2 lg:top-0 lg:-translate-y-[9.1216%]">
+              <BookStage fluid />
+            </div>
+
+            <Reveal variant="up" delay={180}>
+              {/* text-wrap: pretty evita a linha órfã no fim do parágrafo. */}
+              <Text className="mt-[19px] max-w-[540px] text-pretty">
+                {HERO.paragraph}
+              </Text>
+            </Reveal>
+
+            <Reveal variant="up" delay={240}>
+              <Button
+                href={BUY_URL}
+                size="lg"
+                shape="block"
+                // As medidas do botão vencem as do tamanho "lg" do Button (daí o !).
+                className="mt-[29px] h-[68px] w-full max-w-[425px] rounded-[10px]! text-[16px]! leading-[16px]! font-bold! tracking-[-0.64px]!"
+              >
+                {HERO.cta}
+              </Button>
+            </Reveal>
+
+            <Reveal variant="up" delay={280}>
+              <div className="mt-[10px] flex flex-wrap items-center gap-[12px]">
+                {HERO.seals.map((seal) => (
+                  <Badge
+                    key={seal}
+                    tone="plain"
+                    icon={<IconSparkle />}
+                    className="h-9 gap-2.5 rounded-[10px]! px-2.5 font-bold! text-accent"
+                  >
+                    {seal}
+                  </Badge>
+                ))}
               </div>
-            ))}
-          </dl>
-        </Reveal>
+            </Reveal>
+
+            <Reveal variant="up" delay={320}>
+              <dl className="mt-[29px] flex flex-wrap items-center gap-x-[20px] gap-y-6">
+                {STATS.map((stat, i) => (
+                  <div
+                    key={stat.label}
+                    className={STAT_WIDTHS[i]}
+                  >
+                    <dt className="sr-only">{stat.label}</dt>
+                    <dd>
+                      <span className="block text-stat text-accent">
+                        <Counter value={stat.value} suffix={stat.suffix} />
+                      </span>
+                      <span className="mt-[4px] block text-sm text-text">
+                        {stat.label}
+                      </span>
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </Reveal>
           </div>
         </div>
       </div>
     </section>
   );
 }
+

@@ -1,8 +1,4 @@
 import {
-  Button,
-  Card,
-  Container,
-  Heading,
   type IconProps,
   IconAniversarios,
   IconNovenaImaculada,
@@ -11,87 +7,102 @@ import {
   IconSeteDomingosSaoJose,
   IconTrisagio,
   Reveal,
-  Text,
 } from "@ds/index";
 import { LITURGICAL } from "@content/home";
-import { CHECKOUT_URL } from "@content/product";
+import { BUY_URL } from "@content/product";
 
 /**
- * Um ícone por data, na ordem de `LITURGICAL.dates`. O par é semântico — a
- * rosa é dos aniversários, a imagem de Nossa Senhora é da Novena —, então
- * reordenar as datas no conteúdo exige reordenar aqui junto.
+ * Um ícone por data, na ordem de `LITURGICAL.dates`.
  */
 const ICONS = [
-  IconOitavario,             // Oitavário pela Unidade dos Cristãos
-  IconNovenaImaculada,       // Novena da Imaculada Conceição
-  IconSeteDomingosSaoJose,   // 7 Domingos de São José
-  IconAniversarios,          // Aniversários e datas comemorativas
-  IconTrisagio,              // Triságio Angélico
-  IconOutrasDatas,           // E muitas outras datas importantes!
+  IconOitavario,
+  IconNovenaImaculada,
+  IconSeteDomingosSaoJose,
+  IconAniversarios,
+  IconTrisagio,
+  IconOutrasDatas,
 ];
 
+/**
+ * Medidas extraídas do DOM do wireframe em viewport 1440:
+ * seção 1440×1488, padding 100/60; coluna útil 1018px;
+ * textura de fundo em opacidade 0.19; cards 499×270 brancos, raio 12,
+ * padding 42/32, ícone 60 e 20px até o título (24/24, ls -0.96);
+ * grade 2 colunas com gap 20; CTA 600×68, raio 10.
+ * Só o título anima (fade + 28px, ~700ms) — os cards entram estáticos.
+ *
+ * Telas menores (mobile first; o desenho medido vale inteiro a partir de `xl`):
+ * - a coluna de 1018px vira fluida (w-full + max-w) e o padding da seção
+ *   encolhe para 16px nas laterais;
+ * - o título usa o token `text-h2` (34px → 60px, já em 60 no 1440);
+ * - subtítulo e parágrafo, lado a lado no desktop, empilham centralizados
+ *   abaixo de `md`;
+ * - a grade vira uma coluna abaixo de `md`, e cada card deita (ícone de 48px
+ *   à esquerda, texto à direita) para não esticar a seção; a altura de 270px
+ *   vira mínima para o texto nunca vazar do card quando a coluna estreita.
+ */
 export function Liturgical() {
   return (
-    <section className="relative overflow-hidden bg-surface px-6 py-24 md:px-16">
-      {/* Textura de fundo da seção, bem apagada — vem do design aprovado. */}
+    <section className="relative overflow-hidden bg-surface px-4 py-16 sm:px-6 md:px-10 md:py-20 xl:px-[60px] xl:py-[100px]">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[url('/img/textura-liturgica.png')] bg-cover bg-center opacity-[0.07]"
+        className="pointer-events-none absolute inset-0 bg-[url('/img/textura-liturgica.png')] bg-cover bg-center opacity-[0.19]"
       />
 
-      <Container className="relative">
+      <div className="relative mx-auto w-full max-w-[1018px]">
         <Reveal variant="up">
-          <Heading as="h2" className="mx-auto max-w-[980px] text-center">
+          <h2 className="text-center text-h2 font-bold text-text-strong">
             {LITURGICAL.title}
-          </Heading>
-
-          <div className="mt-8 grid gap-8 lg:grid-cols-2">
-            <p className="text-lead text-text-muted">{LITURGICAL.subtitle}</p>
-            <Text className="text-accent-hover">{LITURGICAL.paragraph}</Text>
-          </div>
+          </h2>
         </Reveal>
 
-        <ul className="mt-12 grid gap-6 lg:grid-cols-2">
+        <div className="mt-4 flex flex-col gap-3 text-center md:mt-[13px] md:flex-row md:justify-between md:gap-10 md:text-left lg:px-[55px]">
+          <p className="text-base text-text md:w-[270px]">
+            {LITURGICAL.subtitle}
+          </p>
+          <p className="text-base text-accent-hover md:w-[372px]">
+            {LITURGICAL.paragraph}
+          </p>
+        </div>
+
+        <ul className="mt-8 grid grid-cols-1 gap-3 md:mt-[39px] md:grid-cols-2 md:gap-[20px]">
           {LITURGICAL.dates.map((date, i) => (
-            <Reveal
-              as="li"
+            <li
               key={date.title}
-              variant={i % 2 === 0 ? "left" : "right"}
-              delay={(i % 2) * 90}
+              className="flex items-start gap-4 rounded-card bg-surface-plain px-5 py-6 md:block md:min-h-[270px] md:px-[32px] md:py-[42px]"
             >
-              <Card surface="plain" elevation="raised" padding="lg" className="h-full">
-                <DateIcon
-                  icon={ICONS[i % ICONS.length]}
-                />
-                <p className="mt-6 text-lead font-bold text-text-card">
+              <DateIcon icon={ICONS[i % ICONS.length]} />
+              <div className="min-w-0">
+                <p className="text-[20px] font-bold leading-[24px] tracking-[-0.04em] text-text-strong md:mt-[20px] md:text-[24px]">
                   {date.title}
                 </p>
-                <Text className="mt-2">{date.description}</Text>
-              </Card>
-            </Reveal>
+                <p className="mt-2 text-[18px] leading-[22px] text-text md:mt-[10px] md:text-base">
+                  {date.description}
+                </p>
+              </div>
+            </li>
           ))}
         </ul>
 
-        <Reveal variant="up" className="mt-12 text-center">
-          <Text tone="muted">{LITURGICAL.closing}</Text>
-          <Button
-            href={CHECKOUT_URL}
-            size="lg"
-            shape="block"
-            className="mt-6 w-full max-w-[600px]"
-          >
-            {LITURGICAL.cta}
-          </Button>
-        </Reveal>
-      </Container>
+        <p className="mt-8 text-center text-base text-text md:mt-[39px]">
+          {LITURGICAL.closing}
+        </p>
+
+        <a
+          href={BUY_URL}
+          className="mx-auto mt-8 flex h-[68px] w-full max-w-[600px] items-center justify-center rounded-md bg-action px-6 text-center text-[16px] font-bold leading-[16px] tracking-[-0.04em] text-on-action transition-colors [transition-duration:var(--duration-fast)] hover:bg-action-hover md:mt-[39px]"
+        >
+          {LITURGICAL.cta}
+        </a>
+      </div>
     </section>
   );
 }
 
-/** O tile creme do design vive aqui, não dentro do SVG: o ícone é só o glifo. */
+/** O tile creme vive aqui, não dentro do SVG: o ícone é só o glifo. */
 function DateIcon({ icon: Icon }: { icon: React.ComponentType<IconProps> }) {
   return (
-    <span className="grid size-14 place-items-center rounded-card bg-surface-warm text-accent-hover">
+    <span className="grid size-12 shrink-0 place-items-center rounded-card bg-surface-warm text-accent-hover md:size-[60px]">
       <Icon className="size-full" />
     </span>
   );

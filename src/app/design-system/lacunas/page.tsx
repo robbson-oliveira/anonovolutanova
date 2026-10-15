@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import {
   Badge,
@@ -18,18 +19,22 @@ import {
   BookCover,
   cn,
 } from "@ds/index";
-import { TopBar } from "@sections/TopBar";
+
 import { SiteHeader } from "@sections/SiteHeader";
 import { SiteFooter } from "@sections/SiteFooter";
 import { BookStage } from "@sections/BookStage";
-import { Faq } from "@sections/Faq";
 import { Quote } from "@sections/Quote";
+
 import { Persona } from "@sections/Persona";
+import { Testimonials } from "@sections/Testimonials";
 import { Closing } from "@sections/Closing";
 import { Explore } from "@sections/Explore";
+import { Liturgical } from "@sections/Liturgical";
+import { Hero } from "@sections/Hero";
+import { AboutHeader } from "@sections/About";
+
+
 import { STATS } from "@content/home";
-import { OFFER } from "@content/offer";
-import { installmentLabel, priceLabel } from "@content/product";
 
 /* -----------------------------------------------------------------------------
    Inventário das peças da home que ainda não têm ficha no catálogo — agora com
@@ -59,6 +64,32 @@ type Grupo = {
 };
 
 /* ---------------------------------- demos --------------------------------- */
+
+/** Mostra um bloco de 1440px dentro da ficha, reduzido sem alterar as medidas. */
+const ESCALA = 0.9431;
+
+function EscalaWireframe({
+  altura,
+  children,
+}: {
+  altura: number;
+  children: ReactNode;
+}) {
+  return (
+    <div
+      className="-mx-6 overflow-hidden"
+      style={{ height: `${Math.round(altura * ESCALA)}px` }}
+    >
+      <div
+        className="w-[1440px] origin-top-left"
+        style={{ transform: `scale(${ESCALA})` }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
 
 function DemoContainerSection() {
   return (
@@ -305,277 +336,6 @@ function DemoChecklist() {
   );
 }
 
-/* -----------------------------------------------------------------------------
-   Seção de oferta reconstruída a partir do CSS REAL do wireframe, não de print.
-   Origem de cada valor: public/wireframe/wireframe-v2.html, section#price
-   ("Price -Section"). As classes .framer-* citadas abaixo são as do próprio
-   arquivo — dá para conferir cada número buscando a classe lá.
-
-   Duas armadilhas que derrubaram as tentativas anteriores, ambas causadas pelo
-   `html { filter: grayscale(100%) }` que o wireframe aplica em si mesmo:
-     · o cartão NÃO é cinza — é verde-escuro #374e24 com borda #81884d;
-     · o botão NÃO é claro/translúcido — é o degradê laranja
-       linear-gradient(62deg, #FF7A2F 0%, #FF7A2F 42%, #F4D36A 100%).
-   Quem olhou só a captura leu os dois dessaturados e documentou ao contrário.
-
-   Breakpoints do wireframe: <768 / 768–1199,98 / ≥1200. O 768 coincide com o
-   `md` padrão do Tailwind; para o 1200 não há equivalente padrão, daí o
-   arbitrário `min-[1200px]:`.
-   -------------------------------------------------------------------------- */
-
-const CARD_BG = "#374e24";
-const CARD_BORDER = "#81884d";
-const BOTAO_GRADIENTE =
-  "linear-gradient(62deg, #FF7A2F 0%, #FF7A2F 42%, #F4D36A 100%)";
-const CHECK_GRADIENTE = "linear-gradient(225deg, #81884D 0%, #344C24 100%)";
-
-/* Medidas do wireframe a 1440px de viewport, lidas com getComputedStyle no DOM
-   renderizado (com as animações de entrada neutralizadas):
-
-     painel ............... 1440×1266, bg #d0d1b1, raio 90px, overflow clip
-     container ............ 1200 de largura, padding-top 208px, gap 87px
-     bloco de texto ....... 760×197, gap 21px
-     coluna do preço ...... 537×774, centrada  →  @452
-     cartão ............... 537×774 @452,492, pad-top 54px, gap 16px
-     caixa do preço ....... 394×180 @523,546
-     botão ................ 394×72  @523,742
-     bandeiras ............ 128×21  @656,840   (SVG único, centrado)
-     checklist ............ 537×309 @452,877, pad-top 50px
-       └ frame ............ 354×259 @543,927, gap 21px
-
-   Os gaps fecham exatos: 546+180+16=742 · 742+72+16+10=840 · 840+21+16=877.
-   O cartão termina em 1266 — a mesma base do painel, por isso só o topo é
-   arredondado. Quem sangra e é cortado pelo `overflow: clip` são as imagens. */
-
-/**
- * Cartão escuro central (.framer-11n5j7r "Content").
- *
- * Só o topo é arredondado (24px) e a altura é fixa (774px no desktop): o
- * cartão encosta na base do painel de propósito. Quem sangra e é cortado pela
- * borda arredondada são as duas imagens, não ele.
- */
-function OfertaCartao() {
-  return (
-    <div
-      className={cn(
-        "relative z-10 flex w-full flex-col items-center justify-start overflow-clip",
-        "h-[774px] max-w-[588px] rounded-t-[24px] pt-[54px]",
-        "max-[1199px]:h-[760px] max-[1199px]:w-[477px] max-[1199px]:max-w-[558px] max-[1199px]:px-[60px]",
-        "max-md:h-[645px] max-md:px-6 max-md:pt-[30px]",
-        "gap-4",
-        "shadow-[0_22px_15.1px_#00000080]",
-      )}
-      style={{ backgroundColor: CARD_BG }}
-    >
-      {/* Caixa do preço (394×180): fundo #81884d4d, raio 12px e um fio de
-          1.03822px SÓ na base — não é um contorno completo. */}
-      <div
-        className={cn(
-          "flex w-full max-w-[394px] flex-col items-center rounded-[12px] p-5",
-          "gap-5 max-md:gap-1.5",
-          "border-b-[1.03822px] border-b-[#dcdcdc33]",
-        )}
-        style={{ backgroundColor: "#81884d4d" }}
-      >
-        {/* Selo (139×36): py 10px + texto de 16px com leading 100%. O texto
-            precisa do tamanho explícito — herdando o do pai daria 40px. */}
-        <div className="flex items-center gap-2.5 py-2.5 max-md:gap-[5px] max-md:py-1">
-          <IconSparkle className="text-[16px] text-white" />
-          <p className="text-[16px] font-bold leading-none tracking-[-0.04em] text-white">
-            {OFFER.badge}
-          </p>
-        </div>
-
-        {/* Preço (234×84): no wireframe o valor e o parcelamento são irmãos
-            dentro do MESMO container, então o gap de 10,38px da coluna não
-            entra entre os dois. A conta é 54 + 6 (margem) + 24 (leading). */}
-        <div className="flex flex-col items-center">
-          <p className="text-[54px] font-bold leading-none tracking-[-0.05em] text-white">
-            {priceLabel}
-          </p>
-          <p className="mt-[6px] text-[18px] font-medium leading-[24px] tracking-[-0.02em] text-white/75">
-            {installmentLabel}
-          </p>
-        </div>
-      </div>
-
-      {/* Botão (394×72): raio 9px, borda 1.3px #5D754D e o degradê laranja. */}
-      <a
-        href="#comprar"
-        className={cn(
-          "flex h-[72px] w-full max-w-[394px] items-center justify-center rounded-[9px]",
-          "max-md:h-[58px]",
-          "border-[1.3px] border-[#5d754d]",
-          "text-[20px] font-bold leading-[1.2em] tracking-[-0.02em] text-white",
-          "shadow-[0_12px_24px_rgba(0,0,0,0.3)]",
-        )}
-        style={{ backgroundImage: BOTAO_GRADIENTE }}
-      >
-        {OFFER.cta}
-      </a>
-
-      {/* Bandeiras de pagamento: um SVG único de 128,25×21, centrado, 10px
-          abaixo do gap de 16px do cartão (medido em y=840). */}
-      <img
-        src="/img/bandeiras-pagamento.svg"
-        alt=""
-        aria-hidden
-        className="mt-[10px] h-[21px] w-[128.25px]"
-      />
-
-      {/* Checklist (537×309, pad-top 50): o bloco de 354px é centrado no
-          cartão, mas o conteúdo dentro dele alinha à esquerda. */}
-      <div className="flex w-full items-start justify-center pt-[50px] max-md:pt-5">
-        <div className="flex w-full max-w-[354px] flex-col items-start gap-[21px] max-md:max-w-[310px] max-md:gap-[18px] max-md:px-4">
-          <p className="text-[20.76px] font-semibold leading-[120%] tracking-[-0.04em] text-white">
-            {OFFER.listTitle}
-          </p>
-          <ul className="flex w-full flex-col gap-[20.7644px] max-md:gap-[18px]">
-            {OFFER.list.map((item) => (
-              <li
-                key={item}
-                className="flex w-full items-center gap-4 max-md:gap-[13px]"
-              >
-                {/* Bolinha: 32px (23px no mobile) com degradê 225deg — não é
-                    um círculo chapado. */}
-                <span
-                  aria-hidden
-                  className="relative size-8 shrink-0 rounded-full max-md:size-[23px]"
-                  style={{ backgroundImage: CHECK_GRADIENTE }}
-                >
-                  <IconCheck className="absolute left-[10px] top-[10px] text-[12px] text-white max-md:left-[8px] max-md:top-[7px] max-md:text-[8px]" />
-                </span>
-                <p className="flex-1 text-[18.17px] leading-[120%] tracking-[-0.04em] text-white">
-                  {item}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-
-      {/* A borda do wireframe vem do `data-border` do Framer, que é um
-          pseudo-elemento: ela NÃO entra no box model. Uma `border` de verdade
-          no cartão encolheria o conteúdo em 4,16px e estreitaria o checklist
-          (537 → 533). Por isso ela é desenhada por cima, em absoluto. */}
-      <span
-        aria-hidden
-        className="pointer-events-none absolute inset-0 rounded-t-[24px] border-x-[2.08px] border-t-[2.08px]"
-        style={{ borderColor: CARD_BORDER }}
-      />
-    </div>
-  );
-}
-
-/**
- * Composição do preço (.framer-1lygbgi): uma coluna ESTREITA de 537px com o
- * cartão dentro, e as duas agendas posicionadas em absoluto a partir dela,
- * muito maiores que a coluna. É isso que produz o efeito do wireframe — as
- * agendas não são "imagens ao lado do cartão", elas são peças gigantes que
- * vazam para os dois lados e o painel corta.
- *
- * Capa (.framer-6ev259): 1414×879, bottom -199, right -69, object-contain,
- * translateX(81px) rotate(-2deg).
- * Interna (.framer-2bicl9): 711×879, bottom -168, left 101%,
- * translateX(-50%) translateX(-81px) rotate(3deg), raio 2px e sombra própria.
- */
-function OfertaComposicao() {
-  return (
-    <div
-      className={cn(
-        "relative flex w-[537px] max-w-[588px] items-center justify-center",
-        "max-[1199px]:w-min",
-        "max-md:w-full max-md:max-w-[584px] max-md:px-[10px]",
-      )}
-    >
-      {/* Capa: 1414×879 ancorada pela DIREITA da coluna (right -69), com
-          object-contain — a arte fica centrada na caixa larga e por isso
-          aparece bem à esquerda, atravessando o painel. */}
-      <img
-        src="/img/capa-solo.png"
-        alt=""
-        aria-hidden
-        loading="lazy"
-        className={cn(
-          "pointer-events-none absolute z-[1] h-[879px] w-[1414px] max-w-none object-contain",
-          "bottom-[-199px] right-[-69px]",
-          "max-[1199px]:right-[-156px]",
-          "max-md:bottom-[-219px] max-md:right-[-532px]",
-        )}
-        style={{ transform: "translateX(81px) rotate(-2deg)" }}
-      />
-      {/* Página interna: 711×879 ancorada em left:101% da coluna e recuada
-          por translateX(-50%) − 81px. object-fill (a proporção bate: 0,809). */}
-      <img
-        src="/img/interna-oferta.png"
-        alt=""
-        aria-hidden
-        loading="lazy"
-        className={cn(
-          "pointer-events-none absolute z-[1] h-[879px] w-[711px] max-w-none rounded-[2px] object-fill",
-          "shadow-[11px_-3px_10.2px_rgba(0,0,0,0.2)]",
-          "bottom-[-168px] left-[101%]",
-          "max-[1199px]:bottom-[-118px] max-[1199px]:left-[97%]",
-          "max-md:bottom-[-178px]",
-        )}
-        style={{
-          transform: "translateX(-50%) translateX(-81px) rotate(3deg)",
-        }}
-      />
-
-      <OfertaCartao />
-    </div>
-  );
-}
-
-/**
- * Painel externo (.framer-1h0xv8m "Background" + .framer-52glac "Container").
- *
- * O fundo é #d0d1b1 — que já é o token --brand-sage-300 / --color-surface-sage
- * do design system, o mesmo `bg-surface-sage` que o Offer.tsx usa hoje. A cor
- * nunca foi o problema; o que falta no site é a FORMA: no wireframe título,
- * parágrafo e composição de preço ficam dentro de um painel único recuado, com
- * canto arredondado e `overflow: clip`, não um fundo de seção de ponta a ponta.
- *
- * Valores lidos das media queries (não arbitrados):
- *   ≥1200px ..... raio 90px, padding-top 208px, gap 87px
- *   768–1199px .. raio 67px, padding-top 180px, gap 87px
- *   <768px ...... raio 24px, padding-top  78px, gap 50px, + 20px lateral
- */
-function DemoOfertaPainel() {
-  return (
-    <div
-      className={cn(
-        "overflow-clip bg-surface-sage",
-        "rounded-[90px] max-[1199px]:rounded-[67px] max-md:rounded-[24px] max-md:px-5",
-      )}
-    >
-      <div
-        className={cn(
-          "mx-auto flex max-w-[1200px] flex-col items-center",
-          "gap-[87px] pt-[208px]",
-          "max-[1199px]:pt-[180px]",
-          "max-md:gap-[50px] max-md:pt-[78px]",
-        )}
-      >
-        {/* Bloco de texto: 67% de largura com teto de 800px (760 úteis, o
-            padding lateral é de 20px), gap 21px entre título e parágrafo.
-            Tipografia medida no wireframe, não a escala do DS — esta página é
-            de auditoria e precisa ser comparável ao original. */}
-        <div className="flex w-[67%] max-w-[800px] flex-col items-center gap-[21px] px-5 text-center">
-          <h3 className="text-[60px] font-bold leading-[60px] tracking-[-3px] text-[#1a2510] max-md:text-[40px] max-md:leading-[40px]">
-            {OFFER.title}
-          </h3>
-          <p className="text-[20px] leading-[28px] tracking-[-0.2px] text-[#344c24] opacity-70 max-md:text-[15px]">
-            {OFFER.paragraph}
-          </p>
-        </div>
-
-        <OfertaComposicao />
-      </div>
-    </div>
-  );
-}
 
 
 /* --------------------------------- conteúdo -------------------------------- */
@@ -589,17 +349,8 @@ const GRUPOS: Grupo[] = [
       "As peças fixas que envolvem todo o site. Aparecem em toda página e nenhuma tem ficha própria no catálogo.",
     itens: [
       {
-        nome: "Barra fixa do topo (TopBar)",
-        onde: "Topo de todas as páginas",
-        falta:
-          "Faixa escura de 36px com esteira de avisos, ícones alternados (caixa e asterisco) e botão de fechar. O catálogo mostra só a esteira isolada, sem o comportamento fixo, sem o dispensar e sem a altura reservada no shell.",
-        prioridade: "alta",
-        larga: true,
-        demo: <TopBar sticky={false} />,
-        demoNota: "Peça real, sem o comportamento fixo.",
-      },
-      {
         nome: "Cabeçalho do site (SiteHeader)",
+
         onde: "Abaixo da barra do topo",
         falta:
           "Marca, navegação, botão de conta e CTA. Sem ficha, sem estado mobile e sem regra de comportamento no scroll.",
@@ -660,7 +411,8 @@ const GRUPOS: Grupo[] = [
         prioridade: "alta",
         larga: true,
         demo: <DemoBookStage />,
-        demoNota: "Palco 740×740 exibido a 50%.",
+        demoNota:
+          "Palco 740×740 exibido a 50%. Peça única: o mesmo BookStage do Hero — ajustes só em /lab/hero-animation, nunca duplicando a animação aqui.",
       },
       {
         nome: "Heading, Text, Eyebrow",
@@ -674,24 +426,182 @@ const GRUPOS: Grupo[] = [
     ],
   },
   {
-    id: "blocos",
+    id: "topo",
     n: "03",
+    titulo: "Blocos do topo da página",
+    descricao:
+      "Primeira dobra e abertura da seção \u201cSobre\u201d, transportadas do wireframe com medição camada a camada em viewport 1440.",
+    itens: [
+      {
+        nome: "Hero (primeira dobra completa)",
+        onde: "Topo da home",
+        falta:
+          "Composição inteira: selo, título de 80px, subtítulo, parágrafo de 540px, botão 425\u00d768, selos, números centralizados entre si e o palco 740\u00d7740 com as duas agendas e o card de preço.",
+        prioridade: "alta",
+        larga: true,
+        demo: (
+          /* Palco de 1440px reduzido para caber na ficha, sem cortar a coluna. */
+          <div className="-mx-6 h-[810px] overflow-hidden">
+            <div className="w-[1440px] origin-top-left scale-[0.9431]">
+              <Hero />
+            </div>
+          </div>
+        ),
+        demoNota:
+          "Ritmo vertical medido no wireframe: coluna a 153px do topo, 3 / 19 / 19 / 29 / 10 / 29px entre as peças. Exibido em escala 0,943 (1440px reduzidos para a largura da ficha). O palco é o mesmo BookStage de /lab/hero-animation.",
+      },
+      {
+        nome: "Cabeçalho da seção \u201cSobre\u201d",
+        onde: "Antes dos 4 cards terracota",
+        falta:
+          "Olho, título de 60px em caixa de 583px, texto de apoio 20/28 e CTA de 600\u00d768 \u2014 com entrada em Reveal de gatilho único.",
+        prioridade: "alta",
+        larga: true,
+        demo: (
+          <div className="rounded-[90px] bg-surface-gold px-6 py-16">
+            <AboutHeader />
+          </div>
+        ),
+        demoNota:
+          "Espaçamentos medidos: 11px abaixo do olho, 23px abaixo do título, 27px acima do botão. Título e apoio alinhados à esquerda dentro da caixa centralizada.",
+      },
+    ],
+  },
+  {
+    id: "meio",
+    n: "3b",
+    titulo: "Blocos do miolo da página",
+    descricao:
+      "Explore, calendário litúrgico e citação, transportados do wireframe com medição elemento a elemento em viewport 1440.",
+    itens: [
+      {
+        nome: "Explore a Agenda",
+        onde: "Depois dos cards terracota",
+        falta:
+          "Painel de 1160\u00d7819 com abas de 36px, seletor de edição, capa de 607px com três marcadores de 28px e a citação de 582px no pé.",
+        prioridade: "alta",
+        larga: true,
+        demo: <EscalaWireframe altura={1288}><Explore /></EscalaWireframe>,
+        demoNota:
+          "Medidas do wireframe: seção 1440\u00d71288, padding 120/60/100; título 60/60; apoio 20/24 em caixa de 389px; abas raio 10 e padding 10; marcadores verdes em (15,9 / 28,9), (59,6 / 65,2) e (69,9 / 52,7)% da capa.",
+      },
+      {
+        nome: "Datas do calendário litúrgico",
+        onde: "Depois do Explore",
+        falta:
+          "Textura de fundo a 19%, título de 60px em caixa de 1018px, duas colunas de apoio, seis cards brancos de 499\u00d7270 e CTA de 600\u00d768.",
+        prioridade: "alta",
+        larga: true,
+        demo: <EscalaWireframe altura={1488}><Liturgical /></EscalaWireframe>,
+        demoNota:
+          "Cards 499\u00d7270, raio 12, padding 42/32, ícone de 60px e 20px até o título (24/24, ls -0,96). Grade de 2 colunas com gap 20. Só o título anima (fade + 28px, ~700ms).",
+      },
+      {
+        nome: "Citação de São Josemaria",
+        onde: "Pé do painel do Explore",
+        falta:
+          "Caixa de 582px centralizada: frase 20/24 em cinza e atribuição 30/36 em terracota, separadas por 20px.",
+        prioridade: "media",
+        larga: true,
+        demo: <Quote />,
+        demoNota:
+          "No wireframe a citação não é uma seção própria: ela fecha o painel do Explore. Aqui está isolada para poder ser reutilizada.",
+      },
+    ],
+  },
+  {
+    id: "venda",
+    n: "3c",
+    titulo: "Blocos finais de venda",
+    descricao:
+      "Persona, depoimentos e oferta, transportados do wireframe com medição camada a camada em viewport 1440.",
+    itens: [
+      {
+        nome: "Para quem é (Persona)",
+        onde: "Depois do calendário litúrgico",
+        falta:
+          "Seção 1440\u00d7902: título de 60/60 à esquerda, apoio de 458px à direita e painel de 1320\u00d7522 em degradê creme com seis itens.",
+        prioridade: "alta",
+        larga: true,
+        demo: <EscalaWireframe altura={902}><Persona /></EscalaWireframe>,
+        demoNota:
+          // eslint-disable-next-line no-restricted-syntax -- medida do wireframe documentada em texto, não estilo aplicado
+          "Painel raio 18, degradê 99° de #e7ddc2 a #f0e9d6, padding 80/60, grade de 3 colunas com gap 50. Ícone 60\u00d760 raio 14, 24px até o texto (239px, 20/24, peso 500, ls -0,4).",
+      },
+      {
+        nome: "Depoimentos",
+        onde: "Depois da persona",
+        falta:
+          "Título de 120/132 e carrossel de cards brancos de 505\u00d7288 com avatar, nome, cidade, estrelas e citação.",
+        prioridade: "alta",
+        larga: true,
+        demo: <EscalaWireframe altura={936}><Testimonials /></EscalaWireframe>,
+        demoNota:
+          // eslint-disable-next-line no-restricted-syntax -- medida do wireframe documentada em texto, não estilo aplicado
+          "Card raio 12, sombra 0 1px 2px rgba(0,0,0,.1), padding 42, conteúdo 421px com gap 30. Avatar 60\u00d760 raio 12, gap 12; nome e cidade 24/24 peso 700 (cidade #868686); estrelas 124\u00d721; citação 20/24. Setas de 58px.",
+      },
+      {
+        nome: "Oferta e Condições Especiais",
+        onde: "Antes do FAQ",
+        falta:
+          "Resolvida pela seção de produto da home (src/sections/Product.tsx, #oferta), que substituiu a antiga Offer.tsx com escolha de edição, quantidade, frete e compra direta. Medidas originais do wireframe: painel de 1440\u00d71266 com raio 90, capa girada -2°, página interna girada 3° e cartão escuro de 537\u00d7774 sobreposto com selo, preço, botão, pagamentos e checklist.",
+        prioridade: "alta",
+        larga: true,
+        demoNota:
+          // eslint-disable-next-line no-restricted-syntax -- medida do wireframe documentada em texto, não estilo aplicado
+          "Camadas medidas: cartão em x451,5 / y492, raio 24 no topo, fundo #374E24, sombra 0 22px 15,1px rgba(0,0,0,.5). Preço 394\u00d7180 raio 12 sobre rgba(129,136,77,.3); botão 394\u00d772 em degradê 62°; pagamentos 128\u00d721; checklist com ícones de 32px e texto de 306px.",
+      },
+    ],
+  },
+  {
+    id: "fechamento",
+    n: "3d",
+    titulo: "Fechamento e rodapé",
+    descricao:
+      "Os dois últimos blocos do wireframe, medidos em viewport 1440. Os dois dividem a mesma textura de fundo de 1440\u00d71539.",
+    itens: [
+      {
+        nome: "Chamada final (Closing)",
+        onde: "Depois do FAQ",
+        falta:
+          "Faixa de 1440\u00d7885 com textura e cartão verde de 1278\u00d7716 (raio 24) com selo, título, texto, dois botões e o aviso de envio.",
+        prioridade: "alta",
+        larga: true,
+        demo: <EscalaWireframe altura={885}><Closing /></EscalaWireframe>,
+        demoNota:
+          // eslint-disable-next-line no-restricted-syntax -- medida do wireframe documentada em texto, não estilo aplicado
+          "Cartão em x81 / y9, fundo #344C24, padding 141px 0. Selo 16/16 em degradê dourado (y151); título 30/30 ls -1,2 (y197); texto 626px em 20/24 #d6d6d6 (y247); botão 361\u00d768 raio 9 em degradê 62° com sombra 0 12px 24px; link 225\u00d768 raio 10; \u201cEnvio Imediato!\u201d em y549.",
+      },
+      {
+        nome: "Rodapé (SiteFooter)",
+        onde: "Fim da página",
+        falta:
+          "Faixa de 1440\u00d7654 com a mesma textura deslocada, logo 106\u00d7141, apoio de 391px, linha de links, créditos e nota social.",
+        prioridade: "alta",
+        larga: true,
+        demo: <EscalaWireframe altura={654}><SiteFooter /></EscalaWireframe>,
+        demoNota:
+          // eslint-disable-next-line no-restricted-syntax -- medida do wireframe documentada em texto, não estilo aplicado
+          "Logo centralizada no topo; apoio 391px em 20/24 #5e5c58 (y172); links 16/16 peso 700 ls -0,64 #1a2510 com gap 36 (y321); créditos 391px em 20/24 (y420); nota social 354px em 12/14,4 (y492).",
+      },
+    ],
+  },
+
+
+
+
+
+  {
+    id: "blocos",
+    n: "04",
     titulo: "Blocos de conteúdo",
     descricao:
       "Composições recorrentes da home. São reutilizáveis, mas hoje só existem dentro das seções.",
     itens: [
-      {
-        nome: "Bloco de FAQ",
-        onde: "Seção de perguntas",
-        falta:
-          "O acordeão aparece cru no catálogo. Falta a variação real: em cards, numerada e com o primeiro item aberto.",
-        prioridade: "alta",
-        larga: true,
-        demo: <Faq />,
-        demoNota: "Seção real do site.",
-      },
+
       {
         nome: "Bloco de estatísticas",
+
         onde: "Hero",
         falta:
           "Números grandes com contagem animada e legenda. O contador está documentado sozinho, o bloco não.",
@@ -709,29 +619,14 @@ const GRUPOS: Grupo[] = [
         demo: <Quote />,
       },
       {
-        nome: "Bloco de persona / checklist",
-        onde: "Para quem é a agenda",
-        falta: "Lista de itens com ícone de check, espaçamento e ritmo próprios.",
+        nome: "Checklist (marcadores)",
+        onde: "Oferta e persona",
+        falta: "Lista com ícone de check em pílula — variação genérica.",
         prioridade: "baixa",
         larga: true,
-        demo: (
-          <div className="space-y-8">
-            <DemoChecklist />
-            <Persona />
-          </div>
-        ),
+        demo: <DemoChecklist />,
       },
-      {
-        nome: "Bloco de oferta",
-        onde: "Seção de oferta",
-        falta:
-          "O site já usa a cor certa (bg-surface-sage = #d0d1b1 do wireframe), mas aplica no fundo da seção inteira, de ponta a ponta. No wireframe, título + parágrafo + card de preço ficam dentro de um painel único recuado, com canto arredondado responsivo (90px → 67px → 24px) — o site não tem esse painel. Falta também o cartão escuro estreito sobre as duas imagens inclinadas (capa e página interna), com selo, preço, botão translúcido, bandeiras de pagamento e checklist — hoje o card do site usa botão laranja e proporção diferente.",
-        prioridade: "alta",
-        larga: true,
-        demo: <DemoOfertaPainel />,
-        demoNota:
-          "Montagem fiel ao wireframe (painel + cartão), valores extraídos do CSS real do arquivo — não da seção atual do site.",
-      },
+
       {
         nome: "Bloco de fechamento",
         onde: "Antes do rodapé",
@@ -744,7 +639,7 @@ const GRUPOS: Grupo[] = [
   },
   {
     id: "variacoes",
-    n: "04",
+    n: "05",
     titulo: "Estados e variações",
     descricao:
       "Peças que existem no catálogo, mas só em amostra genérica — sem as variações que o site realmente usa.",
@@ -776,23 +671,14 @@ const GRUPOS: Grupo[] = [
   },
   {
     id: "divergencias",
-    n: "05",
+    n: "06",
     titulo: "Documentado errado (não bate com o site)",
     descricao:
       "Peças que já aparecem no catálogo, mas em versão diferente da que a home realmente usa — quem consulta o catálogo vê algo que não existe no site.",
     itens: [
       {
-        nome: "Perguntas frequentes (FAQ)",
-        onde: "Seção de perguntas",
-        falta:
-          "No site cada pergunta é um cartão branco separado, com sombra e numeração. No catálogo aparece como lista contínua com fio de divisão, sem fundo branco e sem número — é a versão errada da peça.",
-        prioridade: "alta",
-        larga: true,
-        demo: <Faq />,
-        demoNota: "Versão correta (a do site).",
-      },
-      {
         nome: "Cartões",
+
         onde: "Datas litúrgicas, depoimentos, Sobre, preço",
         falta:
           "O catálogo mostra só a versão em fundo creme. Os cartões do site são brancos (datas, depoimentos) e terracota (Sobre) — nenhuma dessas superfícies aparece.",
@@ -870,11 +756,24 @@ function Preview({
   );
 }
 
+export const metadata: Metadata = {
+  title: { absolute: "Lacunas do Design System | Ano Novo, Luta Nova" },
+  description:
+    "Levantamento das peças da home que ainda não estão documentadas no design system da Agenda Ano Novo, Luta Nova.",
+  openGraph: {
+    title: "Lacunas do Design System | Ano Novo, Luta Nova",
+    description:
+      "Levantamento das peças da home que ainda não estão documentadas no design system.",
+    type: "website",
+  },
+  twitter: { card: "summary" },
+};
+
 export default function DesignSystemLacunasPage() {
   return (
     <>
-      <TopBar sticky={false} />
       <div>
+
         <SiteHeader />
         <main>
           <section className="bg-surface px-6 py-24 md:px-16">

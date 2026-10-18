@@ -20,7 +20,9 @@ export function CartButton() {
       aria-label={`Abrir carrinho, ${cart.count} ${cart.count === 1 ? "item" : "itens"}`}
       // Same Button as the "Comprar" next to it, so both always share the
       // exact height and font; only the padding is tighter, to fit the count.
-      className="px-3! sm:px-4!"
+      // The border is white: the default one is nearly transparent and made
+      // the white fill look 1px shorter than Comprar at the top and bottom.
+      className="border-surface-plain! px-3! hover:border-action! sm:px-4!"
     >
       <IconBasket className="text-lg sm:hidden" />
       <span className="max-sm:hidden">Carrinho</span>

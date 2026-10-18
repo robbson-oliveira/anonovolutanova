@@ -5,7 +5,7 @@ import { Button, Container, IconArrowRight, cn } from "@ds/index";
 import { NAV_LINKS } from "@content/home";
 import { BUY_URL, PRODUCT_NAME } from "@content/product";
 import { CartButton } from "@/features/cart/CartButton";
-const logo = "/img/logo.png";
+const logo = "/img/logo-header.svg";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
@@ -14,7 +14,7 @@ export function SiteHeader() {
     // Não é sticky: no design aprovado o cabeçalho rola junto com a página.
     // Só a barra de frete fica fixa no topo. Sem borda embaixo — o wireframe
     // não tem nenhuma (0px em toda a cadeia de elementos, conferido no DOM).
-    <header className="relative z-40 bg-surface">
+    <header className="relative z-40">
       {/* 1316px, a MESMA medida do texto do Hero (Hero.tsx), não os 1200px
           do container de conteúdo do resto do site nem um valor próprio do
           header. O logo precisa cair exatamente na borda esquerda do bloco

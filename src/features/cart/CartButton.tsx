@@ -1,6 +1,6 @@
 "use client";
 
-import { IconBasket } from "@ds/index";
+import { Button, IconBasket } from "@ds/index";
 import { useOptionalCart } from "./CartProvider";
 
 /**
@@ -13,17 +13,20 @@ export function CartButton() {
   if (!cart || cart.count === 0) return null;
 
   return (
-    <button
-      type="button"
+    <Button
+      variant="secondary"
+      shape="block"
       onClick={cart.openDrawer}
       aria-label={`Abrir carrinho, ${cart.count} ${cart.count === 1 ? "item" : "itens"}`}
-      className="relative inline-flex h-11 cursor-pointer items-center gap-2 rounded-card border border-border bg-surface-plain px-3 text-sm font-semibold text-text-strong transition-colors [transition-duration:var(--duration-fast)] hover:border-action sm:px-4"
+      // Same Button as the "Comprar" next to it, so both always share the
+      // exact height and font; only the padding is tighter, to fit the count.
+      className="px-3! sm:px-4!"
     >
       <IconBasket className="text-lg sm:hidden" />
       <span className="max-sm:hidden">Carrinho</span>
       <span className="grid min-w-6 place-items-center rounded-pill bg-action px-1.5 text-xs font-bold text-on-action">
         {cart.count}
       </span>
-    </button>
+    </Button>
   );
 }

@@ -47,7 +47,7 @@ export function Hero() {
   return (
     <section
       id="inicio"
-      className="relative overflow-hidden bg-surface pb-16 pt-[29px] md:pb-24 lg:pb-[221px]"
+      className="relative overflow-x-clip bg-surface pb-16 pt-[29px] md:pb-24 lg:pb-[221px]"
     >
       <div className="mx-auto w-full max-w-[1380px] px-6 md:px-8">
         {/* isolate: o palco fica atrás do texto (-z-10) sem cair para trás
@@ -87,7 +87,7 @@ export function Hero() {
                 parágrafo; a partir de md sai do fluxo e sangra para fora do
                 container, como no wireframe. Não pode ir dentro de um Reveal:
                 o transform dele viraria o bloco de contenção do absoluto. */}
-            <div className="mx-auto mt-2 w-full max-w-[480px] md:absolute md:-right-6 md:left-[min(600px,54%)] md:top-1/2 md:-z-10 md:mx-0 md:mt-0 md:w-auto md:max-w-none md:-translate-y-1/2 lg:top-0 lg:-translate-y-[9.1216%]">
+            <div className="mx-auto mt-2 w-full max-w-[480px] md:absolute md:-right-6 md:left-[min(600px,54%)] lg:-right-8 lg:left-[calc(min(600px,54%)+8px)] md:top-1/2 md:-z-10 md:mx-0 md:mt-0 md:w-auto md:max-w-none md:-translate-y-1/2 lg:top-0 lg:translate-y-[calc(10px-9.1216%)]">
               <BookStage fluid />
             </div>
 

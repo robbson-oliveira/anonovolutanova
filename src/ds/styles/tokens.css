@@ -471,7 +471,7 @@
   @keyframes ds-book-back-in {
     0% {
       opacity: 0;
-      transform: translate(7.5%, 17.3%) scale(0.93) rotate(19.3deg);
+      transform: translate(7.3%, 15.5%) scale(0.93) rotate(19.3deg);
       filter: drop-shadow(var(--drop-shadow-book-rest));
     }
     100% {
@@ -485,23 +485,23 @@
     /* entra junto com a de trás */
     0% {
       opacity: 0;
-      transform: translate(48.3%, 18.7%) scale(0.92) rotate(7deg);
+      transform: translate(45.4%, 16.1%) scale(0.92) rotate(7deg);
       filter: drop-shadow(var(--drop-shadow-book-rest));
     }
     /* assenta sobre a de trás */
     28% {
       opacity: 1;
-      transform: translate(43.5%, 6.4%) scale(1) rotate(13deg);
+      transform: translate(40.9%, 5.5%) scale(1) rotate(13deg);
       filter: drop-shadow(var(--drop-shadow-book-land));
     }
     /* toque físico */
     34% {
-      transform: translate(43.5%, 6.4%) scale(1.01) rotate(13deg);
+      transform: translate(40.9%, 5.5%) scale(1.01) rotate(13deg);
       filter: drop-shadow(var(--drop-shadow-book-touch));
     }
     /* desliza arrastando e já vai girando na âncora */
     65% {
-      transform: translate(10.4%, 1.5%) scale(1.01) rotate(5deg);
+      transform: translate(9.8%, 1.3%) scale(1.01) rotate(5deg);
       filter: drop-shadow(var(--drop-shadow-book-slide));
     }
     100% {

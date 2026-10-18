@@ -18,6 +18,7 @@ const vidaOracao = "/img/sobre-vida-oracao.webp";
 const propositos = "/img/sobre-propositos.webp";
 const folhaJaneiro = "/img/sobre-folha-janeiro.webp";
 const folhaOutubro = "/img/sobre-folha-outubro.webp";
+const sombra = "/img/sobre-sombra.svg";
 const fundo = "/img/sobre-fundo.webp";
 
 /**
@@ -33,10 +34,8 @@ const fundo = "/img/sobre-fundo.webp";
  * estreito, a composição inteira encolhe junto, sem nada vazar.
  */
 type Layer = {
-  /** Página (PNG). Ausente quando a camada é só uma forma vetorial. */
-  src?: string;
-  /** Sombra em cunha do wireframe: path SVG desenhado no viewBox da caixa. */
-  wedge?: { path: string; h: number; opacity: number };
+  /** Arte da camada (WebP ou SVG já com a opacidade do Figma). */
+  src: string;
   box: { w: number; x: number; y: number };
   /**
    * Entrada da camada, exatamente como no wireframe: quem anima é cada página
@@ -98,16 +97,8 @@ export const FEATURES: Feature[] = [
     title: [{ text: "Todo dia", dim: true }, { text: "uma frase de São Josemaria para inspirar" }],
     layers: [
       { src: fraseDia, box: { w: 414.41, x: 171.59, y: 22 } },
-      {
-        /* Sombra em cunha que a página projeta sobre o card (Figma "sombra"). */
-        box: { w: 498, x: 29, y: 169 },
-        anim: { variant: "pop" },
-        wedge: {
-          h: 523,
-          opacity: 0.34,
-          path: "M 432.044 462.613 L 52.696 326.925 C 46.057 324.55 43.894 316.234 48.536 310.926 L 293.943 30.262 C 298.519 25.028 306.908 25.946 310.244 32.046 L 477.206 337.287 C 478.486 339.626 478.778 342.379 478.018 344.934 L 444.997 456.046 C 443.363 461.545 437.446 464.545 432.044 462.613 Z",
-        },
-      },
+      /* Sombra em cunha que a página projeta sobre o card (Figma "sombra", 949:1011). */
+      { src: sombra, box: { w: 547.64, x: 15.16, y: 190.79 }, anim: { variant: "pop" } },
       { src: frase, box: { w: 338, x: 53, y: 212 }, anim: { variant: "forward" } },
     ],
   },
@@ -284,38 +275,7 @@ export function FeatureCard({
         {feature.layers.map((layer, j) => {
           const content = (
             <>
-              {layer.src ? (
-                <img
-                  src={layer.src}
-                  alt=""
-                  aria-hidden
-                  className="h-auto w-full"
-                />
-              ) : null}
-              {layer.wedge ? (
-                <svg
-                  aria-hidden
-                  width={layer.box.w}
-                  height={layer.wedge.h}
-                  viewBox={`0 0 ${layer.box.w} ${layer.wedge.h}`}
-                  className="block h-auto w-full"
-                  style={{ opacity: layer.wedge.opacity }}
-                >
-                  <defs>
-                    <linearGradient
-                      id={`wedge-${j}`}
-                      x1="0"
-                      x2="1"
-                      y1="0.2196"
-                      y2="0.7804"
-                    >
-                      <stop offset="0" className="[stop-color:var(--color-shadow)] [stop-opacity:1]" />
-                      <stop offset="1" className="[stop-color:var(--color-shadow)] [stop-opacity:0]" />
-                    </linearGradient>
-                  </defs>
-                  <path d={layer.wedge.path} fill={`url(#wedge-${j})`} />
-                </svg>
-              ) : null}
+              <img src={layer.src} alt="" aria-hidden className="h-auto w-full" />
               {layer.handwriting ? <Handwriting {...layer.handwriting} /> : null}
             </>
           );

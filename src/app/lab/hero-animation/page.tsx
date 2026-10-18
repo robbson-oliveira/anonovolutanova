@@ -66,14 +66,14 @@ const srcOf = (src: CoverSrc) => src;
  * vale 1px do palco de 740. Espremer com object-contain dentro do quadrado
  * (como era antes) inventava uma escala que não correspondia a nada.
  */
-const REF_NATURAL = { width: 1017, height: 989 };
+const REF_NATURAL = { width: 964, height: 876 };
 
 /**
  * Calibragem medida no navegador com a animação congelada no último frame:
  * compara a caixa das capas da referência com a caixa das capas do BookStage
  * real. Com estes números a referência abre já encaixada.
  */
-const REF_CALIBRATION = { scale: 0.817, x: -47, y: -73 };
+const REF_CALIBRATION = { scale: 1, x: -146, y: -72 };
 
 /**
  * Versão do ajuste salvo. Subir a versão sempre que REF_CALIBRATION mudar:
@@ -81,7 +81,7 @@ const REF_CALIBRATION = { scale: 0.817, x: -47, y: -73 };
  * nova logo depois da tela abrir (era isso que fazia a referência "encolher"
  * um instante depois de carregar).
  */
-const REF_STORAGE_KEY = "lab.hero-animation.ref-align.v3";
+const REF_STORAGE_KEY = "lab.hero-animation.ref-align.v4";
 
 type RefAlign = { scale: number; x: number; y: number };
 

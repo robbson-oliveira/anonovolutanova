@@ -92,6 +92,7 @@
   --brand-gold-600: rgb(150 116 56);   /* gold button, gradient start (#967438) */
   --brand-gold-200: rgb(230 198 124);  /* gold button, gradient end and border (#E6C67C) */
   --brand-cream-50: rgb(255 245 235);  /* price card (#FFF5EB) */
+  --brand-silver-400: rgb(147 149 152); /* "Sobre" card titles: dim words, gradient end (#939598) */
 
   /* WhatsApp chat widget of the same page */
   --brand-whatsapp-500: rgb(59 196 93);    /* floating button and panel header */
@@ -124,7 +125,7 @@
   --color-surface-inverse-soft: var(--brand-moss-700);
   --color-surface-accent-soft: var(--brand-gold-300);
   --color-surface-gold: var(--brand-gold-300);      /* fundo da seção "Sobre" */
-  --color-surface-warm-card: var(--brand-clay-800); /* cards da seção "Sobre" */
+  --color-surface-warm-card: var(--brand-moss-700); /* cards da seção "Sobre" (petróleo, Figma 949:890) */
 
   /* Texto */
   --color-text: var(--brand-ink-600);
@@ -138,7 +139,8 @@
   --color-gold-start: var(--brand-gold-600);        /* gold button gradient */
   --color-gold-end: var(--brand-gold-200);
   --color-text-card: var(--brand-ink-900);          /* título dentro de card: preto */
-  --color-text-on-warm: var(--brand-gold-300);      /* texto sobre o card terracota */
+  --color-text-on-warm: var(--brand-gold-200);      /* texto sobre o card petróleo */
+  --color-text-heading-sea: var(--brand-sea-700);    /* título do cabeçalho do "Sobre" (#134F63) */
 
   /* AÇÃO — fundo de botão. É verde. Separado de `accent` de propósito:
      conflatar os dois foi o erro que inverteu a paleta inteira. */
@@ -167,8 +169,8 @@
   --color-action-warm-end: var(--brand-gold-400);     /* ...e fim */
   --color-shadow: var(--brand-ink-900);               /* base das sombras desenhadas em SVG */
   --color-selection: var(--brand-moss-100);           /* text selection background; light enough to keep the text's own color */
-  --color-title-dim: var(--brand-amber-400);          /* palavras apagadas dos títulos do "Sobre": início */
-  --color-title-dim-end: var(--brand-flame-500);      /* ...e fim do degradê */
+  --color-title-dim: var(--brand-paper-100);          /* palavras apagadas dos títulos do "Sobre": início */
+  --color-title-dim-end: var(--brand-silver-400);     /* ...e fim do degradê */
 
   /* Status: something finished (completed checkout step). Kept apart from
      `action` so the stepper can signal completion without looking like a button. */

@@ -486,7 +486,7 @@ export default function DesignSystemPage() {
                 </Text>
                 <ul className="mt-8 grid justify-center gap-7 lg:grid-cols-[repeat(2,586px)]">
                   {FEATURES.map((feature, i) => (
-                    <FeatureCard key={feature.strong} feature={feature} index={i} />
+                    <FeatureCard key={feature.title[0].text} feature={feature} index={i} />
                   ))}
                 </ul>
               </Row>

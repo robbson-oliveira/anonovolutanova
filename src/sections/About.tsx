@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import {
   Button,
   Container,
@@ -64,9 +65,11 @@ type Layer = {
 };
 
 
+/** Palavras do título: as "dim" levam o degradê branco → cinza, as demais o dourado. */
+type TitlePart = { text: string; dim?: true; br?: true };
+
 export type Feature = {
-  muted: string;
-  strong: string;
+  title: TitlePart[];
   layers: Layer[];
 };
 
@@ -75,8 +78,7 @@ export const CARD_H = 600;
 
 export const FEATURES: Feature[] = [
   {
-    muted: "Espaço para o plano de vida",
-    strong: "e suas metas anuais",
+    title: [{ text: "Espaço para o plano de vida e", dim: true, br: true }, { text: "suas metas anuais" }],
     layers: [
       {
         src: planoDeVida,
@@ -110,8 +112,7 @@ export const FEATURES: Feature[] = [
     ],
   },
   {
-    muted: "Todo dia",
-    strong: "uma frase de São Josemaria para inspirar",
+    title: [{ text: "Todo dia", dim: true }, { text: "uma frase de São Josemaria para inspirar" }],
     layers: [
       { src: agendaDiaria, box: { w: 598, x: 177, y: 105 }, noShadow: true },
       {
@@ -129,16 +130,19 @@ export const FEATURES: Feature[] = [
   },
 
   {
-    muted: "Todo mês",
-    strong: "um tema para viver a santidade no cotidiano",
+    title: [{ text: "Todo mês", dim: true }, { text: "um tema para viver a santidade no cotidiano" }],
     layers: [
       { src: vidaOracao, box: { w: 451, x: -114, y: 180 }, anim: { variant: "left" } },
       { src: propositosMes, box: { w: 439, x: 261, y: 289 }, anim: { variant: "right", delay: 90 } },
     ],
   },
   {
-    muted: "Datas especiais do calendário litúrgico e",
-    strong: "datas importantes da Obra",
+    title: [
+      { text: "Datas especiais", dim: true, br: true },
+      { text: "do calendário litúrgico e", br: true },
+      { text: "datas", dim: true },
+      { text: "importantes da Obra" },
+    ],
     layers: [
       { src: calendario, box: { w: 441, x: 136, y: 195 }, anim: { variant: "up" } },
       { src: datasObra, box: { w: 348, x: 9, y: 305 }, anim: { variant: "up", delay: 120 } },
@@ -159,7 +163,7 @@ export const FEATURES: Feature[] = [
  */
 export function AboutHeader() {
   return (
-    <RevealGroup className="mx-auto flex w-full max-w-[600px] flex-col items-center">
+    <RevealGroup className="mx-auto flex w-full max-w-[1037px] flex-col items-center">
       <Reveal variant="up">
         {/* Olho: ícone 16 + 5px de respiro + rótulo 14/14, caixa de 24px. */}
         <span className="flex h-6 items-center gap-[5px]">
@@ -170,25 +174,25 @@ export function AboutHeader() {
         </span>
       </Reveal>
 
-      <Reveal variant="up" delay={60} className="w-[583px] max-w-full">
-        <Heading as="h2" className="mt-[11px] w-full">
+      <Reveal variant="up" delay={60} className="w-[1037px] max-w-full">
+        <Heading as="h2" className="mt-[11px] w-full text-center whitespace-pre-line text-text-heading-sea!">
           {ABOUT.title}
         </Heading>
       </Reveal>
 
-      <Reveal variant="up" delay={120} className="w-[583px] max-w-full">
-        <p className="mt-[23px] w-full text-[20px] leading-7 tracking-[-0.2px] text-kicker">
+      <Reveal variant="up" delay={120} className="w-[640px] max-w-full">
+        <p className="mt-[23px] w-full text-center text-[20px] leading-7 tracking-[-0.2px] text-balance text-text-lead opacity-70">
           {ABOUT.paragraph}
         </p>
       </Reveal>
 
-      <Reveal variant="up" delay={180} className="mt-[27px] w-full">
+      <Reveal variant="up" delay={180} className="mt-[27px] w-[600px] max-w-full">
         <Button
           href={BUY_URL}
           size="lg"
           shape="block"
           // As medidas do botão vencem as do tamanho "lg" do Button (daí o !).
-          className="h-[68px] w-[600px] max-w-full rounded-[10px]! text-[16px]! leading-[16px]! font-bold! tracking-[-0.64px]!"
+          className="h-[68px] w-[600px] max-w-full rounded-[10px]! border border-gold-end bg-linear-90 from-gold-start to-gold-end text-[16px]! leading-[16px]! font-bold! tracking-[-0.64px]! transition-[transform,box-shadow] [transition-duration:var(--duration-fast)] hover:-translate-y-0.5 hover:shadow-[0_8px_18px_-6px] hover:shadow-gold-start/60 motion-reduce:hover:translate-y-0"
         >
           {ABOUT.cta}
         </Button>
@@ -213,13 +217,16 @@ export function AboutHeader() {
  */
 export function About() {
   return (
-    <section id="sobre" className="bg-surface-gold py-16 md:px-16 md:py-24">
+    <section
+      id="sobre"
+      className="mx-4 overflow-clip rounded-[40px] bg-surface-gold pt-24 pb-16 md:mx-auto md:max-w-[1440px] md:rounded-[90px] md:pt-[208px] md:pb-[117px]"
+    >
       <Container>
         <AboutHeader />
 
-        <ul className="mt-12 grid grid-cols-[minmax(0,586px)] justify-center gap-7 md:mt-20 lg:-mx-10 lg:grid-cols-[repeat(2,minmax(0,586px))]">
+        <ul className="mt-12 grid grid-cols-[minmax(0,586px)] justify-center gap-[27px] md:mt-[87px] lg:-mx-10 lg:grid-cols-[repeat(2,minmax(0,586px))]">
           {FEATURES.map((feature, i) => (
-            <FeatureCard key={feature.strong} feature={feature} index={i} />
+            <FeatureCard key={feature.title[0].text} feature={feature} index={i} />
           ))}
         </ul>
       </Container>
@@ -266,8 +273,20 @@ export function FeatureCard({
             <h3
               className="text-center text-[length:calc(38*100cqw/586)] leading-[calc(38*100cqw/586)] font-bold tracking-[-0.04em]"
             >
-              <span className="bg-linear-182/srgb from-title-dim to-title-dim-end bg-clip-text text-transparent">{feature.muted} </span>
-              <span className="text-text-on-warm">{feature.strong}</span>
+              {feature.title.map((part) => (
+                <Fragment key={part.text}>
+                  <span
+                    className={
+                      part.dim
+                        ? "bg-linear-230/srgb from-title-dim to-title-dim-end bg-clip-text text-transparent"
+                        : "text-text-on-warm"
+                    }
+                  >
+                    {part.text}
+                  </span>
+                  {part.br ? <br /> : " "}
+                </Fragment>
+              ))}
             </h3>
           </Reveal>
         </div>

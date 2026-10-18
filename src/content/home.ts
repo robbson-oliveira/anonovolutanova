@@ -29,10 +29,10 @@ export const STATS = [
 
 export const ABOUT = {
   eyebrow: "O que a torna especial?",
-  title: "Mais que uma agenda. Um impulso para transformar propósito em ação.",
+  title: "Mais que uma agenda.\nUm caminho de santidade\nem cada página.",
   paragraph:
     `A Agenda ${CYCLE_YEAR} une organização e vida espiritual, ajudando você a ` +
-    "dar passos concretos naquilo que realmente importa.",
+    "viver com presença de Deus e foco no essencial.",
   cta: `Garantir minha Agenda ${CYCLE_YEAR}`,
   features: [
     {

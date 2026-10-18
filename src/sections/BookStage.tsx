@@ -65,7 +65,7 @@ export function BookStage({
       {/* Clássica — assenta primeiro, fica atrás */}
       <div
         aria-hidden
-        className="absolute left-[31.6%] top-[16.8%] z-[2] w-[50.5%] origin-center animate-book-back-in motion-reduce:[animation-duration:1ms]"
+        className="absolute left-[28.84%] top-[14.88%] z-[2] w-[67.34%] [transform-origin:41.65%_45.63%] animate-book-back-in motion-reduce:[animation-duration:1ms]"
       >
         <Cover
           src={classicaSrc}
@@ -77,7 +77,7 @@ export function BookStage({
       {/* Color — pousa sobre a outra, encosta e desliza girando na âncora */}
       <div
         aria-hidden
-        className="absolute left-[3.446%] top-[8.55%] z-[5] w-[48.5%] [transform-origin:70%_92%] animate-book-fan-out motion-reduce:[animation-duration:1ms]"
+        className="absolute left-[2.64%] top-[7.2%] z-[5] w-[65.3%] [transform-origin:53.27%_79.9%] animate-book-fan-out motion-reduce:[animation-duration:1ms]"
       >
         <Cover
           src={colorSrc}

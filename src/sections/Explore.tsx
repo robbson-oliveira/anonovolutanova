@@ -37,8 +37,12 @@ const COVERS: Record<"color" | "classica", Cover> = {
   },
 };
 
-/** Altura do livro no Figma (949:830), nas duas edições. */
-const COVER_HEIGHT = 645;
+/**
+ * Altura do livro, nas duas edições. O Figma (949:830) tem 645px, mas com a
+ * agenda tão grande ela encosta nas abas e na citação; 560px devolve o respiro
+ * dentro da área de 607px reservada para a capa e as páginas internas.
+ */
+const COVER_HEIGHT = 560;
 
 /** Altura máxima das páginas internas das outras abas. */
 const PAGE_HEIGHT = 607;
@@ -75,9 +79,10 @@ function pageViewHeight(page: TabPage) {
 }
 
 /**
- * Pontos de interesse sobre o livro. Percentuais do Figma (949:830): o livro
- * ocupa 519×645 e os três marcadores de 28px têm o centro em
- * (124,3 / 205), (313,6 / 425) e (358,1 / 349) px dentro dele.
+ * Pontos de interesse sobre o livro. Percentuais medidos no Figma (949:830),
+ * onde o livro ocupa 519×645: os três marcadores de 28px têm o centro em
+ * (124,3 / 205), (313,6 / 425) e (358,1 / 349) px dentro dele. Como são
+ * porcentagens, acompanham o livro em qualquer altura.
  */
 const HOTSPOTS = [
   {
@@ -202,7 +207,7 @@ export function Explore() {
         </div>
 
         <div
-          className="mt-6 flex min-h-(--cover-h) items-center justify-center md:mt-[16px]"
+          className="mt-6 flex min-h-(--cover-h) items-center justify-center md:mt-[16px] md:min-h-[607px]"
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
         >
@@ -284,7 +289,7 @@ export function Explore() {
           </div>
         </div>
 
-        <figure className="mx-auto mt-[28px] w-[582px] md:mt-[6px] max-w-full text-center">
+        <figure className="mx-auto mt-[28px] w-[582px] md:mt-[20px] max-w-full text-center">
           <blockquote className="text-base text-text">
             “{QUOTE.text}”
           </blockquote>

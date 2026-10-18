@@ -148,7 +148,7 @@ function PriceCard({ thumbSrc }: { thumbSrc: CoverSrc }) {
 
       <a
         href={BUY_URL}
-        className="relative flex h-[34px] w-[146px] shrink-0 items-center justify-center rounded-sm bg-linear-90 from-gold-start to-gold-end text-[15px] font-bold leading-[18px] text-on-action before:absolute before:inset-x-0 before:-inset-y-[5px] @max-[520px]/stage:h-11"
+        className="relative flex h-[34px] w-[146px] shrink-0 items-center justify-center rounded-sm bg-linear-90 from-gold-start to-gold-end text-[15px] transition-[transform,box-shadow] [transition-duration:var(--duration-fast)] hover:-translate-y-0.5 hover:shadow-[0_8px_18px_-6px] hover:shadow-gold-start/60 motion-reduce:hover:translate-y-0 font-bold leading-[18px] text-on-action before:absolute before:inset-x-0 before:-inset-y-[5px] @max-[520px]/stage:h-11"
       >
         Comprar Agora
       </a>

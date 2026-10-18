@@ -104,7 +104,7 @@ export function Hero() {
                 size="lg"
                 shape="block"
                 // As medidas do botão vencem as do tamanho "lg" do Button (daí o !).
-                className="mt-[29px] h-[68px] w-full max-w-[425px] rounded-[10px]! border border-gold-end bg-linear-90 from-gold-start to-gold-end text-[16px]! leading-[16px]! font-bold! tracking-[-0.64px]! hover:brightness-95"
+                className="mt-[29px] h-[68px] w-full max-w-[425px] rounded-[10px]! border border-gold-end bg-linear-90 from-gold-start to-gold-end text-[16px]! leading-[16px]! font-bold! tracking-[-0.64px]! transition-[transform,box-shadow] [transition-duration:var(--duration-fast)] hover:-translate-y-0.5 hover:shadow-[0_8px_18px_-6px] hover:shadow-gold-start/60 motion-reduce:hover:translate-y-0"
               >
                 {HERO.cta}
               </Button>

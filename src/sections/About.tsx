@@ -10,38 +10,33 @@ import {
 } from "@ds/index";
 import { ABOUT } from "@content/home";
 import { BUY_URL } from "@content/product";
-const planoDeVida = "/img/interna-plano-de-vida.png";
-const metasAnuais = "/img/interna-metas-anuais.png";
-const agendaDiaria = "/img/interna-agenda-diaria.png";
-const citacao = "/img/interna-citacao.png";
-const vidaOracao = "/img/interna-vida-oracao.png";
-const propositosMes = "/img/interna-propositos-mes.png";
-const calendario = "/img/interna-calendario.png";
-const datasObra = "/img/interna-datas-obra.png";
+const planoDeVida = "/img/sobre-plano-de-vida.webp";
+const metasAnuais = "/img/sobre-metas-anuais.webp";
+const fraseDia = "/img/sobre-frase-dia.webp";
+const frase = "/img/sobre-frase.webp";
+const vidaOracao = "/img/sobre-vida-oracao.webp";
+const propositos = "/img/sobre-propositos.webp";
+const folhaJaneiro = "/img/sobre-folha-janeiro.webp";
+const folhaOutubro = "/img/sobre-folha-outubro.webp";
+const fundo = "/img/sobre-fundo.webp";
 
 /**
  * Cada card tem título em duas ênfases — a primeira parte em tom apagado, a
  * segunda em destaque — e uma composição de páginas internas embaixo.
  *
- * Todas as medidas abaixo foram lidas no wireframe (public/wireframe/
- * wireframe-v2.html) com o card em 586 × 600 px: `box` é a caixa da página em
- * px, relativa ao canto superior esquerdo do card. Não mexer nos números: eles
- * são a "prancheta" de 586 px. Na tela, o FeatureCard converte cada medida em
- * fração da largura do card (`cardPx`), então com o card em 586 px o resultado
- * é exatamente o do wireframe e, num card mais estreito, a composição inteira
- * encolhe junto, sem nada vazar.
+ * As medidas vêm do Figma (nó 949:890) com o card em 586 × 600 px: `box` é a
+ * parte VISÍVEL de cada arte, em px, relativa ao canto superior esquerdo do
+ * card — as artes já foram exportadas cortadas pela borda do card, então
+ * largura e posição são as da camada no Figma já recortada. Na tela, o
+ * FeatureCard converte cada medida em fração da largura do card (`cardPx`),
+ * então com o card em 586 px o resultado é o do Figma e, num card mais
+ * estreito, a composição inteira encolhe junto, sem nada vazar.
  */
 type Layer = {
   /** Página (PNG). Ausente quando a camada é só uma forma vetorial. */
   src?: string;
   /** Sombra em cunha do wireframe: path SVG desenhado no viewBox da caixa. */
   wedge?: { path: string; h: number; opacity: number };
-  /**
-   * Quando o PNG é uma página inclinada em fundo transparente, a sombra
-   * retangular do CSS aparece como um vinco reto no card. Nesses casos a
-   * sombra real vem da cunha SVG, então a do CSS é desligada.
-   */
-  noShadow?: boolean;
   box: { w: number; x: number; y: number };
   /**
    * Entrada da camada, exatamente como no wireframe: quem anima é cada página
@@ -82,41 +77,29 @@ export const FEATURES: Feature[] = [
     layers: [
       {
         src: planoDeVida,
-        box: { w: 575, x: 21, y: 260 },
+        box: { w: 454.22, x: 31.89, y: 302.85 },
         anim: { variant: "left" },
-        handwriting: {
-          items: ABOUT.features[0].items,
-          top: 161,
-          step: 27,
-          left: 41,
-          size: 20,
-        },
+        handwriting: { items: ABOUT.features[0].items, top: 118.15, step: 29, left: 30.11, size: 20 },
       },
       {
         src: metasAnuais,
-        box: { w: 298, x: 323, y: 195 },
+        box: { w: 323.56, x: 262.44, y: 143.17 },
         anim: { variant: "right", delay: 90 },
         /*
          * As metas vivem em ABOUT.features[1] no conteúdo, mas no design
          * aprovado elas são a segunda página DESTE card — o card 1 mostra as
          * duas listas. O agrupamento do conteúdo não reflete o layout.
          */
-        handwriting: {
-          items: ABOUT.features[1].items,
-          top: 84,
-          step: 13.5,
-          left: 52,
-          size: 9.41,
-        },
+        handwriting: { items: ABOUT.features[1].items, top: 135.23, step: 13.4, left: 112.56, size: 9.41 },
       },
     ],
   },
   {
     title: [{ text: "Todo dia", dim: true }, { text: "uma frase de São Josemaria para inspirar" }],
     layers: [
-      { src: agendaDiaria, box: { w: 598, x: 177, y: 105 }, noShadow: true },
+      { src: fraseDia, box: { w: 414.41, x: 171.59, y: 22 } },
       {
-        /* Sombra em cunha que a página projeta sobre o card (wireframe). */
+        /* Sombra em cunha que a página projeta sobre o card (Figma "sombra"). */
         box: { w: 498, x: 29, y: 169 },
         anim: { variant: "pop" },
         wedge: {
@@ -125,15 +108,14 @@ export const FEATURES: Feature[] = [
           path: "M 432.044 462.613 L 52.696 326.925 C 46.057 324.55 43.894 316.234 48.536 310.926 L 293.943 30.262 C 298.519 25.028 306.908 25.946 310.244 32.046 L 477.206 337.287 C 478.486 339.626 478.778 342.379 478.018 344.934 L 444.997 456.046 C 443.363 461.545 437.446 464.545 432.044 462.613 Z",
         },
       },
-      { src: citacao, box: { w: 276, x: 60, y: 188 }, anim: { variant: "forward" } },
+      { src: frase, box: { w: 338, x: 53, y: 212 }, anim: { variant: "forward" } },
     ],
   },
-
   {
     title: [{ text: "Todo mês", dim: true }, { text: "um tema para viver a santidade no cotidiano" }],
     layers: [
-      { src: vidaOracao, box: { w: 451, x: -114, y: 180 }, anim: { variant: "left" } },
-      { src: propositosMes, box: { w: 439, x: 261, y: 289 }, anim: { variant: "right", delay: 90 } },
+      { src: vidaOracao, box: { w: 426.05, x: 0, y: 118.15 }, anim: { variant: "left" } },
+      { src: propositos, box: { w: 381.24, x: 204.76, y: 206.36 }, anim: { variant: "right", delay: 90 } },
     ],
   },
   {
@@ -144,8 +126,8 @@ export const FEATURES: Feature[] = [
       { text: "importantes da Obra" },
     ],
     layers: [
-      { src: calendario, box: { w: 441, x: 136, y: 195 }, anim: { variant: "up" } },
-      { src: datasObra, box: { w: 348, x: 9, y: 305 }, anim: { variant: "up", delay: 120 } },
+      { src: folhaJaneiro, box: { w: 441, x: 135.5, y: 195 }, anim: { variant: "up" } },
+      { src: folhaOutubro, box: { w: 416.18, x: 0, y: 255.37 }, anim: { variant: "up", delay: 120 } },
     ],
   },
 ];
@@ -158,8 +140,9 @@ export const FEATURES: Feature[] = [
  *   título  583px de largura, 60/60, ls -3px, 11px abaixo do olho
  *   apoio   583px de largura, 20/28, ls -0.2px, 23px abaixo do título
  *   botão   600 × 68, raio 10, 27px abaixo do apoio
- * O título e o apoio são alinhados à ESQUERDA dentro da caixa de 583px, e a
- * caixa é que está centralizada — não é texto centralizado.
+ * No Figma novo (949:890) o título tem 3 linhas e o apoio 2, ambos centralizados
+ * numa caixa de 1037px; o título quebra nas 
+ de ABOUT.title.
  */
 export function AboutHeader() {
   return (
@@ -219,9 +202,16 @@ export function About() {
   return (
     <section
       id="sobre"
-      className="mx-4 overflow-clip rounded-[40px] bg-surface-gold pt-24 pb-16 md:mx-auto md:max-w-[1440px] md:rounded-[90px] md:pt-[208px] md:pb-[117px]"
+      className="relative mx-4 overflow-clip rounded-[40px] bg-surface-gold pt-24 pb-16 md:mx-auto md:max-w-[1440px] md:rounded-[90px] md:pt-[208px] md:pb-[117px]"
     >
-      <Container>
+      {/* Aquarela do Figma (949:892), cortada pelos cantos arredondados da seção. */}
+      <img
+        src={fundo}
+        alt=""
+        aria-hidden
+        className="pointer-events-none absolute inset-0 size-full object-cover object-top"
+      />
+      <Container className="relative">
         <AboutHeader />
 
         <ul className="mt-12 grid grid-cols-[minmax(0,586px)] justify-center gap-[27px] md:mt-[87px] lg:-mx-10 lg:grid-cols-[repeat(2,minmax(0,586px))]">
@@ -299,11 +289,7 @@ export function FeatureCard({
                   src={layer.src}
                   alt=""
                   aria-hidden
-                  className={
-                    layer.noShadow
-                      ? "h-auto w-full rounded-xs"
-                      : "h-auto w-full rounded-xs shadow-page"
-                  }
+                  className="h-auto w-full"
                 />
               ) : null}
               {layer.wedge ? (

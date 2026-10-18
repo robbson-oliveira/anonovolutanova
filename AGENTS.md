@@ -59,6 +59,20 @@ zero, no `README.md` (mude-o junto quando mudar um passo de configuração).
 Toda chave que o site envia em `extensions.anln_checkout` e toda resposta do
 bridge fazem parte de um contrato: mudar um lado exige mudar o outro.
 
+## Referência de design (Figma)
+
+O design aprovado da home está no Figma, arquivo "Agenda Campanha 2026-2027"
+(`fileKey` `OR33npfELpRZ3TK3nP6afa`): frame **Desktop - Landing page principal
+2027**, nó `949:5`
+(https://www.figma.com/design/OR33npfELpRZ3TK3nP6afa/Agenda-Campanha-2026-2027?node-id=949-5).
+Cores e formas do Figma substituem as do wireframe do Framer onde divergirem.
+
+- O arquivo não tem variáveis; as cores e medidas vêm de `get_design_context`
+  em cada seção, e as cores vão para `src/ds/styles/tokens.css` como tokens.
+- Trabalhe **uma seção por vez**, com o nó da seção (não o frame inteiro, que
+  passa de 140 mil caracteres de metadata).
+- A home real fica atrás de senha em `/home-dev` (ver "Loja e checkout").
+
 ## Stack e comandos
 
 - Next.js 16 (App Router, `output: "standalone"`), React 19, TypeScript 5.9

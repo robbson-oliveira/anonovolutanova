@@ -80,7 +80,7 @@ export function Hero() {
             </Reveal>
 
             <Reveal variant="up" delay={120}>
-              <p className="mt-[19px] text-h3 text-accent">{HERO.subtitle}</p>
+              <p className="mt-[19px] text-h3 text-subtitle">{HERO.subtitle}</p>
             </Reveal>
 
             {/* Palco. No celular fica no fluxo, entre o subtítulo e o
@@ -93,7 +93,7 @@ export function Hero() {
 
             <Reveal variant="up" delay={180}>
               {/* text-wrap: pretty evita a linha órfã no fim do parágrafo. */}
-              <Text className="mt-[19px] max-w-[540px] text-pretty">
+              <Text className="mt-[19px] max-w-[540px] text-pretty text-lead">
                 {HERO.paragraph}
               </Text>
             </Reveal>
@@ -104,7 +104,7 @@ export function Hero() {
                 size="lg"
                 shape="block"
                 // As medidas do botão vencem as do tamanho "lg" do Button (daí o !).
-                className="mt-[29px] h-[68px] w-full max-w-[425px] rounded-[10px]! text-[16px]! leading-[16px]! font-bold! tracking-[-0.64px]!"
+                className="mt-[29px] h-[68px] w-full max-w-[425px] rounded-[10px]! border border-gold-end bg-linear-90 from-gold-start to-gold-end text-[16px]! leading-[16px]! font-bold! tracking-[-0.64px]! hover:brightness-95"
               >
                 {HERO.cta}
               </Button>
@@ -117,7 +117,7 @@ export function Hero() {
                     key={seal}
                     tone="plain"
                     icon={<IconSparkle />}
-                    className="h-9 gap-2.5 rounded-[10px]! px-2.5 font-bold! text-accent"
+                    className="h-9 gap-2.5 rounded-[10px]! px-2.5 font-bold! text-text-strong"
                   >
                     {seal}
                   </Badge>
@@ -134,7 +134,7 @@ export function Hero() {
                   >
                     <dt className="sr-only">{stat.label}</dt>
                     <dd>
-                      <span className="block text-stat text-accent">
+                      <span className="block text-stat text-text-strong">
                         <Counter value={stat.value} suffix={stat.suffix} />
                       </span>
                       <span className="mt-[4px] block text-sm text-text">

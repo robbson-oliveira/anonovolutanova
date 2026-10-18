@@ -125,7 +125,7 @@ function PriceCard({ thumbSrc }: { thumbSrc: CoverSrc }) {
   return (
     <div
       className={cn(
-        "pointer-events-auto absolute left-[30%] top-[57%] z-10 flex h-[119px] w-[191px] flex-col items-center justify-start gap-[3px] rounded-md bg-surface p-2.5 animate-pop-in motion-reduce:animate-none shadow-pop",
+        "pointer-events-auto absolute left-[30%] top-[57%] z-10 flex h-[119px] w-[191px] flex-col items-center justify-start gap-[3px] rounded-md border border-gold-end bg-surface-card p-2.5 animate-pop-in motion-reduce:animate-none shadow-pop",
         "@max-[520px]/stage:inset-x-0 @max-[520px]/stage:top-auto @max-[520px]/stage:bottom-[2%] @max-[520px]/stage:mx-auto @max-[520px]/stage:h-auto @max-[520px]/stage:w-fit @max-[520px]/stage:max-w-[94%] @max-[520px]/stage:flex-row @max-[520px]/stage:gap-4 @max-[520px]/stage:py-2 @max-[520px]/stage:pl-4 @max-[520px]/stage:pr-2",
       )}
     >
@@ -148,7 +148,7 @@ function PriceCard({ thumbSrc }: { thumbSrc: CoverSrc }) {
 
       <a
         href={BUY_URL}
-        className="relative flex h-[34px] w-[146px] shrink-0 items-center justify-center rounded-sm bg-action text-[15px] font-bold leading-[18px] text-on-action before:absolute before:inset-x-0 before:-inset-y-[5px] @max-[520px]/stage:h-11"
+        className="relative flex h-[34px] w-[146px] shrink-0 items-center justify-center rounded-sm bg-linear-90 from-gold-start to-gold-end text-[15px] font-bold leading-[18px] text-on-action before:absolute before:inset-x-0 before:-inset-y-[5px] @max-[520px]/stage:h-11"
       >
         Comprar Agora
       </a>

@@ -86,6 +86,13 @@
   --brand-ochre-500: rgb(192 153 85);  /* eyebrow, divider and the 15% note */
   --brand-paper-glow: rgb(255 255 255 / 0.5); /* halo behind the gold note */
 
+  /* Hero (Figma 949:1041) */
+  --brand-sea-500: rgb(42 112 135);    /* subtitle (#2A7087) */
+  --brand-ink-800: rgb(35 52 61);      /* lead paragraph (#23343D) */
+  --brand-gold-600: rgb(150 116 56);   /* gold button, gradient start (#967438) */
+  --brand-gold-200: rgb(230 198 124);  /* gold button, gradient end and border (#E6C67C) */
+  --brand-cream-50: rgb(255 245 235);  /* price card (#FFF5EB) */
+
   /* WhatsApp chat widget of the same page */
   --brand-whatsapp-500: rgb(59 196 93);    /* floating button and panel header */
   --brand-whatsapp-400: rgb(37 211 102);   /* send button, message typed */
@@ -124,7 +131,12 @@
   --color-text-strong: var(--brand-moss-700);
   --color-text-muted: var(--brand-ink-400);
   --color-text-on-inverse: var(--brand-paper-100);
-  --color-text-display: var(--brand-moss-600);
+  --color-text-display: var(--brand-moss-700);
+  --color-text-subtitle: var(--brand-sea-500);
+  --color-text-lead: var(--brand-ink-800);
+  --color-surface-card: var(--brand-cream-50);
+  --color-gold-start: var(--brand-gold-600);        /* gold button gradient */
+  --color-gold-end: var(--brand-gold-200);
   --color-text-card: var(--brand-ink-900);          /* título dentro de card: preto */
   --color-text-on-warm: var(--brand-gold-300);      /* texto sobre o card terracota */
 

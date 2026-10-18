@@ -74,7 +74,7 @@ export function DuckStrip() {
     <div
       ref={ref}
       aria-hidden
-      className="h-[71px] overflow-hidden bg-surface-inverse-soft"
+      className="relative z-10 h-[71px] overflow-hidden bg-surface-inverse-soft lg:top-[-82px]"
     >
       <div className="-ml-[76px] flex h-full w-max animate-duck-drift items-center gap-7 motion-reduce:animate-none">
         {Array.from({ length: DUCK_COUNT }, (_, i) => (

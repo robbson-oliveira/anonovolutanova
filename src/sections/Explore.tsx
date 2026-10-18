@@ -1,28 +1,56 @@
 "use client";
 
 import { useState } from "react";
-import { BookCover, EditionSelector, Reveal, Text, cn } from "@ds/index";
+import { EditionSelector, Reveal, Text, cn } from "@ds/index";
 import { EXPLORE, QUOTE } from "@content/home";
 import { EDITIONS } from "@content/product";
 
 const capaColor = "/img/capa-color.png";
 const capaClassica = "/img/capa-classica.png";
 
-const COVERS = {
-  color: { src: capaColor, alt: "Capa da Edição Color" },
-  classica: { src: capaClassica, alt: "Capa da Edição Clássica" },
-} as const;
+/**
+ * As capas são as mesmas da hero: mockups com a sombra assada no PNG, então a
+ * imagem é maior que o livro. `book` é a caixa do livro (com a espiral) dentro
+ * do arquivo, em px do arquivo, medida pelo alfa ≥ 200. É ela que tem a altura
+ * do Figma (645px) nas duas edições — a paridade vale para o livro, não para o
+ * arquivo — e a sombra transborda por fora, como no design.
+ */
+type Cover = {
+  src: string;
+  alt: string;
+  img: { w: number; h: number };
+  book: { x: number; y: number; w: number; h: number };
+};
 
-/** Altura fixa das duas capas — é ela que garante a paridade. */
-const COVER_HEIGHT = 607;
+const COVERS: Record<"color" | "classica", Cover> = {
+  color: {
+    src: capaColor,
+    alt: "Capa da Edição Color",
+    img: { w: 514, h: 634 },
+    book: { x: 9, y: 11, w: 358, h: 463 },
+  },
+  classica: {
+    src: capaClassica,
+    alt: "Capa da Edição Clássica",
+    img: { w: 472, h: 600 },
+    book: { x: 21, y: 16, w: 345, h: 464 },
+  },
+};
+
+/** Altura do livro no Figma (949:830), nas duas edições. */
+const COVER_HEIGHT = 645;
+
+/** Altura máxima das páginas internas das outras abas. */
+const PAGE_HEIGHT = 607;
 
 /**
- * Altura das capas em telas estreitas: os 607px, ou a altura em que a capa
- * MAIS LARGA ainda cabe na largura do painel (cqw do `@container` do painel).
- * As duas usam o mesmo valor, então a paridade vale em qualquer largura.
+ * Altura do livro em telas estreitas: os 645px, ou a altura em que o livro
+ * MAIS ALTO em proporção ainda cabe na largura do painel (cqw do `@container`
+ * do painel). As duas edições usam o mesmo valor, então a paridade vale em
+ * qualquer largura.
  */
-const COVER_HEIGHT_PER_WIDTH = Math.min(
-  ...EDITIONS.map((e) => e.coverSize.height / e.coverSize.width),
+const COVER_HEIGHT_PER_WIDTH = Math.max(
+  ...Object.values(COVERS).map((c) => c.book.h / c.book.w),
 );
 const COVER_VIEW_HEIGHT = `min(${COVER_HEIGHT}px, ${(COVER_HEIGHT_PER_WIDTH * 100).toFixed(3)}cqw)`;
 
@@ -43,30 +71,30 @@ const TAB_PAGES: (TabPage | null)[] = [
 
 /** Os 607px, ou a altura em que a página ocupa a largura toda do painel. */
 function pageViewHeight(page: TabPage) {
-  return `min(${COVER_HEIGHT}px, ${((page.height / page.width) * 100).toFixed(3)}cqw)`;
+  return `min(${PAGE_HEIGHT}px, ${((page.height / page.width) * 100).toFixed(3)}cqw)`;
 }
 
 /**
- * Pontos de interesse sobre a capa. Percentuais medidos no wireframe:
- * a capa ocupa 433,6×607 e os três marcadores de 28px caem em
- * (69,1 / 175,6), (258,5 / 395,7) e (303,1 / 319,9) px dentro dela.
+ * Pontos de interesse sobre o livro. Percentuais do Figma (949:830): o livro
+ * ocupa 519×645 e os três marcadores de 28px têm o centro em
+ * (124,3 / 205), (313,6 / 425) e (358,1 / 349) px dentro dele.
  */
 const HOTSPOTS = [
   {
-    x: 15.94,
-    y: 28.93,
+    x: 23.95,
+    y: 31.78,
     title: "Espiral metálica",
     text: "Abre 360°, para escrever com a agenda dobrada sobre a mesa.",
   },
   {
-    x: 59.62,
-    y: 65.19,
+    x: 60.42,
+    y: 65.89,
     title: "Patos à água",
     text: "O tema do ano: lançar-se à água com confiança, um dia de cada vez.",
   },
   {
-    x: 69.9,
-    y: 52.7,
+    x: 69.06,
+    y: 54.11,
     title: "Hotstamp",
     text: "O ano em película metalizada, aplicada a quente sobre a capa dura.",
   },
@@ -77,7 +105,7 @@ const HOTSPOTS = [
  * seção 1440×1288, padding 120/60/100; título 60/60 ls -3; apoio 20/24 a 389px;
  * seletor a 297px do topo; painel 1160×819, raio 18, padding lateral 60;
  * abas 36px de altura, raio 10, padding 10, texto 16/16 ls -0,64;
- * capa 607px de altura centralizada; citação de 582px no pé do painel.
+ * livro de 645px de altura centralizado (Figma novo); citação de 582px no pé do painel.
  *
  * Telas menores (mobile first; a 1440 as medidas acima valem ao pixel):
  *   - padding lateral 16px no celular, 40 no tablet e 60 a partir de xl; o
@@ -109,7 +137,7 @@ export function Explore() {
       className="bg-surface px-4 pb-16 pt-16 md:px-10 md:pb-[100px] md:pt-[120px] xl:px-[60px]"
     >
       <Reveal variant="up" className="text-center">
-        <h2 className="text-h2 font-bold text-text-strong">
+        <h2 className="text-h2 font-bold text-text-lead">
           {EXPLORE.eyebrow}
         </h2>
       </Reveal>
@@ -161,11 +189,11 @@ export function Explore() {
               className={cn(
                 "shrink-0 cursor-pointer whitespace-nowrap rounded-[10px] px-[10px] py-[14px] text-[16px] leading-[16px] tracking-[-0.04em] transition-colors md:py-[10px]",
                 /* borda de 1px por dentro — no wireframe ela não altera os 36px de altura */
-                "shadow-[inset_0_0_0_1px_var(--color-accent)]",
+                "shadow-[inset_0_0_0_1px_var(--color-action)]",
                 "[transition-duration:var(--duration-fast)]",
                 i === tab
-                  ? "bg-accent font-bold text-on-action"
-                  : "font-medium text-accent hover:bg-accent-track",
+                  ? "bg-action font-bold text-on-action"
+                  : "font-medium text-action hover:bg-action-track",
               )}
             >
               {label}
@@ -174,7 +202,7 @@ export function Explore() {
         </div>
 
         <div
-          className="mt-6 flex min-h-(--cover-h) items-center justify-center md:mt-[32px]"
+          className="mt-6 flex min-h-(--cover-h) items-center justify-center md:mt-[16px]"
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
         >
@@ -190,66 +218,78 @@ export function Explore() {
               />
             ) : (
               <>
-                {/* A altura inline de 607px da BookCover cede ao !important
-                    só quando o painel é estreito demais (ver COVER_VIEW_HEIGHT);
-                    a 1440 o valor resolvido é o mesmo. */}
-                <BookCover
-                  src={cover.src}
-                  alt={cover.alt}
-                  height={COVER_HEIGHT}
-                  className="h-(--cover-h)!"
-                />
-                {HOTSPOTS.map((s, i) => (
-                  <div
-                    key={s.title}
-                    className="absolute"
-                    style={{ left: `${s.x}%`, top: `${s.y}%` }}
-                  >
-                    {/* 28px desenhados; o ::before leva a área de toque a 44px */}
-                    <button
-                      type="button"
-                      aria-expanded={openSpot === i}
-                      aria-label={s.title}
-                      onClick={() => setOpenSpot(openSpot === i ? null : i)}
-                      className="relative grid size-7 -translate-x-1/2 -translate-y-1/2 cursor-pointer place-items-center rounded-pill bg-action text-on-action shadow-hotspot before:absolute before:-inset-2"
+                {/* Caixa do livro: altura do Figma (ou a que cabe no painel) e a
+                    proporção do livro; a imagem, com a sombra assada, é posicionada
+                    em % para o livro cair exatamente na caixa. */}
+                <div
+                  className="relative h-(--cover-h)"
+                  style={{ aspectRatio: `${cover.book.w} / ${cover.book.h}` }}
+                >
+                  <img
+                    src={cover.src}
+                    alt={cover.alt}
+                    width={cover.img.w}
+                    height={cover.img.h}
+                    className="pointer-events-none absolute max-w-none"
+                    style={{
+                      left: `${(-cover.book.x / cover.book.w) * 100}%`,
+                      top: `${(-cover.book.y / cover.book.h) * 100}%`,
+                      width: `${(cover.img.w / cover.book.w) * 100}%`,
+                      height: `${(cover.img.h / cover.book.h) * 100}%`,
+                    }}
+                  />
+                  {HOTSPOTS.map((s, i) => (
+                    <div
+                      key={s.title}
+                      className="absolute"
+                      style={{ left: `${s.x}%`, top: `${s.y}%` }}
                     >
-                      <span className="text-[14px] leading-none">+</span>
-                    </button>
-                  </div>
-                ))}
-                {spot && (
-                  <div
-                    style={
-                      {
-                        "--spot-x": `${spot.x}%`,
-                        "--spot-y": `${spot.y}%`,
-                      } as React.CSSProperties
-                    }
-                    className={cn(
-                      "absolute inset-x-3 bottom-3 z-10 rounded-card bg-surface p-4 shadow-float",
-                      /* a partir de md: 16px abaixo e à direita do marcador, como no wireframe */
-                      "md:inset-x-auto md:bottom-auto md:left-[calc(var(--spot-x)_+_16px)] md:top-[calc(var(--spot-y)_+_16px)] md:w-56",
-                    )}
-                  >
-                    <p className="text-sm font-bold text-text-strong">
-                      {spot.title}
-                    </p>
-                    <Text size="xs" className="mt-1.5">
-                      {spot.text}
-                    </Text>
-                  </div>
-                )}
+                      {/* 28px desenhados; o ::before leva a área de toque a 44px */}
+                      <button
+                        type="button"
+                        aria-expanded={openSpot === i}
+                        aria-label={s.title}
+                        onClick={() => setOpenSpot(openSpot === i ? null : i)}
+                        className="relative grid size-7 -translate-x-1/2 -translate-y-1/2 cursor-pointer place-items-center rounded-pill border border-on-action/80 bg-action text-on-action shadow-hotspot before:absolute before:-inset-2"
+                      >
+                        <span className="text-[14px] leading-none">+</span>
+                      </button>
+                    </div>
+                  ))}
+                  {spot && (
+                    <div
+                      style={
+                        {
+                          "--spot-x": `${spot.x}%`,
+                          "--spot-y": `${spot.y}%`,
+                        } as React.CSSProperties
+                      }
+                      className={cn(
+                        "absolute inset-x-3 bottom-3 z-10 rounded-card bg-surface p-4 shadow-float",
+                        /* a partir de md: 16px abaixo e à direita do marcador, como no wireframe */
+                        "md:inset-x-auto md:bottom-auto md:left-[calc(var(--spot-x)_+_16px)] md:top-[calc(var(--spot-y)_+_16px)] md:w-56",
+                      )}
+                    >
+                      <p className="text-sm font-bold text-text-strong">
+                        {spot.title}
+                      </p>
+                      <Text size="xs" className="mt-1.5">
+                        {spot.text}
+                      </Text>
+                    </div>
+                  )}
+                </div>
               </>
             )}
           </div>
         </div>
 
-        <figure className="mx-auto mt-[28px] w-[582px] max-w-full text-center">
+        <figure className="mx-auto mt-[28px] w-[582px] md:mt-[6px] max-w-full text-center">
           <blockquote className="text-base text-text">
             “{QUOTE.text}”
           </blockquote>
-          <figcaption className="mt-[20px] text-[24px] font-bold leading-[30px] text-accent-hover md:text-[30px] md:leading-[36px]">
-            — {QUOTE.author}
+          <figcaption className="mt-[20px] text-[24px] font-bold leading-[30px] text-text-strong md:text-[30px] md:leading-[36px]">
+            {QUOTE.author}
           </figcaption>
         </figure>
       </div>

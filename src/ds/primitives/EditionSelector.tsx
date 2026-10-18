@@ -66,8 +66,8 @@ export function EditionSelector({
               "text-[22px] leading-tight tracking-[-0.02em] transition-colors",
               "[transition-duration:var(--duration-fast)]",
               active
-                ? "border-accent-track font-bold text-accent"
-                : "border-transparent font-medium text-text-muted hover:text-accent",
+                ? "border-gold-end font-bold text-text-strong"
+                : "border-transparent font-medium text-text-idle hover:text-text-strong",
             )}
           >
             {option.label}
@@ -78,7 +78,7 @@ export function EditionSelector({
                 aria-hidden
                 onAnimationEnd={advance}
                 className={cn(
-                  "absolute -bottom-[3px] left-0 h-[3px] w-full origin-left bg-accent",
+                  "absolute -bottom-[3px] left-0 h-[3px] w-full origin-left bg-gold-start",
                   "animate-progress-fill motion-reduce:animate-none",
                   paused && "[animation-play-state:paused]",
                 )}

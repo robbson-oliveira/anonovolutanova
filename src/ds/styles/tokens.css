@@ -92,6 +92,7 @@
   --brand-gold-600: rgb(150 116 56);   /* gold button, gradient start (#967438) */
   --brand-gold-200: rgb(230 198 124);  /* gold button, gradient end and border (#E6C67C) */
   --brand-cream-50: rgb(255 245 235);  /* price card (#FFF5EB) */
+  --brand-stone-400: rgb(138 134 128);  /* idle edition tab (#8A8680) */
   --brand-silver-400: rgb(147 149 152); /* "Sobre" card titles: dim words, gradient end (#939598) */
 
   /* WhatsApp chat widget of the same page */
@@ -145,6 +146,8 @@
   /* AÇÃO — fundo de botão. É verde. Separado de `accent` de propósito:
      conflatar os dois foi o erro que inverteu a paleta inteira. */
   --color-action: var(--brand-moss-700);
+  --color-action-track: var(--brand-moss-100);       /* hover of outlined petrol buttons */
+  --color-text-idle: var(--brand-stone-400);         /* idle edition tab label */
   --color-action-hover: var(--brand-moss-500);
   --color-on-action: var(--brand-paper-100);
 
@@ -323,7 +326,7 @@
   --shadow-book: -14px 18px 28px rgb(0 0 0 / 0.24);
   --shadow-book-back: 0 12px 24px rgb(0 0 0 / 0.22);
   --shadow-pop: 0 4px 4px rgb(0 0 0 / 0.1);          /* cartão de preço sobre as agendas do hero */
-  --shadow-hotspot: 0 2px 8px rgb(0 0 0 / 0.2);      /* marcadores "+" sobre a capa */
+  --shadow-hotspot: 0 2px 4px rgb(0 0 0 / 0.2);       /* marcadores "+" sobre a capa */
   --shadow-cta-warm: 0 12px 24px rgb(0 0 0 / 0.3);   /* botão quente do fechamento */
   --shadow-whatsapp-panel: 0 5px 40px rgb(0 0 0 / 0.16);      /* chat panel of the "Em breve" page */
   --shadow-whatsapp-button: 0 16px 24px rgb(73 104 126 / 0.16); /* its floating button */

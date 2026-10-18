@@ -47,7 +47,7 @@ export function Hero() {
   return (
     <section
       id="inicio"
-      className="relative overflow-x-clip bg-surface pb-16 pt-[29px] md:pb-24 lg:pb-[160px]"
+      className="relative overflow-x-clip bg-surface pb-16 pt-[29px] md:pb-24 lg:pb-[158px]"
     >
       <div className="mx-auto w-full max-w-[1380px] px-6 md:px-8">
         {/* isolate: o palco fica atrás do texto (-z-10) sem cair para trás

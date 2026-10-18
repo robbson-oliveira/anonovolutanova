@@ -4,6 +4,7 @@ import { getProductOffer } from "@/lib/commerce/offer";
 import { publicEnv } from "@/lib/env";
 import { About } from "@sections/About";
 import { Closing } from "@sections/Closing";
+import { DuckStrip } from "@sections/DuckStrip";
 import { Explore } from "@sections/Explore";
 import { Faq } from "@sections/Faq";
 import { Hero } from "@sections/Hero";
@@ -74,6 +75,7 @@ export default async function Home() {
         <SiteHeader />
         <main>
           <Hero />
+          <DuckStrip />
           <About />
           <Explore />
           <Liturgical />

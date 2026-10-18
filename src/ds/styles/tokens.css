@@ -345,6 +345,7 @@
   --duration-count: 1600ms;
   --duration-book: 2500ms;
   --duration-ticker: 34s;
+  --duration-duck-drift: 40s; /* one 76px step of the duck strip: slow on purpose */
   --duration-edition: 6s;
 
   /* Animações do sistema, como utilitários do Tailwind (`animate-reveal-up`,
@@ -357,6 +358,7 @@
   --animate-reveal-pop: ds-reveal-pop var(--duration-reveal) var(--ease-enter) both;
   --animate-reveal-forward: ds-reveal-forward 1.15s var(--ease-enter) both;
   --animate-ticker: ds-ticker var(--duration-ticker) linear infinite;
+  --animate-duck-drift: ds-duck-drift var(--duration-duck-drift) linear infinite;
   --animate-progress-fill: ds-progress-fill var(--duration-edition) linear forwards;
   --animate-book-back-in: ds-book-back-in 0.9s var(--ease-out-soft) both;
   --animate-book-fan-out: ds-book-fan-out var(--duration-book) var(--ease-out-soft) both;
@@ -447,6 +449,17 @@
 
   /* Esteira: o conteúdo é duplicado, então -50% cai exatamente na cópia e o
      loop volta sem salto. */
+  /* Duck strip: the whole row moves one step (duck 48px + gap 28px = 76px)
+     and restarts; the ducks are identical, so the loop has no visible seam. */
+  @keyframes ds-duck-drift {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-76px);
+    }
+  }
+
   @keyframes ds-ticker {
     from {
       transform: translateX(0);

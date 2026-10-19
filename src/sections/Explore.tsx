@@ -68,7 +68,8 @@ const COVER_VIEW_HEIGHT = `min(${COVER_HEIGHT}px, ${(COVER_HEIGHT_PER_WIDTH * 10
  * altura de livro e trocar de aba não muda o tamanho da agenda; só a sombra de
  * cada arquivo varia, e ela transborda por fora.
  */
-type Spread = Cover;
+/** `leftH`: altura da página esquerda (a capa de trás) no arquivo, em px, com alfa ≥ 240. */
+type Spread = Cover & { leftH: number };
 
 const SPREADS: (Spread | null)[] = [
   null,
@@ -77,29 +78,37 @@ const SPREADS: (Spread | null)[] = [
     alt: "Agenda aberta: propósito do mês e calendário",
     img: { w: 1216, h: 861 },
     book: { x: 115, y: 27, w: 764, h: 545 },
+    leftH: 525,
   },
   {
     src: "/img/agenda-planos-metas.webp",
     alt: "Agenda aberta: planos e metas",
     img: { w: 1178, h: 930 },
     book: { x: 50, y: 29, w: 819, h: 584 },
+    leftH: 562,
   },
   {
     src: "/img/agenda-planejamento-financeiro.webp",
     alt: "Agenda aberta: planejamento financeiro",
     img: { w: 1145, h: 927 },
     book: { x: 38, y: 29, w: 822, h: 587 },
+    leftH: 565,
   },
   {
     src: "/img/agenda-diaria.webp",
     alt: "Agenda aberta: agenda diária",
     img: { w: 1045, h: 845 },
     book: { x: 55, y: 26, w: 716, h: 562 },
+    leftH: 550,
   },
 ];
 
-/** Mesma altura da capa; em telas estreitas, a que deixa o mais largo caber no painel. */
-const SPREAD_HEIGHT = `min(${COVER_HEIGHT}px, ${(100 / Math.max(...SPREADS.flatMap((p) => (p ? [p.book.w / p.book.h] : [])))).toFixed(3)}cqw)`;
+/**
+ * Altura da página esquerda de todas as agendas: a mesma da capa; em telas
+ * estreitas, a que deixa a mais larga caber no painel. A altura do livro de
+ * cada foto (`book.h`) sai daqui na proporção `book.h / leftH`.
+ */
+const SPREAD_HEIGHT = `min(${COVER_HEIGHT}px, ${(100 / Math.max(...SPREADS.flatMap((p) => (p ? [p.book.w / p.leftH] : [])))).toFixed(3)}cqw)`;
 
 /**
  * Pontos de interesse sobre o livro. Percentuais medidos no Figma (949:830),
@@ -240,7 +249,7 @@ export function Explore() {
                 key={page.src}
                 className="relative animate-reveal-pop"
                 style={{
-                  height: SPREAD_HEIGHT,
+                  height: `calc(${SPREAD_HEIGHT} * ${(page.book.h / page.leftH).toFixed(4)})`,
                   aspectRatio: `${page.book.w} / ${page.book.h}`,
                 }}
               >

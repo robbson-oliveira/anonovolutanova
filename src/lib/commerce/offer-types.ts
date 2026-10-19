@@ -22,6 +22,13 @@ export type EditionOffer = {
   /** Dimensões intrínsecas do arquivo, para o next/image reservar o espaço. */
   coverSize: { width: number; height: number };
   description: string;
+  /** Whether this is an agenda edition (the notepad is not). */
+  agenda: boolean;
+  /** What one unit is called, as in "por agenda" / "por bloco". */
+  unit: string;
+  price: number;
+  /** One installment of `price`. */
+  installmentAmount: number;
   inStock: boolean;
   /** Id of the edition's simple product in WooCommerce. Null without the 2027 products configured. */
   productId: number | null;

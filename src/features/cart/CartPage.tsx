@@ -39,7 +39,7 @@ export function CartPage({ offer }: CartPageProps) {
     if (viewed.current || !selling) return;
     viewed.current = true;
     trackViewItem(
-      offer.editions.filter((e) => e.inStock).map((e) => item(e.productId ?? e.id, e.label, offer.price, 1)),
+      offer.editions.filter((e) => e.inStock).map((e) => item(e.productId ?? e.id, e.label, e.price, 1)),
     );
   }, [offer, selling]);
 
@@ -75,17 +75,17 @@ export function CartPage({ offer }: CartPageProps) {
               <EditionLine
                 key={e.id}
                 edition={e}
-                price={offer.price}
+                price={e.price}
                 line={line}
                 busy={cart.busy || !cart.ready}
                 onAdd={async () => {
                   if (!e.productId) return;
-                  if (await cart.add(e.productId, 1)) trackAddToCart([item(e.productId, e.label, offer.price, 1)]);
+                  if (await cart.add(e.productId, 1)) trackAddToCart([item(e.productId, e.label, e.price, 1)]);
                 }}
                 onQuantity={(quantity) => {
                   if (!line) return;
                   if (quantity > line.quantity && e.productId) {
-                    trackAddToCart([item(e.productId, e.label, offer.price, quantity - line.quantity)]);
+                    trackAddToCart([item(e.productId, e.label, e.price, quantity - line.quantity)]);
                   }
                   void cart.setQuantity(line.key, quantity);
                 }}

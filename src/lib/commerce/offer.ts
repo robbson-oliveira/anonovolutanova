@@ -1,6 +1,7 @@
 import "server-only";
 
 import {
+  AGENDA_EDITIONS,
   CYCLE_YEAR,
   EDITIONS,
   FREE_SHIPPING_MIN_QTY,
@@ -29,10 +30,10 @@ export type { EditionOffer, ProductImage, ProductOffer } from "./offer-types";
 export async function getProductOffer(): Promise<ProductOffer> {
   const fallback = staticOffer();
   const ids = serverEnv.products;
-  if (EDITIONS.some((e) => !ids[e.id])) return fallback;
+  if (AGENDA_EDITIONS.some((e) => !ids[e.id])) return fallback;
 
   try {
-    const fromStore = await storeOffer(ids as Record<EditionId, number>);
+    const fromStore = await storeOffer(ids);
     return fromStore ?? fallback;
   } catch {
     return fallback;
@@ -46,12 +47,17 @@ function staticOffer(): ProductOffer {
     price: PRICE.amount,
     installments: { count: PRICE.installments, amount: PRICE.installmentAmount },
     freeShippingMinQty: FREE_SHIPPING_MIN_QTY,
-    editions: EDITIONS.map((e) => ({
+    // The notepad has no static price: it only exists with its WooCommerce product.
+    editions: AGENDA_EDITIONS.map((e) => ({
       id: e.id,
       label: e.label,
       cover: e.cover,
       coverSize: e.coverSize,
       description: e.description,
+      agenda: e.agenda,
+      unit: e.unit,
+      price: PRICE.amount,
+      installmentAmount: PRICE.installmentAmount,
       inStock: true,
       productId: null,
       image: null,
@@ -71,12 +77,12 @@ type StoreProduct = {
   images?: StoreImage[];
 };
 
-async function storeOffer(ids: Record<EditionId, number>): Promise<ProductOffer | null> {
+async function storeOffer(ids: Record<EditionId, number | null>): Promise<ProductOffer | null> {
   const base = `${publicEnv.wpUrl}/wp-json/wc/store/v1/products`;
   const init = { next: { revalidate: 60 }, signal: AbortSignal.timeout(10_000) } as const;
 
   const entries = await Promise.all(
-    EDITIONS.map(async (e) => {
+    EDITIONS.filter((e) => ids[e.id]).map(async (e) => {
       const res = await fetch(`${base}/${ids[e.id]}`, init);
       return [e.id, res.ok ? ((await res.json()) as StoreProduct) : null] as const;
     }),
@@ -95,23 +101,33 @@ async function storeOffer(ids: Record<EditionId, number>): Promise<ProductOffer 
 
   // Sem as duas edições mapeadas, o WooCommerce não está como o site espera:
   // melhor não vender do que vender a edição errada.
-  if (EDITIONS.some((e) => !byEdition.has(e.id))) return null;
+  if (AGENDA_EDITIONS.some((e) => !byEdition.has(e.id))) return null;
 
   const fallback = staticOffer();
-  const price = Math.min(...[...byEdition.values()].map((e) => e.price));
   const installmentCount = fallback.installments.count;
+  const installmentOf = (value: number) => Math.round((value / installmentCount) * 100) / 100;
+  // `price` stays the agenda's (the cheapest edition): it feeds the structured data and the cart total.
+  const price = Math.min(...AGENDA_EDITIONS.map((e) => byEdition.get(e.id)!.price));
 
   return {
     ...fallback,
     price,
     installments: {
       count: installmentCount,
-      amount: Math.round((price / installmentCount) * 100) / 100,
+      amount: installmentOf(price),
     },
-    editions: fallback.editions.map((e) => {
-      const { product } = byEdition.get(e.id)!;
+    editions: EDITIONS.filter((e) => byEdition.has(e.id)).map((e) => {
+      const { product, price: editionPrice } = byEdition.get(e.id)!;
       return {
-        ...e,
+        id: e.id,
+        label: e.label,
+        cover: e.cover,
+        coverSize: e.coverSize,
+        description: e.description,
+        agenda: e.agenda,
+        unit: e.unit,
+        price: editionPrice,
+        installmentAmount: installmentOf(editionPrice),
         inStock: product.is_in_stock && product.is_purchasable,
         productId: product.id,
         image: mainImage(product.images),

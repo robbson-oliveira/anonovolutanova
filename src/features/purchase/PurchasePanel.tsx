@@ -51,7 +51,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
   const router = useRouter();
 
   const edition = offer.editions.find((e) => e.id === editionId)!;
-  const total = offer.price * qty;
+  const total = edition.price * qty;
   // O que já está no carrinho conta para o frete grátis.
   const missingForFreeShipping = Math.max(0, offer.freeShippingMinQty - qty - (cart?.count ?? 0));
   const soldOut = offer.editions.every((e) => !e.inStock);
@@ -68,14 +68,14 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
     trackViewItem(
       offer.editions
         .filter((e) => e.inStock)
-        .map((e) => item(e.productId ?? e.id, e.label, offer.price, 1)),
+        .map((e) => item(e.productId ?? e.id, e.label, e.price, 1)),
     );
   }, [offer]);
 
   const addToCart = async () => {
     if (!cart || !edition.productId) return false;
     const ok = await cart.add(edition.productId, qty);
-    if (ok) trackAddToCart([item(edition.productId, edition.label, offer.price, qty)]);
+    if (ok) trackAddToCart([item(edition.productId, edition.label, edition.price, qty)]);
     return ok;
   };
 
@@ -221,7 +221,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
                   max={MAX_QTY}
                   value={qty}
                   onChange={(ev) => changeQty(parseInt(ev.target.value, 10))}
-                  aria-label="Quantidade de agendas"
+                  aria-label={`Quantidade de ${edition.unit === "agenda" ? "agendas" : "blocos"}`}
                   className="h-full w-12 [appearance:textfield] bg-transparent text-center text-base font-bold text-text-strong [&::-webkit-inner-spin-button]:appearance-none"
                 />
                 <button
@@ -247,11 +247,13 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
                 </button>
               ) : null}
             </div>
-            <Text as="span" size="xs" tone={missingForFreeShipping ? "muted" : "accent"} aria-live="polite">
-              {missingForFreeShipping
-                ? `Faltam ${missingForFreeShipping} para o frete grátis`
-                : "Frete grátis neste pedido"}
-            </Text>
+            {edition.agenda ? (
+              <Text as="span" size="xs" tone={missingForFreeShipping ? "muted" : "accent"} aria-live="polite">
+                {missingForFreeShipping
+                  ? `Faltam ${missingForFreeShipping} para o frete grátis`
+                  : "Frete grátis neste pedido"}
+              </Text>
+            ) : null}
             {offer.checkoutEnabled && cart?.error ? (
               <Text size="xs" tone="accent" role="alert" className="text-center">
                 {cart.error}
@@ -264,12 +266,12 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
         <div className="flex flex-col gap-2 border-t border-border pt-6">
           <div className="flex items-baseline justify-between gap-4">
             <Text as="span" size="sm" tone="muted">
-              {qty} × {formatBRL(offer.price)}
+              {qty} × {formatBRL(edition.price)}
             </Text>
             <span className="text-stat text-text-strong">{formatBRL(total)}</span>
           </div>
           <Text size="xs" tone="muted" className="text-right">
-            Ou {offer.installments.count}x de {formatBRL(offer.installments.amount)} por agenda
+            Ou {offer.installments.count}x de {formatBRL(edition.installmentAmount)} por {edition.unit}
           </Text>
         </div>
 

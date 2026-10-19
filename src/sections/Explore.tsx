@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button, EditionSelector, Reveal, cn } from "@ds/index";
 import { EXPLORE, QUOTE } from "@content/home";
-import { CART_URL, CYCLE_YEAR, EDITIONS } from "@content/product";
+import { AGENDA_EDITIONS, CART_URL, CYCLE_YEAR } from "@content/product";
 
 const capaColor = "/img/capa-color.png";
 const capaClassica = "/img/capa-classica.webp";
@@ -351,7 +351,7 @@ function Hotspots({ items, open, onOpen }: HotspotsProps) {
  *     largura (ao lado do marcador ele sairia da tela).
  */
 export function Explore() {
-  const [edition, setEdition] = useState<string>(EDITIONS[0].id);
+  const [edition, setEdition] = useState<string>(AGENDA_EDITIONS[0].id);
   const [paused, setPaused] = useState(false);
   const [tab, setTab] = useState(0);
   const [openSpot, setOpenSpot] = useState<number | null>(null);
@@ -382,7 +382,7 @@ export function Explore() {
             largura da tela: gap e fonte menores, e 8px a mais em cima para a
             área de toque chegar a 44px (a linha de progresso fica no pé). */}
         <EditionSelector
-          options={EDITIONS}
+          options={AGENDA_EDITIONS}
           value={edition}
           onChange={setEdition}
           paused={paused}

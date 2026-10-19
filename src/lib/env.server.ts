@@ -20,6 +20,8 @@ export const serverEnv = {
   products: {
     color: productId(process.env.ANLN_PRODUCT_COLOR),
     classica: productId(process.env.ANLN_PRODUCT_CLASSIC),
+    /** Optional: the notepad only shows up when this is set. */
+    bloco: productId(process.env.ANLN_PRODUCT_NOTEPAD),
   } satisfies Record<EditionId, number | null>,
   /**
    * Serves the "Em breve" page at `/` instead of the landing page. Read by the

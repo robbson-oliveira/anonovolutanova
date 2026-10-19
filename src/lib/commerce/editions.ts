@@ -8,6 +8,7 @@ const normalize = (s: string) => s.normalize("NFD").replace(/\p{M}/gu, "").toLow
  */
 export function editionFromAttribute(value: string): EditionId | null {
   const v = normalize(value);
+  if (v.includes("bloco") || v.includes("notas")) return "bloco";
   if (v.includes("color")) return "color";
   if (v.includes("classic")) return "classica";
   return null;

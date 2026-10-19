@@ -54,7 +54,7 @@ export default async function Home() {
     offers: offer.editions.map((e) => ({
       "@type": "Offer",
       name: e.label,
-      price: offer.price.toFixed(2),
+      price: e.price.toFixed(2),
       priceCurrency: "BRL",
       availability: e.inStock ? "https://schema.org/InStock" : "https://schema.org/SoldOut",
       url: `${publicEnv.siteUrl}/?edicao=${e.id}#oferta`,

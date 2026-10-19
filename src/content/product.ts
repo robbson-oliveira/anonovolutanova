@@ -33,6 +33,8 @@ export const EDITIONS = [
     cover: "/img/capa-color-2027.webp",
     coverSize: { width: 384, height: 563 },
     description: "Capa em aquarela, com os patos à água.",
+    agenda: true,
+    unit: "agenda",
   },
   {
     id: "classica",
@@ -40,8 +42,22 @@ export const EDITIONS = [
     cover: "/img/capa-classica.webp",
     coverSize: { width: 1085, height: 1519 },
     description: "Capa azul-marinho com detalhes em dourado.",
+    agenda: true,
+    unit: "agenda",
+  },
+  {
+    id: "bloco",
+    label: "Bloco de Notas Color",
+    cover: "/img/bloco-notas-color.webp",
+    coverSize: { width: 768, height: 580 },
+    description: "20 Unidades",
+    agenda: false,
+    unit: "bloco",
   },
 ] as const;
+
+/** The two agenda editions: what the cover explorer and the free-shipping count refer to. */
+export const AGENDA_EDITIONS = EDITIONS.filter((e) => e.agenda);
 
 export type EditionId = (typeof EDITIONS)[number]["id"];
 

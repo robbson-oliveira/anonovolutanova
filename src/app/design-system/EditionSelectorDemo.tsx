@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { EditionSelector } from "@ds/index";
-import { EDITIONS } from "@content/product";
+import { AGENDA_EDITIONS } from "@content/product";
 
 /** O seletor é controlado; a página do DS precisa de um dono para o estado. */
 export function EditionSelectorDemo() {
-  const [value, setValue] = useState<string>(EDITIONS[0].id);
+  const [value, setValue] = useState<string>(AGENDA_EDITIONS[0].id);
   const [paused, setPaused] = useState(false);
 
   return (
@@ -15,7 +15,7 @@ export function EditionSelectorDemo() {
       onMouseLeave={() => setPaused(false)}
     >
       <EditionSelector
-        options={EDITIONS}
+        options={AGENDA_EDITIONS}
         value={value}
         onChange={setValue}
         paused={paused}

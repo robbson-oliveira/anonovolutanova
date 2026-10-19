@@ -196,8 +196,8 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
             key={edition.id}
             images={galleryImages}
             label={`${offer.name}, ${edition.label}`}
-            selected={shownImage ? shown!.index : null}
-            onSelect={(index) => setShown(index === null ? null : { edition: editionId, index })}
+            selected={shownImage ? shown!.index : 0}
+            onSelect={(index) => setShown(index === null || index === 0 ? null : { edition: editionId, index })}
           />
         ) : null}
       </div>

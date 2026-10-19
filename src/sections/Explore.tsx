@@ -61,9 +61,12 @@ const COVER_VIEW_HEIGHT = `min(${COVER_HEIGHT}px, ${(COVER_HEIGHT_PER_WIDTH * 10
  * Agenda aberta de cada aba (a primeira aba é sempre a capa). Mesmo esquema
  * das capas: `book` é a caixa do livro dentro do arquivo, em px do arquivo,
  * medida pelo alfa ≥ 200; a sombra assada no PNG transborda por fora. As
- * quatro imagens têm o livro do mesmo tamanho real, então todas são exibidas
- * com a mesma largura de livro (`SPREAD_WIDTH`) e trocar de aba não faz a
- * agenda mudar de escala.
+ * quatro imagens foram exportadas em escalas diferentes (o passo da espiral
+ * varia de 32 a 34px), mas a ALTURA do livro dividida pelo passo é a mesma,
+ * 17,2: a altura é a medida que carrega a escala real (a largura muda, a
+ * agenda diária é mais estreita). Por isso todas, e a capa, usam a mesma
+ * altura de livro e trocar de aba não muda o tamanho da agenda; só a sombra de
+ * cada arquivo varia, e ela transborda por fora.
  */
 type Spread = Cover;
 
@@ -95,8 +98,8 @@ const SPREADS: (Spread | null)[] = [
   },
 ];
 
-/** Largura do livro aberto: 720px, ou a do painel em telas estreitas. */
-const SPREAD_WIDTH = "min(720px, 100cqw)";
+/** Mesma altura da capa; em telas estreitas, a que deixa o mais largo caber no painel. */
+const SPREAD_HEIGHT = `min(${COVER_HEIGHT}px, ${(100 / Math.max(...SPREADS.flatMap((p) => (p ? [p.book.w / p.book.h] : [])))).toFixed(3)}cqw)`;
 
 /**
  * Pontos de interesse sobre o livro. Percentuais medidos no Figma (949:830),
@@ -237,7 +240,7 @@ export function Explore() {
                 key={page.src}
                 className="relative animate-reveal-pop"
                 style={{
-                  width: SPREAD_WIDTH,
+                  height: SPREAD_HEIGHT,
                   aspectRatio: `${page.book.w} / ${page.book.h}`,
                 }}
               >

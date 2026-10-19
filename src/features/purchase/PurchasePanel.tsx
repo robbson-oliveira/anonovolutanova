@@ -55,12 +55,20 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
 
   const edition = offer.editions.find((e) => e.id === editionId)!;
   const total = edition.price * qty;
+  const { coverSize: cs, coverBox: cb } = edition;
   const coverThumb: ProductImage = {
     src: edition.cover,
     thumbnail: edition.cover,
     srcset: "",
     sizes: "",
     alt: `${offer.name}, ${edition.label}`,
+    bounds: {
+      aspect: cs.width / cs.height,
+      x: cb.x / cs.width,
+      y: cb.y / cs.height,
+      width: cb.width / cs.width,
+      height: cb.height / cs.height,
+    },
   };
   const galleryImages = [coverThumb, ...edition.gallery];
   const shownImage = shown?.edition === editionId ? (galleryImages[shown.index] ?? null) : null;

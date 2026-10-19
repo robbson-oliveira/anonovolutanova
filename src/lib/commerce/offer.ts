@@ -134,7 +134,7 @@ async function storeOffer(ids: Record<EditionId, number | null>): Promise<Produc
           installmentAmount: installmentOf(editionPrice),
           inStock: product.is_in_stock && product.is_purchasable,
           productId: product.id,
-          image: mainImage(product.images),
+          image: await (async () => { const img = mainImage(product.images); return img ? withBounds(img) : null; })(),
           gallery: await Promise.all(galleryImages(product.images).map(withBounds)),
         };
       }),

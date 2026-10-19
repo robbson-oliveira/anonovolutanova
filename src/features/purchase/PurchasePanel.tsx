@@ -55,7 +55,8 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
 
   const edition = offer.editions.find((e) => e.id === editionId)!;
   const total = edition.price * qty;
-  const shownImage = shown?.edition === editionId ? (edition.gallery[shown.index] ?? null) : null;
+  const galleryImages = edition.image ? [edition.image, ...edition.gallery] : edition.gallery;
+  const shownImage = shown?.edition === editionId ? (galleryImages[shown.index] ?? null) : null;
   // O que já está no carrinho conta para o frete grátis.
   const missingForFreeShipping = Math.max(0, offer.freeShippingMinQty - qty - (cart?.count ?? 0));
   // The selector is not in the cart yet, so only the cart alone can claim the benefit as already earned.
@@ -175,10 +176,10 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
 
         {/* Gallery from WooCommerce: only exists when the product has more
             images than its main one. */}
-        {edition.gallery.length > 0 ? (
+        {galleryImages.length > 0 ? (
           <GalleryStrip
             key={edition.id}
-            images={edition.gallery}
+            images={galleryImages}
             label={`${offer.name}, ${edition.label}`}
             selected={shownImage ? shown!.index : null}
             onSelect={(index) => setShown(index === null ? null : { edition: editionId, index })}

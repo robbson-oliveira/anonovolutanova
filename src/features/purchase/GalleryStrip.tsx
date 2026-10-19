@@ -52,7 +52,7 @@ export function GalleryStrip({ images, label, selected, onSelect }: GalleryStrip
       <ul
         ref={listRef}
         onScroll={syncActive}
-        className="flex h-[136px] max-w-full snap-x snap-mandatory items-center gap-2 overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex h-[136px] max-w-full cursor-grab snap-x snap-mandatory items-center gap-2 overflow-x-auto overscroll-x-contain active:cursor-grabbing [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {images.map((image, index) => {
           // Each file is a cutout with its own transparent margin, so sizing the
@@ -77,8 +77,8 @@ export function GalleryStrip({ images, label, selected, onSelect }: GalleryStrip
                 aria-pressed={selected === index}
                 style={{ height: SUBJECT_H }}
                 className={cn(
-                  "relative block w-full cursor-pointer overflow-hidden rounded-md outline-2 -outline-offset-2 focus-visible:outline-action",
-                  selected === index ? "outline-action" : "outline-transparent",
+                  "relative block w-full cursor-pointer overflow-hidden rounded-sm ring-2 ring-inset focus-visible:ring-action",
+                  selected === index ? "ring-action" : "ring-transparent",
                 )}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}

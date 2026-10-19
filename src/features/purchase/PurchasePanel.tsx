@@ -198,46 +198,65 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
           <span id={`${groupName}-qty`} className="text-xs font-bold text-text-strong">
             Quantidade
           </span>
-          <div className="flex flex-wrap items-center gap-4">
-            <div
-              role="group"
-              aria-labelledby={`${groupName}-qty`}
-              className="inline-flex h-12 items-center rounded-card border border-border bg-surface-plain"
-            >
-              <button
-                type="button"
-                onClick={() => changeQty(qty - 1)}
-                disabled={qty <= 1}
-                aria-label="Diminuir quantidade"
-                className="grid h-full w-12 cursor-pointer place-items-center text-text-strong disabled:cursor-not-allowed disabled:opacity-40"
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-wrap items-center gap-4">
+              <div
+                role="group"
+                aria-labelledby={`${groupName}-qty`}
+                className="inline-flex h-12 items-center rounded-card border border-border bg-surface-plain"
               >
-                <IconMinus />
-              </button>
-              <input
-                type="number"
-                inputMode="numeric"
-                min={1}
-                max={MAX_QTY}
-                value={qty}
-                onChange={(ev) => changeQty(parseInt(ev.target.value, 10))}
-                aria-label="Quantidade de agendas"
-                className="h-full w-12 [appearance:textfield] bg-transparent text-center text-base font-bold text-text-strong [&::-webkit-inner-spin-button]:appearance-none"
-              />
-              <button
-                type="button"
-                onClick={() => changeQty(qty + 1)}
-                disabled={qty >= MAX_QTY}
-                aria-label="Aumentar quantidade"
-                className="grid h-full w-12 cursor-pointer place-items-center text-text-strong disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                <IconPlus />
-              </button>
+                <button
+                  type="button"
+                  onClick={() => changeQty(qty - 1)}
+                  disabled={qty <= 1}
+                  aria-label="Diminuir quantidade"
+                  className="grid h-full w-12 cursor-pointer place-items-center text-text-strong disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  <IconMinus />
+                </button>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  min={1}
+                  max={MAX_QTY}
+                  value={qty}
+                  onChange={(ev) => changeQty(parseInt(ev.target.value, 10))}
+                  aria-label="Quantidade de agendas"
+                  className="h-full w-12 [appearance:textfield] bg-transparent text-center text-base font-bold text-text-strong [&::-webkit-inner-spin-button]:appearance-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => changeQty(qty + 1)}
+                  disabled={qty >= MAX_QTY}
+                  aria-label="Aumentar quantidade"
+                  className="grid h-full w-12 cursor-pointer place-items-center text-text-strong disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  <IconPlus />
+                </button>
+              </div>
+              {offer.checkoutEnabled && cart && edition.productId && !soldOut ? (
+                <button
+                  type="button"
+                  disabled={cart.busy || !edition.inStock}
+                  onClick={async () => {
+                    if (await addToCart()) cart.openDrawer();
+                  }}
+                  className="flex h-14 min-w-0 flex-1 cursor-pointer items-center justify-center rounded-card border border-gold-end bg-linear-90 from-gold-start to-gold-end text-base font-semibold text-on-action transition-[transform,box-shadow] [transition-duration:var(--duration-fast)] hover:-translate-y-0.5 hover:shadow-[0_8px_18px_-6px] hover:shadow-gold-start/60 disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:hover:translate-y-0"
+                >
+                  {cart.busy ? "Adicionando…" : "Adicionar ao carrinho"}
+                </button>
+              ) : null}
             </div>
             <Text as="span" size="xs" tone={missingForFreeShipping ? "muted" : "accent"} aria-live="polite">
               {missingForFreeShipping
                 ? `Faltam ${missingForFreeShipping} para o frete grátis`
                 : "Frete grátis neste pedido"}
             </Text>
+            {offer.checkoutEnabled && cart?.error ? (
+              <Text size="xs" tone="accent" role="alert" className="text-center">
+                {cart.error}
+              </Text>
+            ) : null}
           </div>
         </div>
 
@@ -261,46 +280,25 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
           <ShippingEstimate productId={edition.productId} quantity={qty + (cart?.count ?? 0)} />
         ) : null}
 
-        {/* CTA — com o checkout desligado (NEXT_PUBLIC_CHECKOUT_ENABLED) ou sem o
-            produto 2027 configurado, o pedido segue pelo WhatsApp. */}
+        {/* CTA */}
         <div className="flex flex-col gap-3">
           {soldOut ? (
             <Button href={whatsappUrlWith(`Olá! Quero entrar na lista de espera da ${offer.name}.`)} size="lg" shape="block" target="_blank" rel="noopener">
               Entrar na lista de espera
             </Button>
           ) : offer.checkoutEnabled && cart && edition.productId ? (
-            <>
-              <Button
-                size="lg"
-                shape="block"
-                type="button"
-                disabled={cart.busy || !edition.inStock}
-                onClick={async () => {
-                  if (await addToCart()) router.push("/checkout");
-                }}
-              >
-                {cart.busy ? "Adicionando…" : "Garantir minha agenda"}
-                <IconArrowRight />
-              </Button>
-              <Button
-                size="lg"
-                shape="block"
-                variant="outline"
-                type="button"
-                disabled={cart.busy || !edition.inStock}
-                onClick={async () => {
-                  if (await addToCart()) cart.openDrawer();
-                }}
-                className="h-auto min-h-14 py-3 text-center leading-snug"
-              >
-                Adicionar ao carrinho e escolher a outra edição
-              </Button>
-              {cart.error ? (
-                <Text size="xs" tone="accent" role="alert" className="text-center">
-                  {cart.error}
-                </Text>
-              ) : null}
-            </>
+            <Button
+              size="lg"
+              shape="block"
+              type="button"
+              disabled={cart.busy || !edition.inStock}
+              onClick={async () => {
+                if (await addToCart()) router.push("/checkout");
+              }}
+            >
+              {cart.busy ? "Adicionando…" : "Finalizar Compra"}
+              <IconArrowRight />
+            </Button>
           ) : (
             <>
               <Button href={whatsappUrlWith(orderMessage)} size="lg" shape="block" target="_blank" rel="noopener">

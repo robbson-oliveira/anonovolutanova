@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button, EditionSelector, Reveal, cn } from "@ds/index";
 import { EXPLORE, QUOTE } from "@content/home";
-import { CART_URL, EDITIONS } from "@content/product";
+import { CART_URL, CYCLE_YEAR, EDITIONS } from "@content/product";
 
 const capaColor = "/img/capa-color.png";
 const capaClassica = "/img/capa-classica.png";
@@ -147,13 +147,13 @@ const SPREADS: (Spread | null)[] = [
         x: 20.4,
         y: 26.4,
         title: "Planejamento Financeiro",
-        text: "Este espaço permite organizar com tranquilidade as metas e compromissos financeiros do ano. A estrutura em quadros facilita o registro de gastos, planos de economia e outras anotações importantes. É uma forma prática de acompanhar decisões do dia a dia com mais responsabilidade e ordem.",
+        text: "Este espaço permite organizar com tranquilidade as metas e compromissos financeiros do ano. As páginas quadriculadas facilitam o registro de gastos, planos de economia e outras anotações importantes. É uma forma prática de acompanhar decisões do dia a dia com mais responsabilidade e ordem.",
       },
       {
         x: 80.6,
         y: 48.8,
-        title: "Calendário Anual",
-        text: "O calendário anual oferece uma visão completa de todos os meses, ajudando no planejamento antecipado de projetos, viagens e períodos mais intensos. Ele serve como referência para organizar o ritmo do ano e alinhar compromissos pessoais, profissionais e espirituais de forma equilibrada.",
+        title: "Novidade: três páginas",
+        text: `Na Agenda ${CYCLE_YEAR}, o planejamento financeiro ganha três páginas pautadas. Mais espaço para registrar o orçamento, acompanhar os gastos e organizar o ano com ordem e responsabilidade.`,
       },
     ],
   },

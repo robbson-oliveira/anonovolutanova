@@ -496,7 +496,7 @@ export function Explore() {
           </div>
         </div>
 
-        <figure className="mx-auto mt-[28px] w-[582px] md:mt-[20px] max-w-full text-center">
+        <figure className="mx-auto mt-[28px] w-[582px] md:-mt-[3px] max-w-full text-center">
           <blockquote className="text-base text-text">
             “{QUOTE.text}”
           </blockquote>

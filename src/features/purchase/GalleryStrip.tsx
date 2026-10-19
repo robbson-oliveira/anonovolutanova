@@ -44,7 +44,8 @@ export function GalleryStrip({ images, label, selected, onSelect }: GalleryStrip
   };
 
   return (
-    <div className="flex w-full max-w-full flex-col items-center gap-5">
+    // z-10: the cover's transparent shadow margin reaches into this area and must stay under the thumbnails.
+    <div className="relative z-10 flex w-full max-w-full flex-col items-center gap-5">
       <ul
         ref={listRef}
         onScroll={syncActive}

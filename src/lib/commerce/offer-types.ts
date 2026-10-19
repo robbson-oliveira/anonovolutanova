@@ -27,6 +27,8 @@ export type EditionOffer = {
   productId: number | null;
   /** Main image of the product in WooCommerce; null without one (the local cover stands in). */
   image: ProductImage | null;
+  /** Remaining images of the product gallery in WooCommerce (everything after the main one). */
+  gallery: ProductImage[];
 };
 
 export type ProductOffer = {

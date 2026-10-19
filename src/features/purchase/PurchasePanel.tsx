@@ -89,7 +89,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
           altura fixa e largura automática, nunca object-fit — as duas capas
           têm proporções diferentes. Aqui via next/image porque os PNGs têm
           ~2,5 MB e a compra acontece no celular, vinda do Instagram. */}
-      <div className="flex justify-center lg:sticky lg:top-8">
+      <div className="flex flex-col items-center gap-6 lg:sticky lg:top-8">
         <div className="relative flex h-[260px] items-end justify-center sm:h-[480px]">
           {offer.editions.map((e) => (
             <Image
@@ -110,6 +110,27 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
             />
           ))}
         </div>
+
+        {/* Gallery from WooCommerce: the strip only exists when the product
+            has more images than its main one. */}
+        {edition.gallery.length > 0 ? (
+          <ul className="flex h-[136px] max-w-full items-center gap-[5px] overflow-x-auto">
+            {edition.gallery.map((image, index) => (
+              <li key={image.src} className="h-full shrink-0">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={image.src}
+                  srcSet={image.srcset || undefined}
+                  sizes="190px"
+                  alt={image.alt || `${offer.name}, ${edition.label}, imagem ${index + 2}`}
+                  loading="lazy"
+                  decoding="async"
+                  className="block h-full w-auto rounded-[4px]"
+                />
+              </li>
+            ))}
+          </ul>
+        ) : null}
       </div>
 
       <div className="flex flex-col gap-8">

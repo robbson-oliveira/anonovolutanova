@@ -11,7 +11,7 @@ import {
 import { publicEnv } from "@/lib/env";
 import { serverEnv } from "@/lib/env.server";
 import type { ProductOffer } from "./offer-types";
-import { mainImage, type StoreImage } from "./product-image";
+import { galleryImages, mainImage, type StoreImage } from "./product-image";
 
 export type { EditionOffer, ProductImage, ProductOffer } from "./offer-types";
 
@@ -55,6 +55,7 @@ function staticOffer(): ProductOffer {
       inStock: true,
       productId: null,
       image: null,
+      gallery: [],
     })),
     checkoutEnabled: false,
   };
@@ -114,6 +115,7 @@ async function storeOffer(ids: Record<EditionId, number>): Promise<ProductOffer 
         inStock: product.is_in_stock && product.is_purchasable,
         productId: product.id,
         image: mainImage(product.images),
+        gallery: galleryImages(product.images),
       };
     }),
     checkoutEnabled: publicEnv.checkoutEnabled,

@@ -14,7 +14,18 @@ export type StoreImage = {
  * or null when it has none.
  */
 export function mainImage(images: StoreImage[] | undefined): ProductImage | null {
-  const image = images?.[0];
+  return toProductImage(images?.[0]);
+}
+
+/** The gallery of a product: every image after the main one. */
+export function galleryImages(images: StoreImage[] | undefined): ProductImage[] {
+  return (images ?? [])
+    .slice(1)
+    .map(toProductImage)
+    .filter((image): image is ProductImage => image !== null);
+}
+
+function toProductImage(image: StoreImage | undefined): ProductImage | null {
   if (!image?.src) return null;
   return {
     src: image.src,

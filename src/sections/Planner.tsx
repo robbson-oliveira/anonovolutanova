@@ -1,0 +1,67 @@
+import { Badge, Button, IconSparkle, Reveal } from "@ds/index";
+import { PLANNER } from "@content/home";
+import { BUY_URL } from "@content/product";
+
+/**
+ * Chamada do Planner Diário (Figma "Seção 3", 949:788): cartão de 1023×487
+ * com borda dourada de 2px, raio 20, texto à esquerda e a folha à direita.
+ *
+ * A partir de lg as duas colunas ficam posicionadas em % do cartão, medidas
+ * no Figma (texto a 79px e 515 de largura; folha a 521px, 499×373), então o
+ * conjunto acompanha a largura do cartão. A folha invade o texto por ~73px:
+ * ela tem sombra e transparência assadas no PNG, e o parágrafo (395px) não
+ * chega lá. Abaixo de lg o texto vem primeiro e a folha embaixo.
+ *
+ * Espaços da seção, do Figma: 132px sob "Explore a Agenda" e 163px até a
+ * seção seguinte.
+ */
+export function Planner() {
+  return (
+    <section className="bg-surface px-4 pb-16 pt-8 md:px-10 md:pb-24 xl:px-[60px] xl:pb-[163px] xl:pt-[132px]">
+      <Reveal
+        variant="up"
+        className="relative mx-auto flex w-[1023px] max-w-full flex-col items-center gap-6 rounded-[20px] border-2 border-gold-start px-6 py-8 text-center lg:block lg:aspect-[1023/487] lg:p-0 lg:text-left"
+      >
+        <div className="lg:absolute lg:left-[7.72%] lg:top-[13.35%] lg:w-[50.34%]">
+          <Badge
+            tone="plain"
+            icon={<IconSparkle />}
+            className="gap-1 text-[10px] font-bold! tracking-[-0.04em] text-text-heading-sea"
+          >
+            {PLANNER.badge}
+          </Badge>
+
+          <h2 className="mt-3 text-[34px] font-bold leading-[1] tracking-[-0.05em] text-text-heading-sea sm:text-[43.776px] sm:leading-[43.776px] sm:tracking-[-2.1888px]">
+            {PLANNER.title.map((line) => (
+              <span key={line} className="block">
+                {line}
+              </span>
+            ))}
+          </h2>
+
+          <p className="mt-[13px] max-w-[395px] text-[14.592px] leading-[20.429px] tracking-[-0.1459px] text-text-lead opacity-70 max-lg:mx-auto">
+            {PLANNER.paragraph}
+          </p>
+
+          <Button
+            href={BUY_URL}
+            size="lg"
+            shape="block"
+            // As medidas do Figma vencem as do tamanho "lg" do Button (daí o !).
+            className="mt-[41px] h-14 w-[310px] max-w-full rounded-[12px]! border border-gold-end bg-linear-90 from-gold-start to-gold-end text-[20px]! font-semibold! leading-[27.5px]! transition-[transform,box-shadow] [transition-duration:var(--duration-fast)] hover:-translate-y-0.5 hover:shadow-[0_8px_18px_-6px] hover:shadow-gold-start/60 motion-reduce:hover:translate-y-0"
+          >
+            {PLANNER.cta}
+          </Button>
+        </div>
+
+        <img
+          src="/img/planner-diario.png"
+          alt={PLANNER.imageAlt}
+          width={642}
+          height={472}
+          className="pointer-events-none block w-full max-w-[499px] object-cover lg:absolute lg:left-[50.93%] lg:top-[10.06%] lg:h-[76.6%] lg:w-[48.78%] lg:max-w-none"
+        />
+      </Reveal>
+    </section>
+  );
+}

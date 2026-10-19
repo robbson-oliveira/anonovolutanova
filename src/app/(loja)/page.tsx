@@ -9,6 +9,7 @@ import { Explore } from "@sections/Explore";
 import { Faq } from "@sections/Faq";
 import { Hero } from "@sections/Hero";
 import { Liturgical } from "@sections/Liturgical";
+import { Planner } from "@sections/Planner";
 import { Persona } from "@sections/Persona";
 import { Product } from "@sections/Product";
 import { SiteFooter } from "@sections/SiteFooter";
@@ -78,6 +79,7 @@ export default async function Home() {
           <DuckStrip />
           <About />
           <Explore />
+          <Planner />
           <Liturgical />
           <Persona />
           <Testimonials />

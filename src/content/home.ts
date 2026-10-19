@@ -27,6 +27,17 @@ export const STATS = [
   { value: 100, suffix: "%", label: "Prático e Formativo" },
 ] as const;
 
+export const PLANNER = {
+  badge: "Edição Limitada",
+  title: ["Planner Diário.", "Um dia de cada vez,", "com o que importa."],
+  paragraph:
+    "São 20 folhas A4 para organizar a tarefa mais importante, seus " +
+    "compromissos e suas ideias, com presença de Deus em cada dia. " +
+    `O companheiro da Agenda ${CYCLE_YEAR}.`,
+  cta: "Quero o Meu Planner!",
+  imageAlt: "Folha do Planner Diário: tarefa mais importante do dia, o que não esquecer e ideias",
+} as const;
+
 export const ABOUT = {
   eyebrow: "O que a torna especial?",
   title: "Mais que uma agenda.\nUm caminho de santidade\nem cada página.",

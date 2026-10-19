@@ -43,7 +43,7 @@ export function GalleryStrip({ images, label }: GalleryStripProps) {
         className="flex h-[136px] max-w-full snap-x snap-mandatory items-center gap-[5px] overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {images.map((image, index) => (
-          <li key={image.src} className="h-full shrink-0 snap-start overflow-hidden">
+          <li key={image.src} className="h-full shrink-0 snap-start overflow-hidden not-first:-ml-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={image.src}

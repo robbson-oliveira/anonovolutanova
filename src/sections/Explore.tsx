@@ -430,7 +430,7 @@ export function Explore() {
         </div>
 
         <div
-          className="mt-6 flex min-h-(--cover-h) items-center justify-center md:mt-[16px] md:min-h-[607px]"
+          className="mt-6 flex min-h-(--cover-h) items-center justify-center md:-mt-[8px] md:min-h-[607px]"
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
         >

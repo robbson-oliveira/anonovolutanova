@@ -26,7 +26,8 @@ const ICONS = [
 /**
  * Medidas extraídas do DOM do wireframe em viewport 1440:
  * seção 1440×1488, padding 100/60; coluna útil 1018px;
- * textura de fundo em opacidade 0.19; cards 499×270 brancos, raio 12,
+ * fundo (Figma "Seção 4", 949:647): a textura antiga (de 13% a 95,5% da largura)
+ * sob a aquarela nova, as duas em opacidade 0.19 com mistura darken; cards 499×270 brancos, raio 12,
  * padding 42/32, ícone 60 e 20px até o título (24/24, ls -0.96);
  * grade 2 colunas com gap 20; CTA 600×68, raio 10.
  * Só o título anima (fade + 28px, ~700ms) — os cards entram estáticos.
@@ -46,12 +47,15 @@ export function Liturgical() {
     <section className="relative overflow-hidden bg-surface px-4 py-16 sm:px-6 md:px-10 md:py-20 xl:px-[60px] xl:py-[100px]">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[url('/img/textura-liturgica.png')] bg-cover bg-center opacity-[0.19]"
-      />
+        className="pointer-events-none absolute inset-0 overflow-hidden opacity-[0.19] mix-blend-darken"
+      >
+        <div className="absolute inset-y-0 left-[12.96%] right-[4.53%] bg-[url('/img/textura-liturgica.png')] bg-[length:100%_100%]" />
+        <div className="absolute inset-0 bg-[url('/img/textura-liturgica.webp')] bg-cover bg-center" />
+      </div>
 
       <div className="relative mx-auto w-full max-w-[1018px]">
         <Reveal variant="up">
-          <h2 className="text-center text-h2 font-bold text-text-strong">
+          <h2 className="text-center text-h2 font-bold text-text-lead">
             {LITURGICAL.title}
           </h2>
         </Reveal>
@@ -60,7 +64,7 @@ export function Liturgical() {
           <p className="text-base text-text md:w-[270px]">
             {LITURGICAL.subtitle}
           </p>
-          <p className="text-base text-accent-hover md:w-[372px]">
+          <p className="text-base text-text-strong md:w-[372px]">
             {LITURGICAL.paragraph}
           </p>
         </div>
@@ -73,7 +77,7 @@ export function Liturgical() {
             >
               <DateIcon icon={ICONS[i % ICONS.length]} />
               <div className="min-w-0">
-                <p className="text-[20px] font-bold leading-[24px] tracking-[-0.04em] text-text-strong md:mt-[20px] md:text-[24px]">
+                <p className="text-[20px] font-bold leading-[24px] tracking-[-0.04em] text-gold-start md:mt-[20px] md:text-[24px]">
                   {date.title}
                 </p>
                 <p className="mt-2 text-[18px] leading-[22px] text-text md:mt-[10px] md:text-base">
@@ -90,7 +94,7 @@ export function Liturgical() {
 
         <a
           href={BUY_URL}
-          className="mx-auto mt-8 flex h-[68px] w-full max-w-[600px] items-center justify-center rounded-md bg-action px-6 text-center text-[16px] font-bold leading-[16px] tracking-[-0.04em] text-on-action transition-colors [transition-duration:var(--duration-fast)] hover:bg-action-hover md:mt-[39px]"
+          className="mx-auto mt-8 flex h-[68px] w-full max-w-[600px] items-center justify-center rounded-[10px] bg-linear-90 from-gold-start to-gold-end px-6 text-center text-[16px] font-bold leading-[16px] tracking-[-0.04em] text-on-action transition-[filter] [transition-duration:var(--duration-fast)] hover:brightness-110 md:mt-[39px]"
         >
           {LITURGICAL.cta}
         </a>
@@ -102,7 +106,7 @@ export function Liturgical() {
 /** O tile creme vive aqui, não dentro do SVG: o ícone é só o glifo. */
 function DateIcon({ icon: Icon }: { icon: React.ComponentType<IconProps> }) {
   return (
-    <span className="grid size-12 shrink-0 place-items-center rounded-card bg-surface-warm text-accent-hover md:size-[60px]">
+    <span className="grid size-12 shrink-0 place-items-center rounded-card bg-surface-peach text-text-strong md:size-[60px]">
       <Icon className="size-full" />
     </span>
   );

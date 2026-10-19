@@ -40,6 +40,7 @@
 
   /* Cremes e dourados */
   --brand-cream-100: rgb(234 228 217); /* fundo da página (#EAE4D9) */
+  --brand-peach-50: rgb(255 245 236);  /* tile dos ícones das datas importantes (#FFF5EC) */
   --brand-gold-300: rgb(239 220 179);
   --brand-gold-500: rgb(239 200 134);
 
@@ -115,6 +116,7 @@
   --color-surface-plain: var(--brand-paper-100);
   --color-surface-muted: var(--brand-paper-200);
   --color-surface-warm: var(--brand-cream-100);
+  --color-surface-peach: var(--brand-peach-50);     /* tile de ícone da seção "Datas importantes" (Figma 949:646) */
   --color-surface-sage: var(--brand-sage-300);
   --color-surface-footer: var(--brand-cream-100);
   /* Máscara da aquarela do rodapé (Figma 960:14): sobe de ~1% a ~37% de opacidade. */

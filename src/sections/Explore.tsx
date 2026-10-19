@@ -33,7 +33,7 @@ const COVERS: Record<"color" | "classica", Cover> = {
     src: capaClassica,
     alt: "Capa da Edição Clássica",
     img: { w: 472, h: 600 },
-    book: { x: 21, y: 16, w: 345, h: 464 },
+    book: { x: 21, y: 16, w: 344, h: 464 },
   },
 };
 

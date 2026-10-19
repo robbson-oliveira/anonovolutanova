@@ -8,7 +8,7 @@ import { OFFER_ANCHOR } from "@content/product";
  *
  * A partir de lg as duas colunas ficam posicionadas em % do cartão, medidas
  * no Figma (texto a 79px e 515 de largura; folha a 521px, 499×373), então o
- * conjunto acompanha a largura do cartão. A folha, maior que no Figma, invade o texto por ~100px e o cartão (overflow-hidden) corta a sombra que passar da borda:
+ * conjunto acompanha a largura do cartão. A folha (folha visível a 54% do cartão e 42,5% de largura, como no Figma; o PNG tem 39px de margem à esquerda) invade o texto e o cartão (overflow-hidden) corta a sombra que passar da borda:
  * ela tem sombra e transparência assadas no PNG, e o parágrafo (395px) não
  * chega lá. Abaixo de lg o texto vem primeiro e a folha embaixo.
  *
@@ -59,7 +59,7 @@ export function Planner() {
           alt={PLANNER.imageAlt}
           width={642}
           height={472}
-          className="pointer-events-none block w-full max-w-[560px] object-cover lg:absolute lg:left-[44%] lg:top-[2%] lg:h-auto lg:w-[56%] lg:max-w-none"
+          className="pointer-events-none block w-full max-w-[560px] object-cover lg:absolute lg:left-[50.2%] lg:top-[2.9%] lg:h-auto lg:w-[62.9%] lg:max-w-none"
         />
       </Reveal>
     </section>

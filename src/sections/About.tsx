@@ -38,6 +38,13 @@ type Layer = {
   src: string;
   box: { w: number; x: number; y: number };
   /**
+   * Arte cortada pela borda de baixo do card no Figma. O PNG exportado fica
+   * até 1px mais curto que o card (arredondamento do corte), o que deixava uma
+   * linha azul do fundo do card aparecendo embaixo. Com `bleed` a arte vai 1px
+   * além da borda e o card a corta, como se o papel continuasse lá dentro.
+   */
+  bleed?: true;
+  /**
    * Entrada da camada, exatamente como no wireframe: quem anima é cada página
    * (não o card). Sem `anim`, a camada é estática, como lá.
    */
@@ -77,12 +84,14 @@ export const FEATURES: Feature[] = [
       {
         src: planoDeVida,
         box: { w: 454.22, x: 31.89, y: 302.85 },
+        bleed: true,
         anim: { variant: "left" },
         handwriting: { items: ABOUT.features[0].items, top: 118.15, step: 29, left: 30.11, size: 20 },
       },
       {
         src: metasAnuais,
         box: { w: 323.56, x: 262.44, y: 143.17 },
+        bleed: true,
         anim: { variant: "right", delay: 90 },
         /*
          * As metas vivem em ABOUT.features[1] no conteúdo, mas no design
@@ -96,7 +105,7 @@ export const FEATURES: Feature[] = [
   {
     title: [{ text: "Todo dia", dim: true }, { text: "uma frase de São Josemaria para inspirar" }],
     layers: [
-      { src: fraseDia, box: { w: 414.41, x: 171.59, y: 22 } },
+      { src: fraseDia, box: { w: 414.41, x: 171.59, y: 22 }, bleed: true },
       /* Sombra em cunha que a página projeta sobre o card (Figma "sombra", 949:1011). */
       { src: sombra, box: { w: 547.64, x: 15.16, y: 190.79 }, anim: { variant: "pop" } },
       { src: frase, box: { w: 338, x: 53, y: 212 }, anim: { variant: "forward" } },
@@ -105,7 +114,7 @@ export const FEATURES: Feature[] = [
   {
     title: [{ text: "Todo mês", dim: true }, { text: "um tema para viver a santidade no cotidiano" }],
     layers: [
-      { src: vidaOracao, box: { w: 426.05, x: 0, y: 118.15 }, anim: { variant: "left" } },
+      { src: vidaOracao, box: { w: 426.05, x: 0, y: 118.15 }, bleed: true, anim: { variant: "left" } },
       { src: propositos, box: { w: 381.24, x: 204.76, y: 206.36 }, anim: { variant: "right", delay: 90 } },
     ],
   },
@@ -117,8 +126,8 @@ export const FEATURES: Feature[] = [
       { text: "importantes da Obra" },
     ],
     layers: [
-      { src: folhaJaneiro, box: { w: 441, x: 135.5, y: 195 }, anim: { variant: "up" } },
-      { src: folhaOutubro, box: { w: 416.18, x: 0, y: 255.37 }, anim: { variant: "up", delay: 120 } },
+      { src: folhaJaneiro, box: { w: 441, x: 135.5, y: 195 }, bleed: true, anim: { variant: "up" } },
+      { src: folhaOutubro, box: { w: 416.18, x: 0, y: 255.37 }, bleed: true, anim: { variant: "up", delay: 120 } },
     ],
   },
 ];
@@ -275,7 +284,13 @@ export function FeatureCard({
         {feature.layers.map((layer, j) => {
           const content = (
             <>
-              <img src={layer.src} alt="" aria-hidden className="h-auto w-full" />
+              <img
+                src={layer.src}
+                alt=""
+                aria-hidden
+                className="h-auto w-full"
+                style={layer.bleed ? { height: cardPx(CARD_H + 1 - layer.box.y) } : undefined}
+              />
               {layer.handwriting ? <Handwriting {...layer.handwriting} /> : null}
             </>
           );

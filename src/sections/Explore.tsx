@@ -45,8 +45,6 @@ const COVERS: Record<"color" | "classica", Cover> = {
  */
 const COVER_HEIGHT = 470;
 
-/** Altura máxima das páginas internas das outras abas. */
-const PAGE_HEIGHT = 607;
 
 /**
  * Altura do livro em telas estreitas: os 645px, ou a altura em que o livro
@@ -59,25 +57,46 @@ const COVER_HEIGHT_PER_WIDTH = Math.max(
 );
 const COVER_VIEW_HEIGHT = `min(${COVER_HEIGHT}px, ${(COVER_HEIGHT_PER_WIDTH * 100).toFixed(3)}cqw)`;
 
-type TabPage = { src: string; width: number; height: number };
-
 /**
- * Página interna de cada aba. A primeira aba é sempre a capa. As dimensões
- * são as dos arquivos em public/img: com elas a altura encolhe na proporção
- * certa quando a largura acaba, em vez de a imagem ser espremida.
+ * Agenda aberta de cada aba (a primeira aba é sempre a capa). Mesmo esquema
+ * das capas: `book` é a caixa do livro dentro do arquivo, em px do arquivo,
+ * medida pelo alfa ≥ 200; a sombra assada no PNG transborda por fora. As
+ * quatro imagens têm o livro do mesmo tamanho real, então todas são exibidas
+ * com a mesma largura de livro (`SPREAD_WIDTH`) e trocar de aba não faz a
+ * agenda mudar de escala.
  */
-const TAB_PAGES: (TabPage | null)[] = [
+type Spread = Cover;
+
+const SPREADS: (Spread | null)[] = [
   null,
-  { src: "/img/interna-propositos-mes.png", width: 1756, height: 824 },
-  { src: "/img/interna-metas-anuais.png", width: 1772, height: 2599 },
-  { src: "/img/interna-oferta.png", width: 2340, height: 2896 },
-  { src: "/img/interna-agenda-diaria.png", width: 1684, height: 2372 },
+  {
+    src: "/img/agenda-propositos-mes.webp",
+    alt: "Agenda aberta: propósito do mês e calendário",
+    img: { w: 1216, h: 861 },
+    book: { x: 115, y: 27, w: 764, h: 545 },
+  },
+  {
+    src: "/img/agenda-planos-metas.webp",
+    alt: "Agenda aberta: planos e metas",
+    img: { w: 1178, h: 930 },
+    book: { x: 50, y: 29, w: 819, h: 584 },
+  },
+  {
+    src: "/img/agenda-planejamento-financeiro.webp",
+    alt: "Agenda aberta: planejamento financeiro",
+    img: { w: 1145, h: 927 },
+    book: { x: 38, y: 29, w: 822, h: 587 },
+  },
+  {
+    src: "/img/agenda-diaria.webp",
+    alt: "Agenda aberta: agenda diária",
+    img: { w: 1045, h: 845 },
+    book: { x: 55, y: 26, w: 716, h: 562 },
+  },
 ];
 
-/** Os 607px, ou a altura em que a página ocupa a largura toda do painel. */
-function pageViewHeight(page: TabPage) {
-  return `min(${PAGE_HEIGHT}px, ${((page.height / page.width) * 100).toFixed(3)}cqw)`;
-}
+/** Largura do livro aberto: 720px, ou a do painel em telas estreitas. */
+const SPREAD_WIDTH = "min(720px, 100cqw)";
 
 /**
  * Pontos de interesse sobre o livro. Percentuais medidos no Figma (949:830),
@@ -134,7 +153,7 @@ export function Explore() {
   const [openSpot, setOpenSpot] = useState<number | null>(null);
 
   const cover = COVERS[edition as keyof typeof COVERS];
-  const page = TAB_PAGES[tab];
+  const page = SPREADS[tab];
   const spot = openSpot === null ? null : HOTSPOTS[openSpot];
 
   return (
@@ -214,14 +233,28 @@ export function Explore() {
         >
           <div className="relative max-w-full">
             {page ? (
-              <img
-                src={page.src}
-                alt={`Página interna: ${EXPLORE.tabs[tab]}`}
-                width={page.width}
-                height={page.height}
-                style={{ height: pageViewHeight(page), width: "auto" }}
-                className="block max-w-full rounded-[8px]"
-              />
+              <div
+                key={page.src}
+                className="relative animate-reveal-pop"
+                style={{
+                  width: SPREAD_WIDTH,
+                  aspectRatio: `${page.book.w} / ${page.book.h}`,
+                }}
+              >
+                <img
+                  src={page.src}
+                  alt={page.alt}
+                  width={page.img.w}
+                  height={page.img.h}
+                  className="pointer-events-none absolute max-w-none"
+                  style={{
+                    left: `${(-page.book.x / page.book.w) * 100}%`,
+                    top: `${(-page.book.y / page.book.h) * 100}%`,
+                    width: `${(page.img.w / page.book.w) * 100}%`,
+                    height: `${(page.img.h / page.book.h) * 100}%`,
+                  }}
+                />
+              </div>
             ) : (
               <>
                 {/* Caixa do livro: altura do Figma (ou a que cabe no painel) e a

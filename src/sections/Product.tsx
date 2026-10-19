@@ -4,48 +4,70 @@ import { PurchasePanel } from "@/features/purchase/PurchasePanel";
 import type { ProductOffer } from "@/lib/commerce/offer-types";
 
 /**
- * Seção de produto da home (#oferta), no lugar da antiga página /comprar:
- * a pessoa escolhe a edição e a quantidade aqui mesmo, e o botão leva direto
- * ao checkout. Todos os botões de compra da página rolam até ela.
+ * Product section of the home (#oferta): the visitor picks the edition and
+ * quantity right here and the button goes straight to checkout. Every buy
+ * button on the page scrolls to it.
  *
- * Mantém o painel verde-sálvia e o texto da oferta do wireframe; o cartão
- * branco dentro dele é o PurchasePanel (edição, quantidade, preço, CTA).
+ * Figma 949:278: a petrol band with gold rules and a faint watercolor texture,
+ * holding one big white watercolor card. The heading, the PurchasePanel card
+ * and the feature list all live inside that big card.
  */
 export function Product({ offer }: { offer: ProductOffer }) {
   return (
-    <section id="oferta" className="scroll-mt-24 bg-surface px-4 py-10 sm:px-6 lg:py-16">
-      <div className="mx-auto w-full max-w-[1316px] rounded-[32px] bg-surface-sage px-4 py-12 sm:px-8 lg:rounded-[90px] lg:px-16 lg:py-24">
-        <Reveal variant="up">
-          <div className="mx-auto flex max-w-[760px] flex-col items-center gap-5 text-center">
-            <Heading as="h2" level="section">
-              {OFFER.title}
-            </Heading>
-            <Text className="leading-snug text-text-strong">{OFFER.paragraph}</Text>
-          </div>
-        </Reveal>
+    <section
+      id="oferta"
+      className="relative isolate scroll-mt-24 overflow-hidden border-y-4 border-gold-start bg-action px-4 py-12 sm:px-6 lg:py-24"
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/img/offer/section-texture.webp"
+        alt=""
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10 size-full object-cover opacity-[0.09]"
+      />
 
-        <div className="mx-auto mt-10 w-full max-w-content lg:mt-14">
-          <div className="rounded-card bg-surface-plain p-5 shadow-float sm:p-8 lg:p-12">
-            <PurchasePanel offer={offer} headingAs="h3" />
-          </div>
-        </div>
+      <div className="relative mx-auto w-full max-w-[1316px] overflow-hidden rounded-[32px] bg-surface-plain px-4 py-12 sm:px-8 lg:rounded-[90px] lg:px-16 lg:py-24">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/img/offer/card-watercolor.webp"
+          alt=""
+          aria-hidden
+          className="pointer-events-none absolute inset-0 size-full object-cover opacity-[0.24]"
+        />
 
-        <div className="mx-auto mt-10 max-w-[760px] lg:mt-12">
-          <Text size="sm" className="text-center font-bold text-text-strong">
-            {OFFER.listTitle}
-          </Text>
-          <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-            {OFFER.list.map((line) => (
-              <li key={line} className="flex items-start gap-3 text-text">
-                <span aria-hidden className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-pill bg-action text-on-action">
-                  <IconCheck />
-                </span>
-                <Text as="span" size="xs" className="leading-snug">
-                  {line}
-                </Text>
-              </li>
-            ))}
-          </ul>
+        <div className="relative">
+          <Reveal variant="up">
+            <div className="mx-auto flex max-w-[760px] flex-col items-center gap-5 text-center">
+              <Heading as="h2" level="section">
+                {OFFER.title}
+              </Heading>
+              <Text className="leading-snug text-text-strong">{OFFER.paragraph}</Text>
+            </div>
+          </Reveal>
+
+          <div className="mx-auto mt-10 w-full max-w-[1188px] lg:mt-[75px]">
+            <div className="rounded-[26px] bg-surface-plain p-5 shadow-float sm:p-8 lg:px-12 lg:py-14">
+              <PurchasePanel offer={offer} headingAs="h3" />
+            </div>
+          </div>
+
+          <div className="mx-auto mt-10 max-w-[760px] lg:mt-20">
+            <Text size="sm" className="text-center font-bold text-gold-start">
+              {OFFER.listTitle}
+            </Text>
+            <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+              {OFFER.list.map((line) => (
+                <li key={line} className="flex items-start gap-3 text-text">
+                  <span aria-hidden className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-pill bg-action text-on-action">
+                    <IconCheck />
+                  </span>
+                  <Text as="span" size="xs" className="leading-snug">
+                    {line}
+                  </Text>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </section>

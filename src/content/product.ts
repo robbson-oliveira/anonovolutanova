@@ -30,8 +30,8 @@ export const EDITIONS = [
   {
     id: "color",
     label: "Edição Color",
-    cover: "/img/capa-color.png",
-    coverSize: { width: 1036, height: 1519 },
+    cover: "/img/capa-color-2027.webp",
+    coverSize: { width: 384, height: 563 },
     description: "Capa em aquarela, com os patos à água.",
   },
   {

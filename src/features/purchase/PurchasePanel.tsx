@@ -89,7 +89,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
           altura fixa e largura automática, nunca object-fit — as duas capas
           têm proporções diferentes. Aqui via next/image porque os PNGs têm
           ~2,5 MB e a compra acontece no celular, vinda do Instagram. */}
-      <div className="flex flex-col items-center gap-6 lg:sticky lg:top-8">
+      <div className="flex flex-col items-center gap-5 lg:sticky lg:top-8">
         <div className="relative flex h-[260px] items-end justify-center sm:h-[480px]">
           {offer.editions.map((e) => (
             <Image
@@ -103,7 +103,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
               // juntas quando a seção se aproxima, para a troca ser imediata.
               loading="lazy"
               className={cn(
-                "block h-full w-auto max-w-full drop-shadow-xl",
+                "block h-full w-auto max-w-full drop-shadow-md",
                 "transition-opacity [transition-duration:var(--duration-fast)]",
                 e.id === editionId ? "opacity-100" : "pointer-events-none absolute bottom-0 opacity-0",
               )}
@@ -125,7 +125,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
                   alt={image.alt || `${offer.name}, ${edition.label}, imagem ${index + 2}`}
                   loading="lazy"
                   decoding="async"
-                  className="block h-full w-auto rounded-[4px]"
+                  className="block h-full w-auto"
                 />
               </li>
             ))}

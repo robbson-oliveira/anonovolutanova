@@ -20,6 +20,7 @@ import type { ProductOffer } from "@/lib/commerce/offer-types";
 import { formatBRL } from "@/lib/format";
 import { useOptionalCart } from "@/features/cart/CartProvider";
 import { ProductThumb } from "@/features/cart/ProductThumb";
+import { GalleryStrip } from "./GalleryStrip";
 import { ShippingEstimate } from "./ShippingEstimate";
 import { item, trackAddToCart, trackViewItem } from "@/lib/tracking/events";
 
@@ -111,25 +112,14 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
           ))}
         </div>
 
-        {/* Gallery from WooCommerce: the strip only exists when the product
-            has more images than its main one. */}
+        {/* Gallery from WooCommerce: only exists when the product has more
+            images than its main one. */}
         {edition.gallery.length > 0 ? (
-          <ul className="flex h-[136px] max-w-full items-center gap-[5px] overflow-x-auto">
-            {edition.gallery.map((image, index) => (
-              <li key={image.src} className="h-full shrink-0 overflow-hidden">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={image.src}
-                  srcSet={image.srcset || undefined}
-                  sizes="190px"
-                  alt={image.alt || `${offer.name}, ${edition.label}, imagem ${index + 2}`}
-                  loading="lazy"
-                  decoding="async"
-                  className="block h-full w-auto scale-[1.04]"
-                />
-              </li>
-            ))}
-          </ul>
+          <GalleryStrip
+            key={edition.id}
+            images={edition.gallery}
+            label={`${offer.name}, ${edition.label}`}
+          />
         ) : null}
       </div>
 
@@ -143,15 +133,14 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
           </Heading>
           <Text className="leading-snug">
             Tema do mês, frase de São Josemaria Escrivá para cada dia e as práticas
-            de vida interior para marcar — organização e fé na mesma página, o ano
-            inteiro.
+            de vida interior e muito mais.
           </Text>
         </div>
 
         {/* Edição */}
         <fieldset className="flex flex-col gap-3">
           <legend className="mb-3 text-xs font-bold text-text-strong">Escolha a edição</legend>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-3">
             {offer.editions.map((e) => {
               const active = e.id === editionId;
               return (
@@ -183,7 +172,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
                     </span>
                   </span>
                   {active ? (
-                    <span aria-hidden className="absolute top-3 right-3 text-action">
+                    <span aria-hidden className="absolute top-1/2 right-5 -translate-y-1/2 text-[28px] text-action">
                       <IconCheck />
                     </span>
                   ) : null}

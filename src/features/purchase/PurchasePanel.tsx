@@ -65,8 +65,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
   const changeQty = (next: number) =>
     setQty(Math.min(MAX_QTY, Math.max(1, Number.isFinite(next) ? next : 1)));
 
-  // Measure the stage width so the cover scale can cap to it (cqw is unreliable
-  // across browsers; a ResizeObserver sets --stage-w on the element itself).
+  // The stage width, written to --stage-w, caps the cover scale for wide covers (the notepad).
   const stageRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const el = stageRef.current;
@@ -132,9 +131,11 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
                   } as React.CSSProperties
                 }
                 className={cn(
-                  "relative shrink-0 transition-opacity [transition-duration:var(--duration-fast)]",
+                  // Only the visible cover is in flow; `relative` must not sit next to
+                  // `absolute`, or it wins in the stylesheet and hidden covers take up the row.
+                  "shrink-0 transition-opacity [transition-duration:var(--duration-fast)]",
                   e.id === editionId && !shownImage
-                    ? "opacity-100"
+                    ? "relative opacity-100"
                     : "pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 opacity-0",
                 )}
               >

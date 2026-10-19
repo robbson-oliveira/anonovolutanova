@@ -192,7 +192,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
               <div
                 role="group"
                 aria-labelledby={`${groupName}-qty`}
-                className="inline-flex h-12 items-center rounded-card border border-border bg-surface-plain"
+                className="inline-flex h-14 items-center rounded-card border border-border bg-surface-plain"
               >
                 <button
                   type="button"

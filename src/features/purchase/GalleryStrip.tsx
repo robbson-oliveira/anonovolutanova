@@ -68,15 +68,13 @@ export function GalleryStrip({ images, label }: GalleryStripProps) {
               onClick={() => goTo(index)}
               aria-label={`Ver imagem ${index + 1} de ${images.length}`}
               aria-current={index === active}
-              className="grid size-6 cursor-pointer place-items-center"
-            >
-              <span
-                className={cn(
-                  "size-[13px] rounded-pill transition-colors [transition-duration:var(--duration-fast)]",
-                  index === active ? "bg-gold-start" : "bg-action",
-                )}
-              />
-            </button>
+              className={cn(
+                "relative size-[13px] cursor-pointer rounded-pill transition-colors [transition-duration:var(--duration-fast)]",
+                // Invisible padding keeps a comfortable touch target around the 13px dot.
+                "before:absolute before:-inset-1.5 before:content-['']",
+                index === active ? "bg-gold-start" : "bg-action",
+              )}
+            />
           ))}
         </div>
       ) : null}

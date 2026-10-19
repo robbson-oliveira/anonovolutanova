@@ -16,7 +16,7 @@ import {
   cn,
 } from "@ds/index";
 import { whatsappUrlWith, type EditionId } from "@content/product";
-import type { ProductOffer } from "@/lib/commerce/offer-types";
+import type { ProductImage, ProductOffer } from "@/lib/commerce/offer-types";
 import { formatBRL } from "@/lib/format";
 import { useOptionalCart } from "@/features/cart/CartProvider";
 import { ProductThumb } from "@/features/cart/ProductThumb";
@@ -55,7 +55,14 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
 
   const edition = offer.editions.find((e) => e.id === editionId)!;
   const total = edition.price * qty;
-  const galleryImages = edition.image ? [edition.image, ...edition.gallery] : edition.gallery;
+  const coverThumb: ProductImage = {
+    src: edition.cover,
+    thumbnail: edition.cover,
+    srcset: "",
+    sizes: "",
+    alt: `${offer.name}, ${edition.label}`,
+  };
+  const galleryImages = [coverThumb, ...edition.gallery];
   const shownImage = shown?.edition === editionId ? (galleryImages[shown.index] ?? null) : null;
   // O que já está no carrinho conta para o frete grátis.
   const missingForFreeShipping = Math.max(0, offer.freeShippingMinQty - qty - (cart?.count ?? 0));

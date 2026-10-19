@@ -110,7 +110,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
       <div className="flex flex-col items-center gap-5 lg:sticky lg:top-8">
         <div
           ref={stageRef}
-          className="relative flex h-(--stage-h) w-full items-end justify-center [--stage-h:260px] sm:[--stage-h:480px]"
+          className="relative flex h-(--stage-h) w-full items-center justify-center [--stage-h:260px] sm:[--stage-h:480px]"
         >
           {offer.editions.map((e) => {
             const { coverBox: box, coverSize: size } = e;
@@ -136,7 +136,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
                   "shrink-0 transition-opacity [transition-duration:var(--duration-fast)]",
                   e.id === editionId && !shownImage
                     ? "relative opacity-100"
-                    : "pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 opacity-0",
+                    : "pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0",
                 )}
               >
                 <Image
@@ -144,7 +144,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
                   alt={`Capa da ${offer.name}, ${e.label}`}
                   width={size.width}
                   height={size.height}
-                  sizes="(min-width: 640px) 480px, 330px"
+                  sizes="(min-width: 640px) 740px, 480px"
                   loading="lazy"
                   style={{
                     width: px(size.width),
@@ -159,19 +159,16 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
           })}
           {shownImage ? (
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="overflow-hidden">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  key={shownImage.src}
-                  src={shownImage.src}
-                  srcSet={shownImage.srcset || undefined}
-                  sizes="(min-width: 640px) 480px, 330px"
-                  alt={shownImage.alt || `${offer.name}, ${edition.label}`}
-                  decoding="async"
-                  // Slight zoom to crop the thin border baked into the WooCommerce images.
-                  className="block h-auto max-h-(--stage-h) w-auto max-w-full scale-[1.04]"
-                />
-              </div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                key={shownImage.src}
+                src={shownImage.src}
+                srcSet={shownImage.srcset || undefined}
+                sizes="(min-width: 640px) 480px, 330px"
+                alt={shownImage.alt || `${offer.name}, ${edition.label}`}
+                decoding="async"
+                className="block h-auto max-h-(--stage-h) w-auto max-w-full"
+              />
             </div>
           ) : null}
         </div>

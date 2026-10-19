@@ -51,14 +51,17 @@ export function GalleryStrip({ images, label, selected, onSelect }: GalleryStrip
         className="flex h-[136px] max-w-full snap-x snap-mandatory items-center gap-[5px] overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {images.map((image, index) => (
-          <li key={image.src} className="h-full shrink-0 snap-start overflow-hidden not-first:-ml-2">
+          // The images are transparent cutouts, so they overlap: the first (the
+          // open agenda) sits at the back and each following sheet lands on top
+          // of the previous one, in DOM order.
+          <li key={image.src} className="h-full shrink-0 snap-start not-first:-ml-8">
             <button
               type="button"
               onClick={() => onSelect(selected === index ? null : index)}
               aria-label={`Mostrar imagem ${index + 1} de ${images.length}`}
               aria-pressed={selected === index}
               className={cn(
-                "block h-full cursor-pointer outline-2 -outline-offset-2 focus-visible:outline-action",
+                "block h-full cursor-pointer rounded-md outline-2 -outline-offset-2 focus-visible:outline-action",
                 selected === index ? "outline-action" : "outline-transparent",
               )}
             >
@@ -70,8 +73,7 @@ export function GalleryStrip({ images, label, selected, onSelect }: GalleryStrip
                 alt={altOf(image, index)}
                 loading="lazy"
                 decoding="async"
-                // Slight zoom to crop the thin border baked into the WooCommerce images.
-                className="block h-full w-auto scale-[1.04]"
+                className="block h-full w-auto max-w-none"
               />
             </button>
           </li>

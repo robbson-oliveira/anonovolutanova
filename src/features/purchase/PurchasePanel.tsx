@@ -116,7 +116,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
         {edition.gallery.length > 0 ? (
           <ul className="flex h-[136px] max-w-full items-center gap-[5px] overflow-x-auto">
             {edition.gallery.map((image, index) => (
-              <li key={image.src} className="h-full shrink-0">
+              <li key={image.src} className="h-full shrink-0 overflow-hidden">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={image.src}
@@ -125,7 +125,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
                   alt={image.alt || `${offer.name}, ${edition.label}, imagem ${index + 2}`}
                   loading="lazy"
                   decoding="async"
-                  className="block h-full w-auto"
+                  className="block h-full w-auto scale-[1.04]"
                 />
               </li>
             ))}

@@ -1,30 +1,31 @@
 "use client";
 
 import { useRef, useState } from "react";
-import * as Dialog from "@radix-ui/react-dialog";
-import { IconChevronLeft, IconChevronRight, IconClose, cn } from "@ds/index";
+import { cn } from "@ds/index";
 import type { ProductImage } from "@/lib/commerce/offer-types";
 
 type GalleryStripProps = {
   images: ProductImage[];
   /** Fallback alt text for images WooCommerce publishes without one. */
   label: string;
+  /** Index of the image currently shown in the product stage, or null for the cover. */
+  selected: number | null;
+  /** Picks an image for the stage; null goes back to the cover. */
+  onSelect: (index: number | null) => void;
 };
 
 /**
  * The product gallery under the cover: a swipeable strip with no scrollbar and
  * a dot per image (Figma 949:422). The dots follow the scroll position and
- * jump to an image when clicked; clicking a thumbnail opens it large in a
- * lightbox. Remount it (`key`) when the images change.
+ * jump to an image when clicked; clicking a thumbnail shows it in the product
+ * stage above (clicking the selected one again goes back to the cover).
+ * Remount it (`key`) when the images change.
  */
-export function GalleryStrip({ images, label }: GalleryStripProps) {
+export function GalleryStrip({ images, label, selected, onSelect }: GalleryStripProps) {
   const listRef = useRef<HTMLUListElement>(null);
   const [active, setActive] = useState(0);
-  const [zoomed, setZoomed] = useState<number | null>(null);
 
   const altOf = (image: ProductImage, index: number) => image.alt || `${label}, imagem ${index + 2}`;
-  const step = (delta: number) =>
-    setZoomed((current) => (current === null ? current : (current + delta + images.length) % images.length));
 
   const syncActive = () => {
     const list = listRef.current;
@@ -53,9 +54,13 @@ export function GalleryStrip({ images, label }: GalleryStripProps) {
           <li key={image.src} className="h-full shrink-0 snap-start overflow-hidden not-first:-ml-2">
             <button
               type="button"
-              onClick={() => setZoomed(index)}
-              aria-label={`Ampliar imagem ${index + 1} de ${images.length}`}
-              className="block h-full cursor-zoom-in focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-action"
+              onClick={() => onSelect(selected === index ? null : index)}
+              aria-label={`Mostrar imagem ${index + 1} de ${images.length}`}
+              aria-pressed={selected === index}
+              className={cn(
+                "block h-full cursor-pointer outline-2 -outline-offset-2 focus-visible:outline-action",
+                selected === index ? "outline-action" : "outline-transparent",
+              )}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -93,63 +98,6 @@ export function GalleryStrip({ images, label }: GalleryStripProps) {
         </div>
       ) : null}
 
-      <Dialog.Root open={zoomed !== null} onOpenChange={(open) => !open && setZoomed(null)}>
-        <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 z-50 bg-surface-inverse/80" />
-          <Dialog.Content
-            aria-describedby={undefined}
-            // The content covers the screen, so a click on the empty area is the backdrop click.
-            onClick={(event) => {
-              if (event.target === event.currentTarget) setZoomed(null);
-            }}
-            onKeyDown={(event) => {
-              if (event.key === "ArrowLeft") step(-1);
-              if (event.key === "ArrowRight") step(1);
-            }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 focus:outline-none sm:p-10"
-          >
-            <Dialog.Title className="sr-only">
-              {zoomed !== null ? altOf(images[zoomed], zoomed) : label}
-            </Dialog.Title>
-            {zoomed !== null ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={images[zoomed].src}
-                srcSet={images[zoomed].srcset || undefined}
-                sizes="(min-width: 640px) 80vw, 100vw"
-                alt={altOf(images[zoomed], zoomed)}
-                className="max-h-full max-w-full rounded-card bg-surface-plain object-contain shadow-float"
-              />
-            ) : null}
-            <Dialog.Close
-              aria-label="Fechar"
-              className="absolute top-3 right-3 grid size-11 cursor-pointer place-items-center rounded-pill bg-surface-plain text-xl text-text-strong shadow-float sm:top-6 sm:right-6"
-            >
-              <IconClose />
-            </Dialog.Close>
-            {images.length > 1 ? (
-              <>
-                <button
-                  type="button"
-                  onClick={() => step(-1)}
-                  aria-label="Imagem anterior"
-                  className="absolute top-1/2 left-3 grid size-11 -translate-y-1/2 cursor-pointer place-items-center rounded-pill bg-surface-plain text-xl text-text-strong shadow-float sm:left-6"
-                >
-                  <IconChevronLeft />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => step(1)}
-                  aria-label="Próxima imagem"
-                  className="absolute top-1/2 right-3 grid size-11 -translate-y-1/2 cursor-pointer place-items-center rounded-pill bg-surface-plain text-xl text-text-strong shadow-float sm:right-6"
-                >
-                  <IconChevronRight />
-                </button>
-              </>
-            ) : null}
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog.Root>
     </div>
   );
 }

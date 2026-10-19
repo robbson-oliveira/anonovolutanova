@@ -21,6 +21,8 @@ export type EditionOffer = {
   cover: string;
   /** Dimensões intrínsecas do arquivo, para o next/image reservar o espaço. */
   coverSize: { width: number; height: number };
+  /** Area of the file the book itself covers (the rest is shadow), in file pixels. */
+  coverBox: { x: number; y: number; width: number; height: number };
   description: string;
   /** Whether this is an agenda edition (the notepad is not). */
   agenda: boolean;

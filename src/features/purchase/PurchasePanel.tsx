@@ -46,6 +46,8 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
     if (match) setEditionId(match.id);
   }, [offer]);
   const [qty, setQty] = useState(1);
+  // Gallery image shown in the stage instead of the cover; tied to its edition so a switch drops it.
+  const [shown, setShown] = useState<{ edition: EditionId; index: number } | null>(null);
   const groupName = useId();
 
   const cart = useOptionalCart();
@@ -53,6 +55,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
 
   const edition = offer.editions.find((e) => e.id === editionId)!;
   const total = edition.price * qty;
+  const shownImage = shown?.edition === editionId ? (edition.gallery[shown.index] ?? null) : null;
   // O que já está no carrinho conta para o frete grátis.
   const missingForFreeShipping = Math.max(0, offer.freeShippingMinQty - qty - (cart?.count ?? 0));
   // The selector is not in the cart yet, so only the cart alone can claim the benefit as already earned.
@@ -93,25 +96,57 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
           têm proporções diferentes. Aqui via next/image porque os PNGs têm
           ~2,5 MB e a compra acontece no celular, vinda do Instagram. */}
       <div className="flex flex-col items-center gap-5 lg:sticky lg:top-8">
-        <div className="relative flex h-[260px] items-end justify-center sm:h-[480px]">
+        <div className="relative flex h-(--stage-h) w-full items-end justify-center [--stage-h:260px] sm:[--stage-h:480px]">
           {offer.editions.map((e) => (
-            <Image
+            // Layout box = the book only; the image is larger and positioned so
+            // the drop shadow bleeds outside it, keeping the book as big as the stage.
+            <div
               key={e.id}
-              src={e.cover}
-              alt={`Capa da ${offer.name}, ${e.label}`}
-              width={e.coverSize.width}
-              height={e.coverSize.height}
-              sizes="(min-width: 640px) 330px, 240px"
-              // Na home o painel fica longe do topo: as duas capas carregam
-              // juntas quando a seção se aproxima, para a troca ser imediata.
-              loading="lazy"
+              style={{
+                aspectRatio: `${e.coverBox.width} / ${e.coverBox.height}`,
+                width: `min(100%, calc(var(--stage-h) * ${e.coverBox.width / e.coverBox.height}))`,
+              }}
               className={cn(
-                "block h-full w-auto max-w-full drop-shadow-md",
-                "transition-opacity [transition-duration:var(--duration-fast)]",
-                e.id === editionId ? "opacity-100" : "pointer-events-none absolute bottom-0 opacity-0",
+                "relative transition-opacity [transition-duration:var(--duration-fast)]",
+                e.id === editionId && !shownImage ? "opacity-100" : "pointer-events-none absolute bottom-0 opacity-0",
               )}
-            />
+            >
+              <Image
+                src={e.cover}
+                alt={`Capa da ${offer.name}, ${e.label}`}
+                width={e.coverSize.width}
+                height={e.coverSize.height}
+                sizes="(min-width: 640px) 480px, 330px"
+                // Na home o painel fica longe do topo: as capas carregam
+                // juntas quando a seção se aproxima, para a troca ser imediata.
+                loading="lazy"
+                style={{
+                  width: `${(e.coverSize.width / e.coverBox.width) * 100}%`,
+                  height: `${(e.coverSize.height / e.coverBox.height) * 100}%`,
+                  left: `${(-e.coverBox.x / e.coverBox.width) * 100}%`,
+                  top: `${(-e.coverBox.y / e.coverBox.height) * 100}%`,
+                }}
+                className="absolute max-w-none drop-shadow-md"
+              />
+            </div>
           ))}
+          {shownImage ? (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  key={shownImage.src}
+                  src={shownImage.src}
+                  srcSet={shownImage.srcset || undefined}
+                  sizes="(min-width: 640px) 480px, 330px"
+                  alt={shownImage.alt || `${offer.name}, ${edition.label}`}
+                  decoding="async"
+                  // Slight zoom to crop the thin border baked into the WooCommerce images.
+                  className="block h-auto max-h-(--stage-h) w-auto max-w-full scale-[1.04]"
+                />
+              </div>
+            </div>
+          ) : null}
         </div>
 
         {/* Gallery from WooCommerce: only exists when the product has more
@@ -121,6 +156,8 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
             key={edition.id}
             images={edition.gallery}
             label={`${offer.name}, ${edition.label}`}
+            selected={shownImage ? shown!.index : null}
+            onSelect={(index) => setShown(index === null ? null : { edition: editionId, index })}
           />
         ) : null}
       </div>
@@ -239,12 +276,12 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
               ) : null}
             </div>
             {edition.agenda ? (
-              <Text as="span" size="xs" tone={missingForFreeShipping ? "muted" : "accent"} aria-live="polite">
+              <Text as="span" size="xs" tone="muted" aria-live="polite">
                 {missingForFreeShipping
                   ? `Faltam ${missingForFreeShipping} para o frete grátis`
                   : cartAlreadyQualifies
                     ? "Seu pedido já tem frete grátis"
-                    : "Ao adicionar, seu pedido ganha frete grátis"}
+                    : `Ao adicionar +${qty}, seu pedido ganha frete grátis`}
               </Text>
             ) : null}
             {offer.checkoutEnabled && cart?.error ? (

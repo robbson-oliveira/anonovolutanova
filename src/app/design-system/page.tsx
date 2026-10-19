@@ -39,7 +39,7 @@ import { SiteFooter } from "@sections/SiteFooter";
 const imgAvatarAndrea = "/img/avatar-andrea.jpg";
 const imgAvatarJeje = "/img/avatar-jeje.jpg";
 const imgAvatarRobson = "/img/avatar-robson.jpeg";
-const imgCapaClassica = "/img/capa-classica.png";
+const imgCapaClassica = "/img/capa-classica.webp";
 const imgCapaColor = "/img/capa-color.png";
 const imgCapaDupla = "/img/capa-dupla.png";
 const imgCapaSolo = "/img/capa-solo.png";

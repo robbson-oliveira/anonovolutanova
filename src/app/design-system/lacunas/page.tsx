@@ -133,7 +133,7 @@ function DemoBookCover() {
     <div className="flex flex-wrap items-end gap-6">
       {[
         { src: "/img/capa-color.png", alt: "Capa Color" },
-        { src: "/img/capa-classica.png", alt: "Capa Clássica" },
+        { src: "/img/capa-classica.webp", alt: "Capa Clássica" },
         { src: "/img/capa-solo.png", alt: "Capa Solo" },
       ].map((c) => (
         <div key={c.src} className="text-center">

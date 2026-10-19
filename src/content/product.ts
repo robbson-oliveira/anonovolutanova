@@ -37,7 +37,7 @@ export const EDITIONS = [
   {
     id: "classica",
     label: "Edição Clássica",
-    cover: "/img/capa-classica.png",
+    cover: "/img/capa-classica.webp",
     coverSize: { width: 1085, height: 1519 },
     description: "Capa azul-marinho com detalhes em dourado.",
   },

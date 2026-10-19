@@ -6,7 +6,7 @@ import { EXPLORE, QUOTE } from "@content/home";
 import { CART_URL, CYCLE_YEAR, EDITIONS } from "@content/product";
 
 const capaColor = "/img/capa-color.png";
-const capaClassica = "/img/capa-classica.png";
+const capaClassica = "/img/capa-classica.webp";
 
 /**
  * As capas são as mesmas da hero: mockups com a sombra assada no PNG, então a

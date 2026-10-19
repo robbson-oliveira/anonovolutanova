@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@ds/index";
 import { BookStage, STAGE_SIZE, type CoverSrc } from "@sections/BookStage";
 const capaColor = "/img/capa-color.png";
-const capaClassica = "/img/capa-classica.png";
+const capaClassica = "/img/capa-classica.webp";
 const capaSolo = "/img/capa-solo.png";
 const referencia = "/img/referencia-posicionamento.png";
 

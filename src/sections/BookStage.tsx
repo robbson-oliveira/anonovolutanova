@@ -1,7 +1,7 @@
 import { cn } from "@ds/index";
 import { OFFER_ANCHOR, CYCLE_YEAR, priceLabel } from "@content/product";
 const capaColor = "/img/capa-color.png";
-const capaClassica = "/img/capa-classica.png";
+const capaClassica = "/img/capa-classica.webp";
 const capaSolo = "/img/capa-solo.png";
 
 /** Um asset trocado no lab chega como blob: URL, sem dimensões conhecidas. */

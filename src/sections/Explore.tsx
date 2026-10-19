@@ -68,8 +68,11 @@ const COVER_VIEW_HEIGHT = `min(${COVER_HEIGHT}px, ${(COVER_HEIGHT_PER_WIDTH * 10
  * altura de livro e trocar de aba não muda o tamanho da agenda; só a sombra de
  * cada arquivo varia, e ela transborda por fora.
  */
+/** Ponto de interesse; `x` e `y` em % da caixa do livro. */
+type Hotspot = { x: number; y: number; title: string; text: string };
+
 /** `leftH`: altura da página esquerda (a capa de trás) no arquivo, em px, com alfa ≥ 240. */
-type Spread = Cover & { leftH: number };
+type Spread = Cover & { leftH: number; hotspots: Hotspot[] };
 
 const SPREADS: (Spread | null)[] = [
   null,
@@ -79,6 +82,26 @@ const SPREADS: (Spread | null)[] = [
     img: { w: 1216, h: 861 },
     book: { x: 115, y: 27, w: 764, h: 545 },
     leftH: 525,
+    hotspots: [
+      {
+        x: 14.7,
+        y: 26.2,
+        title: "Tema do Mês",
+        text: "Cada mês começa com um tema que inspira a viver a rotina com mais profundidade. É um convite a refletir e a fortalecer a vida interior, ajudando a direcionar atitudes e metas com mais consciência.",
+      },
+      {
+        x: 20.6,
+        y: 72.5,
+        title: "Propósito do Mês",
+        text: "Este espaço permite registrar as intenções e metas que você deseja trabalhar ao longo do mês. Anotar seus propósitos traz clareza, reforça o compromisso pessoal e ajuda a manter o foco no que realmente precisa ser cultivado.",
+      },
+      {
+        x: 87.7,
+        y: 17.8,
+        title: "Calendário Mensal",
+        text: "O calendário mensal oferece uma visão completa do período, facilitando o planejamento dos compromissos e a organização das prioridades. Ele ajuda a transformar os propósitos definidos em ações concretas ao longo dos dias.",
+      },
+    ],
   },
   {
     src: "/img/agenda-planos-metas.webp",
@@ -86,6 +109,32 @@ const SPREADS: (Spread | null)[] = [
     img: { w: 1178, h: 930 },
     book: { x: 50, y: 29, w: 819, h: 584 },
     leftH: 562,
+    hotspots: [
+      {
+        x: 14.7,
+        y: 26.2,
+        title: "Plano de Vida",
+        text: "Um espaço para refletir sobre o que realmente importa e esclarecer a direção que você deseja seguir ao longo do ano. É o ponto de partida para organizar sua rotina com sentido e propósito.",
+      },
+      {
+        x: 20.6,
+        y: 72.5,
+        title: "Metas Anuais",
+        text: "Registro das metas principais que você quer alcançar. Aqui você define objetivos claros que fortalecem sua caminhada e orientam suas escolhas ao longo dos meses.",
+      },
+      {
+        x: 80.6,
+        y: 36.1,
+        title: "Metas de Curto e Médio Prazo",
+        text: "Metas que podem ser realizadas em etapas menores e que mantêm o ritmo do seu progresso. São pequenos passos que ajudam a consolidar mudanças reais no dia a dia.",
+      },
+      {
+        x: 80.6,
+        y: 59.9,
+        title: "Metas de Longo Prazo",
+        text: "Objetivos maiores, que pedem constância e visão de futuro. Este espaço ajuda a manter vivo o compromisso com aquilo que você deseja construir com paciência e perseverança.",
+      },
+    ],
   },
   {
     src: "/img/agenda-planejamento-financeiro.webp",
@@ -93,6 +142,20 @@ const SPREADS: (Spread | null)[] = [
     img: { w: 1145, h: 927 },
     book: { x: 38, y: 29, w: 822, h: 587 },
     leftH: 565,
+    hotspots: [
+      {
+        x: 20.4,
+        y: 26.4,
+        title: "Planejamento Financeiro",
+        text: "Este espaço permite organizar com tranquilidade as metas e compromissos financeiros do ano. A estrutura em quadros facilita o registro de gastos, planos de economia e outras anotações importantes. É uma forma prática de acompanhar decisões do dia a dia com mais responsabilidade e ordem.",
+      },
+      {
+        x: 80.6,
+        y: 48.8,
+        title: "Calendário Anual",
+        text: "O calendário anual oferece uma visão completa de todos os meses, ajudando no planejamento antecipado de projetos, viagens e períodos mais intensos. Ele serve como referência para organizar o ritmo do ano e alinhar compromissos pessoais, profissionais e espirituais de forma equilibrada.",
+      },
+    ],
   },
   {
     src: "/img/agenda-diaria.webp",
@@ -100,6 +163,38 @@ const SPREADS: (Spread | null)[] = [
     img: { w: 1045, h: 845 },
     book: { x: 55, y: 26, w: 716, h: 562 },
     leftH: 550,
+    hotspots: [
+      {
+        x: 13.2,
+        y: 26.2,
+        title: "Tarefas Importantes",
+        text: "Um espaço reservado para definir o que precisa ser priorizado. Registrar essas tarefas traz clareza e permite conduzir o dia com mais ordem e propósito.",
+      },
+      {
+        x: 13.2,
+        y: 72.5,
+        title: "Estrutura de Horários",
+        text: "A estrutura com horários facilita o planejamento das atividades. Essa organização ajuda a distribuir melhor o tempo e criar um ritmo diário equilibrado entre trabalho, descanso e vida interior.",
+      },
+      {
+        x: 82.8,
+        y: 14.9,
+        title: "Tema do Mês",
+        text: "Cada dia começa acompanhado pelo tema espiritual do mês. Esse lembrete fortalece a intenção diária e ajuda a manter o foco nas virtudes que você deseja trabalhar ao longo do período.",
+      },
+      {
+        x: 84.9,
+        y: 39.5,
+        title: "Datas Importantes",
+        text: "As páginas trazem lembretes de celebrações litúrgicas e datas importantes da Obra. Esses marcos enriquecem a vivência espiritual e conectam o cotidiano com o calendário da Igreja.",
+      },
+      {
+        x: 83.4,
+        y: 71,
+        title: "Datas Importantes",
+        text: "As páginas trazem lembretes de celebrações litúrgicas e datas importantes da Obra. Esses marcos enriquecem a vivência espiritual e conectam o cotidiano com o calendário da Igreja.",
+      },
+    ],
   },
 ];
 
@@ -137,6 +232,103 @@ const HOTSPOTS = [
   },
 ];
 
+type HotspotsProps = {
+  items: Hotspot[];
+  open: number | null;
+  onOpen: (index: number | null) => void;
+};
+
+/** Marcadores "+" sobre o livro e o balão do que está aberto, em % da caixa do livro. */
+function Hotspots({ items, open, onOpen }: HotspotsProps) {
+  const spot = open === null ? null : items[open];
+
+  return (
+    <>
+      {items.map((s, i) => (
+        <div
+          key={s.title}
+          className="absolute size-[26px] -translate-x-1/2 -translate-y-1/2"
+          style={{ left: `${s.x}%`, top: `${s.y}%` }}
+        >
+          {/* anel que pulsa atrás do marcador, como no site antigo */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -inset-[10.4px] rounded-pill border-2 border-on-action opacity-0 motion-safe:animate-pin-pulse"
+          />
+          {/* 26px desenhados; o ::before leva a área de toque a 44px */}
+          <button
+            type="button"
+            aria-expanded={open === i}
+            aria-label={s.title}
+            onClick={() => onOpen(open === i ? null : i)}
+            className="relative flex size-[26px] cursor-pointer items-center justify-center rounded-pill border-2 border-on-action/80 bg-action p-0 text-on-action shadow-hotspot transition-colors [transition-duration:var(--duration-fast)] before:absolute before:-inset-2.5 hover:bg-action-hover"
+          >
+            <svg
+              aria-hidden
+              viewBox="0 0 24 24"
+              className="pointer-events-none block size-[13px] shrink-0 fill-none stroke-current stroke-2 [stroke-linecap:round]"
+            >
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+          </button>
+        </div>
+      ))}
+      {spot && (
+        <div
+          key={spot.title}
+          role="dialog"
+          aria-label={spot.title}
+          style={
+            {
+              "--spot-x": `${spot.x}%`,
+              "--spot-y": `${spot.y}%`,
+            } as React.CSSProperties
+          }
+          className={cn(
+            "absolute inset-x-3 bottom-3 z-20 rounded-[8px] border border-border bg-surface-card p-4 shadow-float motion-safe:animate-pin-card",
+            /* a partir de md: ao lado do marcador, para o lado em que há
+               espaço (o balão do site antigo tem 280px) */
+            "md:w-[280px]",
+            spot.x > 50
+              ? "md:left-auto md:right-[calc(100%_-_var(--spot-x)_+_28px)]"
+              : "md:right-auto md:left-[calc(var(--spot-x)_+_28px)]",
+            spot.y > 50
+              ? "md:top-auto md:bottom-[calc(100%_-_var(--spot-y)_-_13px)]"
+              : "md:bottom-auto md:top-[calc(var(--spot-y)_-_13px)]",
+          )}
+        >
+          <button
+            type="button"
+            aria-label="Fechar"
+            onClick={() => onOpen(null)}
+            className="absolute right-2 top-2 grid size-6 cursor-pointer place-items-center rounded-[4px] text-text opacity-60 transition-opacity [transition-duration:var(--duration-fast)] hover:opacity-100"
+          >
+            <svg
+              aria-hidden
+              viewBox="0 0 24 24"
+              className="size-4 fill-none stroke-current stroke-2 [stroke-linecap:round]"
+            >
+              <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
+          </button>
+          <p className="pr-6 text-[16px] font-semibold leading-[1.2] tracking-[-0.01em] text-text">
+            {spot.title}
+          </p>
+          <p className="mt-2 text-[14px] font-medium leading-[1.4] tracking-[-0.01em] text-text opacity-80">
+            {spot.text}
+          </p>
+          <Button
+            href={CART_URL}
+            className="mt-3 h-auto! rounded-[6px]! px-4! py-2 text-[14px] leading-[1.3] tracking-[-0.01em]"
+          >
+            Garantir minha Agenda
+          </Button>
+        </div>
+      )}
+    </>
+  );
+}
+
 /**
  * Medidas extraídas do DOM do wireframe (viewport 1440):
  * seção 1440×1288, padding 120/60/100; título 60/60 ls -3; apoio 20/24 a 389px;
@@ -166,7 +358,6 @@ export function Explore() {
 
   const cover = COVERS[edition as keyof typeof COVERS];
   const page = SPREADS[tab];
-  const spot = openSpot === null ? null : HOTSPOTS[openSpot];
 
   return (
     <section
@@ -266,6 +457,11 @@ export function Explore() {
                     height: `${(page.img.h / page.book.h) * 100}%`,
                   }}
                 />
+                <Hotspots
+                  items={page.hotspots}
+                  open={openSpot}
+                  onOpen={setOpenSpot}
+                />
               </div>
             ) : (
               <>
@@ -289,87 +485,11 @@ export function Explore() {
                       height: `${(cover.img.h / cover.book.h) * 100}%`,
                     }}
                   />
-                  {HOTSPOTS.map((s, i) => (
-                    <div
-                      key={s.title}
-                      className="absolute size-[26px] -translate-x-1/2 -translate-y-1/2"
-                      style={{ left: `${s.x}%`, top: `${s.y}%` }}
-                    >
-                      {/* anel que pulsa atrás do marcador, como no site antigo */}
-                      <span
-                        aria-hidden
-                        className="pointer-events-none absolute -inset-[10.4px] rounded-pill border-2 border-on-action opacity-0 motion-safe:animate-pin-pulse"
-                      />
-                      {/* 26px desenhados; o ::before leva a área de toque a 44px */}
-                      <button
-                        type="button"
-                        aria-expanded={openSpot === i}
-                        aria-label={s.title}
-                        onClick={() => setOpenSpot(openSpot === i ? null : i)}
-                        className="relative flex size-[26px] cursor-pointer items-center justify-center rounded-pill border-2 border-on-action/80 bg-action p-0 text-on-action shadow-hotspot transition-colors [transition-duration:var(--duration-fast)] before:absolute before:-inset-2.5 hover:bg-action-hover"
-                      >
-                        <svg
-                          aria-hidden
-                          viewBox="0 0 24 24"
-                          className="pointer-events-none block size-[13px] shrink-0 fill-none stroke-current stroke-2 [stroke-linecap:round]"
-                        >
-                          <path d="M12 5v14M5 12h14" />
-                        </svg>
-                      </button>
-                    </div>
-                  ))}
-                  {spot && (
-                    <div
-                      key={spot.title}
-                      role="dialog"
-                      aria-label={spot.title}
-                      style={
-                        {
-                          "--spot-x": `${spot.x}%`,
-                          "--spot-y": `${spot.y}%`,
-                        } as React.CSSProperties
-                      }
-                      className={cn(
-                        "absolute inset-x-3 bottom-3 z-20 rounded-[8px] border border-border bg-surface-card p-4 shadow-float motion-safe:animate-pin-card",
-                        /* a partir de md: ao lado do marcador, para o lado em que há
-                           espaço (o balão do site antigo tem 280px) */
-                        "md:w-[280px]",
-                        spot.x > 50
-                          ? "md:left-auto md:right-[calc(100%_-_var(--spot-x)_+_28px)]"
-                          : "md:right-auto md:left-[calc(var(--spot-x)_+_28px)]",
-                        spot.y > 50
-                          ? "md:top-auto md:bottom-[calc(100%_-_var(--spot-y)_-_13px)]"
-                          : "md:bottom-auto md:top-[calc(var(--spot-y)_-_13px)]",
-                      )}
-                    >
-                      <button
-                        type="button"
-                        aria-label="Fechar"
-                        onClick={() => setOpenSpot(null)}
-                        className="absolute right-2 top-2 grid size-6 cursor-pointer place-items-center rounded-[4px] text-text opacity-60 transition-opacity [transition-duration:var(--duration-fast)] hover:opacity-100"
-                      >
-                        <svg
-                          aria-hidden
-                          viewBox="0 0 24 24"
-                          className="size-4 fill-none stroke-current stroke-2 [stroke-linecap:round]"
-                        >
-                          <path d="M18 6 6 18M6 6l12 12" />
-                        </svg>
-                      </button>
-                      <p className="pr-6 text-[16px] font-semibold leading-[1.2] tracking-[-0.01em] text-text">
-                        {spot.title}
-                      </p>
-                      <p className="mt-2 text-[14px] font-medium leading-[1.4] tracking-[-0.01em] text-text opacity-80">
-                        {spot.text}
-                      </p>
-                      <Button
-                        href={CART_URL}
-                        className="mt-3 h-auto! rounded-[6px]! px-4! py-2 text-[14px] leading-[1.3] tracking-[-0.01em]"
-                      >
-                        Garantir minha Agenda
-                      </Button>
-                    </div>
-                  )}
+                  <Hotspots
+                    items={HOTSPOTS}
+                    open={openSpot}
+                    onOpen={setOpenSpot}
+                  />
                 </div>
               </>
             )}

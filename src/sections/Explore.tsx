@@ -261,12 +261,12 @@ export function Explore() {
                         aria-expanded={openSpot === i}
                         aria-label={s.title}
                         onClick={() => setOpenSpot(openSpot === i ? null : i)}
-                        className="relative grid size-[26px] cursor-pointer place-items-center rounded-pill border-2 border-on-action/80 bg-action text-on-action shadow-hotspot transition-transform [transition-duration:var(--duration-fast)] before:absolute before:-inset-2.5 hover:scale-110"
+                        className="relative flex size-[26px] cursor-pointer items-center justify-center rounded-pill border-2 border-on-action/80 bg-action p-0 text-on-action shadow-hotspot transition-colors [transition-duration:var(--duration-fast)] before:absolute before:-inset-2.5 hover:bg-action-hover"
                       >
                         <svg
                           aria-hidden
                           viewBox="0 0 24 24"
-                          className="size-[13px] fill-none stroke-current stroke-2 [stroke-linecap:round]"
+                          className="pointer-events-none block size-[13px] shrink-0 fill-none stroke-current stroke-2 [stroke-linecap:round]"
                         >
                           <path d="M12 5v14M5 12h14" />
                         </svg>

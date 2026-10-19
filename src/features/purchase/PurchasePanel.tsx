@@ -96,14 +96,16 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
           têm proporções diferentes. Aqui via next/image porque os PNGs têm
           ~2,5 MB e a compra acontece no celular, vinda do Instagram. */}
       <div className="flex flex-col items-center gap-5 lg:sticky lg:top-8">
-        <div className="@container relative flex h-(--stage-h) w-full items-end justify-center [--stage-h:260px] sm:[--stage-h:480px]">
+        <div
+          className="relative flex h-(--stage-h) w-full items-end justify-center [--stage-h:260px] sm:[--stage-h:480px]"
+          style={{ containerType: "inline-size" }}
+        >
           {offer.editions.map((e) => {
             const { coverBox: box, coverSize: size } = e;
-            // --s is how many CSS pixels one pixel of the cover file gets: the
-            // book fills the stage height, or the stage width for a wide cover.
-            // Everything is sized in absolute lengths from it (no percentages),
-            // so the layout box is the book only and its drop shadow bleeds out.
-            const px = (value: number) => `calc(${value} * var(--s))`;
+            // --s scales one cover-file pixel to CSS pixels: the book fills the
+            // stage height (or width for a wide cover like the notepad).
+            // The layout box is the book only; the drop shadow bleeds outside.
+            const px = (v: number) => `calc(${v} * var(--s))`;
             return (
               <div
                 key={e.id}
@@ -127,8 +129,6 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
                   width={size.width}
                   height={size.height}
                   sizes="(min-width: 640px) 480px, 330px"
-                  // Na home o painel fica longe do topo: as capas carregam
-                  // juntas quando a seção se aproxima, para a troca ser imediata.
                   loading="lazy"
                   style={{
                     width: px(size.width),

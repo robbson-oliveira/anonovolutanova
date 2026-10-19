@@ -8,7 +8,7 @@ const AVATARS = ["/img/avatar-robson.jpeg", "/img/avatar-andrea.jpg", "/img/avat
 
 /* -----------------------------------------------------------------------------
    DEPOIMENTOS — medido no wireframe (viewport 1440), section 1440x936.
-   padding 0 0 200 60 · título x201 y250 120/132 600 -6px
+   padding 0 0 200 60 · título x201 (y250 no Figma; o recuo de cima foi reduzido de propósito) 120/132 600 -6px
    botões 60x60 r15 degradê dourado (Figma 949:540), estrelas douradas
    cards 505x288 r12 branco, sombra 0 1px 2px rgba(0,0,0,.1), pad 42px 0
    conteúdo 421 · gap 30 · avatar 60x60 r12 · gap 12 · nome/cidade 24/24 700
@@ -43,7 +43,7 @@ export function Testimonials() {
   return (
     <section
       id="depoimentos"
-      className="overflow-hidden bg-surface pb-16 pt-20 md:pb-24 md:pt-32 xl:pb-[118px] xl:pt-[250px]"
+      className="overflow-hidden bg-surface pb-16 pt-8 md:pb-24 md:pt-16 xl:pb-[118px] xl:pt-[60px]"
     >
       <RevealGroup
         className={

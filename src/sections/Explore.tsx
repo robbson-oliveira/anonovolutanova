@@ -285,7 +285,7 @@ function Hotspots({ items, open, onOpen }: HotspotsProps) {
             } as React.CSSProperties
           }
           className={cn(
-            "absolute inset-x-3 bottom-3 z-20 rounded-[8px] border border-border bg-surface-card p-4 shadow-float motion-safe:animate-pin-card",
+            "absolute inset-x-3 bottom-3 z-20 rounded-[8px] border border-border bg-surface p-4 shadow-float motion-safe:animate-pin-card",
             /* a partir de md: ao lado do marcador, para o lado em que há
                espaço (o balão do site antigo tem 280px) */
             "md:w-[280px]",

@@ -65,6 +65,19 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
   const changeQty = (next: number) =>
     setQty(Math.min(MAX_QTY, Math.max(1, Number.isFinite(next) ? next : 1)));
 
+  // Measure the stage width so the cover scale can cap to it (cqw is unreliable
+  // across browsers; a ResizeObserver sets --stage-w on the element itself).
+  const stageRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = stageRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => {
+      el.style.setProperty("--stage-w", `${entry.contentBoxSize[0].inlineSize}px`);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   // view_item: uma vez por visita à página, com as edições disponíveis. A
   // trava evita o disparo duplo do Strict Mode (efeitos rodam duas vezes em dev).
   const viewed = useRef(false);
@@ -97,21 +110,23 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
           ~2,5 MB e a compra acontece no celular, vinda do Instagram. */}
       <div className="flex flex-col items-center gap-5 lg:sticky lg:top-8">
         <div
+          ref={stageRef}
           className="relative flex h-(--stage-h) w-full items-end justify-center [--stage-h:260px] sm:[--stage-h:480px]"
-          style={{ containerType: "inline-size" }}
         >
           {offer.editions.map((e) => {
             const { coverBox: box, coverSize: size } = e;
             // --s scales one cover-file pixel to CSS pixels: the book fills the
             // stage height (or width for a wide cover like the notepad).
             // The layout box is the book only; the drop shadow bleeds outside.
+            // --stage-w is set by the ResizeObserver above; the 500px fallback
+            // covers SSR and the first paint before the observer fires.
             const px = (v: number) => `calc(${v} * var(--s))`;
             return (
               <div
                 key={e.id}
                 style={
                   {
-                    "--s": `min(calc(var(--stage-h) / ${box.height}), calc(100cqw / ${box.width}))`,
+                    "--s": `min(calc(var(--stage-h) / ${box.height}), calc(var(--stage-w, 500px) / ${box.width}))`,
                     width: px(box.width),
                     height: px(box.height),
                   } as React.CSSProperties

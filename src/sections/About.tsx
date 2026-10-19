@@ -9,7 +9,7 @@ import {
   RevealGroup,
 } from "@ds/index";
 import { ABOUT } from "@content/home";
-import { BUY_URL } from "@content/product";
+import { OFFER_ANCHOR } from "@content/product";
 const planoDeVida = "/img/sobre-plano-de-vida.webp";
 const metasAnuais = "/img/sobre-metas-anuais.webp";
 const fraseDia = "/img/sobre-frase-dia.webp";
@@ -162,7 +162,7 @@ export function AboutHeader() {
 
       <Reveal variant="up" delay={180} className="mt-[27px] w-[600px] max-w-full">
         <Button
-          href={BUY_URL}
+          href={OFFER_ANCHOR}
           size="lg"
           shape="block"
           // As medidas do botão vencem as do tamanho "lg" do Button (daí o !).

@@ -362,7 +362,7 @@ export function Explore() {
   return (
     <section
       id="explore"
-      className="bg-surface px-4 pb-16 pt-16 md:px-10 md:pb-[100px] md:pt-[120px] xl:px-[60px]"
+      className="bg-surface px-4 pb-16 pt-16 md:px-10 md:pb-[40px] md:pt-[120px] xl:px-[60px]"
     >
       <Reveal variant="up" className="text-center">
         <h2 className="text-h2 font-bold text-text-lead">

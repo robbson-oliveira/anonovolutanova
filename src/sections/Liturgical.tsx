@@ -9,7 +9,7 @@ import {
   Reveal,
 } from "@ds/index";
 import { LITURGICAL } from "@content/home";
-import { BUY_URL } from "@content/product";
+import { OFFER_ANCHOR } from "@content/product";
 
 /**
  * Um ícone por data, na ordem de `LITURGICAL.dates`.
@@ -93,7 +93,7 @@ export function Liturgical() {
         </p>
 
         <a
-          href={BUY_URL}
+          href={OFFER_ANCHOR}
           className="mx-auto mt-8 flex h-[68px] w-full max-w-[600px] items-center justify-center rounded-[10px] bg-linear-90 from-gold-start to-gold-end px-6 text-center text-[16px] font-bold leading-[16px] tracking-[-0.04em] text-on-action transition-[filter] [transition-duration:var(--duration-fast)] hover:brightness-110 md:mt-[39px]"
         >
           {LITURGICAL.cta}

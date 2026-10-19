@@ -1,6 +1,6 @@
 import { Reveal, RevealGroup } from "@ds/index";
 import { CLOSING } from "@content/home";
-import { BUY_URL } from "@content/product";
+import { OFFER_ANCHOR } from "@content/product";
 
 
 /**
@@ -61,7 +61,7 @@ export function Closing() {
 
             <div className="mt-10 flex w-full flex-col items-stretch gap-[15px] md:w-auto md:flex-row md:items-center min-[1440px]:mt-0">
               <a
-                href={BUY_URL}
+                href={OFFER_ANCHOR}
                 className="flex min-h-[68px] items-center justify-center rounded-[9px] px-5 py-3 text-base font-bold tracking-[-0.4px] text-text-on-inverse no-underline shadow-cta-warm bg-linear-62/srgb from-action-warm from-42% to-action-warm-end md:w-[361px]"
               >
                 {CLOSING.primaryCta}

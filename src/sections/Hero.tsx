@@ -8,7 +8,7 @@ import {
   Text,
 } from "@ds/index";
 import { HERO, STATS } from "@content/home";
-import { BUY_URL } from "@content/product";
+import { OFFER_ANCHOR } from "@content/product";
 import { BookStage } from "./BookStage";
 
 /**
@@ -100,7 +100,7 @@ export function Hero() {
 
             <Reveal variant="up" delay={240}>
               <Button
-                href={BUY_URL}
+                href={OFFER_ANCHOR}
                 size="lg"
                 shape="block"
                 // As medidas do botão vencem as do tamanho "lg" do Button (daí o !).

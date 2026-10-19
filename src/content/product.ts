@@ -56,6 +56,13 @@ export const SHIPPING_NOTICE = `Frete Grátis a partir de ${FREE_SHIPPING_MIN_QT
 export const BUY_URL = "/#oferta";
 
 /**
+ * Mesmo destino, só o hash: nas seções da home o link rola na própria página.
+ * Com "/#oferta" o navegador recarrega quando a home está em outro endereço
+ * (ex.: /home-dev), vai ao topo e só depois desce.
+ */
+export const OFFER_ANCHOR = "#oferta";
+
+/**
  * Where the store flow sends someone back to choose an edition (empty cart,
  * "voltar" in the checkout). With ANLN_PRECHECKOUT it is the cart page;
  * without it the proxy redirects this address to BUY_URL, so the links can

@@ -1,14 +1,14 @@
 import { Badge, Button, IconSparkle, Reveal } from "@ds/index";
 import { PLANNER } from "@content/home";
-import { BUY_URL } from "@content/product";
+import { OFFER_ANCHOR } from "@content/product";
 
 /**
- * Chamada do Planner Diário (Figma "Seção 3", 949:788): cartão de 1023×487
+ * Chamada do Planner Diário (Figma "Seção 3", 949:788): cartão de 1023×487 no Figma (aqui 1023×440: menos respiro interno)
  * com borda dourada de 2px, raio 20, texto à esquerda e a folha à direita.
  *
  * A partir de lg as duas colunas ficam posicionadas em % do cartão, medidas
  * no Figma (texto a 79px e 515 de largura; folha a 521px, 499×373), então o
- * conjunto acompanha a largura do cartão. A folha invade o texto por ~73px:
+ * conjunto acompanha a largura do cartão. A folha, maior que no Figma, invade o texto por ~100px e o cartão (overflow-hidden) corta a sombra que passar da borda:
  * ela tem sombra e transparência assadas no PNG, e o parágrafo (395px) não
  * chega lá. Abaixo de lg o texto vem primeiro e a folha embaixo.
  *
@@ -17,12 +17,12 @@ import { BUY_URL } from "@content/product";
  */
 export function Planner() {
   return (
-    <section className="bg-surface px-4 pb-16 pt-8 md:px-10 md:pb-24 xl:px-[60px] xl:pb-[163px] xl:pt-[132px]">
+    <section className="bg-surface px-4 pb-16 pt-4 md:px-10 md:pb-24 xl:px-[60px] xl:pb-[163px] xl:pt-[32px]">
       <Reveal
         variant="up"
-        className="relative mx-auto flex w-[1023px] max-w-full flex-col items-center gap-6 rounded-[20px] border-2 border-gold-start px-6 py-8 text-center lg:block lg:aspect-[1023/487] lg:p-0 lg:text-left"
+        className="relative mx-auto flex w-[1023px] max-w-full flex-col items-center gap-6 overflow-hidden rounded-[20px] border-2 border-gold-start px-6 py-6 text-center lg:block lg:aspect-[1023/440] lg:p-0 lg:text-left"
       >
-        <div className="lg:absolute lg:left-[7.72%] lg:top-[13.35%] lg:w-[50.34%]">
+        <div className="lg:absolute lg:left-[7.72%] lg:top-[11%] lg:w-[50.34%]">
           <Badge
             tone="plain"
             icon={<IconSparkle />}
@@ -44,7 +44,7 @@ export function Planner() {
           </p>
 
           <Button
-            href={BUY_URL}
+            href={OFFER_ANCHOR}
             size="lg"
             shape="block"
             // As medidas do Figma vencem as do tamanho "lg" do Button (daí o !).
@@ -59,7 +59,7 @@ export function Planner() {
           alt={PLANNER.imageAlt}
           width={642}
           height={472}
-          className="pointer-events-none block w-full max-w-[499px] object-cover lg:absolute lg:left-[50.93%] lg:top-[10.06%] lg:h-[76.6%] lg:w-[48.78%] lg:max-w-none"
+          className="pointer-events-none block w-full max-w-[560px] object-cover lg:absolute lg:left-[44%] lg:top-[2%] lg:h-auto lg:w-[56%] lg:max-w-none"
         />
       </Reveal>
     </section>

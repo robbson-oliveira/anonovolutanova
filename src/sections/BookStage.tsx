@@ -1,5 +1,5 @@
 import { cn } from "@ds/index";
-import { BUY_URL, CYCLE_YEAR, priceLabel } from "@content/product";
+import { OFFER_ANCHOR, CYCLE_YEAR, priceLabel } from "@content/product";
 const capaColor = "/img/capa-color.png";
 const capaClassica = "/img/capa-classica.png";
 const capaSolo = "/img/capa-solo.png";
@@ -147,7 +147,7 @@ function PriceCard({ thumbSrc }: { thumbSrc: CoverSrc }) {
       </div>
 
       <a
-        href={BUY_URL}
+        href={OFFER_ANCHOR}
         className="relative flex h-[34px] w-[146px] shrink-0 items-center justify-center rounded-sm bg-linear-90 from-gold-start to-gold-end text-[15px] transition-[transform,box-shadow] [transition-duration:var(--duration-fast)] hover:-translate-y-0.5 hover:shadow-[0_8px_18px_-6px] hover:shadow-gold-start/60 motion-reduce:hover:translate-y-0 font-bold leading-[18px] text-on-action before:absolute before:inset-x-0 before:-inset-y-[5px] @max-[520px]/stage:h-11"
       >
         Comprar Agora

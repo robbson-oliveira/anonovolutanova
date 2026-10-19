@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button, Container, IconArrowRight, cn } from "@ds/index";
 import { NAV_LINKS } from "@content/home";
-import { BUY_URL, PRODUCT_NAME } from "@content/product";
+import { OFFER_ANCHOR, PRODUCT_NAME } from "@content/product";
 import { CartButton } from "@/features/cart/CartButton";
 const logo = "/img/logo-header.svg";
 
@@ -55,7 +55,7 @@ export function SiteHeader() {
               é a exceção confirmada, não os outros que ainda não medi. */}
           {/* No celular, sem a seta e com menos respiro: com o carrinho à mostra,
               os três botões precisam caber ao lado do logo. */}
-          <Button href={BUY_URL} size="md" shape="block" className="max-sm:px-4">
+          <Button href={OFFER_ANCHOR} size="md" shape="block" className="max-sm:px-4">
             Comprar
             <IconArrowRight className="max-sm:hidden" />
           </Button>

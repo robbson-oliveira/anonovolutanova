@@ -378,6 +378,22 @@
   --animate-processing-enter: ds-processing-enter 200ms ease-out both;
   --animate-processing-ring: ds-processing-rotate 2s linear infinite, ds-processing-dash 1.5s linear infinite;
 
+  /* Explore hotspots, from the old Framer site: the ring fades 0.6 -> 0 while
+     it grows, the card rises 10px and scales up from 0.9. */
+  --animate-pin-pulse: ds-pin-pulse 1.6s ease-out infinite;
+  --animate-pin-card: ds-pin-card 0.2s var(--ease-enter) both;
+
+  @keyframes ds-pin-pulse {
+    0% { opacity: 0.6; transform: scale(0.97); }
+    50% { opacity: 0.3; }
+    100% { opacity: 0; transform: scale(1.7); }
+  }
+
+  @keyframes ds-pin-card {
+    from { opacity: 0; transform: translateY(10px) scale(0.9); }
+    to { opacity: 1; transform: none; }
+  }
+
   @keyframes ds-processing-rotate {
     to { transform: rotate(360deg); }
   }

@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { EditionSelector, Reveal, Text, cn } from "@ds/index";
+import { Button, EditionSelector, Reveal, cn } from "@ds/index";
 import { EXPLORE, QUOTE } from "@content/home";
-import { EDITIONS } from "@content/product";
+import { CART_URL, EDITIONS } from "@content/product";
 
 const capaColor = "/img/capa-color.png";
 const capaClassica = "/img/capa-classica.png";
@@ -39,10 +39,11 @@ const COVERS: Record<"color" | "classica", Cover> = {
 
 /**
  * Altura do livro, nas duas edições. O Figma (949:830) tem 645px, mas com a
- * agenda tão grande ela encosta nas abas e na citação; 560px devolve o respiro
- * dentro da área de 607px reservada para a capa e as páginas internas.
+ * agenda tão grande ela encosta nas abas e na citação. O site do ano passado
+ * mostrava o livro com ~475px; 470px devolve esse respiro dentro da área de
+ * 607px reservada para a capa e as páginas internas.
  */
-const COVER_HEIGHT = 560;
+const COVER_HEIGHT = 470;
 
 /** Altura máxima das páginas internas das outras abas. */
 const PAGE_HEIGHT = 607;
@@ -246,23 +247,37 @@ export function Explore() {
                   {HOTSPOTS.map((s, i) => (
                     <div
                       key={s.title}
-                      className="absolute"
+                      className="absolute size-[26px] -translate-x-1/2 -translate-y-1/2"
                       style={{ left: `${s.x}%`, top: `${s.y}%` }}
                     >
-                      {/* 28px desenhados; o ::before leva a área de toque a 44px */}
+                      {/* anel que pulsa atrás do marcador, como no site antigo */}
+                      <span
+                        aria-hidden
+                        className="pointer-events-none absolute -inset-[10.4px] rounded-pill border-2 border-on-action opacity-0 motion-safe:animate-pin-pulse"
+                      />
+                      {/* 26px desenhados; o ::before leva a área de toque a 44px */}
                       <button
                         type="button"
                         aria-expanded={openSpot === i}
                         aria-label={s.title}
                         onClick={() => setOpenSpot(openSpot === i ? null : i)}
-                        className="relative grid size-7 -translate-x-1/2 -translate-y-1/2 cursor-pointer place-items-center rounded-pill border border-on-action/80 bg-action text-on-action shadow-hotspot before:absolute before:-inset-2"
+                        className="relative grid size-[26px] cursor-pointer place-items-center rounded-pill border-2 border-on-action/80 bg-action text-on-action shadow-hotspot transition-transform [transition-duration:var(--duration-fast)] before:absolute before:-inset-2.5 hover:scale-110"
                       >
-                        <span className="text-[14px] leading-none">+</span>
+                        <svg
+                          aria-hidden
+                          viewBox="0 0 24 24"
+                          className="size-[13px] fill-none stroke-current stroke-2 [stroke-linecap:round]"
+                        >
+                          <path d="M12 5v14M5 12h14" />
+                        </svg>
                       </button>
                     </div>
                   ))}
                   {spot && (
                     <div
+                      key={spot.title}
+                      role="dialog"
+                      aria-label={spot.title}
                       style={
                         {
                           "--spot-x": `${spot.x}%`,
@@ -270,17 +285,44 @@ export function Explore() {
                         } as React.CSSProperties
                       }
                       className={cn(
-                        "absolute inset-x-3 bottom-3 z-10 rounded-card bg-surface p-4 shadow-float",
-                        /* a partir de md: 16px abaixo e à direita do marcador, como no wireframe */
-                        "md:inset-x-auto md:bottom-auto md:left-[calc(var(--spot-x)_+_16px)] md:top-[calc(var(--spot-y)_+_16px)] md:w-56",
+                        "absolute inset-x-3 bottom-3 z-20 rounded-[8px] border border-border bg-surface-card p-4 shadow-float motion-safe:animate-pin-card",
+                        /* a partir de md: ao lado do marcador, para o lado em que há
+                           espaço (o balão do site antigo tem 280px) */
+                        "md:w-[280px]",
+                        spot.x > 50
+                          ? "md:left-auto md:right-[calc(100%_-_var(--spot-x)_+_28px)]"
+                          : "md:right-auto md:left-[calc(var(--spot-x)_+_28px)]",
+                        spot.y > 50
+                          ? "md:top-auto md:bottom-[calc(100%_-_var(--spot-y)_-_13px)]"
+                          : "md:bottom-auto md:top-[calc(var(--spot-y)_-_13px)]",
                       )}
                     >
-                      <p className="text-sm font-bold text-text-strong">
+                      <button
+                        type="button"
+                        aria-label="Fechar"
+                        onClick={() => setOpenSpot(null)}
+                        className="absolute right-2 top-2 grid size-6 cursor-pointer place-items-center rounded-[4px] text-text opacity-60 transition-opacity [transition-duration:var(--duration-fast)] hover:opacity-100"
+                      >
+                        <svg
+                          aria-hidden
+                          viewBox="0 0 24 24"
+                          className="size-4 fill-none stroke-current stroke-2 [stroke-linecap:round]"
+                        >
+                          <path d="M18 6 6 18M6 6l12 12" />
+                        </svg>
+                      </button>
+                      <p className="pr-6 text-[16px] font-semibold leading-[1.2] tracking-[-0.01em] text-text">
                         {spot.title}
                       </p>
-                      <Text size="xs" className="mt-1.5">
+                      <p className="mt-2 text-[14px] font-medium leading-[1.4] tracking-[-0.01em] text-text opacity-80">
                         {spot.text}
-                      </Text>
+                      </p>
+                      <Button
+                        href={CART_URL}
+                        className="mt-3 h-auto! rounded-[6px]! px-4! py-2 text-[14px] leading-[1.3] tracking-[-0.01em]"
+                      >
+                        Garantir minha Agenda
+                      </Button>
                     </div>
                   )}
                 </div>

@@ -55,6 +55,8 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
   const total = edition.price * qty;
   // O que já está no carrinho conta para o frete grátis.
   const missingForFreeShipping = Math.max(0, offer.freeShippingMinQty - qty - (cart?.count ?? 0));
+  // The selector is not in the cart yet, so only the cart alone can claim the benefit as already earned.
+  const cartAlreadyQualifies = (cart?.count ?? 0) >= offer.freeShippingMinQty;
   const soldOut = offer.editions.every((e) => !e.inStock);
 
   const changeQty = (next: number) =>
@@ -240,7 +242,9 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
               <Text as="span" size="xs" tone={missingForFreeShipping ? "muted" : "accent"} aria-live="polite">
                 {missingForFreeShipping
                   ? `Faltam ${missingForFreeShipping} para o frete grátis`
-                  : "Frete grátis neste pedido"}
+                  : cartAlreadyQualifies
+                    ? "Seu pedido já tem frete grátis"
+                    : "Ao adicionar, seu pedido ganha frete grátis"}
               </Text>
             ) : null}
             {offer.checkoutEnabled && cart?.error ? (

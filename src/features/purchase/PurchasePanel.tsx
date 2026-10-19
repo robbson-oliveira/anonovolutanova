@@ -96,40 +96,51 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
           têm proporções diferentes. Aqui via next/image porque os PNGs têm
           ~2,5 MB e a compra acontece no celular, vinda do Instagram. */}
       <div className="flex flex-col items-center gap-5 lg:sticky lg:top-8">
-        <div className="relative flex h-(--stage-h) w-full items-end justify-center [--stage-h:260px] sm:[--stage-h:480px]">
-          {offer.editions.map((e) => (
-            // Layout box = the book only; the image is larger and positioned so
-            // the drop shadow bleeds outside it, keeping the book as big as the stage.
-            <div
-              key={e.id}
-              style={{
-                aspectRatio: `${e.coverBox.width} / ${e.coverBox.height}`,
-                width: `min(100%, calc(var(--stage-h) * ${e.coverBox.width / e.coverBox.height}))`,
-              }}
-              className={cn(
-                "relative transition-opacity [transition-duration:var(--duration-fast)]",
-                e.id === editionId && !shownImage ? "opacity-100" : "pointer-events-none absolute bottom-0 opacity-0",
-              )}
-            >
-              <Image
-                src={e.cover}
-                alt={`Capa da ${offer.name}, ${e.label}`}
-                width={e.coverSize.width}
-                height={e.coverSize.height}
-                sizes="(min-width: 640px) 480px, 330px"
-                // Na home o painel fica longe do topo: as capas carregam
-                // juntas quando a seção se aproxima, para a troca ser imediata.
-                loading="lazy"
-                style={{
-                  width: `${(e.coverSize.width / e.coverBox.width) * 100}%`,
-                  height: `${(e.coverSize.height / e.coverBox.height) * 100}%`,
-                  left: `${(-e.coverBox.x / e.coverBox.width) * 100}%`,
-                  top: `${(-e.coverBox.y / e.coverBox.height) * 100}%`,
-                }}
-                className="absolute max-w-none drop-shadow-md"
-              />
-            </div>
-          ))}
+        <div className="@container relative flex h-(--stage-h) w-full items-end justify-center [--stage-h:260px] sm:[--stage-h:480px]">
+          {offer.editions.map((e) => {
+            const { coverBox: box, coverSize: size } = e;
+            // --s is how many CSS pixels one pixel of the cover file gets: the
+            // book fills the stage height, or the stage width for a wide cover.
+            // Everything is sized in absolute lengths from it (no percentages),
+            // so the layout box is the book only and its drop shadow bleeds out.
+            const px = (value: number) => `calc(${value} * var(--s))`;
+            return (
+              <div
+                key={e.id}
+                style={
+                  {
+                    "--s": `min(calc(var(--stage-h) / ${box.height}), calc(100cqw / ${box.width}))`,
+                    width: px(box.width),
+                    height: px(box.height),
+                  } as React.CSSProperties
+                }
+                className={cn(
+                  "relative shrink-0 transition-opacity [transition-duration:var(--duration-fast)]",
+                  e.id === editionId && !shownImage
+                    ? "opacity-100"
+                    : "pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 opacity-0",
+                )}
+              >
+                <Image
+                  src={e.cover}
+                  alt={`Capa da ${offer.name}, ${e.label}`}
+                  width={size.width}
+                  height={size.height}
+                  sizes="(min-width: 640px) 480px, 330px"
+                  // Na home o painel fica longe do topo: as capas carregam
+                  // juntas quando a seção se aproxima, para a troca ser imediata.
+                  loading="lazy"
+                  style={{
+                    width: px(size.width),
+                    height: px(size.height),
+                    left: px(-box.x),
+                    top: px(-box.y),
+                  }}
+                  className="absolute max-w-none drop-shadow-md"
+                />
+              </div>
+            );
+          })}
           {shownImage ? (
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="overflow-hidden">

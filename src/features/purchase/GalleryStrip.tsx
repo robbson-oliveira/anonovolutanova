@@ -88,8 +88,8 @@ export function GalleryStrip({ images, label, selected, onSelect }: GalleryStrip
               aria-label={`Ver imagem ${index + 1} de ${images.length}`}
               aria-current={index === active}
               className={cn(
-                "relative size-[13px] cursor-pointer rounded-pill transition-colors [transition-duration:var(--duration-fast)]",
-                // Invisible padding keeps a comfortable touch target around the 13px dot.
+                "relative size-2.5 cursor-pointer rounded-pill transition-colors [transition-duration:var(--duration-fast)]",
+                // Invisible padding keeps a comfortable touch target around the 10px dot.
                 "before:absolute before:-inset-1.5 before:content-['']",
                 index === active ? "bg-gold-start" : "bg-action",
               )}

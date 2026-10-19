@@ -139,7 +139,7 @@ export const LITURGICAL = {
 } as const;
 
 export const PERSONA = {
-  title: "Feita para quem quer sair da margem",
+  title: "Feita para quem quer viver com propósito",
   paragraph:
     "A Agenda Ano Novo, Luta Nova é para quem busca unir fé e vida prática, " +
     "para quem acredita que organizar o tempo é também cuidar da alma.",

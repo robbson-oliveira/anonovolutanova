@@ -9,6 +9,7 @@ const AVATARS = ["/img/avatar-robson.jpeg", "/img/avatar-andrea.jpg", "/img/avat
 /* -----------------------------------------------------------------------------
    DEPOIMENTOS — medido no wireframe (viewport 1440), section 1440x936.
    padding 0 0 200 60 · título x201 y250 120/132 600 -6px
+   botões 60x60 r15 degradê dourado (Figma 949:540), estrelas douradas
    cards 505x288 r12 branco, sombra 0 1px 2px rgba(0,0,0,.1), pad 42px 0
    conteúdo 421 · gap 30 · avatar 60x60 r12 · gap 12 · nome/cidade 24/24 700
    estrelas 124x21 · citação 20/24 400
@@ -93,7 +94,7 @@ export function Testimonials() {
 
                   <p
                     aria-label="5 de 5 estrelas"
-                    className="m-0 mt-5 flex h-[21px] w-[124px] gap-[5px] text-[21px] leading-[21px] text-text-card"
+                    className="m-0 mt-5 flex h-[21px] w-[124px] gap-[5px] text-[21px] leading-[21px] text-gold-start"
                   >
                     {Array.from({ length: 5 }, (_, s) => (
                       <IconStar key={s} aria-hidden />
@@ -109,7 +110,7 @@ export function Testimonials() {
           </ul>
         </Reveal>
 
-        <div className="mt-6 flex gap-3 xl:mt-[27px]">
+        <div className="mt-6 flex gap-2.5 xl:mt-[27px]">
           {([-1, 1] as const).map((dir) => (
             <button
               key={dir}
@@ -117,9 +118,9 @@ export function Testimonials() {
               onClick={() => slide(dir)}
               aria-label={dir === -1 ? "Depoimento anterior" : "Próximo depoimento"}
               className={
-                "grid size-[58px] cursor-pointer place-items-center rounded-card border-0 " +
+                "grid size-[60px] cursor-pointer place-items-center rounded-[15px] border-0 " +
                 "text-text-on-inverse " +
-                "bg-[linear-gradient(225deg,var(--color-action)_0%,var(--color-text-strong)_100%)]"
+                "bg-linear-to-r from-gold-start to-gold-end"
               }
             >
               <svg width="10" height="16" viewBox="0 0 10 16" fill="none" aria-hidden>

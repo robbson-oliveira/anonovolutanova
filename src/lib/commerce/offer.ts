@@ -12,6 +12,7 @@ import {
 import { publicEnv } from "@/lib/env";
 import { serverEnv } from "@/lib/env.server";
 import type { ProductOffer } from "./offer-types";
+import { withBounds } from "./image-bounds";
 import { galleryImages, mainImage, type StoreImage } from "./product-image";
 
 export type { EditionOffer, ProductImage, ProductOffer } from "./offer-types";
@@ -117,25 +118,27 @@ async function storeOffer(ids: Record<EditionId, number | null>): Promise<Produc
       count: installmentCount,
       amount: installmentOf(price),
     },
-    editions: EDITIONS.filter((e) => byEdition.has(e.id)).map((e) => {
-      const { product, price: editionPrice } = byEdition.get(e.id)!;
-      return {
-        id: e.id,
-        label: e.label,
-        cover: e.cover,
-        coverSize: e.coverSize,
-      coverBox: e.coverBox,
-        description: e.description,
-        agenda: e.agenda,
-        unit: e.unit,
-        price: editionPrice,
-        installmentAmount: installmentOf(editionPrice),
-        inStock: product.is_in_stock && product.is_purchasable,
-        productId: product.id,
-        image: mainImage(product.images),
-        gallery: galleryImages(product.images),
-      };
-    }),
+    editions: await Promise.all(
+      EDITIONS.filter((e) => byEdition.has(e.id)).map(async (e) => {
+        const { product, price: editionPrice } = byEdition.get(e.id)!;
+        return {
+          id: e.id,
+          label: e.label,
+          cover: e.cover,
+          coverSize: e.coverSize,
+          coverBox: e.coverBox,
+          description: e.description,
+          agenda: e.agenda,
+          unit: e.unit,
+          price: editionPrice,
+          installmentAmount: installmentOf(editionPrice),
+          inStock: product.is_in_stock && product.is_purchasable,
+          productId: product.id,
+          image: mainImage(product.images),
+          gallery: await Promise.all(galleryImages(product.images).map(withBounds)),
+        };
+      }),
+    ),
     checkoutEnabled: publicEnv.checkoutEnabled,
   };
 }

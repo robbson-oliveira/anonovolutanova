@@ -5,6 +5,19 @@ import type { EditionId } from "@content/product";
  * (que só roda no servidor) para os componentes do navegador importarem o tipo.
  */
 
+/**
+ * Where the subject of a cutout image sits, as fractions of the whole file
+ * (`aspect` is file width over height). The rest of the file is transparent
+ * margin and shadow.
+ */
+export type ImageBounds = {
+  aspect: number;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
 /** A product image as the Store API publishes it (the product's main image). */
 export type ProductImage = {
   src: string;
@@ -13,6 +26,8 @@ export type ProductImage = {
   srcset: string;
   sizes: string;
   alt: string;
+  /** Measured on the server for gallery images; absent when it could not be. */
+  bounds?: ImageBounds;
 };
 
 export type EditionOffer = {

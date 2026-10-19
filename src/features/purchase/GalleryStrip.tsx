@@ -4,6 +4,9 @@ import { useRef, useState } from "react";
 import { cn } from "@ds/index";
 import type { ProductImage } from "@/lib/commerce/offer-types";
 
+/** Height of what each miniature shows, in px; the strip is taller so shadows are not clipped. */
+const SUBJECT_H = 112;
+
 type GalleryStripProps = {
   images: ProductImage[];
   /** Fallback alt text for images WooCommerce publishes without one. */
@@ -51,34 +54,52 @@ export function GalleryStrip({ images, label, selected, onSelect }: GalleryStrip
         onScroll={syncActive}
         className="flex h-[136px] max-w-full snap-x snap-mandatory items-center gap-[5px] overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
-        {images.map((image, index) => (
-          // The images are transparent cutouts, so they overlap: the first (the
-          // open agenda) sits at the back and each following sheet lands on top
-          // of the previous one, in DOM order.
-          <li key={image.src} className="h-full shrink-0 snap-start not-first:-ml-8">
-            <button
-              type="button"
-              onClick={() => onSelect(selected === index ? null : index)}
-              aria-label={`Mostrar imagem ${index + 1} de ${images.length}`}
-              aria-pressed={selected === index}
-              className={cn(
-                "block h-full cursor-pointer rounded-md outline-2 -outline-offset-2 focus-visible:outline-action",
-                selected === index ? "outline-action" : "outline-transparent",
-              )}
+        {images.map((image, index) => {
+          // Each file is a cutout with its own transparent margin, so sizing the
+          // file would size the margin. The frame is the subject alone, at one
+          // height for every image; the file is placed inside it so margin and
+          // shadow bleed out. Without measured bounds the file is sized as is.
+          const b = image.bounds;
+          const fileH = b ? SUBJECT_H / b.height : SUBJECT_H;
+          const fileW = b ? fileH * b.aspect : 0;
+          return (
+            // The images overlap: the first (the open agenda) sits at the back
+            // and each following sheet lands on top of the previous one.
+            <li
+              key={image.src}
+              style={b ? { width: fileW * b.width } : undefined}
+              className="shrink-0 snap-start not-first:-ml-3"
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={image.src}
-                srcSet={image.srcset || undefined}
-                sizes="190px"
-                alt={altOf(image, index)}
-                loading="lazy"
-                decoding="async"
-                className="block h-full w-auto max-w-none"
-              />
-            </button>
-          </li>
-        ))}
+              <button
+                type="button"
+                onClick={() => onSelect(selected === index ? null : index)}
+                aria-label={`Mostrar imagem ${index + 1} de ${images.length}`}
+                aria-pressed={selected === index}
+                style={{ height: SUBJECT_H }}
+                className={cn(
+                  "relative block w-full cursor-pointer rounded-md outline-2 -outline-offset-2 focus-visible:outline-action",
+                  selected === index ? "outline-action" : "outline-transparent",
+                )}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={image.src}
+                  srcSet={image.srcset || undefined}
+                  sizes="190px"
+                  alt={altOf(image, index)}
+                  loading="lazy"
+                  decoding="async"
+                  style={
+                    b
+                      ? { width: fileW, height: fileH, left: -b.x * fileW, top: -b.y * fileH }
+                      : { height: SUBJECT_H }
+                  }
+                  className={cn("max-w-none", b ? "absolute" : "block w-auto")}
+                />
+              </button>
+            </li>
+          );
+        })}
       </ul>
 
       {images.length > 1 ? (

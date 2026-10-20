@@ -41,7 +41,7 @@ import { BookStage } from "./BookStage";
  *   a coluna continua em x=62, e entre 1024 e 1380 o texto não cola na borda.
  */
 /** Larguras medidas de cada número do bloco de estatísticas (365, 12, 100%). */
-const STAT_WIDTHS = ["w-[122px]", "w-[107px]", "w-[182px]"];
+const STAT_WIDTHS = ["md:w-[122px]", "md:w-[107px]", "md:w-[182px]"];
 
 export function Hero() {
   return (
@@ -116,7 +116,7 @@ export function Hero() {
             </Reveal>
 
             <Reveal variant="up" delay={320}>
-              <dl className="mt-[29px] flex flex-wrap items-center gap-x-[20px] gap-y-6 max-md:justify-center">
+              <dl className="mt-[29px] grid w-full grid-cols-3 gap-x-4 md:flex md:flex-wrap md:items-center md:gap-x-[20px] md:gap-y-6">
                 {STATS.map((stat, i) => (
                   <div
                     key={stat.label}

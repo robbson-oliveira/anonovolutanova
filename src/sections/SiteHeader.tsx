@@ -243,8 +243,14 @@ export function SiteHeader() {
                   className="h-[40px] w-auto brightness-0 invert"
                 />
               </span>
-              {/* Spacer to balance the close button */}
-              <div className="size-14" />
+              {/* Account icon — mirrors the header right side */}
+              <button
+                type="button"
+                aria-label="Conta"
+                className="grid size-14 cursor-pointer place-items-center text-2xl text-text-on-inverse"
+              >
+                <IconAccount />
+              </button>
             </div>
 
             {/* Nav links — centered vertically in the remaining space */}
@@ -259,6 +265,22 @@ export function SiteHeader() {
                   {link.label}
                 </a>
               ))}
+
+              {/* Account links */}
+              <a
+                href="#"
+                onClick={close}
+                className="text-lg font-semibold text-text-on-inverse transition-colors [transition-duration:var(--duration-fast)] hover:text-action"
+              >
+                Entrar como Comprador
+              </a>
+              <a
+                href="#"
+                onClick={close}
+                className="text-lg font-semibold text-text-on-inverse transition-colors [transition-duration:var(--duration-fast)] hover:text-action"
+              >
+                Entrar como Afiliado
+              </a>
 
               {/* CTA button */}
               <a

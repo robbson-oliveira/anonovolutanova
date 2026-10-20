@@ -53,7 +53,7 @@ export function Hero() {
         {/* isolate: o palco fica atrás do texto (-z-10) sem cair para trás
             do fundo da seção. */}
         <div className="relative isolate">
-          <div className="flex flex-col md:max-w-[min(647.5px,54%)]">
+          <div className="flex flex-col max-md:items-center max-md:text-center md:max-w-[min(647.5px,54%)]">
             <Reveal variant="up">
               <Badge
                 tone="plain"
@@ -83,16 +83,7 @@ export function Hero() {
               <p className="mt-[19px] text-h3 text-subtitle">{HERO.subtitle}</p>
             </Reveal>
 
-            {/* Palco. No celular fica no fluxo, entre o subtítulo e o
-                parágrafo; a partir de md sai do fluxo e sangra para fora do
-                container, como no wireframe. Não pode ir dentro de um Reveal:
-                o transform dele viraria o bloco de contenção do absoluto. */}
-            <div className="mx-auto mt-2 w-full max-w-[320px] sm:max-w-[400px] md:absolute md:-right-6 md:left-[min(600px,54%)] lg:-right-8 lg:left-[calc(min(600px,54%)+8px)] md:top-1/2 md:-z-10 md:mx-0 md:mt-0 md:w-auto md:max-w-none md:-translate-y-1/2 lg:top-0 lg:translate-y-[calc(10px-9.1216%)]">
-              <BookStage fluid />
-            </div>
-
             <Reveal variant="up" delay={180}>
-              {/* text-wrap: pretty evita a linha órfã no fim do parágrafo. */}
               <Text className="mt-[19px] max-w-[540px] text-pretty text-lead">
                 {HERO.paragraph}
               </Text>
@@ -103,7 +94,6 @@ export function Hero() {
                 href={OFFER_ANCHOR}
                 size="lg"
                 shape="block"
-                // As medidas do botão vencem as do tamanho "lg" do Button (daí o !).
                 className="mt-[29px] h-[68px] w-full max-w-[425px] rounded-[10px]! border border-gold-end bg-linear-90 from-gold-start to-gold-end text-[16px]! leading-[16px]! font-bold! tracking-[-0.64px]! transition-[transform,box-shadow] [transition-duration:var(--duration-fast)] hover:-translate-y-0.5 hover:shadow-[0_8px_18px_-6px] hover:shadow-gold-start/60 motion-reduce:hover:translate-y-0"
               >
                 {HERO.cta}
@@ -111,7 +101,7 @@ export function Hero() {
             </Reveal>
 
             <Reveal variant="up" delay={280}>
-              <div className="mt-[10px] flex flex-wrap items-center gap-[12px]">
+              <div className="mt-[10px] flex flex-wrap items-center gap-[12px] max-md:justify-center">
                 {HERO.seals.map((seal) => (
                   <Badge
                     key={seal}
@@ -126,7 +116,7 @@ export function Hero() {
             </Reveal>
 
             <Reveal variant="up" delay={320}>
-              <dl className="mt-[29px] flex flex-wrap items-center gap-x-[20px] gap-y-6">
+              <dl className="mt-[29px] flex flex-wrap items-center gap-x-[20px] gap-y-6 max-md:justify-center">
                 {STATS.map((stat, i) => (
                   <div
                     key={stat.label}
@@ -145,6 +135,12 @@ export function Hero() {
                 ))}
               </dl>
             </Reveal>
+          </div>
+
+          {/* BookStage: on mobile appears after stats (matching Framer order);
+              on md+ absolutely positioned to the right of the text column. */}
+          <div className="mx-auto mt-8 w-full max-w-[400px] md:absolute md:-right-6 md:left-[min(600px,54%)] lg:-right-8 lg:left-[calc(min(600px,54%)+8px)] md:top-1/2 md:-z-10 md:mx-0 md:mt-0 md:w-auto md:max-w-none md:-translate-y-1/2 lg:top-0 lg:translate-y-[calc(10px-9.1216%)]">
+            <BookStage fluid />
           </div>
         </div>
       </div>

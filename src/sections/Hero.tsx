@@ -87,7 +87,7 @@ export function Hero() {
                 parágrafo; a partir de md sai do fluxo e sangra para fora do
                 container, como no wireframe. Não pode ir dentro de um Reveal:
                 o transform dele viraria o bloco de contenção do absoluto. */}
-            <div className="mx-auto mt-2 w-full max-w-[480px] md:absolute md:-right-6 md:left-[min(600px,54%)] lg:-right-8 lg:left-[calc(min(600px,54%)+8px)] md:top-1/2 md:-z-10 md:mx-0 md:mt-0 md:w-auto md:max-w-none md:-translate-y-1/2 lg:top-0 lg:translate-y-[calc(10px-9.1216%)]">
+            <div className="mx-auto mt-2 w-full max-w-[320px] sm:max-w-[400px] md:absolute md:-right-6 md:left-[min(600px,54%)] lg:-right-8 lg:left-[calc(min(600px,54%)+8px)] md:top-1/2 md:-z-10 md:mx-0 md:mt-0 md:w-auto md:max-w-none md:-translate-y-1/2 lg:top-0 lg:translate-y-[calc(10px-9.1216%)]">
               <BookStage fluid />
             </div>
 

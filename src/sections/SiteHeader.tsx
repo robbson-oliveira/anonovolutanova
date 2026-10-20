@@ -1,43 +1,187 @@
 "use client";
 
-import { useState } from "react";
-import { Button, Container, IconArrowRight, cn } from "@ds/index";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  Button,
+  IconArrowRight,
+  IconClose,
+  IconInstagram,
+  cn,
+} from "@ds/index";
 import { NAV_LINKS } from "@content/home";
-import { OFFER_ANCHOR, PRODUCT_NAME } from "@content/product";
+import { INSTAGRAM_URL, OFFER_ANCHOR, PRODUCT_NAME } from "@content/product";
 import { CartButton } from "@/features/cart/CartButton";
 const logo = "/img/logo-header.svg";
 
+/**
+ * Hamburger icon — three horizontal lines. Separate component so we can swap
+ * it for the × (IconClose) when the panel is open without layout shifts.
+ */
+function IconMenu() {
+  return (
+    <svg
+      aria-hidden
+      focusable="false"
+      width="1em"
+      height="1em"
+      viewBox="0 0 16 16"
+      fill="none"
+    >
+      <path
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        d="M2 4h12M2 8h12M2 12h12"
+      />
+    </svg>
+  );
+}
+
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  const close = useCallback(() => {
+    setOpen(false);
+    triggerRef.current?.focus();
+  }, []);
+
+  // Close on Escape
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") close();
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [open, close]);
+
+  // Trap focus inside the open panel
+  useEffect(() => {
+    if (!open) return;
+    const panel = panelRef.current;
+    if (!panel) return;
+    const focusable = panel.querySelectorAll<HTMLElement>(
+      'a[href], button, [tabindex]:not([tabindex="-1"])',
+    );
+    if (focusable.length) focusable[0].focus();
+  }, [open]);
+
+  // Prevent body scroll while the menu panel is open
+  useEffect(() => {
+    if (open) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
+    return () => { document.body.style.overflow = ""; };
+  }, [open]);
 
   return (
-    // Não é sticky: no design aprovado o cabeçalho rola junto com a página.
-    // Só a barra de frete fica fixa no topo. Sem borda embaixo — o wireframe
-    // não tem nenhuma (0px em toda a cadeia de elementos, conferido no DOM).
-    <header className="relative z-40">
-      {/* 1316px, a MESMA medida do texto do Hero (Hero.tsx), não os 1200px
-          do container de conteúdo do resto do site nem um valor próprio do
-          header. O logo precisa cair exatamente na borda esquerda do bloco
-          de texto — por isso aqui usa a receita idêntica de Hero.tsx
-          (max-w-[1316px] + px-6 lg:px-0), não a antiga (1390px + padding
-          fixo) que deixava o logo ~23px à direita do texto. */}
-      <div className="mx-auto flex h-20 w-full max-w-[1316px] items-center justify-between gap-6 px-6 lg:px-0">
-        <a href="#inicio" className="flex shrink-0 items-center">
-          <img
-            src={logo}
-            alt={PRODUCT_NAME}
-            loading="eager"
-            className="h-[72px] w-auto"
-          />
-        </a>
+    <>
+      {/* ─── Top bar: non-sticky, same max-w as the Hero text block ─── */}
+      <header className="relative z-40">
+        <div className="mx-auto flex h-20 w-full max-w-[1316px] items-center justify-between gap-6 px-6 lg:px-0">
+          {/* ── Mobile: hamburger left ── */}
+          <button
+            ref={triggerRef}
+            type="button"
+            aria-expanded={open}
+            aria-controls="mobile-menu"
+            aria-label="Abrir menu"
+            onClick={() => setOpen((v) => !v)}
+            className="grid size-11 cursor-pointer place-items-center rounded-pill border border-border text-xl text-text-strong lg:hidden"
+          >
+            <IconMenu />
+          </button>
 
-        <nav aria-label="Principal" className="hidden lg:block">
-          <ul className="flex items-center gap-8">
+          {/* ── Logo: centered on mobile, left-aligned on desktop ── */}
+          <a
+            href="#inicio"
+            className="flex shrink-0 items-center max-lg:absolute max-lg:left-1/2 max-lg:-translate-x-1/2"
+          >
+            <img
+              src={logo}
+              alt={PRODUCT_NAME}
+              loading="eager"
+              className="h-[72px] w-auto"
+            />
+          </a>
+
+          {/* ── Desktop nav ── */}
+          <nav aria-label="Principal" className="hidden lg:block">
+            <ul className="flex items-center gap-8">
+              {NAV_LINKS.map((link) => (
+                <li key={link.href}>
+                  <a
+                    href={link.href}
+                    className="text-xs font-bold text-text-strong transition-colors [transition-duration:var(--duration-fast)] hover:text-action"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* ── Right side: cart + CTA (desktop) ── */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <CartButton />
+            <Button
+              href={OFFER_ANCHOR}
+              size="md"
+              shape="block"
+              className="max-lg:hidden"
+            >
+              Comprar
+              <IconArrowRight />
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      {/* ─── Mobile menu: dark side panel ─── */}
+      {/* Backdrop */}
+      <div
+        className={cn(
+          "fixed inset-0 z-50 bg-surface-inverse/50 transition-opacity duration-300 lg:hidden",
+          open
+            ? "pointer-events-auto opacity-100"
+            : "pointer-events-none opacity-0",
+        )}
+        aria-hidden="true"
+        onClick={close}
+      />
+
+      {/* Panel */}
+      <div
+        ref={panelRef}
+        id="mobile-menu"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Menu de navegação"
+        className={cn(
+          "fixed inset-y-0 left-0 z-50 flex w-[280px] max-w-[75vw] flex-col bg-surface-inverse p-6 transition-transform duration-300 ease-out lg:hidden",
+          open ? "translate-x-0" : "-translate-x-full",
+        )}
+      >
+        {/* Close button */}
+        <button
+          type="button"
+          onClick={close}
+          aria-label="Fechar menu"
+          className="mb-8 grid size-11 cursor-pointer place-items-center self-start rounded-pill border border-border-inverse text-xl text-text-on-inverse"
+        >
+          <IconClose />
+        </button>
+
+        {/* Nav links */}
+        <nav aria-label="Menu principal">
+          <ul className="flex flex-col gap-6">
             {NAV_LINKS.map((link) => (
               <li key={link.href}>
                 <a
                   href={link.href}
-                  className="text-xs font-bold text-text-strong transition-colors [transition-duration:var(--duration-fast)] hover:text-action"
+                  onClick={close}
+                  className="text-lg font-medium text-text-on-inverse transition-colors [transition-duration:var(--duration-fast)] hover:text-action"
                 >
                   {link.label}
                 </a>
@@ -46,51 +190,29 @@ export function SiteHeader() {
           </ul>
         </nav>
 
-        <div className="flex items-center gap-2 sm:gap-3">
-          {/* O wireframe tinha aqui o ícone da área do cliente; sem conta de
-              cliente (D6), o lugar é do carrinho — que só aparece com itens. */}
-          <CartButton />
-          {/* shape="block": medido no wireframe, radius=12px (rounded-card),
-              não pílula. O padrão do Button é pílula para botão de nav — este
-              é a exceção confirmada, não os outros que ainda não medi. */}
-          {/* No celular, sem a seta e com menos respiro: com o carrinho à mostra,
-              os três botões precisam caber ao lado do logo. */}
-          <Button href={OFFER_ANCHOR} size="md" shape="block" className="max-sm:px-4">
-            Comprar
-            <IconArrowRight className="max-sm:hidden" />
-          </Button>
-          <button
-            type="button"
-            aria-expanded={open}
-            aria-label="Abrir menu"
-            onClick={() => setOpen((v) => !v)}
-            className="grid size-11 cursor-pointer place-items-center rounded-pill border border-border lg:hidden"
+        {/* CTA button */}
+        <a
+          href={OFFER_ANCHOR}
+          onClick={close}
+          className="mt-8 flex h-11 items-center justify-center gap-2 rounded-pill border border-border-inverse px-6 text-sm font-bold text-text-on-inverse transition-colors [transition-duration:var(--duration-fast)] hover:bg-text-on-inverse/10"
+        >
+          Comprar
+          <IconArrowRight />
+        </a>
+
+        {/* Bottom: "Siga-nos" + Instagram */}
+        <div className="mt-auto pt-8">
+          <a
+            href={INSTAGRAM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-sm text-text-on-inverse/70 transition-colors [transition-duration:var(--duration-fast)] hover:text-text-on-inverse"
           >
-            <span className="sr-only">Menu</span>
-            <span aria-hidden className="text-lg leading-none text-text-strong">
-              {open ? "×" : "≡"}
-            </span>
-          </button>
+            <IconInstagram className="text-lg" />
+            Siga-nos
+          </a>
         </div>
       </div>
-
-      <div className={cn("lg:hidden", !open && "hidden")}>
-        <Container className="pb-6">
-          <ul className="flex flex-col gap-4">
-            {NAV_LINKS.map((link) => (
-              <li key={link.href}>
-                <a
-                  href={link.href}
-                  onClick={() => setOpen(false)}
-                  className="text-base font-medium text-text"
-                >
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </Container>
-      </div>
-    </header>
+    </>
   );
 }

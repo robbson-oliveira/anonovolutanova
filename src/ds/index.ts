@@ -78,6 +78,7 @@ export {
   IconWhatsApp,
   IconSend,
   IconSmile,
+  IconInstagram,
   IconOitavario,
   IconNovenaImaculada,
   IconSeteDomingosSaoJose,

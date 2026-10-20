@@ -35,6 +35,7 @@ export {
   IconWhatsApp,
   IconSend,
   IconSmile,
+  IconInstagram,
 } from "./ui";
 
 export {

@@ -401,6 +401,20 @@ export function IconSend(props: IconProps) {
 }
 
 /** Smiling face, for emoji pickers (the Framer chat widget's, 24 grid scaled to 16). */
+/** Instagram logo (camera in rounded square). */
+export function IconInstagram(props: IconProps) {
+  return (
+    <IconBase viewBox={UI_BOX} fill="none" {...props}>
+      <path
+        fill="currentColor"
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M4.8 1.6h6.4A3.2 3.2 0 0 1 14.4 4.8v6.4a3.2 3.2 0 0 1-3.2 3.2H4.8a3.2 3.2 0 0 1-3.2-3.2V4.8A3.2 3.2 0 0 1 4.8 1.6Zm0 1.2A2 2 0 0 0 2.8 4.8v6.4a2 2 0 0 0 2 2h6.4a2 2 0 0 0 2-2V4.8a2 2 0 0 0-2-2H4.8ZM8 5.6a2.4 2.4 0 1 1 0 4.8 2.4 2.4 0 0 1 0-4.8ZM8 6.8a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4Zm2.8-1.6a.6.6 0 1 1 0 1.2.6.6 0 0 1 0-1.2Z"
+      />
+    </IconBase>
+  );
+}
+
 export function IconSmile(props: IconProps) {
   return (
     <IconBase viewBox={UI_BOX} fill="none" {...props}>

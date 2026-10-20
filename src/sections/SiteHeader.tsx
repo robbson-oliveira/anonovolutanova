@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   Button,
   IconArrowRight,
@@ -39,8 +40,11 @@ function IconMenu() {
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => { setMounted(true); }, []);
 
   const close = useCallback(() => {
     setOpen(false);
@@ -133,81 +137,83 @@ export function SiteHeader() {
         </div>
       </header>
 
-      {/* ─── Mobile menu: dark side panel ─── */}
-      {/* Backdrop */}
-      <div
-        className={cn(
-          "fixed inset-0 z-50 bg-surface-inverse/50 transition-opacity duration-300 lg:hidden",
-          open
-            ? "pointer-events-auto opacity-100"
-            : "pointer-events-none opacity-0",
-        )}
-        aria-hidden="true"
-        onClick={close}
-      />
+      {/* ─── Mobile menu: full-screen overlay (matches Framer wireframe).
+           Portalled to <body> so it escapes the `isolate` stacking context
+           that the page wrapper creates around the header + sections. ─── */}
+      {mounted &&
+        createPortal(
+          <div
+            ref={panelRef}
+            id="mobile-menu"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menu de navegação"
+            className={cn(
+              "fixed inset-0 z-50 flex flex-col bg-surface-inverse transition-opacity duration-300 ease-out lg:hidden",
+              open
+                ? "pointer-events-auto opacity-100"
+                : "pointer-events-none opacity-0",
+            )}
+          >
+            {/* Top bar: × left, logo center — mirrors the header behind it */}
+            <div className="flex h-20 items-center justify-between px-6">
+              <button
+                type="button"
+                onClick={close}
+                aria-label="Fechar menu"
+                className="grid size-11 cursor-pointer place-items-center rounded-pill border border-border-inverse text-xl text-text-on-inverse"
+              >
+                <IconClose />
+              </button>
+              <img
+                src={logo}
+                alt={PRODUCT_NAME}
+                className="absolute left-1/2 h-[72px] w-auto -translate-x-1/2"
+              />
+              {/* Spacer to balance the close button */}
+              <div className="size-11" />
+            </div>
 
-      {/* Panel */}
-      <div
-        ref={panelRef}
-        id="mobile-menu"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Menu de navegação"
-        className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-[280px] max-w-[75vw] flex-col bg-surface-inverse p-6 transition-transform duration-300 ease-out lg:hidden",
-          open ? "translate-x-0" : "-translate-x-full",
-        )}
-      >
-        {/* Close button */}
-        <button
-          type="button"
-          onClick={close}
-          aria-label="Fechar menu"
-          className="mb-8 grid size-11 cursor-pointer place-items-center self-start rounded-pill border border-border-inverse text-xl text-text-on-inverse"
-        >
-          <IconClose />
-        </button>
-
-        {/* Nav links */}
-        <nav aria-label="Menu principal">
-          <ul className="flex flex-col gap-6">
-            {NAV_LINKS.map((link) => (
-              <li key={link.href}>
+            {/* Nav links — centered vertically in the remaining space */}
+            <nav aria-label="Menu principal" className="flex flex-1 flex-col items-center justify-center gap-8">
+              {NAV_LINKS.map((link) => (
                 <a
+                  key={link.href}
                   href={link.href}
                   onClick={close}
-                  className="text-lg font-medium text-text-on-inverse transition-colors [transition-duration:var(--duration-fast)] hover:text-action"
+                  className="text-lg font-semibold text-text-on-inverse transition-colors [transition-duration:var(--duration-fast)] hover:text-action"
                 >
                   {link.label}
                 </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
+              ))}
 
-        {/* CTA button */}
-        <a
-          href={OFFER_ANCHOR}
-          onClick={close}
-          className="mt-8 flex h-11 items-center justify-center gap-2 rounded-pill border border-border-inverse px-6 text-sm font-bold text-text-on-inverse transition-colors [transition-duration:var(--duration-fast)] hover:bg-text-on-inverse/10"
-        >
-          Comprar
-          <IconArrowRight />
-        </a>
+              {/* CTA button */}
+              <a
+                href={OFFER_ANCHOR}
+                onClick={close}
+                className="mt-4 flex h-11 items-center justify-center gap-2 rounded-pill border border-border-inverse px-8 text-sm font-bold text-text-on-inverse transition-colors [transition-duration:var(--duration-fast)] hover:bg-text-on-inverse/10"
+              >
+                Comprar
+                <IconArrowRight />
+              </a>
+            </nav>
 
-        {/* Bottom: "Siga-nos" + Instagram */}
-        <div className="mt-auto pt-8">
-          <a
-            href={INSTAGRAM_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 text-sm text-text-on-inverse/70 transition-colors [transition-duration:var(--duration-fast)] hover:text-text-on-inverse"
-          >
-            <IconInstagram className="text-lg" />
-            Siga-nos
-          </a>
-        </div>
-      </div>
+            {/* Bottom: "Siga-nos" + Instagram */}
+            <div className="flex items-center justify-center gap-2 pb-10 text-sm font-semibold text-text-on-inverse">
+              <span>Siga-nos</span>
+              <a
+                href={INSTAGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="text-xl transition-colors [transition-duration:var(--duration-fast)] hover:text-action"
+              >
+                <IconInstagram />
+              </a>
+            </div>
+          </div>,
+          document.body,
+        )}
     </>
   );
 }

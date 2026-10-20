@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { AccordionItem } from "@ds/index";
 import { INSTAGRAM_URL, WHATSAPP_URL } from "@content/product";
 
@@ -10,8 +11,17 @@ export const FAQ: AccordionItem[] = [
     question: "A agenda é entregue na minha cidade?",
     answer: (
       <p>
-        Sim! Enviamos para todo o Brasil 🇧🇷 Na hora do pedido, você informa o
-        endereço e nós cuidamos do envio com todo carinho.
+        Sim! Enviamos para todo o Brasil{" "}
+        <Image
+          src="/img/bandeira-brasil.svg"
+          alt=""
+          width={20}
+          height={14}
+          unoptimized
+          className="inline-block h-[0.85em] w-auto align-baseline"
+        />{" "}
+        Na hora do pedido, você informa o endereço e nós cuidamos do envio com
+        todo carinho.
       </p>
     ),
   },

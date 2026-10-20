@@ -38,7 +38,7 @@ export function Accordion({
   return (
     <div
       className={cn(
-        cards ? "space-y-3" : "divide-y divide-border",
+        cards ? "space-y-[17px]" : "divide-y divide-border",
         className,
       )}
     >
@@ -50,7 +50,7 @@ export function Accordion({
         return (
           <div
             key={item.question}
-            className={cn(cards && "rounded-card bg-surface-plain shadow-card")}
+            className={cn(cards && "rounded-[5.19px] bg-surface-plain shadow-faq-card")}
           >
             <h3>
               <button
@@ -61,13 +61,13 @@ export function Accordion({
                 onClick={() => setOpen(isOpen ? null : i)}
                 className={cn(
                   "flex w-full cursor-pointer items-center justify-between gap-6 text-left",
-                  cards ? "px-5 py-6 md:px-7" : "py-6",
+                  cards ? "min-h-[82px] px-5 py-4" : "py-6",
                 )}
               >
                 <span
                   className={cn(
-                    "font-bold text-text-card",
-                    cards ? "text-base" : "text-lead",
+                    "text-text-card",
+                    cards ? "text-base font-medium tracking-[-0.03em] md:text-xl" : "text-lead font-bold",
                   )}
                 >
                   {numbered ? `${i + 1}. ` : null}
@@ -75,7 +75,8 @@ export function Accordion({
                 </span>
                 <IconPlus
                   className={cn(
-                    "text-lg text-text-muted transition-transform",
+                    "shrink-0 text-base transition-transform",
+                    cards ? "text-text-card" : "text-lg text-text-muted",
                     "[transition-duration:var(--duration-fast)]",
                     isOpen && "rotate-45",
                   )}
@@ -88,10 +89,20 @@ export function Accordion({
               role="region"
               aria-labelledby={buttonId}
               hidden={!isOpen}
-              className={cn(cards ? "px-5 pb-7 md:px-7" : "pb-7")}
+              className={cn(
+                cards
+                  ? "mt-4 border-t-[0.8px] border-dashed border-text-card/40 px-5 py-5"
+                  : "pb-7",
+              )}
             >
-              {cards && <div className="mb-5 border-t border-dashed border-border" />}
-              <div className="max-w-prose text-base text-text">
+              <div
+                className={cn(
+                  "text-base text-text",
+                  cards
+                    ? "tracking-[-0.01em] opacity-70 md:text-[18px] md:leading-[1.4]"
+                    : "max-w-prose",
+                )}
+              >
                 {item.answer}
               </div>
             </div>

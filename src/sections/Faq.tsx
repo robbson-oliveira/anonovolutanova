@@ -2,25 +2,36 @@ import { Accordion, Container, Heading, Reveal, Text } from "@ds/index";
 import { FAQ } from "@content/faq";
 
 /**
- * Duas colunas (título | acordeão) a partir de `lg`; abaixo disso, empilha.
+ * FAQ — Figma "Agenda Campanha 2026-2027", node 949:163 (1440x953).
  *
- * Telas menores: a seção não soma padding próprio ao do <Container> abaixo
- * de `md` (ficariam 48px de cada lado num celular de 375px). E corta o eixo X
- * com `overflow-x-clip`: os <Reveal> left/right nascem deslocados 56px até
- * entrarem na tela, e esse deslocamento empurrava a largura da página.
- * `clip` (e não `hidden`) para não criar contêiner de rolagem.
+ * The section has no background of its own: the watercolor behind it is the
+ * shared backdrop painted by the home page (Figma "BG inferior", 949:15), which
+ * is also what the closing card and the footer sit on. 120px of air on top and
+ * bottom, title column 480px wide and the accordion column 588px, flush right
+ * inside a 1200px container.
+ *
+ * Below `lg` the columns stack. The section does not add its own side padding
+ * below `md` to the <Container>'s (it would be 48px per side on a 375px phone),
+ * and clips the X axis with `overflow-x-clip`: the left/right <Reveal>s start
+ * 56px off place, and that offset widened the page. `clip` (not `hidden`)
+ * so no scroll container is created.
  */
 export function Faq() {
   return (
     <section
       id="faq"
-      className="overflow-x-clip bg-surface py-16 md:px-16 md:py-24"
+      className="overflow-x-clip py-16 md:px-10 md:py-24 min-[1440px]:py-[120px]"
     >
-      <Container>
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)] lg:gap-12">
+      <Container className="md:px-0">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,480px)_minmax(0,588px)] lg:justify-between lg:gap-12">
           <Reveal variant="left">
-            <Heading as="h2">Perguntas Frequentes</Heading>
-            <Text tone="muted" className="mt-3">
+            <Heading
+              as="h2"
+              className="text-[40px]! leading-[1] tracking-[-0.05em]! text-text-faq-title! md:text-[60px]! md:leading-[60px]!"
+            >
+              Perguntas Frequentes
+            </Heading>
+            <Text className="mt-3 text-lg font-medium tracking-[-0.01em] opacity-70 md:text-xl">
               Respostas para as perguntas mais comuns
             </Text>
           </Reveal>

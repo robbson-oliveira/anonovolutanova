@@ -72,7 +72,16 @@ export default async function Home() {
       {/* pt-9: a barra de frete é fixa e tem 36px. overflow-x-clip: as
           animações de entrada laterais (Reveal left/right) partem 56px fora
           do lugar e, sem o corte, alargariam a página no celular. */}
-      <div className="overflow-x-clip bg-surface pt-9">
+      <div className="relative isolate overflow-x-clip bg-surface pt-9">
+        {/* Watercolor shared by the FAQ, the closing card and the footer (Figma
+            "BG inferior", 949:15): 1920px wide, centered and cropped by the
+            page on narrower screens, glued to the bottom, with a mask that keeps
+            the top third clear. 2824px = the 2965px of the frame minus the 141px
+            that hang below the footer. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute bottom-0 left-1/2 -z-10 aspect-[1920/2824] w-[max(100%,1100px)] -translate-x-1/2 bg-[url(/img/footer/bg-aquarela.png)] bg-[length:100%_auto] bg-top bg-no-repeat [mask-image:var(--mask-lower-aquarela)] min-[1440px]:w-[max(100%,1920px)]"
+        />
         <SiteHeader />
         <main>
           <Hero />

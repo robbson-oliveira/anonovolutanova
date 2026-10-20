@@ -27,11 +27,9 @@ const [copyrightLine1, copyrightLine2] = FOOTER.copyright.split(". ");
 /**
  * Footer — Figma "Agenda Campanha 2026-2027", node 960:2 (1920x1173 frame).
  *
- * Background: watercolor (`bg-aquarela.png`) over the #eae5d9 beige, with the
- * same mask as Figma: a top-to-bottom gradient from ~1% to ~37% opacity. It
- * bleeds full width while the content sits in a 1440px column. The watercolor
- * is `cover` anchored at 80% of its height, which is where Figma crops it (the
- * waves, not the empty sky at the top of the image).
+ * No background of its own: the watercolor is the backdrop shared with the FAQ
+ * and the closing card, painted by the home page (Figma "BG inferior", 949:15).
+ * The content sits in a 1440px column.
  *
  * Content (Figma measurements, 1440px column, y relative to the logo): 106x143
  * logo at 0, 391px tagline at 172 (20/24), 16px bold links at 324, copyright
@@ -44,20 +42,7 @@ const [copyrightLine1, copyrightLine2] = FOOTER.copyright.split(". ");
  */
 export function SiteFooter() {
   return (
-    <footer className="relative isolate w-full overflow-hidden bg-surface-footer">
-      <div
-        aria-hidden
-        className="absolute inset-0 -z-10 bg-[url(/img/footer/bg-aquarela.png)] bg-cover bg-[position:center_80%] bg-no-repeat [mask-image:var(--mask-footer-aquarela)]"
-      />
-
-      {/* In Figma the closing block and the footer share one background; here the
-          closing block has its own (cream with stained glass), so the
-          watercolor fades in from that cream. */}
-      <div
-        aria-hidden
-        className="absolute inset-x-0 top-0 -z-10 h-48 bg-linear-to-b from-surface to-transparent"
-      />
-
+    <footer className="relative w-full">
       <div className="mx-auto w-full max-w-[1440px] px-4 pb-20 pt-20 sm:px-6 md:pb-32 md:pt-28 min-[1440px]:px-0 min-[1440px]:pb-[231px] min-[1440px]:pt-[120px]">
         <RevealGroup className="flex flex-col items-center text-center">
           <Reveal variant="up">

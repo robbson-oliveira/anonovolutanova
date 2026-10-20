@@ -88,6 +88,8 @@
   --brand-paper-glow: rgb(255 255 255 / 0.5); /* halo behind the gold note */
 
   /* Hero (Figma 949:1041) */
+  --brand-sea-300: rgb(117 149 165);   /* badge on the petrol closing card (#7595A5) */
+  --brand-forest-900: rgb(26 37 16);   /* FAQ title (#1A2510) */
   --brand-sea-500: rgb(42 112 135);    /* subtitle (#2A7087) */
   --brand-ink-800: rgb(35 52 61);      /* lead paragraph (#23343D) */
   --brand-gold-600: rgb(150 116 56);   /* gold button, gradient start (#967438) */
@@ -119,8 +121,8 @@
   --color-surface-peach: var(--brand-peach-50);     /* tile de ícone da seção "Datas importantes" (Figma 949:646) */
   --color-surface-sage: var(--brand-sage-300);
   --color-surface-footer: var(--brand-cream-100);
-  /* Máscara da aquarela do rodapé (Figma 960:14): sobe de ~1% a ~37% de opacidade. */
-  --mask-footer-aquarela: linear-gradient(to bottom, rgb(0 0 0 / 0.014), rgb(0 0 0 / 0.366));
+  /* Mask of the shared watercolor behind FAQ, closing card and footer (Figma 949:16): transparent for the top 35%, then up to 36% opacity (box of 1920x2824). */
+  --mask-lower-aquarela: linear-gradient(to bottom, transparent 34.9%, rgb(0 0 0 / 0.36));
   --color-badge: var(--brand-sage-300);              /* shipping badge background */
   --color-on-badge: var(--brand-moss-900);           /* shipping badge text and icon */
   --color-surface-inverse: var(--brand-moss-800);
@@ -137,6 +139,8 @@
   --color-text-on-inverse: var(--brand-paper-100);
   --color-text-display: var(--brand-moss-700);
   --color-text-subtitle: var(--brand-sea-500);
+  --color-text-faq-title: var(--brand-forest-900);
+  --color-text-on-inverse-badge: var(--brand-sea-300);
   --color-text-lead: var(--brand-ink-800);
   --color-surface-card: var(--brand-cream-50);
   --color-gold-start: var(--brand-gold-600);        /* gold button gradient */
@@ -329,6 +333,8 @@
   --shadow-book-back: 0 12px 24px rgb(0 0 0 / 0.22);
   --shadow-pop: 0 4px 4px rgb(0 0 0 / 0.1);          /* cartão de preço sobre as agendas do hero */
   --shadow-hotspot: 0 2px 4px rgb(0 0 0 / 0.2);       /* marcadores "+" sobre a capa */
+  --shadow-faq-card: 0 1px 2px rgb(0 0 0 / 0.18);    /* FAQ cards (Figma 949:177) */
+  --shadow-cta-gold: 0 12px 12px rgb(0 0 0 / 0.3);   /* gold button of the closing card (Figma 949:145) */
   --shadow-cta-warm: 0 12px 24px rgb(0 0 0 / 0.3);   /* botão quente do fechamento */
   --shadow-whatsapp-panel: 0 5px 40px rgb(0 0 0 / 0.16);      /* chat panel of the "Em breve" page */
   --shadow-whatsapp-button: 0 16px 24px rgb(73 104 126 / 0.16); /* its floating button */

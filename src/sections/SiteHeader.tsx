@@ -4,19 +4,24 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   Button,
+  IconAccount,
   IconArrowRight,
   IconClose,
   IconInstagram,
   cn,
 } from "@ds/index";
 import { NAV_LINKS } from "@content/home";
-import { INSTAGRAM_URL, OFFER_ANCHOR, PRODUCT_NAME } from "@content/product";
+import {
+  CYCLE_YEAR,
+  INSTAGRAM_URL,
+  OFFER_ANCHOR,
+  PRODUCT_NAME,
+} from "@content/product";
 import { CartButton } from "@/features/cart/CartButton";
 const logo = "/img/logo-header.svg";
 
 /**
- * Hamburger icon — three horizontal lines. Separate component so we can swap
- * it for the × (IconClose) when the panel is open without layout shifts.
+ * Hamburger icon — three horizontal lines.
  */
 function IconMenu() {
   return (
@@ -35,6 +40,73 @@ function IconMenu() {
         d="M2 4h12M2 8h12M2 12h12"
       />
     </svg>
+  );
+}
+
+/** Stacked year logo for the mobile header (e.g. "20" / "27"). */
+function YearLogo() {
+  const str = String(CYCLE_YEAR);
+  return (
+    <span
+      aria-label={`Agenda ${CYCLE_YEAR}`}
+      className="select-none text-center text-[22px] font-bold leading-[0.95] tracking-[-0.5px] text-text-strong"
+    >
+      <span className="block">{str.slice(0, 2)}</span>
+      <span className="block">{str.slice(2)}</span>
+    </span>
+  );
+}
+
+/** Account icon with dropdown for "Entrar como Comprador / Afiliado". */
+function AccountDropdown() {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+
+  return (
+    <div ref={ref} className="relative lg:hidden">
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-haspopup="true"
+        aria-label="Conta"
+        onClick={() => setOpen((v) => !v)}
+        className="grid size-11 cursor-pointer place-items-center text-2xl text-text-strong"
+      >
+        <IconAccount />
+      </button>
+      <div
+        className={cn(
+          "absolute right-0 top-full z-50 mt-1 min-w-[210px] overflow-hidden rounded-lg bg-surface-plain shadow-lg ring-1 ring-border transition-[opacity,transform] duration-200 ease-out",
+          open
+            ? "pointer-events-auto scale-100 opacity-100"
+            : "pointer-events-none scale-95 opacity-0",
+        )}
+      >
+        <a
+          href="#"
+          className="block px-4 py-3 text-sm font-medium text-text-strong transition-colors [transition-duration:var(--duration-fast)] hover:bg-surface-muted"
+        >
+          Entrar como Comprador
+        </a>
+        <a
+          href="#"
+          className="block px-4 py-3 text-sm font-medium text-text-strong transition-colors [transition-duration:var(--duration-fast)] hover:bg-surface-muted"
+        >
+          Entrar como Afiliado
+        </a>
+      </div>
+    </div>
   );
 }
 
@@ -92,21 +164,26 @@ export function SiteHeader() {
             aria-controls="mobile-menu"
             aria-label="Abrir menu"
             onClick={() => setOpen((v) => !v)}
-            className="grid size-11 cursor-pointer place-items-center rounded-pill border border-border text-xl text-text-strong lg:hidden"
+            className="grid size-11 cursor-pointer place-items-center text-xl text-text-strong lg:hidden"
           >
             <IconMenu />
           </button>
 
-          {/* ── Logo: centered on mobile, left-aligned on desktop ── */}
+          {/* ── Logo: stacked year on mobile, ornate logo on desktop ── */}
           <a
             href="#inicio"
             className="flex shrink-0 items-center max-lg:absolute max-lg:left-1/2 max-lg:-translate-x-1/2"
           >
+            {/* Mobile: stacked year */}
+            <span className="lg:hidden">
+              <YearLogo />
+            </span>
+            {/* Desktop: ornate logo */}
             <img
               src={logo}
               alt={PRODUCT_NAME}
               loading="eager"
-              className="h-[72px] w-auto"
+              className="hidden h-[72px] w-auto lg:block"
             />
           </a>
 
@@ -125,6 +202,9 @@ export function SiteHeader() {
               ))}
             </ul>
           </nav>
+
+          {/* ── Mobile: account dropdown ── */}
+          <AccountDropdown />
 
           {/* ── Right side: cart + CTA (desktop only) ── */}
           <div className="hidden items-center gap-3 lg:flex">
@@ -155,21 +235,25 @@ export function SiteHeader() {
                 : "pointer-events-none opacity-0",
             )}
           >
-            {/* Top bar: × left, logo center — mirrors the header behind it */}
+            {/* Top bar: × left, year logo center — mirrors the header */}
             <div className="flex h-20 items-center justify-between px-6">
               <button
                 type="button"
                 onClick={close}
                 aria-label="Fechar menu"
-                className="grid size-11 cursor-pointer place-items-center rounded-pill border border-border-inverse text-xl text-text-on-inverse"
+                className="grid size-11 cursor-pointer place-items-center text-xl text-text-on-inverse"
               >
                 <IconClose />
               </button>
-              <img
-                src={logo}
-                alt={PRODUCT_NAME}
-                className="absolute left-1/2 h-[72px] w-auto -translate-x-1/2"
-              />
+              <span className="absolute left-1/2 -translate-x-1/2">
+                <span
+                  aria-hidden
+                  className="select-none text-center text-[22px] font-bold leading-[0.95] tracking-[-0.5px] text-text-on-inverse"
+                >
+                  <span className="block">{String(CYCLE_YEAR).slice(0, 2)}</span>
+                  <span className="block">{String(CYCLE_YEAR).slice(2)}</span>
+                </span>
+              </span>
               {/* Spacer to balance the close button */}
               <div className="size-11" />
             </div>

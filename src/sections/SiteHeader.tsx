@@ -43,19 +43,7 @@ function IconMenu() {
   );
 }
 
-/** Stacked year logo for the mobile header (e.g. "20" / "27"). */
-function YearLogo() {
-  const str = String(CYCLE_YEAR);
-  return (
-    <span
-      aria-label={`Agenda ${CYCLE_YEAR}`}
-      className="select-none text-center text-[22px] font-bold leading-[0.95] tracking-[-0.5px] text-text-strong"
-    >
-      <span className="block">{str.slice(0, 2)}</span>
-      <span className="block">{str.slice(2)}</span>
-    </span>
-  );
-}
+const logoMobile = "/img/logo-2027-mobile.png";
 
 /** Account icon with dropdown for "Entrar como Comprador / Afiliado". */
 function AccountDropdown() {
@@ -87,7 +75,7 @@ function AccountDropdown() {
       </button>
       <div
         className={cn(
-          "absolute right-0 top-full z-50 mt-1 min-w-[210px] overflow-hidden rounded-lg bg-surface-plain shadow-lg ring-1 ring-border transition-[opacity,transform] duration-200 ease-out",
+          "absolute right-0 top-full z-50 mt-1 whitespace-nowrap overflow-hidden rounded-lg bg-surface-plain shadow-lg ring-1 ring-border transition-[opacity,transform] duration-200 ease-out",
           open
             ? "pointer-events-auto scale-100 opacity-100"
             : "pointer-events-none scale-95 opacity-0",
@@ -95,13 +83,13 @@ function AccountDropdown() {
       >
         <a
           href="#"
-          className="block px-4 py-3 text-sm font-medium text-text-strong transition-colors [transition-duration:var(--duration-fast)] hover:bg-surface-muted"
+          className="block px-5 py-3.5 text-sm font-medium text-text-strong transition-colors [transition-duration:var(--duration-fast)] hover:bg-surface-muted"
         >
           Entrar como Comprador
         </a>
         <a
           href="#"
-          className="block px-4 py-3 text-sm font-medium text-text-strong transition-colors [transition-duration:var(--duration-fast)] hover:bg-surface-muted"
+          className="block px-5 py-3.5 text-sm font-medium text-text-strong transition-colors [transition-duration:var(--duration-fast)] hover:bg-surface-muted"
         >
           Entrar como Afiliado
         </a>
@@ -174,10 +162,13 @@ export function SiteHeader() {
             href="#inicio"
             className="flex shrink-0 items-center max-lg:absolute max-lg:left-1/2 max-lg:-translate-x-1/2"
           >
-            {/* Mobile: stacked year */}
-            <span className="lg:hidden">
-              <YearLogo />
-            </span>
+            {/* Mobile: full 2027 branding logo */}
+            <img
+              src={logoMobile}
+              alt={PRODUCT_NAME}
+              loading="eager"
+              className="h-[44px] w-auto lg:hidden"
+            />
             {/* Desktop: ornate logo */}
             <img
               src={logo}

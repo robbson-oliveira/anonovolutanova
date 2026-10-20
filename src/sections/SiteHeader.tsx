@@ -226,27 +226,25 @@ export function SiteHeader() {
                 : "pointer-events-none opacity-0",
             )}
           >
-            {/* Top bar: × left, year logo center — mirrors the header */}
+            {/* Top bar: × left, branding logo center — mirrors the header */}
             <div className="flex h-20 items-center justify-between px-6">
               <button
                 type="button"
                 onClick={close}
                 aria-label="Fechar menu"
-                className="grid size-11 cursor-pointer place-items-center text-xl text-text-on-inverse"
+                className="grid size-14 cursor-pointer place-items-center text-3xl text-text-on-inverse"
               >
                 <IconClose />
               </button>
               <span className="absolute left-1/2 -translate-x-1/2">
-                <span
-                  aria-hidden
-                  className="select-none text-center text-[22px] font-bold leading-[0.95] tracking-[-0.5px] text-text-on-inverse"
-                >
-                  <span className="block">{String(CYCLE_YEAR).slice(0, 2)}</span>
-                  <span className="block">{String(CYCLE_YEAR).slice(2)}</span>
-                </span>
+                <img
+                  src={logoMobile}
+                  alt={PRODUCT_NAME}
+                  className="h-[40px] w-auto brightness-0 invert"
+                />
               </span>
               {/* Spacer to balance the close button */}
-              <div className="size-11" />
+              <div className="size-14" />
             </div>
 
             {/* Nav links — centered vertically in the remaining space */}

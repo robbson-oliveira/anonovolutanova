@@ -44,57 +44,21 @@ function IconMenu() {
 }
 
 const logoMobile = "/img/logo-2027-mobile.png";
+const logoModal = "/img/logo-menu-modal.png";
 
-/** Account icon with dropdown for "Entrar como Comprador / Afiliado". */
+/** Página de acesso à conta. Link provisório: trocar quando o Robson indicar a página. */
+const ACCOUNT_URL = "#";
+
+/** Ícone de conta: leva direto à página de acesso, sem menu de Comprador/Afiliado. */
 function AccountDropdown() {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [open]);
-
   return (
-    <div ref={ref} className="relative lg:hidden">
-      <button
-        type="button"
-        aria-expanded={open}
-        aria-haspopup="true"
-        aria-label="Conta"
-        onClick={() => setOpen((v) => !v)}
-        className="grid size-11 cursor-pointer place-items-center text-2xl text-text-strong"
-      >
-        <IconAccount />
-      </button>
-      <div
-        className={cn(
-          "absolute right-0 top-full z-50 mt-1 whitespace-nowrap overflow-hidden rounded-lg bg-surface-plain shadow-lg ring-1 ring-border transition-[opacity,transform] duration-200 ease-out",
-          open
-            ? "pointer-events-auto scale-100 opacity-100"
-            : "pointer-events-none scale-95 opacity-0",
-        )}
-      >
-        <a
-          href="#"
-          className="block px-5 py-3.5 text-sm font-medium text-text-strong transition-colors [transition-duration:var(--duration-fast)] hover:bg-surface-muted"
-        >
-          Entrar como Comprador
-        </a>
-        <a
-          href="#"
-          className="block px-5 py-3.5 text-sm font-medium text-text-strong transition-colors [transition-duration:var(--duration-fast)] hover:bg-surface-muted"
-        >
-          Entrar como Afiliado
-        </a>
-      </div>
-    </div>
+    <a
+      href={ACCOUNT_URL}
+      aria-label="Conta"
+      className="grid size-11 cursor-pointer place-items-center text-2xl text-text-strong lg:hidden"
+    >
+      <IconAccount />
+    </a>
   );
 }
 
@@ -238,19 +202,19 @@ export function SiteHeader() {
               </button>
               <span className="absolute left-1/2 -translate-x-1/2">
                 <img
-                  src={logoMobile}
+                  src={logoModal}
                   alt={PRODUCT_NAME}
-                  className="h-[40px] w-auto brightness-0 invert"
+                  className="h-[44px] w-auto"
                 />
               </span>
               {/* Account icon — mirrors the header right side */}
-              <button
-                type="button"
+              <a
+                href={ACCOUNT_URL}
                 aria-label="Conta"
                 className="grid size-14 cursor-pointer place-items-center text-2xl text-text-on-inverse"
               >
                 <IconAccount />
-              </button>
+              </a>
             </div>
 
             {/* Nav links — centered vertically in the remaining space */}
@@ -265,22 +229,6 @@ export function SiteHeader() {
                   {link.label}
                 </a>
               ))}
-
-              {/* Account links */}
-              <a
-                href="#"
-                onClick={close}
-                className="text-lg font-semibold text-text-on-inverse transition-colors [transition-duration:var(--duration-fast)] hover:text-action"
-              >
-                Entrar como Comprador
-              </a>
-              <a
-                href="#"
-                onClick={close}
-                className="text-lg font-semibold text-text-on-inverse transition-colors [transition-duration:var(--duration-fast)] hover:text-action"
-              >
-                Entrar como Afiliado
-              </a>
 
               {/* CTA button */}
               <a

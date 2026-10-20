@@ -122,15 +122,10 @@ export function SiteHeader() {
             </ul>
           </nav>
 
-          {/* ── Right side: cart + CTA (desktop) ── */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          {/* ── Right side: cart + CTA (desktop only) ── */}
+          <div className="hidden items-center gap-3 lg:flex">
             <CartButton />
-            <Button
-              href={OFFER_ANCHOR}
-              size="md"
-              shape="block"
-              className="max-lg:hidden"
-            >
+            <Button href={OFFER_ANCHOR} size="md" shape="block">
               Comprar
               <IconArrowRight />
             </Button>

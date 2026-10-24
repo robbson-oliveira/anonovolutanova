@@ -27,9 +27,6 @@
   --brand-moss-600: rgb(18 69 86);     /* display do hero */
   --brand-moss-500: rgb(28 88 108);    /* hover do botão */
   --brand-moss-100: rgb(15 63 79 / 0.15); /* moss-700 at 15%: text selection */
-  /* Explore pins. #0054AC, with a darker step for hover. */
-  --brand-blue-700: rgb(0 84 172);
-  --brand-blue-800: rgb(0 64 138);
   --brand-sage-300: rgb(208 209 177); /* superfície da seção de oferta */
   --brand-clay-800: rgb(139 80 42);   /* cards da seção "Sobre" */
   --brand-amber-400: rgb(255 196 102);
@@ -155,8 +152,8 @@
   /* AÇÃO — fundo de botão. É verde. Separado de `accent` de propósito:
      conflatar os dois foi o erro que inverteu a paleta inteira. */
   --color-action: var(--brand-moss-700);
-  --color-hotspot: var(--brand-blue-700);           /* Explore "+" pins, #0054AC */
-  --color-hotspot-hover: var(--brand-blue-800);
+  --color-hotspot: var(--brand-moss-700);           /* Explore "+" pins, primary petrol */
+  --color-hotspot-hover: var(--brand-moss-500);
   --color-action-track: var(--brand-moss-100);       /* hover of outlined petrol buttons */
   --color-text-idle: var(--brand-stone-400);         /* idle edition tab label */
   --color-action-hover: var(--brand-moss-500);
@@ -340,7 +337,9 @@
   --shadow-book: -14px 18px 28px rgb(0 0 0 / 0.24);
   --shadow-book-back: 0 12px 24px rgb(0 0 0 / 0.22);
   --shadow-pop: 0 4px 4px rgb(0 0 0 / 0.1);          /* cartão de preço sobre as agendas do hero */
-  --shadow-hotspot: 0 0 0 4px rgb(0 84 172 / 0.28);  /* halo of the Explore "+" pins */
+  --shadow-hotspot: 0 0 0 4px rgb(15 63 79 / 0.28);  /* halo of the Explore "+" pins */
+  /* Soft shadow cast by the About page art. One filter layer, no baked fringe. */
+  --drop-shadow-page: 0 14px 22px rgb(57 32 9 / 0.32);
   --shadow-faq-card: 0 1px 2px rgb(0 0 0 / 0.18);    /* FAQ cards (Figma 949:177) */
   --shadow-cta-gold: 0 12px 12px rgb(0 0 0 / 0.3);   /* gold button of the closing card (Figma 949:145) */
   --shadow-cta-warm: 0 12px 24px rgb(0 0 0 / 0.3);   /* botão quente do fechamento */
@@ -398,6 +397,8 @@
      it grows, the card rises 10px and scales up from 0.9. */
   --animate-pin-pulse: ds-pin-pulse 1.6s ease-out infinite;
   --animate-pin-card: ds-pin-card 0.2s var(--ease-enter) both;
+  /* Account menu: drops down from under the icon, instead of rising into place. */
+  --animate-menu-drop: ds-menu-drop 0.18s var(--ease-enter) both;
 
   @keyframes ds-pin-pulse {
     0% { opacity: 0.85; transform: scale(1); }
@@ -407,6 +408,11 @@
 
   @keyframes ds-pin-card {
     from { opacity: 0; transform: translateY(10px) scale(0.9); }
+    to { opacity: 1; transform: none; }
+  }
+
+  @keyframes ds-menu-drop {
+    from { opacity: 0; transform: translateY(-6px); }
     to { opacity: 1; transform: none; }
   }
 

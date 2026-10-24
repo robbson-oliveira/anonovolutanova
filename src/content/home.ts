@@ -90,9 +90,11 @@ export const EXPLORE = {
 } as const;
 
 export const QUOTE = {
+  // Non-breaking hyphen and space keep "multiplicar-se-á" and "Seu serviço"
+  // from leaving a single word alone on the last line.
   text:
-    "Quando tiveres ordem, multiplicar-se-á o teu tempo e, assim, poderás dar " +
-    "mais glória a Deus, trabalhando no Seu serviço.",
+    "Quando tiveres ordem, multiplicar\u2011se\u2011á o teu tempo e, assim, poderás dar " +
+    "mais glória a Deus, trabalhando no Seu\u00A0serviço.",
   author: "São Josemaria Escrivá",
 } as const;
 

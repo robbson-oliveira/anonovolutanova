@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   Button,
@@ -20,6 +20,8 @@ import {
 import { CartButton } from "@/features/cart/CartButton";
 import { useOptionalCart } from "@/features/cart/CartProvider";
 const logo = "/img/logo-header.svg";
+/** Lockup for the desktop compact bar. Served as this file, not the seal SVG. */
+const logoCompact = "/img/logo-barra-compacta.png";
 
 /**
  * Hamburger icon — three horizontal lines. The close mark uses the same
@@ -49,8 +51,15 @@ const logoMobile = "/img/logo-2027-mobile.png";
 /** White lockup, same pixel size as the mobile logo, for the dark open menu. */
 const logoMenu = "/img/logo-menu-modal.png";
 
-/** Página de acesso à conta. Link provisório: trocar quando o Robson indicar a página. */
-const ACCOUNT_URL = "#";
+/**
+ * There is no storefront login. The account icon used to be `href="#"`.
+ * "Afiliados" in the nav and the footer both go to the contact page, and the
+ * migration plan sends the old customer account (`/minha-conta`) there too
+ * because no account exists (D6). Both entries use that page until a real
+ * login is named.
+ */
+const BUYER_LOGIN_URL = "/contato";
+const AFFILIATE_LOGIN_URL = "/contato";
 
 /**
  * Basket in the phone header, immediately left of the account icon.
@@ -92,19 +101,110 @@ function HeaderCart({ light = false }: { light?: boolean }) {
   );
 }
 
-/** Ícone de conta: leva direto à página de acesso, sem menu de Comprador/Afiliado. */
-function AccountDropdown({ light = false }: { light?: boolean }) {
+/**
+ * Phone account control. A small menu drops under the icon, in the header
+ * and while the navigation panel is open (the icon stays in the header row,
+ * which remains above that panel). Closes on an outside tap or Escape.
+ */
+function AccountMenu({ light = false }: { light?: boolean }) {
+  const [open, setOpen] = useState(false);
+  const [box, setBox] = useState<{ top: number; right: number } | null>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const menuId = useId();
+
+  const place = useCallback(() => {
+    const rect = buttonRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    setBox({ top: rect.bottom + 6, right: Math.max(8, window.innerWidth - rect.right) });
+  }, []);
+
+  const closeMenu = useCallback(() => {
+    setOpen(false);
+    buttonRef.current?.focus();
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    const onPointer = (event: PointerEvent) => {
+      const target = event.target as Node;
+      if (buttonRef.current?.contains(target) || menuRef.current?.contains(target)) return;
+      setOpen(false);
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.stopPropagation();
+        closeMenu();
+      }
+    };
+    document.addEventListener("pointerdown", onPointer);
+    document.addEventListener("keydown", onKey);
+    window.addEventListener("resize", place);
+    window.addEventListener("scroll", place, true);
+    const first = menuRef.current?.querySelector<HTMLElement>("[role='menuitem']");
+    first?.focus();
+    return () => {
+      document.removeEventListener("pointerdown", onPointer);
+      document.removeEventListener("keydown", onKey);
+      window.removeEventListener("resize", place);
+      window.removeEventListener("scroll", place, true);
+    };
+  }, [open, place, closeMenu]);
+
   return (
-    <a
-      href={ACCOUNT_URL}
-      aria-label="Conta"
-      className={cn(
-        "grid size-11 cursor-pointer place-items-center text-2xl lg:hidden",
-        light ? "text-text-on-inverse" : "text-text-strong",
-      )}
-    >
-      <IconAccount />
-    </a>
+    <>
+      <button
+        ref={buttonRef}
+        type="button"
+        aria-expanded={open}
+        aria-haspopup="menu"
+        aria-controls={menuId}
+        aria-label="Conta"
+        onClick={() => {
+          if (open) setOpen(false);
+          else {
+            place();
+            setOpen(true);
+          }
+        }}
+        className={cn(
+          "grid size-11 cursor-pointer place-items-center text-2xl lg:hidden",
+          light ? "text-text-on-inverse" : "text-text-strong",
+          "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-action",
+        )}
+      >
+        <IconAccount />
+      </button>
+      {open && box
+        ? createPortal(
+            <div
+              ref={menuRef}
+              id={menuId}
+              role="menu"
+              aria-label="Entrar"
+              data-account-menu-open=""
+              style={{ top: box.top, right: box.right }}
+              className="fixed z-[70] w-max min-w-[220px] origin-top-right rounded-card bg-surface p-1.5 shadow-float motion-safe:animate-menu-drop"
+            >
+              <a
+                role="menuitem"
+                href={BUYER_LOGIN_URL}
+                className="block rounded-[8px] px-3 py-2.5 text-sm font-semibold text-text-strong hover:bg-action-track focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-action"
+              >
+                Entrar como comprador
+              </a>
+              <a
+                role="menuitem"
+                href={AFFILIATE_LOGIN_URL}
+                className="block rounded-[8px] px-3 py-2.5 text-sm font-semibold text-text-strong hover:bg-action-track focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-action"
+              >
+                Entrar como afiliado
+              </a>
+            </div>,
+            document.body,
+          )
+        : null}
+    </>
   );
 }
 
@@ -160,7 +260,8 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
   useEffect(() => {
     if (!open) return;
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") close();
+      // The account menu handles Escape first and removes itself.
+      if (e.key === "Escape" && !document.querySelector("[data-account-menu-open]")) close();
     };
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
@@ -322,13 +423,13 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
           {/* Mobile: basket, then account. Desktop keeps its own cluster. */}
           <div className="flex items-center lg:hidden">
             <HeaderCart light={open} />
-            <AccountDropdown light={open} />
+            <AccountMenu light={open} />
           </div>
 
           {/* ── Right side: cart + CTA (desktop only) ── */}
           <div className="hidden items-center gap-3 lg:flex">
             <CartButton />
-            <Button href={OFFER_ANCHOR} size="md" shape="block">
+            <Button href={OFFER_ANCHOR} size="md" shape="block" className="px-12!">
               Comprar
               <IconArrowRight />
             </Button>
@@ -351,10 +452,8 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
         >
           <div className="mx-auto flex h-full w-full max-w-page items-center gap-3">
             <a href="#inicio" className="flex shrink-0 items-center" aria-label={PRODUCT_NAME}>
-              {/* Same seal as the main header, at the compact bar's height.
-                  The reference crop was not in the workspace, so this SVG
-                  keeps the mark's own proportions. */}
-              <img src={logo} alt="" className="h-9 w-auto" />
+              {/* 391×171 lockup. At 40px tall the file is still above 2×. */}
+              <img src={logoCompact} alt="" width={391} height={171} className="h-10 w-auto" />
             </a>
             <nav aria-label="Principal" className="min-w-0 flex-1">
               <ul className="flex flex-nowrap items-center justify-center gap-x-3 xl:gap-x-5">
@@ -372,8 +471,9 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
             </nav>
             <div className="flex shrink-0 items-center gap-1.5">
               <CartButton />
-              <Button href={OFFER_ANCHOR} size="md" shape="block" className="h-9! px-3! text-xs!">
+              <Button href={OFFER_ANCHOR} size="md" shape="block" className="h-10! px-12! text-[13px]!">
                 Comprar
+                <IconArrowRight />
               </Button>
             </div>
           </div>

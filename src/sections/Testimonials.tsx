@@ -118,16 +118,16 @@ export function Testimonials() {
               onClick={() => slide(dir)}
               aria-label={dir === -1 ? "Depoimento anterior" : "Próximo depoimento"}
               className={
-                "grid size-[60px] cursor-pointer place-items-center rounded-[15px] border-0 " +
-                "text-text-on-inverse " +
+                "grid size-16 cursor-pointer place-items-center rounded-[16px] border-0 " +
+                "text-text-on-inverse md:size-[60px] md:rounded-[15px] " +
                 "bg-linear-to-r from-gold-start to-gold-end"
               }
             >
-              <svg width="10" height="16" viewBox="0 0 10 16" fill="none" aria-hidden>
+              <svg width="16" height="26" viewBox="0 0 16 26" fill="none" aria-hidden className="md:h-[22px] md:w-[14px]">
                 <path
-                  d={dir === -1 ? "M8.5 1.5 2 8l6.5 6.5" : "M1.5 1.5 8 8l-6.5 6.5"}
+                  d={dir === -1 ? "M13 2 3 13l10 11" : "M3 2l10 11L3 24"}
                   stroke="currentColor"
-                  strokeWidth="2"
+                  strokeWidth="3.2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />

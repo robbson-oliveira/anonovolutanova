@@ -75,11 +75,20 @@ export function IconChevronRight(props: IconProps) {
   );
 }
 
-/** Avaliação */
+/**
+ * Rating star. A plump five-point star (inner radius about half the outer)
+ * with rounded joins, so the row reads as solid marks rather than thin spikes.
+ */
 export function IconStar(props: IconProps) {
   return (
     <IconBase viewBox={UI_BOX} fill="none" {...props}>
-      <path fill="currentColor" d="M8 .8l1.68 4.89 5.17.09-4.14 3.1 1.52 4.94L8 10.85l-4.23 2.97 1.52-4.94-4.14-3.1 5.17-.09z" />
+      <path
+        fill="currentColor"
+        stroke="currentColor"
+        strokeWidth={0.8}
+        strokeLinejoin="round"
+        d="M8 0.85 10.17 5.01 14.8 5.79 11.52 9.14 12.2 13.78 8 11.7 3.8 13.78 4.48 9.14 1.2 5.79 5.83 5.01Z"
+      />
     </IconBase>
   );
 }

@@ -38,12 +38,20 @@ type Layer = {
   src: string;
   box: { w: number; x: number; y: number };
   /**
-   * Arte cortada pela borda de baixo do card no Figma. O PNG exportado fica
-   * até 1px mais curto que o card (arredondamento do corte), o que deixava uma
-   * linha azul do fundo do card aparecendo embaixo. Com `bleed` a arte vai 1px
-   * além da borda e o card a corta, como se o papel continuasse lá dentro.
+   * Art cut by the bottom edge of the card in Figma. The export lands up to
+   * 1px short of the card (crop rounding), which left a blue line of the card
+   * fill underneath. With `bleed` the art runs 1px past that edge and the
+   * card clips it.
    */
   bleed?: true;
+  /**
+   * Uniform scale so the paper crosses a card edge that the export left
+   * short, and the rounded card clips the excess. The layer box does not
+   * move, so handwriting stays on the rules. Origin is the side that should
+   * stay put. No non-uniform stretch.
+   */
+  fit?: number;
+  fitOrigin?: string;
   /**
    * Entrada da camada, exatamente como no wireframe: quem anima é cada página
    * (não o card). Sem `anim`, a camada é estática, como lá.
@@ -105,7 +113,7 @@ export const FEATURES: Feature[] = [
   {
     title: [{ text: "Todo dia", dim: true }, { text: "uma frase de São Josemaria para inspirar" }],
     layers: [
-      { src: fraseDia, box: { w: 414.41, x: 171.59, y: 22 }, bleed: true },
+      { src: fraseDia, box: { w: 414.41, x: 171.59, y: 22 }, bleed: true, fit: 1.08, fitOrigin: "left center" },
       /* Sombra em cunha que a página projeta sobre o card (Figma "sombra", 949:1011). */
       { src: sombra, box: { w: 547.64, x: 15.16, y: 190.79 }, anim: { variant: "pop" } },
       { src: frase, box: { w: 338, x: 53, y: 212 }, anim: { variant: "forward" } },
@@ -114,8 +122,8 @@ export const FEATURES: Feature[] = [
   {
     title: [{ text: "Todo mês", dim: true }, { text: "um tema para viver a santidade no cotidiano" }],
     layers: [
-      { src: vidaOracao, box: { w: 426.05, x: 0, y: 118.15 }, bleed: true, anim: { variant: "left" } },
-      { src: propositos, box: { w: 381.24, x: 204.76, y: 206.36 }, anim: { variant: "right", delay: 90 } },
+      { src: vidaOracao, box: { w: 426.05, x: 0, y: 118.15 }, bleed: true, fit: 1.04, fitOrigin: "right center", anim: { variant: "left" } },
+      { src: propositos, box: { w: 381.24, x: 204.76, y: 206.36 }, fit: 1.05, fitOrigin: "right top", anim: { variant: "right", delay: 90 } },
     ],
   },
   {
@@ -126,8 +134,8 @@ export const FEATURES: Feature[] = [
       { text: "importantes da Obra" },
     ],
     layers: [
-      { src: folhaJaneiro, box: { w: 441, x: 135.5, y: 195 }, bleed: true, anim: { variant: "up" } },
-      { src: folhaOutubro, box: { w: 416.18, x: 0, y: 255.37 }, bleed: true, anim: { variant: "up", delay: 120 } },
+      { src: folhaJaneiro, box: { w: 441, x: 135.5, y: 195 }, bleed: true, fit: 1.06, fitOrigin: "left center", anim: { variant: "up" } },
+      { src: folhaOutubro, box: { w: 416.18, x: 0, y: 255.37 }, bleed: true, fit: 1.045, fitOrigin: "right bottom", anim: { variant: "up", delay: 120 } },
     ],
   },
 ];
@@ -289,7 +297,12 @@ export function FeatureCard({
                 alt=""
                 aria-hidden
                 className="h-auto w-full"
-                style={layer.bleed ? { height: cardPx(CARD_H + 1 - layer.box.y) } : undefined}
+                style={{
+                  ...(layer.bleed ? { height: cardPx(CARD_H + 1 - layer.box.y) } : {}),
+                  ...(layer.fit
+                    ? { transform: `scale(${layer.fit})`, transformOrigin: layer.fitOrigin }
+                    : {}),
+                }}
               />
               {layer.handwriting ? <Handwriting {...layer.handwriting} /> : null}
             </>

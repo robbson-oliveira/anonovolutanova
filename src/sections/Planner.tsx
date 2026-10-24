@@ -54,12 +54,29 @@ export function Planner() {
           </Button>
         </div>
 
+        {/*
+         * Mobile: the PNG is 642×472 with the paper (alpha ≥ 200) at
+         * x39–472, y30–364. The frame matches that paper, almost as wide as
+         * the button, and the file hangs off it so the baked-in shadow can
+         * sit inside the card. The card's overflow clips whatever crosses
+         * the border. Desktop keeps the Figma placement of the whole file.
+         */}
+        <div className="relative aspect-[434/335] w-[calc(100%-20px)] max-w-[480px] lg:hidden">
+          <img
+            src="/img/planner-diario.png"
+            alt={PLANNER.imageAlt}
+            width={642}
+            height={472}
+            className="pointer-events-none absolute top-[-8.96%] left-[-8.99%] w-[147.93%] max-w-none"
+          />
+        </div>
         <img
           src="/img/planner-diario.png"
-          alt={PLANNER.imageAlt}
+          alt=""
+          aria-hidden
           width={642}
           height={472}
-          className="pointer-events-none block w-full max-w-[560px] object-cover lg:absolute lg:left-[50.2%] lg:top-[2.9%] lg:h-auto lg:w-[62.9%] lg:max-w-none"
+          className="pointer-events-none hidden lg:absolute lg:left-[50.2%] lg:top-[2.9%] lg:block lg:h-auto lg:w-[62.9%] lg:max-w-none"
         />
       </Reveal>
     </section>

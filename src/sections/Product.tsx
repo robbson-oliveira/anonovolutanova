@@ -41,12 +41,16 @@ export function Product({ offer }: { offer: ProductOffer }) {
               <Heading as="h2" level="section">
                 {OFFER.title}
               </Heading>
-              <Text className="leading-snug text-text-strong">{OFFER.paragraph}</Text>
+              {/* One step down from the section title, and only on mobile:
+                  the desktop paragraph keeps the body size. */}
+              <Text className="leading-snug text-text-strong max-md:text-sm max-md:leading-snug">{OFFER.paragraph}</Text>
             </div>
           </Reveal>
 
-          <div className="mx-auto mt-10 w-full max-w-[1188px] lg:mt-[75px]">
-            <div className="rounded-[26px] bg-surface-plain p-5 shadow-float sm:p-8 lg:px-12 lg:py-14">
+          {/* Mobile only: less space after the paragraph, more padding above
+              the cover and below the wholesale line. Desktop padding stays. */}
+          <div className="mx-auto mt-10 w-full max-w-[1188px] max-md:mt-6 lg:mt-[75px]">
+            <div className="rounded-[26px] bg-surface-plain p-5 shadow-float max-md:pt-8 max-md:pb-10 sm:p-8 lg:px-12 lg:py-14">
               <PurchasePanel offer={offer} headingAs="h3" />
             </div>
           </div>
@@ -55,13 +59,15 @@ export function Product({ offer }: { offer: ProductOffer }) {
             <Text size="sm" className="text-center font-bold text-gold-start">
               {OFFER.listTitle}
             </Text>
-            <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+            {/* The group is as wide as its text and centered; each row stays
+                left-aligned so the checks line up, including two-line items. */}
+            <ul className="mt-4 grid gap-3 sm:grid-cols-2 max-md:mx-auto max-md:w-fit max-md:max-w-full">
               {OFFER.list.map((line) => (
-                <li key={line} className="flex items-start gap-3 text-text">
-                  <span aria-hidden className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-pill bg-action text-on-action">
+                <li key={line} className="flex items-start gap-3 text-text max-md:gap-2.5">
+                  <span aria-hidden className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-pill bg-action text-on-action max-md:size-[18px] max-md:text-[15px]">
                     <IconCheck />
                   </span>
-                  <Text as="span" size="xs" className="leading-snug">
+                  <Text as="span" size="xs" className="leading-snug max-md:text-[14px] max-md:leading-relaxed">
                     {line}
                   </Text>
                 </li>

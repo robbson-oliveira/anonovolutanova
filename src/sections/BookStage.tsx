@@ -39,11 +39,11 @@ type BookStageProps = {
  * quem o usa (o Hero o posiciona sangrando para fora do container). Para
  * ajustar a animação isoladamente, ver app/lab/hero-animation.
  *
- * Em telas menores o Hero usa `fluid`: o palco encolhe junto com a coluna e
- * vira um container query (`@container/stage`). Abaixo de 520px de palco o
- * card de preço deixa de ser o cartão flutuante sobre a capa e vira uma barra
- * no pé do palco — com 191px fixos ele cobriria metade das agendas num
- * celular. A 740px (lab, catálogo e desktop) nada disso se aplica.
+ * On smaller screens the Hero passes `fluid`: the stage fills its column
+ * (up to STAGE_SIZE) and the covers, which are percentages of the stage,
+ * scale with it. The price card stays a real-pixel badge (see PriceCard) —
+ * scaling the whole 740px stage would shrink that label to a few pixels.
+ * At 740px (lab, catalog and desktop) the card is the wireframe one.
  *
  * Só as capas são decorativas (aria-hidden); o card de compra fica acessível,
  * porque um link focável dentro de aria-hidden some para o leitor de tela mas
@@ -115,32 +115,37 @@ function Cover({
  * fora do escopo deste componente. A área de toque passa de 44px por um
  * ::before invisível, sem mudar os 34px desenhados.
  *
- * Palco estreito (< 520px, só com `fluid`): os valores medidos acima ficam
- * como estão e as classes `@max-[520px]/stage:` os sobrescrevem — o card vira
- * uma barra horizontal centralizada no pé do palco, sem a miniatura (as
- * agendas estão logo acima) e com o botão em 44px de altura. Ficou em
- * "max" de propósito: o valor sem prefixo continua sendo o do wireframe.
+ * Below 1200px the same card follows the Framer old-home badge, measured
+ * there. Mobile is 151×101 (padding 10×14, gap 9, radius 10, thumb slot
+ * 40×44, title 14px, button 28×full at 13px / radius 5). Tablet is the
+ * content-sized column (padding 12×14, gap 9, title 15px, button 32×full
+ * at 15px). Colors stay the 2027 tokens (gold border, gold button, cream
+ * surface) — the Framer olive/green is last year's. Unprefixed values are
+ * the desktop card and must not change.
+ *
+ * The mobile button is an explicit 28px, not height:auto: "Comprar Agora"
+ * at 13px wraps inside the 151px card and the two lines measured 44px.
  */
 function PriceCard({ thumbSrc }: { thumbSrc: CoverSrc }) {
   return (
     <div
       className={cn(
         "pointer-events-auto absolute left-[30%] top-[57%] z-10 flex h-[119px] w-[191px] flex-col items-center justify-start gap-[3px] rounded-md border border-gold-end bg-surface-card p-2.5 animate-pop-in motion-reduce:animate-none shadow-pop",
-        "@max-[520px]/stage:inset-x-0 @max-[520px]/stage:top-auto @max-[520px]/stage:bottom-[2%] @max-[520px]/stage:mx-auto @max-[520px]/stage:h-auto @max-[520px]/stage:w-fit @max-[520px]/stage:max-w-[94%] @max-[520px]/stage:flex-row @max-[520px]/stage:gap-4 @max-[520px]/stage:py-2 @max-[520px]/stage:pl-4 @max-[520px]/stage:pr-2",
+        "max-md:left-auto max-md:right-[-30px] max-md:top-[49%] max-md:h-[101px] max-md:w-[151px] max-md:gap-[9px] max-md:px-[14px] max-md:py-[10px]",
+        "md:max-[1199px]:left-[12%] md:max-[1199px]:top-[46%] md:max-[1199px]:right-auto md:max-[1199px]:h-auto md:max-[1199px]:w-max md:max-[1199px]:gap-[9px] md:max-[1199px]:px-[14px] md:max-[1199px]:py-3",
       )}
     >
       <div className="flex items-center">
-        {/* Slot de 45px: no wireframe a miniatura transborda um pouco a
-            própria caixa, e o texto começa 45px depois do início do slot. */}
-        <div className="relative h-[55px] w-[45px] shrink-0 @max-[520px]/stage:hidden">
+        {/* 45×55 slot on desktop; the Framer badge uses 40×44 below 1200. */}
+        <div className="relative h-[55px] w-[45px] shrink-0 max-[1199px]:h-11 max-[1199px]:w-10">
           <Thumb src={thumbSrc} />
         </div>
 
-        <div>
-          <p className="text-[16px] font-bold leading-4 tracking-[-0.64px] text-text-card">
+        <div className="max-[1199px]:flex max-[1199px]:flex-col max-[1199px]:gap-[5px]">
+          <p className="text-[16px] font-bold leading-4 tracking-[-0.64px] whitespace-nowrap text-text-card max-md:text-[14px] max-md:leading-[14px] max-md:tracking-[-0.56px] md:max-[1199px]:text-[15px] md:max-[1199px]:leading-[15px] md:max-[1199px]:tracking-[-0.6px]">
             Agenda {CYCLE_YEAR}
           </p>
-          <p className="mt-1 text-[16px] font-bold leading-4 tracking-[-0.64px] text-text-muted">
+          <p className="mt-1 text-[16px] font-bold leading-4 tracking-[-0.64px] whitespace-nowrap text-text-muted max-[1199px]:mt-0 max-md:text-[14px] max-md:leading-[14px] max-md:tracking-[-0.56px] md:max-[1199px]:text-[15px] md:max-[1199px]:leading-[15px] md:max-[1199px]:tracking-[-0.6px]">
             {priceLabel}
           </p>
         </div>
@@ -148,7 +153,7 @@ function PriceCard({ thumbSrc }: { thumbSrc: CoverSrc }) {
 
       <a
         href={OFFER_ANCHOR}
-        className="relative flex h-[34px] w-[146px] shrink-0 items-center justify-center rounded-sm bg-linear-90 from-gold-start to-gold-end text-[15px] transition-[transform,box-shadow] [transition-duration:var(--duration-fast)] hover:-translate-y-0.5 hover:shadow-[0_8px_18px_-6px] hover:shadow-gold-start/60 motion-reduce:hover:translate-y-0 font-bold leading-[18px] text-on-action before:absolute before:inset-x-0 before:-inset-y-[5px] @max-[520px]/stage:h-11"
+        className="relative flex h-[34px] w-[146px] shrink-0 items-center justify-center rounded-sm bg-linear-90 from-gold-start to-gold-end text-[15px] whitespace-nowrap transition-[transform,box-shadow] [transition-duration:var(--duration-fast)] hover:-translate-y-0.5 hover:shadow-[0_8px_18px_-6px] hover:shadow-gold-start/60 motion-reduce:hover:translate-y-0 font-bold leading-[18px] text-on-action before:absolute before:inset-x-0 before:-inset-y-[5px] max-md:h-[28px] max-md:w-full max-md:px-[14px] max-md:py-[6px] max-md:text-[13px] max-md:leading-[16px] md:max-[1199px]:h-[32px] md:max-[1199px]:w-full md:max-[1199px]:px-4 md:max-[1199px]:py-[7px] md:max-[1199px]:text-[15px] md:max-[1199px]:leading-[18px]"
       >
         Comprar Agora
       </a>
@@ -161,7 +166,7 @@ function Thumb({ src }: { src: CoverSrc }) {
   // e para cima (offsets medidos). `max-w-none` é obrigatório: o reset global
   // aplica max-width:100%, que a espremeria para os 45px do slot.
   const className =
-    "absolute left-[-6.3px] top-[-2px] h-[54px] w-[49px] max-w-none rounded-card object-contain";
+    "absolute left-[-6.3px] top-[-2px] h-[54px] w-[49px] max-w-none rounded-card object-contain max-[1199px]:left-[-6px] max-[1199px]:top-[-3px] max-[1199px]:h-[50px] max-[1199px]:w-[45px]";
 
   return <img src={src} alt="" className={className} />;
 }

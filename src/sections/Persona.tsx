@@ -49,6 +49,7 @@ function usePersonaStack(
     const narrow = window.matchMedia("(max-width: 639px)");
     let frame = 0;
     let cardH = 0;
+    let gap = 0;
     let lastTop = -1;
     let cancelled = false;
 
@@ -64,6 +65,7 @@ function usePersonaStack(
       li.style.position = "";
       li.style.top = "";
       li.style.zIndex = "";
+      li.style.height = "";
       li.style.marginBottom = "";
       li.style.removeProperty("animation");
     };
@@ -75,9 +77,12 @@ function usePersonaStack(
         if (li) clearLi(li);
       }
       list.style.display = "";
+      list.style.marginTop = "";
+      list.style.position = "";
+      list.style.zIndex = "";
       sticky.style.position = "";
       sticky.style.top = "";
-      sticky.style.zIndex = "";
+      sticky.style.paddingBottom = "";
       track.removeAttribute("data-persona-stack");
     };
 
@@ -103,9 +108,17 @@ function usePersonaStack(
       cardH = Math.max(0, ...heights);
       if (!cardH) return false;
 
+      // The gap under the paragraph becomes padding on the sticky intro,
+      // and the list is pulled back over a one-card spacer. The intro box
+      // then ends exactly where the card pile ends, so the title and the
+      // last card leave together instead of separating.
+      gap = parseFloat(getComputedStyle(list).marginTop) || 0;
       sticky.style.position = "sticky";
-      sticky.style.zIndex = "20";
       sticky.style.top = `${pinTop()}px`;
+      sticky.style.paddingBottom = `${cardH + gap}px`;
+      list.style.marginTop = `-${cardH}px`;
+      list.style.position = "relative";
+      list.style.zIndex = "1";
       track.dataset.personaStack = "on";
 
       items.forEach((card, i) => {
@@ -113,6 +126,7 @@ function usePersonaStack(
         if (!li) return;
         li.style.position = "sticky";
         li.style.zIndex = String(i + 1);
+        li.style.height = `${cardH}px`;
         li.style.marginBottom = i === items.length - 1 ? "0" : "1rem";
         // The entrance animation writes `transform` on the <li>. Any
         // transform on the sticky box itself stops it sticking in Safari.
@@ -135,10 +149,10 @@ function usePersonaStack(
       if (!cardH && !measure()) return;
 
       sticky.style.top = `${top}px`;
-      const listMargin = parseFloat(getComputedStyle(list).marginTop) || 0;
-      // Follow the intro's visual bottom so the pile stays under the title
-      // while it is pinned and leaves with it once the section ends.
-      const stickLine = sticky.getBoundingClientRect().bottom + listMargin;
+      const text = sticky.querySelector<HTMLElement>("[data-persona-intro]");
+      // The card slot starts just under the paragraph. The padding below
+      // that slot is only there so the title releases with the pile.
+      const stickLine = (text?.getBoundingClientRect().bottom ?? sticky.getBoundingClientRect().bottom) + gap;
       const items = cards();
 
       items.forEach((card, i) => {
@@ -205,8 +219,11 @@ export function Persona() {
     >
       <div ref={trackRef} className="mx-auto w-full max-w-[1305px]">
         <RevealGroup>
-          <div ref={stickyRef} className="max-sm:bg-surface">
-            <div className="flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between xl:gap-[114px]">
+          <div ref={stickyRef}>
+            <div
+              data-persona-intro
+              className="relative z-30 flex flex-col gap-6 bg-surface xl:flex-row xl:items-center xl:justify-between xl:gap-[114px]"
+            >
               <Reveal variant="up">
                 {/* text-h2 = clamp(34px, 4.2vw, 60px), lh 1, ls -0.05em (= -3px at 60px).
                     Phone breaks are explicit so the three lines match the reference. */}

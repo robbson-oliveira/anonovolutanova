@@ -61,7 +61,7 @@ export function Planner() {
          * sit inside the card. The card's overflow clips whatever crosses
          * the border. Desktop keeps the Figma placement of the whole file.
          */}
-        <div className="relative aspect-[434/335] w-[calc(100%-20px)] max-w-[480px] lg:hidden">
+        <div className="relative aspect-[434/335] w-full max-w-[480px] lg:hidden">
           <img
             src="/img/planner-diario.png"
             alt={PLANNER.imageAlt}

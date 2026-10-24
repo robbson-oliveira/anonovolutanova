@@ -212,7 +212,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
           </Heading>
           <Text className="leading-snug max-md:text-[14px] max-md:leading-normal">
             Tema do mês, frase de São Josemaria Escrivá para cada dia e as práticas
-            de vida interior e muito mais.
+            de vida interior e{"\u00A0"}muito{"\u00A0"}mais.
           </Text>
         </div>
 

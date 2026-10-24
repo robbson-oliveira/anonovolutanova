@@ -82,7 +82,7 @@ export default async function Home() {
           aria-hidden
           className="pointer-events-none absolute bottom-0 left-1/2 -z-10 aspect-[1920/2824] w-[max(100%,1100px)] -translate-x-1/2 bg-[url(/img/footer/bg-aquarela.png)] bg-[length:100%_auto] bg-top bg-no-repeat [mask-image:var(--mask-lower-aquarela)] min-[1440px]:w-[max(100%,1920px)]"
         />
-        <SiteHeader />
+        <SiteHeader smartMenu />
         <main>
           <Hero />
           <DuckStrip />

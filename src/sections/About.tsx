@@ -192,24 +192,23 @@ export function AboutHeader() {
 }
 
 /**
- * Seção "Sobre": cabeçalho centralizado + grade de quatro FeatureCards.
+ * About: centered header and a grid of four feature cards.
  *
- * Desktop (≥ 1440): exatamente o wireframe — duas colunas de 586 px com 28 de
- * vão, a grade ocupando os 1200 px do Container (por isso o `-mx-10`, que
- * devolve à grade o respiro interno do Container, como já acontecia antes).
+ * Desktop: two 586px columns with a 28px gap. The grid fills the 1200px
+ * Container (`-mx-10` cancels that Container's own padding).
  *
- * Telas menores: a coluna nunca passa de 586 px, mas pode encolher até a
- * largura disponível — e o card encolhe proporcionalmente (ver FeatureCard).
- *   < 1024  uma coluna, card com a largura do conteúdo (máx. 586)
- *   ≥ 1024  duas colunas fluidas, que chegam a 586 px a partir de ~1330
- * No celular a seção dispensa o próprio respiro lateral (o Container já dá
- * 24 px) e usa respiros verticais menores.
+ * The gold panel itself stops at the hero's usable width (`max-w-page`,
+ * 1316px) and keeps the hero's side margins (24px, 32px from `md`). It used
+ * to run out to 1440px, past the hero. The cards are not scaled down to
+ * achieve that: a narrower viewport just shrinks the panel around them.
+ *   < 1024  one column, card at most 586px
+ *   ≥ 1024  two fluid columns, reaching 586px once the panel is wide enough
  */
 export function About() {
   return (
     <section
       id="sobre"
-      className="relative mx-4 overflow-clip rounded-[40px] bg-surface-gold pt-24 pb-16 md:mx-auto md:max-w-[1440px] md:rounded-[90px] md:pt-[208px] md:pb-[117px]"
+      className="relative mx-auto w-[calc(100%-3rem)] max-w-page overflow-clip rounded-[40px] bg-surface-gold pt-24 pb-16 md:w-[calc(100%-4rem)] md:rounded-[90px] md:pt-[208px] md:pb-[117px]"
     >
       {/* Aquarela do Figma (949:892), cortada pelos cantos arredondados da seção. */}
       <img

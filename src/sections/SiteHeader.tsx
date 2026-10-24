@@ -13,7 +13,6 @@ import {
 import { NAV_LINKS } from "@content/home";
 import {
   CART_URL,
-  CYCLE_YEAR,
   INSTAGRAM_URL,
   OFFER_ANCHOR,
   PRODUCT_NAME,
@@ -74,45 +73,6 @@ function HeaderCart({ light = false }: { light?: boolean }) {
       <IconBasket />
       {count > 0 ? (
         <span className="absolute top-1 right-0.5 grid h-4 min-w-4 place-items-center rounded-pill bg-action px-1 text-[10px] leading-none font-bold text-on-action">
-          {count > 99 ? "99+" : count}
-        </span>
-      ) : null}
-    </>
-  );
-  if (!cart) {
-    return (
-      <a href={CART_URL} aria-label={label} className={className}>
-        {body}
-      </a>
-    );
-  }
-  return (
-    <button type="button" onClick={cart.openDrawer} aria-label={label} className={className}>
-      {body}
-    </button>
-  );
-}
-
-/**
- * Cart control for the desktop compact bar. Always visible, even at zero.
- * The white square is desktop-only; the badge is the real quantity.
- */
-function CompactCart() {
-  const cart = useOptionalCart();
-  const count = cart?.count ?? 0;
-  const label = count > 0
-    ? `Abrir carrinho, ${count} ${count === 1 ? "item" : "itens"}`
-    : "Abrir carrinho";
-  const className = cn(
-    "relative grid size-11 cursor-pointer place-items-center text-xl text-text-strong",
-    "lg:rounded-[10px] lg:bg-surface-plain lg:shadow-card",
-    "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-action",
-  );
-  const body = (
-    <>
-      <IconBasket />
-      {count > 0 ? (
-        <span className="absolute -top-1 -right-1 grid h-5 min-w-5 place-items-center rounded-pill bg-action px-1 text-[11px] leading-none font-bold text-on-action">
           {count > 99 ? "99+" : count}
         </span>
       ) : null}
@@ -299,7 +259,7 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
           open && "max-lg:bg-surface-inverse",
         )}
       >
-        <div className="mx-auto flex h-20 w-full max-w-[1316px] items-center justify-between gap-6 px-6 lg:px-0">
+        <div className="mx-auto flex h-20 w-full max-w-page items-center justify-between gap-6 px-6 lg:px-0">
           {/* ── Mobile: hamburger left ── */}
           <button
             ref={triggerRef}
@@ -382,20 +342,37 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
           inert={compactDesktop ? undefined : true}
           style={{ top: headerTop }}
           className={cn(
-            "fixed inset-x-0 z-40 hidden h-14 bg-surface shadow-float transition-opacity duration-300 motion-reduce:transition-none lg:flex",
+            "fixed inset-x-0 z-40 hidden h-14 bg-surface shadow-card transition-opacity duration-300 motion-reduce:transition-none lg:flex",
             "pl-[max(1.25rem,env(safe-area-inset-left,0px))] pr-[max(1.25rem,env(safe-area-inset-right,0px))]",
             compactDesktop
               ? "lg:pointer-events-auto lg:opacity-100"
               : "lg:pointer-events-none lg:opacity-0",
           )}
         >
-          <div className="mx-auto flex h-full w-full max-w-[1316px] items-center justify-between gap-2">
-            <a href="#inicio" className="flex shrink-0 items-center">
-              <img src={logo} alt={PRODUCT_NAME} className="h-10 w-auto" />
+          <div className="mx-auto flex h-full w-full max-w-page items-center gap-3">
+            <a href="#inicio" className="flex shrink-0 items-center" aria-label={PRODUCT_NAME}>
+              {/* Same seal as the main header, at the compact bar's height.
+                  The reference crop was not in the workspace, so this SVG
+                  keeps the mark's own proportions. */}
+              <img src={logo} alt="" className="h-9 w-auto" />
             </a>
-            <div className="flex items-center gap-2">
-              <CompactCart />
-              <Button href={OFFER_ANCHOR} size="md" shape="block" className="px-4! lg:px-5!">
+            <nav aria-label="Principal" className="min-w-0 flex-1">
+              <ul className="flex flex-nowrap items-center justify-center gap-x-3 xl:gap-x-5">
+                {NAV_LINKS.map((link) => (
+                  <li key={link.href}>
+                    <a
+                      href={link.href}
+                      className="text-[11px] font-bold whitespace-nowrap text-text-strong transition-colors [transition-duration:var(--duration-fast)] hover:text-action xl:text-xs"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+            <div className="flex shrink-0 items-center gap-1.5">
+              <CartButton />
+              <Button href={OFFER_ANCHOR} size="md" shape="block" className="h-9! px-3! text-xs!">
                 Comprar
               </Button>
             </div>

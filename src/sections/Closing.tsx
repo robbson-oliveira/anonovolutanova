@@ -23,7 +23,7 @@ export function Closing() {
   return (
     <section
       id="fechamento-bloco"
-      className="relative mx-auto w-full max-w-[1440px] px-4 pb-8 pt-2 sm:px-6 md:pb-12 lg:px-10 min-[1440px]:px-[81px] min-[1440px]:pb-[49px] min-[1440px]:pt-0"
+      className="relative mx-auto w-full max-w-page px-6 pb-8 pt-2 md:pb-12 lg:px-10 min-[1316px]:px-0 min-[1440px]:pb-[49px] min-[1440px]:pt-0"
     >
       <RevealGroup>
         <Reveal variant="up">

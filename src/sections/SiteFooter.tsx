@@ -29,7 +29,7 @@ const [copyrightLine1, copyrightLine2] = FOOTER.copyright.split(". ");
  *
  * No background of its own: the watercolor is the backdrop shared with the FAQ
  * and the closing card, painted by the home page (Figma "BG inferior", 949:15).
- * The content sits in a 1440px column.
+ * The content sits in the hero's usable column (`max-w-page`, 1316px).
  *
  * Content (Figma measurements, 1440px column, y relative to the logo): 106x143
  * logo at 0, 391px tagline at 172 (20/24), 16px bold links at 324, copyright
@@ -43,7 +43,7 @@ const [copyrightLine1, copyrightLine2] = FOOTER.copyright.split(". ");
 export function SiteFooter() {
   return (
     <footer className="relative w-full">
-      <div className="mx-auto w-full max-w-[1440px] px-4 pb-20 pt-20 sm:px-6 md:pb-32 md:pt-28 min-[1440px]:px-0 min-[1440px]:pb-[231px] min-[1440px]:pt-[120px]">
+      <div className="mx-auto w-full max-w-page px-6 pb-20 pt-20 md:pb-32 md:pt-28 min-[1440px]:px-0 min-[1440px]:pb-[231px] min-[1440px]:pt-[120px]">
         <RevealGroup className="flex flex-col items-center text-center">
           <Reveal variant="up">
             <Image

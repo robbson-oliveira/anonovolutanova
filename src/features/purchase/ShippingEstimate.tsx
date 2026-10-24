@@ -275,7 +275,7 @@ export function ShippingEstimate({ productId, quantity }: ShippingEstimateProps)
         type="button"
         onClick={() => setDialogOpen(true)}
         aria-haspopup="dialog"
-        className="inline-flex cursor-pointer items-center gap-1 self-start text-label font-semibold text-action underline-offset-4 hover:underline"
+        className="inline-flex max-w-full cursor-pointer items-center gap-1.5 self-start whitespace-nowrap text-[13px] font-semibold leading-tight text-action underline-offset-4 hover:underline md:gap-1 md:text-label md:leading-normal"
       >
         Mais detalhes e formas de entrega
         <IconChevronRight />

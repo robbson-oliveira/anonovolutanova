@@ -243,18 +243,33 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
                     onChange={() => setEditionId(e.id)}
                     className="sr-only"
                   />
-                  <ProductThumb image={e.image} fallback={e} sizes="72px" className="size-[72px]" />
-                  <span className="flex flex-col gap-1">
+                  <ProductThumb
+                    image={e.image}
+                    fallback={e}
+                    sizes="72px"
+                    className="size-[72px]"
+                    focus={
+                      e.id === "bloco"
+                        ? {
+                            x: e.coverBox.x / e.coverSize.width,
+                            y: e.coverBox.y / e.coverSize.height,
+                            width: e.coverBox.width / e.coverSize.width,
+                            height: e.coverBox.height / e.coverSize.height,
+                            fileAspect: e.coverSize.height / e.coverSize.width,
+                          }
+                        : null
+                    }
+                  />
+                  <span className="flex min-w-0 flex-1 flex-col gap-1">
                     <span className="text-sm font-bold text-text-strong">{e.label}</span>
                     <span className="text-xs leading-snug text-text-muted">
                       {e.inStock ? e.description : "Esgotada"}
                     </span>
                   </span>
-                  {active ? (
-                    <span aria-hidden className="absolute top-1/2 right-5 -translate-y-1/2 text-[28px] text-action">
-                      <IconCheck />
-                    </span>
-                  ) : null}
+                  {/* Always reserved, so selecting an edition does not reflow the title. */}
+                  <span aria-hidden className="grid size-7 shrink-0 place-items-center text-[22px] text-action">
+                    {active ? <IconCheck /> : null}
+                  </span>
                 </label>
               );
             })}
@@ -267,18 +282,18 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
             Quantidade
           </span>
           <div className="flex flex-col gap-4">
-            <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center gap-4 max-md:gap-2">
               <div
                 role="group"
                 aria-labelledby={`${groupName}-qty`}
-                className="inline-flex h-14 items-center rounded-card border border-border bg-surface-plain"
+                className="inline-flex h-14 shrink-0 items-center rounded-card border border-border bg-surface-plain max-md:h-12"
               >
                 <button
                   type="button"
                   onClick={() => changeQty(qty - 1)}
                   disabled={qty <= 1}
                   aria-label="Diminuir quantidade"
-                  className="grid h-full w-12 cursor-pointer place-items-center text-text-strong disabled:cursor-not-allowed disabled:opacity-40"
+                  className="grid h-full w-12 cursor-pointer place-items-center text-text-strong disabled:cursor-not-allowed disabled:opacity-40 max-md:w-10"
                 >
                   <IconMinus />
                 </button>
@@ -290,14 +305,14 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
                   value={qty}
                   onChange={(ev) => changeQty(parseInt(ev.target.value, 10))}
                   aria-label={`Quantidade de ${edition.unit === "agenda" ? "agendas" : "blocos"}`}
-                  className="h-full w-12 [appearance:textfield] bg-transparent text-center text-base font-bold text-text-strong [&::-webkit-inner-spin-button]:appearance-none"
+                  className="h-full w-12 [appearance:textfield] bg-transparent text-center text-base font-bold text-text-strong max-md:w-9 max-md:text-sm [&::-webkit-inner-spin-button]:appearance-none"
                 />
                 <button
                   type="button"
                   onClick={() => changeQty(qty + 1)}
                   disabled={qty >= MAX_QTY}
                   aria-label="Aumentar quantidade"
-                  className="grid h-full w-12 cursor-pointer place-items-center text-text-strong disabled:cursor-not-allowed disabled:opacity-40"
+                  className="grid h-full w-12 cursor-pointer place-items-center text-text-strong disabled:cursor-not-allowed disabled:opacity-40 max-md:w-10"
                 >
                   <IconPlus />
                 </button>
@@ -309,9 +324,20 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
                   onClick={async () => {
                     if (await addToCart()) cart.openDrawer();
                   }}
-                  className="flex h-14 min-w-0 flex-1 cursor-pointer items-center justify-center rounded-card border border-gold-end bg-linear-90 from-gold-start to-gold-end text-base font-semibold text-on-action transition-[transform,box-shadow] [transition-duration:var(--duration-fast)] hover:-translate-y-0.5 hover:shadow-[0_8px_18px_-6px] hover:shadow-gold-start/60 disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:hover:translate-y-0"
+                  className="flex h-14 min-w-0 flex-1 cursor-pointer items-center justify-center rounded-card border border-gold-end bg-linear-90 from-gold-start to-gold-end px-3 text-center text-base font-semibold leading-tight text-on-action transition-[transform,box-shadow] [transition-duration:var(--duration-fast)] hover:-translate-y-0.5 hover:shadow-[0_8px_18px_-6px] hover:shadow-gold-start/60 disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:hover:translate-y-0 max-md:h-12 max-md:px-2 max-md:text-[13px]"
                 >
-                  {cart.busy ? "Adicionando…" : "Adicionar ao carrinho"}
+                  {cart.busy ? (
+                    "Adicionando…"
+                  ) : (
+                    <>
+                      <span className="md:hidden">
+                        Adicionar ao
+                        <br />
+                        carrinho
+                      </span>
+                      <span className="hidden md:inline">Adicionar ao carrinho</span>
+                    </>
+                  )}
                 </button>
               ) : null}
             </div>
@@ -340,7 +366,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
             </Text>
             <span className="text-stat text-text-strong">{formatBRL(total)}</span>
           </div>
-          <Text size="xs" tone="muted" className="text-right">
+          <Text size="xs" tone="muted" className="text-left">
             Ou {offer.installments.count}x de {formatBRL(edition.installmentAmount)} por {edition.unit}
           </Text>
         </div>

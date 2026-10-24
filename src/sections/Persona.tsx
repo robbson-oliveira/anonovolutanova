@@ -18,18 +18,20 @@ import { PERSONA } from "@content/home";
      ficar alta demais.
 
    On a phone the six cards are a scroll-linked stack (see `usePersonaStack`):
-   the list sticks below the shipping bar, the next card rises over the one
-   in front, and that one scales down and fades. After the last card the
-   section lets go of the scroll. Reduced motion and widths from `sm` up
-   keep the plain grid.
+   the title stays put under the header and each next card rises over the
+   one in front, which scales down and fades. The list keeps its own height,
+   so nothing inserts an empty stage. After the last card the section
+   scrolls away with the page. Reduced motion and widths from `sm` up keep
+   the plain grid.
    -------------------------------------------------------------------------- */
 
 /**
- * Scroll-linked stack for the phone layout. The list is `position: sticky`
- * inside a track tall enough for one step per card, so the page scroll
- * itself drives the animation — no wheel hijack, no `preventDefault`.
- * The sticky offset includes the fixed shipping bar (`[data-anln-topbar]`)
- * plus a gap, otherwise the bar sits on top of the active card.
+ * Scroll-linked stack for the phone layout. The intro and each card are
+ * `position: sticky` inside the section's own height — the page scroll
+ * drives the pile, with no wheel hijack, no `preventDefault`, and no extra
+ * runway. A viewport-tall stage left a blank screen under the active card;
+ * keeping every card in flow means the next one is what sits below.
+ * The sticky offset clears the shipping bar and the phone header.
  * Reversible because every frame is a pure function of scroll position.
  */
 function usePersonaStack(
@@ -47,94 +49,89 @@ function usePersonaStack(
     const narrow = window.matchMedia("(max-width: 639px)");
     let frame = 0;
     let cardH = 0;
-    let stageH = 0;
+    let gap = 0;
     let lastTop = -1;
     let cancelled = false;
 
     const cards = () => [...list.querySelectorAll<HTMLElement>("[data-persona-card]")];
 
+    const clearCard = (card: HTMLElement) => {
+      card.style.transform = "";
+      card.style.opacity = "";
+      card.style.transformOrigin = "";
+    };
+
     const clearLi = (li: HTMLElement) => {
       li.style.position = "";
       li.style.top = "";
-      li.style.left = "";
-      li.style.right = "";
-      li.style.width = "";
-      li.style.height = "";
       li.style.zIndex = "";
-      li.style.transform = "";
-      li.style.transformOrigin = "";
-      li.style.opacity = "";
+      li.style.height = "";
+      li.style.marginBottom = "";
       li.style.removeProperty("animation");
     };
 
     const reset = () => {
       for (const card of cards()) {
+        clearCard(card);
         const li = card.parentElement;
         if (li) clearLi(li);
       }
-      list.style.position = "";
-      list.style.height = "";
-      list.style.overflow = "";
+      list.style.display = "";
       list.style.marginTop = "";
-      list.style.background = "";
+      list.style.position = "";
+      list.style.zIndex = "";
       sticky.style.position = "";
       sticky.style.top = "";
-      sticky.style.zIndex = "";
-      track.style.minHeight = "";
+      sticky.style.paddingBottom = "";
       track.removeAttribute("data-persona-stack");
     };
 
-    const barOffset = () => {
+    // Park the title just under the shipping bar and the phone header.
+    const pinTop = () => {
       const bar = document.querySelector<HTMLElement>("[data-anln-topbar]");
-      const barH = bar ? bar.getBoundingClientRect().height : 0;
-      // 20px under the bar: the parked card never slides underneath it.
-      return barH + 20;
+      const header = document.querySelector<HTMLElement>("[data-anln-header]");
+      const barBottom = bar ? Math.max(0, bar.getBoundingClientRect().bottom) : 0;
+      const headerBottom = header ? Math.max(0, header.getBoundingClientRect().bottom) : 0;
+      return Math.max(barBottom, headerBottom) + 12;
     };
 
     const measure = () => {
       reset();
       cardH = 0;
-      stageH = 0;
       if (reduce.matches || !narrow.matches) return false;
-      const heights = cards().map((card) => card.parentElement?.offsetHeight ?? 0);
+      // A grid cell is only as tall as its item, so sticky on the <li>
+      // would have nowhere to travel. Block flow lets the next card rise
+      // over the one stuck above it. The 1rem gap matches `gap-4`.
+      list.style.display = "block";
+      const items = cards();
+      const heights = items.map((card) => card.parentElement?.offsetHeight ?? 0);
       cardH = Math.max(0, ...heights);
       if (!cardH) return false;
 
-      const top = barOffset();
-      // The stage fills the screen under the bar so the next card has a
-      // runway to climb, instead of popping inside a one-card slot.
-      stageH = Math.max(cardH + 48, window.innerHeight - top - 16);
-
-      list.style.position = "relative";
-      list.style.height = `${stageH}px`;
-      list.style.overflow = "hidden";
-      // The class margin would collapse out of the sticky box and leave
-      // the parked card tight against the shipping bar.
-      list.style.marginTop = "0";
+      // The gap under the paragraph becomes padding on the sticky intro,
+      // and the list is pulled back over a one-card spacer. The intro box
+      // then ends exactly where the card pile ends, so the title and the
+      // last card leave together instead of separating.
+      gap = parseFloat(getComputedStyle(list).marginTop) || 0;
       sticky.style.position = "sticky";
-      sticky.style.top = `${top}px`;
-      sticky.style.zIndex = "20";
+      sticky.style.top = `${pinTop()}px`;
+      sticky.style.paddingBottom = `${cardH + gap}px`;
+      list.style.marginTop = `-${cardH}px`;
+      list.style.position = "relative";
+      list.style.zIndex = "1";
       track.dataset.personaStack = "on";
 
-      cards().forEach((card, i) => {
+      items.forEach((card, i) => {
         const li = card.parentElement;
         if (!li) return;
-        li.style.position = "absolute";
-        li.style.top = "12px";
-        li.style.left = "0";
-        li.style.right = "0";
-        li.style.width = "100%";
-        li.style.height = `${cardH}px`;
-        li.style.transformOrigin = "center top";
+        li.style.position = "sticky";
         li.style.zIndex = String(i + 1);
-        // The entrance animation also writes `transform` and would win
-        // over the inline stack transform.
+        li.style.height = `${cardH}px`;
+        li.style.marginBottom = i === items.length - 1 ? "0" : "1rem";
+        // The entrance animation writes `transform` on the <li>. Any
+        // transform on the sticky box itself stops it sticking in Safari.
         li.style.setProperty("animation", "none", "important");
       });
-
-      const step = stageH;
-      const count = cards().length;
-      track.style.minHeight = `${sticky.offsetHeight + step * Math.max(0, count - 1)}px`;
       return true;
     };
 
@@ -146,34 +143,34 @@ function usePersonaStack(
       }
       if (!cardH && !measure()) return;
 
-      const top = barOffset();
+      const top = pinTop();
       if (lastTop >= 0 && Math.abs(top - lastTop) > 8) cardH = 0;
       lastTop = top;
       if (!cardH && !measure()) return;
+
       sticky.style.top = `${top}px`;
-      const total = track.offsetHeight - sticky.offsetHeight;
-      const traveled = top - track.getBoundingClientRect().top;
-      const p = total <= 0 ? 0 : Math.min(1, Math.max(0, traveled / total));
+      const text = sticky.querySelector<HTMLElement>("[data-persona-intro]");
+      // The card slot starts just under the paragraph. The padding below
+      // that slot is only there so the title releases with the pile.
+      const stickLine = (text?.getBoundingClientRect().bottom ?? sticky.getBoundingClientRect().bottom) + gap;
       const items = cards();
-      const pos = p * Math.max(1, items.length - 1);
-      const travel = Math.max(1, stageH - 12);
 
       items.forEach((card, i) => {
         const li = card.parentElement;
         if (!li) return;
-        const delta = pos - i;
-        li.style.zIndex = String(i + 1);
-        if (delta < 0) {
-          const dist = Math.min(1, -delta);
-          li.style.transform = `translate3d(0, ${(dist * travel).toFixed(2)}px, 0)`;
-          li.style.opacity = dist > 0.985 ? "0" : "1";
-        } else {
-          const t = Math.min(1, delta);
-          const scale = 1 - t * 0.08;
-          const opacity = 1 - t * 0.5;
-          li.style.transform = `translate3d(0, 0, 0) scale(${scale.toFixed(3)})`;
-          li.style.opacity = opacity.toFixed(3);
+        li.style.top = `${stickLine.toFixed(2)}px`;
+        const next = items[i + 1]?.parentElement;
+        if (!next) {
+          clearCard(card);
+          return;
         }
+        const nextTop = next.getBoundingClientRect().top;
+        const progress = Math.min(1, Math.max(0, (stickLine + cardH - nextTop) / cardH));
+        const scale = 1 - progress * 0.08;
+        const opacity = 1 - progress * 0.5;
+        card.style.transformOrigin = "center top";
+        card.style.transform = `scale(${scale.toFixed(3)})`;
+        card.style.opacity = opacity.toFixed(3);
       });
     };
 
@@ -189,6 +186,8 @@ function usePersonaStack(
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
+    // iOS Safari grows and shrinks the visual viewport as the toolbar shows.
+    window.visualViewport?.addEventListener("resize", onResize);
     reduce.addEventListener("change", onResize);
     narrow.addEventListener("change", onResize);
     void document.fonts?.ready.then(() => {
@@ -199,6 +198,7 @@ function usePersonaStack(
       cancelAnimationFrame(frame);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
+      window.visualViewport?.removeEventListener("resize", onResize);
       reduce.removeEventListener("change", onResize);
       narrow.removeEventListener("change", onResize);
       reset();
@@ -215,75 +215,78 @@ export function Persona() {
   return (
     <section
       id="persona"
-      className="bg-surface px-4 py-16 sm:px-6 md:px-10 md:py-20 xl:px-[60px] xl:py-[100px]"
+      className="bg-surface px-6 py-16 md:px-10 md:py-20 xl:px-[60px] xl:py-[100px]"
     >
-      <RevealGroup className="mx-auto w-full max-w-[1305px]">
-        <div className="flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between xl:gap-[114px]">
-          <Reveal variant="up">
-            {/* text-h2 = clamp(34px, 4.2vw, 60px), lh 1, ls -0.05em (= -3px at 60px).
-                Phone breaks are explicit so the three lines match the reference. */}
-            <h2 className="m-0 max-w-[648px] text-h2 text-text-lead max-md:text-[32px] max-md:leading-[1.08] xl:w-[648px]">
-              Feita para quem
-              <br className="md:hidden" />
-              <span className="max-md:hidden"> </span>
-              quer viver
-              <br className="md:hidden" />
-              <span className="max-md:hidden"> </span>
-              com propósito
-            </h2>
-          </Reveal>
-          <Reveal variant="up" delay={90}>
-            <p className="m-0 max-w-[640px] text-balance text-base font-normal leading-6 text-text max-sm:text-[15px] max-sm:leading-snug xl:w-[458px] xl:text-[20px] xl:leading-6">
-              <span className="md:hidden">
-                A Agenda Ano Novo, Luta Nova é
-                <br />
-                para quem busca unir fé e vida
-                <br />
-                prática, para quem acredita que
-                <br />
-                organizar o tempo é também
-                <br />
-                cuidar da alma.
-              </span>
-              <span className="hidden md:inline">{PERSONA.paragraph}</span>
-            </p>
-          </Reveal>
-        </div>
-
-        <div ref={trackRef}>
-          <div ref={stickyRef} className="max-sm:bg-surface">
-            <ul
-              ref={listRef}
-              className="m-0 mt-8 grid list-none grid-cols-1 gap-4 p-0 sm:mt-10 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:mt-[60px] xl:gap-x-12 xl:gap-y-9"
+      <div ref={trackRef} className="mx-auto w-full max-w-[1305px]">
+        <RevealGroup>
+          <div ref={stickyRef}>
+            <div
+              data-persona-intro
+              className="relative z-30 flex flex-col gap-6 bg-surface xl:flex-row xl:items-center xl:justify-between xl:gap-[114px]"
             >
-              {PERSONA.items.map((item, i) => (
-                <Reveal key={item} as="li" variant="up" delay={120 + (i % 3) * 80}>
-                  <div
-                    data-persona-card
-                    className={
-                      "flex h-full origin-center flex-row items-center gap-4 rounded-[20px] border-2 border-solid " +
-                      "border-gold-start bg-surface-warm-card px-5 py-6 " +
-                      "sm:flex-col sm:items-start sm:justify-center sm:gap-6 sm:px-[18px] sm:py-[18px] " +
-                      "motion-reduce:transform-none motion-reduce:opacity-100 " +
-                      "lg:min-h-[231px]"
-                    }
-                  >
-                    <span
-                      aria-hidden
-                      className="grid size-12 shrink-0 place-items-center text-[22px] text-text-on-inverse sm:size-[60px]"
-                    >
-                      <IconCheck />
-                    </span>
-                    <p className="m-0 text-balance text-[18px] font-medium leading-6 tracking-[-0.02em] text-text-on-warm sm:max-w-[239px] sm:text-[20px] sm:tracking-[-0.4px]">
-                      {item}
-                    </p>
-                  </div>
-                </Reveal>
-              ))}
-            </ul>
+              <Reveal variant="up">
+                {/* text-h2 = clamp(34px, 4.2vw, 60px), lh 1, ls -0.05em (= -3px at 60px).
+                    Phone breaks are explicit so the three lines match the reference. */}
+                <h2 className="m-0 max-w-[648px] text-h2 text-text-lead max-md:text-[32px] max-md:leading-[1.08] xl:w-[648px]">
+                  Feita para quem
+                  <br className="md:hidden" />
+                  <span className="max-md:hidden"> </span>
+                  quer viver
+                  <br className="md:hidden" />
+                  <span className="max-md:hidden"> </span>
+                  com propósito
+                </h2>
+              </Reveal>
+              <Reveal variant="up" delay={90}>
+                <p className="m-0 max-w-[640px] text-balance text-base font-normal leading-6 text-text max-sm:text-[15px] max-sm:leading-snug xl:w-[458px] xl:text-[20px] xl:leading-6">
+                  <span className="md:hidden">
+                    A Agenda Ano Novo, Luta Nova é
+                    <br />
+                    para quem busca unir fé e vida
+                    <br />
+                    prática, para quem acredita que
+                    <br />
+                    organizar o tempo é também
+                    <br />
+                    cuidar da alma.
+                  </span>
+                  <span className="hidden md:inline">{PERSONA.paragraph}</span>
+                </p>
+              </Reveal>
+            </div>
           </div>
-        </div>
-      </RevealGroup>
+
+          <ul
+            ref={listRef}
+            className="m-0 mt-8 grid list-none grid-cols-1 gap-4 p-0 sm:mt-10 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:mt-[60px] xl:gap-x-12 xl:gap-y-9"
+          >
+          {PERSONA.items.map((item, i) => (
+            <Reveal key={item} as="li" variant="up" delay={120 + (i % 3) * 80}>
+              <div
+                data-persona-card
+                className={
+                  "flex h-full origin-center flex-row items-center gap-4 rounded-[20px] border-2 border-solid " +
+                  "border-gold-start bg-surface-warm-card px-5 py-6 " +
+                  "sm:flex-col sm:items-start sm:justify-center sm:gap-6 sm:px-[18px] sm:py-[18px] " +
+                  "motion-reduce:transform-none motion-reduce:opacity-100 " +
+                  "lg:min-h-[231px]"
+                }
+              >
+                <span
+                  aria-hidden
+                  className="grid size-12 shrink-0 place-items-center text-[22px] text-text-on-inverse sm:size-[60px]"
+                >
+                  <IconCheck />
+                </span>
+                <p className="m-0 text-balance text-[18px] font-medium leading-6 tracking-[-0.02em] text-text-on-warm sm:max-w-[239px] sm:text-[20px] sm:tracking-[-0.4px]">
+                  {item}
+                </p>
+              </div>
+            </Reveal>
+          ))}
+          </ul>
+        </RevealGroup>
+      </div>
     </section>
   );
 }

@@ -6,7 +6,6 @@ import {
   Button,
   IconAccount,
   IconArrowRight,
-  IconClose,
   IconInstagram,
   cn,
 } from "@ds/index";
@@ -21,15 +20,16 @@ import { CartButton } from "@/features/cart/CartButton";
 const logo = "/img/logo-header.svg";
 
 /**
- * Hamburger icon — three horizontal lines.
+ * Hamburger icon — three horizontal lines. The close mark uses the same
+ * 16px box and stroke so it occupies the same button at the same size.
  */
-function IconMenu() {
+function IconMenu({ close = false }: { close?: boolean }) {
   return (
     <svg
       aria-hidden
       focusable="false"
-      width="1em"
-      height="1em"
+      width={close ? "1.15em" : "1em"}
+      height={close ? "1.15em" : "1em"}
       viewBox="0 0 16 16"
       fill="none"
     >
@@ -37,24 +37,29 @@ function IconMenu() {
         stroke="currentColor"
         strokeWidth="1.5"
         strokeLinecap="round"
-        d="M2 4h12M2 8h12M2 12h12"
+        d={close ? "M2 3.5 14 12.5M14 3.5 2 12.5" : "M2 4h12M2 8h12M2 12h12"}
       />
     </svg>
   );
 }
 
 const logoMobile = "/img/logo-2027-mobile.png";
+/** White lockup, same pixel size as the mobile logo, for the dark open menu. */
+const logoMenu = "/img/logo-menu-modal.png";
 
 /** Página de acesso à conta. Link provisório: trocar quando o Robson indicar a página. */
 const ACCOUNT_URL = "#";
 
 /** Ícone de conta: leva direto à página de acesso, sem menu de Comprador/Afiliado. */
-function AccountDropdown() {
+function AccountDropdown({ light = false }: { light?: boolean }) {
   return (
     <a
       href={ACCOUNT_URL}
       aria-label="Conta"
-      className="grid size-11 cursor-pointer place-items-center text-2xl text-text-strong lg:hidden"
+      className={cn(
+        "grid size-11 cursor-pointer place-items-center text-2xl lg:hidden",
+        light ? "text-text-on-inverse" : "text-text-strong",
+      )}
     >
       <IconAccount />
     </a>
@@ -125,7 +130,15 @@ export function SiteHeader() {
   return (
     <>
       {/* ─── Top bar: non-sticky, same max-w as the Hero text block ─── */}
-      <header ref={headerRef} className="relative z-40 bg-surface">
+      <header
+        ref={headerRef}
+        className={cn(
+          "relative z-40 bg-surface",
+          // Open menu only, and only below the desktop nav: the row joins
+          // the announcement bar and the panel as one dark surface.
+          open && "max-lg:bg-surface-inverse",
+        )}
+      >
         <div className="mx-auto flex h-20 w-full max-w-[1316px] items-center justify-between gap-6 px-6 lg:px-0">
           {/* ── Mobile: hamburger left ── */}
           <button
@@ -138,9 +151,12 @@ export function SiteHeader() {
               if (!open) syncPanelTop();
               setOpen((v) => !v);
             }}
-            className="grid size-11 cursor-pointer place-items-center text-xl text-text-strong lg:hidden"
+            className={cn(
+              "grid size-11 cursor-pointer place-items-center text-xl lg:hidden",
+              open ? "text-text-on-inverse" : "text-text-strong",
+            )}
           >
-            {open ? <IconClose /> : <IconMenu />}
+            <IconMenu close={open} />
           </button>
 
           {/* ── Logo: stacked year on mobile, ornate logo on desktop ── */}
@@ -150,7 +166,7 @@ export function SiteHeader() {
           >
             {/* Mobile: full 2027 branding logo */}
             <img
-              src={logoMobile}
+              src={open ? logoMenu : logoMobile}
               alt={PRODUCT_NAME}
               loading="eager"
               className="h-[44px] w-auto lg:hidden"
@@ -181,7 +197,7 @@ export function SiteHeader() {
           </nav>
 
           {/* ── Mobile: account dropdown ── */}
-          <AccountDropdown />
+          <AccountDropdown light={open} />
 
           {/* ── Right side: cart + CTA (desktop only) ── */}
           <div className="hidden items-center gap-3 lg:flex">

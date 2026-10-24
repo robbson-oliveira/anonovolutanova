@@ -479,9 +479,10 @@ export default function HeroAnimationLab() {
               ))}
             </div>
             <p className="rounded border border-amber-500/30 bg-amber-500/10 px-2.5 py-2 text-[11px] leading-snug text-amber-200">
-              Hoje o palco é <code className="font-mono">hidden</code> abaixo de
-              1024px no Hero — em produção a animação não existe no mobile.
-              Aqui ele aparece sempre, escalado, para poder ser desenhado.
+              Este quadro mostra o palco de 740px reduzido, para desenhar a
+              animação. No site, abaixo de 768px o Hero usa o mesmo BookStage
+              em modo fluido: o tamanho das agendas é a largura do palco no
+              Hero, e o selo de preço é o PriceCard (classes max-md).
             </p>
           </Panel>
 
@@ -508,6 +509,10 @@ export default function HeroAnimationLab() {
             <p className="text-[11px] leading-snug text-slate-500">
               Keyframes, durações e easings em{" "}
               <code className="font-mono">ds/styles/tokens.css</code>.
+              Posição e tamanho do selo de preço: PriceCard em{" "}
+              <code className="font-mono">src/sections/BookStage.tsx</code>.
+              No desktop valem as classes sem prefixo; no celular, as{" "}
+              <code className="font-mono">max-md</code>.
             </p>
           </Panel>
         </div>

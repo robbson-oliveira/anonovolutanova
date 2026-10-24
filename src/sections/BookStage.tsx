@@ -115,37 +115,38 @@ function Cover({
  * fora do escopo deste componente. A área de toque passa de 44px por um
  * ::before invisível, sem mudar os 34px desenhados.
  *
- * Below 1200px the same card follows the Framer old-home badge, measured
- * there. Mobile is 151×101 (padding 10×14, gap 9, radius 10, thumb slot
- * 40×44, title 14px, button 28×full at 13px / radius 5). Tablet is the
+ * Below 1200px the card follows the Framer old-home badge. Tablet is the
  * content-sized column (padding 12×14, gap 9, title 15px, button 32×full
- * at 15px). Colors stay the 2027 tokens (gold border, gold button, cream
- * surface) — the Framer olive/green is last year's. Unprefixed values are
- * the desktop card and must not change.
+ * at 15px). On mobile the same column is a little smaller (140×93) and its
+ * center sits on the middle of the two covers: the opaque art (shadow
+ * excluded) is centered on the stage, so left is calc(50% - half the card).
+ * The top stays 157px, which was 49% of the previous 321px stage, so growing
+ * the stage does not slide the card up or down. Colors stay the 2027 tokens.
+ * Unprefixed values are the desktop card and must not change.
  *
- * The mobile button is an explicit 28px, not height:auto: "Comprar Agora"
- * at 13px wraps inside the 151px card and the two lines measured 44px.
+ * The mobile button height is explicit: "Comprar Agora" wraps inside a
+ * narrow card when the height is left to the line box.
  */
 function PriceCard({ thumbSrc }: { thumbSrc: CoverSrc }) {
   return (
     <div
       className={cn(
         "pointer-events-auto absolute left-[30%] top-[57%] z-10 flex h-[119px] w-[191px] flex-col items-center justify-start gap-[3px] rounded-md border border-gold-end bg-surface-card p-2.5 animate-pop-in motion-reduce:animate-none shadow-pop",
-        "max-md:left-auto max-md:right-[-30px] max-md:top-[49%] max-md:h-[101px] max-md:w-[151px] max-md:gap-[9px] max-md:px-[14px] max-md:py-[10px]",
+        "max-md:left-[calc(50%-70px)] max-md:right-auto max-md:top-[157px] max-md:h-[93px] max-md:w-[140px] max-md:gap-2 max-md:px-3 max-md:py-[9px]",
         "md:max-[1199px]:left-[12%] md:max-[1199px]:top-[46%] md:max-[1199px]:right-auto md:max-[1199px]:h-auto md:max-[1199px]:w-max md:max-[1199px]:gap-[9px] md:max-[1199px]:px-[14px] md:max-[1199px]:py-3",
       )}
     >
       <div className="flex items-center">
         {/* 45×55 slot on desktop; the Framer badge uses 40×44 below 1200. */}
-        <div className="relative h-[55px] w-[45px] shrink-0 max-[1199px]:h-11 max-[1199px]:w-10">
+        <div className="relative h-[55px] w-[45px] shrink-0 max-md:h-10 max-md:w-9 md:max-[1199px]:h-11 md:max-[1199px]:w-10">
           <Thumb src={thumbSrc} />
         </div>
 
         <div className="max-[1199px]:flex max-[1199px]:flex-col max-[1199px]:gap-[5px]">
-          <p className="text-[16px] font-bold leading-4 tracking-[-0.64px] whitespace-nowrap text-text-card max-md:text-[14px] max-md:leading-[14px] max-md:tracking-[-0.56px] md:max-[1199px]:text-[15px] md:max-[1199px]:leading-[15px] md:max-[1199px]:tracking-[-0.6px]">
+          <p className="text-[16px] font-bold leading-4 tracking-[-0.64px] whitespace-nowrap text-text-card max-md:text-[13px] max-md:leading-[13px] max-md:tracking-[-0.52px] md:max-[1199px]:text-[15px] md:max-[1199px]:leading-[15px] md:max-[1199px]:tracking-[-0.6px]">
             Agenda {CYCLE_YEAR}
           </p>
-          <p className="mt-1 text-[16px] font-bold leading-4 tracking-[-0.64px] whitespace-nowrap text-text-muted max-[1199px]:mt-0 max-md:text-[14px] max-md:leading-[14px] max-md:tracking-[-0.56px] md:max-[1199px]:text-[15px] md:max-[1199px]:leading-[15px] md:max-[1199px]:tracking-[-0.6px]">
+          <p className="mt-1 text-[16px] font-bold leading-4 tracking-[-0.64px] whitespace-nowrap text-text-muted max-[1199px]:mt-0 max-md:text-[13px] max-md:leading-[13px] max-md:tracking-[-0.52px] md:max-[1199px]:text-[15px] md:max-[1199px]:leading-[15px] md:max-[1199px]:tracking-[-0.6px]">
             {priceLabel}
           </p>
         </div>
@@ -153,7 +154,7 @@ function PriceCard({ thumbSrc }: { thumbSrc: CoverSrc }) {
 
       <a
         href={OFFER_ANCHOR}
-        className="relative flex h-[34px] w-[146px] shrink-0 items-center justify-center rounded-sm bg-linear-90 from-gold-start to-gold-end text-[15px] whitespace-nowrap transition-[transform,box-shadow] [transition-duration:var(--duration-fast)] hover:-translate-y-0.5 hover:shadow-[0_8px_18px_-6px] hover:shadow-gold-start/60 motion-reduce:hover:translate-y-0 font-bold leading-[18px] text-on-action before:absolute before:inset-x-0 before:-inset-y-[5px] max-md:h-[28px] max-md:w-full max-md:px-[14px] max-md:py-[6px] max-md:text-[13px] max-md:leading-[16px] md:max-[1199px]:h-[32px] md:max-[1199px]:w-full md:max-[1199px]:px-4 md:max-[1199px]:py-[7px] md:max-[1199px]:text-[15px] md:max-[1199px]:leading-[18px]"
+        className="relative flex h-[34px] w-[146px] shrink-0 items-center justify-center rounded-sm bg-linear-90 from-gold-start to-gold-end text-[15px] whitespace-nowrap transition-[transform,box-shadow] [transition-duration:var(--duration-fast)] hover:-translate-y-0.5 hover:shadow-[0_8px_18px_-6px] hover:shadow-gold-start/60 motion-reduce:hover:translate-y-0 font-bold leading-[18px] text-on-action before:absolute before:inset-x-0 before:-inset-y-[5px] max-md:h-[25px] max-md:w-full max-md:px-3 max-md:py-[5px] max-md:text-[12px] max-md:leading-[14px] md:max-[1199px]:h-[32px] md:max-[1199px]:w-full md:max-[1199px]:px-4 md:max-[1199px]:py-[7px] md:max-[1199px]:text-[15px] md:max-[1199px]:leading-[18px]"
       >
         Comprar Agora
       </a>
@@ -166,7 +167,7 @@ function Thumb({ src }: { src: CoverSrc }) {
   // e para cima (offsets medidos). `max-w-none` é obrigatório: o reset global
   // aplica max-width:100%, que a espremeria para os 45px do slot.
   const className =
-    "absolute left-[-6.3px] top-[-2px] h-[54px] w-[49px] max-w-none rounded-card object-contain max-[1199px]:left-[-6px] max-[1199px]:top-[-3px] max-[1199px]:h-[50px] max-[1199px]:w-[45px]";
+    "absolute left-[-6.3px] top-[-2px] h-[54px] w-[49px] max-w-none rounded-card object-contain max-md:left-[-5px] max-md:top-[-2px] max-md:h-[45px] max-md:w-[41px] md:max-[1199px]:left-[-6px] md:max-[1199px]:top-[-3px] md:max-[1199px]:h-[50px] md:max-[1199px]:w-[45px]";
 
   return <img src={src} alt="" className={className} />;
 }

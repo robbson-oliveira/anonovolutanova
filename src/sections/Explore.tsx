@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { Button, EditionSelector, Reveal, cn } from "@ds/index";
 import { EXPLORE, QUOTE } from "@content/home";
 import { AGENDA_EDITIONS, CART_URL, CYCLE_YEAR } from "@content/product";
@@ -237,92 +237,155 @@ type HotspotsProps = {
   onOpen: (index: number | null) => void;
 };
 
+const PIN_MARGIN = 12;
+const PIN_GAP = 10;
+
+/**
+ * Puts the card next to the pin (the side with room), then slides it back
+ * inside the viewport. A phone is too narrow for 280px beside the pin, so
+ * the card drops above or below it instead of becoming a bottom sheet.
+ */
+function placeHotspotCard(card: HTMLElement, pin: HTMLElement) {
+  const parent = card.offsetParent as HTMLElement | null;
+  if (!parent) return;
+  const parentRect = parent.getBoundingClientRect();
+  const pinRect = pin.getBoundingClientRect();
+  const w = card.offsetWidth;
+  const h = card.offsetHeight;
+  const spaceRight = window.innerWidth - pinRect.right;
+  const spaceLeft = pinRect.left;
+  const spaceBelow = window.innerHeight - pinRect.bottom;
+  const spaceAbove = pinRect.top;
+  const fitsRight = spaceRight >= w + PIN_GAP + PIN_MARGIN;
+  const fitsLeft = spaceLeft >= w + PIN_GAP + PIN_MARGIN;
+
+  let absLeft: number;
+  let absTop: number;
+  if (fitsRight || fitsLeft) {
+    const useRight = fitsRight && (!fitsLeft || spaceRight >= spaceLeft);
+    absLeft = useRight ? pinRect.right + PIN_GAP : pinRect.left - PIN_GAP - w;
+    absTop = pinRect.top + pinRect.height / 2 - 28;
+  } else {
+    absLeft = pinRect.left + pinRect.width / 2 - w / 2;
+    const useBelow = spaceBelow >= spaceAbove;
+    absTop = useBelow ? pinRect.bottom + PIN_GAP : pinRect.top - PIN_GAP - h;
+  }
+
+  absLeft = Math.min(Math.max(absLeft, PIN_MARGIN), window.innerWidth - PIN_MARGIN - w);
+  absTop = Math.min(Math.max(absTop, PIN_MARGIN), window.innerHeight - PIN_MARGIN - h);
+  card.style.left = `${absLeft - parentRect.left}px`;
+  card.style.top = `${absTop - parentRect.top}px`;
+}
+
+type HotspotCardProps = {
+  spot: Hotspot;
+  pinRefs: React.RefObject<(HTMLButtonElement | null)[]>;
+  index: number;
+  onClose: () => void;
+};
+
+/** Card anchored to the pin that opened it, on every viewport. */
+function HotspotCard({ spot, pinRefs, index, onClose }: HotspotCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const card = cardRef.current;
+    const pin = pinRefs.current?.[index];
+    if (!card || !pin) return;
+    const place = () => placeHotspotCard(card, pin);
+    place();
+    window.addEventListener("resize", place);
+    window.addEventListener("scroll", place, { passive: true });
+    return () => {
+      window.removeEventListener("resize", place);
+      window.removeEventListener("scroll", place);
+    };
+  }, [spot, index, pinRefs]);
+
+  return (
+    <div
+      ref={cardRef}
+      role="dialog"
+      aria-label={spot.title}
+      className="absolute z-30 w-[min(280px,calc(100vw-24px))] rounded-[10px] border border-border bg-surface p-4 shadow-float motion-safe:animate-pin-card"
+    >
+      <button
+        type="button"
+        aria-label="Fechar"
+        onClick={onClose}
+        className="absolute right-2 top-2 grid size-6 cursor-pointer place-items-center rounded-[4px] text-text opacity-60 transition-opacity [transition-duration:var(--duration-fast)] hover:opacity-100"
+      >
+        <svg
+          aria-hidden
+          viewBox="0 0 24 24"
+          className="size-4 fill-none stroke-current stroke-2 [stroke-linecap:round]"
+        >
+          <path d="M18 6 6 18M6 6l12 12" />
+        </svg>
+      </button>
+      <p className="pr-6 text-[16px] font-semibold leading-[1.2] tracking-[-0.01em] text-text-strong">
+        {spot.title}
+      </p>
+      <p className="mt-2 text-[14px] font-medium leading-[1.45] tracking-[-0.01em] text-text-muted">
+        {spot.text}
+      </p>
+      <Button
+        href={CART_URL}
+        className="mt-3 h-auto! rounded-[8px]! bg-hotspot! px-4! py-2! text-[14px]! leading-[1.3]! tracking-[-0.01em]! hover:bg-hotspot-hover!"
+      >
+        Garantir minha Agenda
+      </Button>
+    </div>
+  );
+}
+
 /** Marcadores "+" sobre o livro e o balão do que está aberto, em % da caixa do livro. */
 function Hotspots({ items, open, onOpen }: HotspotsProps) {
   const spot = open === null ? null : items[open];
+  const pinRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   return (
     <>
       {items.map((s, i) => (
         <div
           key={s.title}
-          className="absolute size-[26px] -translate-x-1/2 -translate-y-1/2"
+          className="absolute size-5 -translate-x-1/2 -translate-y-1/2 md:max-[1199px]:size-[26px] min-[1200px]:size-7"
           style={{ left: `${s.x}%`, top: `${s.y}%` }}
         >
-          {/* anel que pulsa atrás do marcador, como no site antigo */}
+          {/* White ring that grows to 1.8× the pin, as on the old site. */}
           <span
             aria-hidden
-            className="pointer-events-none absolute -inset-[10.4px] rounded-pill border-2 border-on-action opacity-0 motion-safe:animate-pin-pulse"
+            className="pointer-events-none absolute inset-0 rounded-pill border-2 border-on-action opacity-0 motion-safe:animate-pin-pulse"
           />
-          {/* 26px desenhados; o ::before leva a área de toque a 44px */}
+          {/* Drawn at 20 / 26 / 28px; the ::before grows the hit area to 44px. */}
           <button
+            ref={(el) => {
+              pinRefs.current[i] = el;
+            }}
             type="button"
             aria-expanded={open === i}
             aria-label={s.title}
             onClick={() => onOpen(open === i ? null : i)}
-            className="relative flex size-[26px] cursor-pointer items-center justify-center rounded-pill border-2 border-on-action/80 bg-action p-0 text-on-action shadow-hotspot transition-colors [transition-duration:var(--duration-fast)] before:absolute before:-inset-2.5 hover:bg-action-hover"
+            className="relative flex size-full cursor-pointer items-center justify-center rounded-pill border-2 border-on-action/80 bg-hotspot p-0 text-on-action shadow-hotspot transition-colors [transition-duration:var(--duration-fast)] before:absolute before:-inset-2.5 hover:bg-hotspot-hover"
           >
             <svg
               aria-hidden
               viewBox="0 0 24 24"
-              className="pointer-events-none block size-[13px] shrink-0 fill-none stroke-current stroke-2 [stroke-linecap:round]"
+              className="pointer-events-none block size-2.5 shrink-0 fill-none stroke-current stroke-2 [stroke-linecap:round] md:max-[1199px]:size-[13px] min-[1200px]:size-3.5"
             >
               <path d="M12 5v14M5 12h14" />
             </svg>
           </button>
         </div>
       ))}
-      {spot && (
-        <div
+      {spot && open !== null && (
+        <HotspotCard
           key={spot.title}
-          role="dialog"
-          aria-label={spot.title}
-          style={
-            {
-              "--spot-x": `${spot.x}%`,
-              "--spot-y": `${spot.y}%`,
-            } as React.CSSProperties
-          }
-          className={cn(
-            "absolute inset-x-3 bottom-3 z-20 rounded-[8px] border border-border bg-surface p-4 shadow-float motion-safe:animate-pin-card",
-            /* a partir de md: ao lado do marcador, para o lado em que há
-               espaço (o balão do site antigo tem 280px) */
-            "md:w-[280px]",
-            spot.x > 50
-              ? "md:left-auto md:right-[calc(100%_-_var(--spot-x)_+_28px)]"
-              : "md:right-auto md:left-[calc(var(--spot-x)_+_28px)]",
-            spot.y > 50
-              ? "md:top-auto md:bottom-[calc(100%_-_var(--spot-y)_-_13px)]"
-              : "md:bottom-auto md:top-[calc(var(--spot-y)_-_13px)]",
-          )}
-        >
-          <button
-            type="button"
-            aria-label="Fechar"
-            onClick={() => onOpen(null)}
-            className="absolute right-2 top-2 grid size-6 cursor-pointer place-items-center rounded-[4px] text-text opacity-60 transition-opacity [transition-duration:var(--duration-fast)] hover:opacity-100"
-          >
-            <svg
-              aria-hidden
-              viewBox="0 0 24 24"
-              className="size-4 fill-none stroke-current stroke-2 [stroke-linecap:round]"
-            >
-              <path d="M18 6 6 18M6 6l12 12" />
-            </svg>
-          </button>
-          <p className="pr-6 text-[16px] font-semibold leading-[1.2] tracking-[-0.01em] text-text">
-            {spot.title}
-          </p>
-          <p className="mt-2 text-[14px] font-medium leading-[1.4] tracking-[-0.01em] text-text opacity-80">
-            {spot.text}
-          </p>
-          <Button
-            href={CART_URL}
-            className="mt-3 h-auto! rounded-[6px]! px-4! py-2 text-[14px] leading-[1.3] tracking-[-0.01em]"
-          >
-            Garantir minha Agenda
-          </Button>
-        </div>
+          spot={spot}
+          pinRefs={pinRefs}
+          index={open}
+          onClose={() => onOpen(null)}
+        />
       )}
     </>
   );
@@ -340,15 +403,15 @@ function Hotspots({ items, open, onOpen }: HotspotsProps) {
  *     painel perde o padding próprio abaixo de md;
  *   - o título usa o token text-h2 (clamp que chega aos 60px do wireframe);
  *   - the category tabs wrap onto new lines at every width (no horizontal
- *     scroller). Below md each tab is 44px tall for touch; from md they are
- *     the measured 36px;
+ *     scroller). Below md they are shorter (about 30px, 13px type) so the
+ *     row does not dominate the phone; from md they stay the measured 36px;
  *   - the closed cover uses the same page height as the open spreads
  *     (`SPREAD_HEIGHT`, capped at 470px) so a phone does not show a
  *     full-width cover. The stage min-height follows the tallest spread
  *     below md and stays 607px from md, so switching tabs does not jump;
- *   - o balão dos pontos de interesse abre ao lado do marcador a partir de md;
- *     no celular ele vira uma faixa no pé da capa, que caberia em qualquer
- *     largura (ao lado do marcador ele sairia da tela).
+ *   - the hotspot card is anchored to the pin at every width and shifted
+ *     so it stays inside the viewport. Pins are 20px below md, 26px through
+ *     tablet and 28px from 1200px, in the old site's olive.
  */
 export function Explore() {
   const [edition, setEdition] = useState<string>(AGENDA_EDITIONS[0].id);
@@ -369,7 +432,9 @@ export function Explore() {
           {EXPLORE.eyebrow}
         </h2>
       </Reveal>
-      <p className="mx-auto mt-[20px] w-[389px] max-w-full text-center text-base text-text">
+      {/* 15px and a little extra inset: at 20px the line fills a 360px
+          phone and the glyphs sit on the screen edge. */}
+      <p className="mx-auto mt-[20px] w-[389px] max-w-full text-center text-base text-text max-md:px-3 max-md:text-[15px] max-md:leading-snug">
         {EXPLORE.title}
       </p>
 
@@ -402,7 +467,7 @@ export function Explore() {
         <div
           role="tablist"
           aria-label="Páginas da agenda"
-          className="flex flex-wrap justify-center gap-2 overflow-visible py-1.5 md:py-0"
+          className="flex flex-wrap justify-center gap-1.5 overflow-visible py-1 md:gap-2 md:py-0"
         >
           {EXPLORE.tabs.map((label, i) => (
             <button
@@ -415,7 +480,7 @@ export function Explore() {
                 setOpenSpot(null);
               }}
               className={cn(
-                "shrink-0 cursor-pointer whitespace-nowrap rounded-[10px] px-[10px] py-[14px] text-[16px] leading-[16px] tracking-[-0.04em] transition-colors md:py-[10px]",
+                "shrink-0 cursor-pointer whitespace-nowrap rounded-[10px] px-2.5 py-[7px] text-[13px] leading-4 tracking-[-0.03em] transition-colors md:px-[10px] md:py-[10px] md:text-[16px] md:leading-[16px] md:tracking-[-0.04em]",
                 /* borda de 1px por dentro — no wireframe ela não altera os 36px de altura */
                 "shadow-[inset_0_0_0_1px_var(--color-action)]",
                 "[transition-duration:var(--duration-fast)]",
@@ -496,11 +561,12 @@ export function Explore() {
           </div>
         </div>
 
-        <figure className="mx-auto mt-[28px] w-[582px] md:-mt-[3px] max-w-full text-center">
-          <blockquote className="text-base text-text">
+        <figure className="mx-auto mt-[28px] w-[582px] max-w-full text-center max-md:mt-5 max-md:px-3 max-md:text-left md:-mt-[3px]">
+          <blockquote className="text-base text-text max-md:text-[15px] max-md:leading-[1.4]">
             “{QUOTE.text}”
           </blockquote>
-          <figcaption className="mt-[20px] text-[24px] font-bold leading-[30px] text-text-strong md:text-[30px] md:leading-[36px]">
+          <figcaption className="mt-[20px] text-[24px] font-bold leading-[30px] text-text-strong max-md:mt-1.5 max-md:text-[18px] max-md:leading-snug md:text-[30px] md:leading-[36px]">
+            <span className="md:hidden">— </span>
             {QUOTE.author}
           </figcaption>
         </figure>

@@ -118,7 +118,7 @@ export function Testimonials() {
               onClick={() => slide(dir)}
               aria-label={dir === -1 ? "Depoimento anterior" : "Próximo depoimento"}
               className={
-                "grid size-16 cursor-pointer place-items-center rounded-[16px] border-0 " +
+                "grid size-12 cursor-pointer place-items-center rounded-[12px] border-0 " +
                 "text-text-on-inverse md:size-[60px] md:rounded-[15px] " +
                 "bg-linear-to-r from-gold-start to-gold-end"
               }

@@ -31,7 +31,7 @@ export function Planner() {
             {PLANNER.badge}
           </Badge>
 
-          <h2 className="mt-3 text-[34px] font-bold leading-[1] tracking-[-0.05em] text-text-heading-sea sm:text-[43.776px] sm:leading-[43.776px] sm:tracking-[-2.1888px]">
+          <h2 className="mt-3 text-[30px] font-bold leading-[1.05] tracking-[-0.05em] text-text-heading-sea sm:text-[43.776px] sm:leading-[43.776px] sm:tracking-[-2.1888px]">
             {PLANNER.title.map((line) => (
               <span key={line} className="block">
                 {line}

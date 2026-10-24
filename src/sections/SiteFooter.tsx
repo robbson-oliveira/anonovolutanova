@@ -57,7 +57,7 @@ export function SiteFooter() {
           </Reveal>
 
           <Reveal variant="up" delay={80} className="mt-7 min-[1440px]:mt-[29px]">
-            <p className="max-w-[391px] text-lg leading-6 text-text min-[768px]:text-xl">
+            <p className="max-w-[391px] px-2 text-[15px] leading-snug text-text min-[768px]:px-0 min-[768px]:text-xl min-[768px]:leading-6">
               {FOOTER.tagline}
             </p>
           </Reveal>
@@ -77,7 +77,7 @@ export function SiteFooter() {
           </Reveal>
 
           <Reveal variant="up" delay={200} className="mt-10 min-[1440px]:mt-20">
-            <p className="max-w-[391px] text-lg leading-6 text-text min-[768px]:text-xl">
+            <p className="max-w-[391px] px-1 text-[15px] leading-snug text-text min-[768px]:px-0 min-[768px]:text-xl min-[768px]:leading-6">
               <span className="block">{copyrightLine1}</span>
               <span className="block">{copyrightLine2}</span>
             </p>

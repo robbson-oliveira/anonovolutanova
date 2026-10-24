@@ -166,13 +166,13 @@ export function AboutHeader() {
       </Reveal>
 
       <Reveal variant="up" delay={60} className="w-[1037px] max-w-full">
-        <Heading as="h2" className="mt-[11px] w-full text-center whitespace-pre-line text-text-heading-sea!">
+        <Heading as="h2" className="mt-[11px] w-full text-center whitespace-pre-line text-text-heading-sea! max-md:text-[22px]! max-md:leading-[1.15]!">
           {ABOUT.title}
         </Heading>
       </Reveal>
 
       <Reveal variant="up" delay={120} className="w-[640px] max-w-full">
-        <p className="mt-[23px] w-full text-center text-[20px] leading-7 tracking-[-0.2px] text-balance text-text-lead opacity-70">
+        <p className="mt-[23px] w-full text-center text-[20px] leading-7 tracking-[-0.2px] text-balance text-text-lead opacity-70 max-md:text-[16px] max-md:leading-6">
           {ABOUT.paragraph}
         </p>
       </Reveal>

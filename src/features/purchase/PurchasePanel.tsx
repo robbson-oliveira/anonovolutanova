@@ -264,7 +264,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
                     <span className="pr-7 text-[15px] font-bold leading-5 text-text-strong md:text-sm">
                       {e.label}
                     </span>
-                    <span className="text-[13px] leading-snug text-text-muted md:text-xs">
+                    <span className="text-balance text-[13px] leading-snug text-text-muted md:text-xs">
                       {e.inStock ? e.description : "Esgotada"}
                     </span>
                     {/* On the title line, out of flow, so the label does not reflow when selected. */}

@@ -3,7 +3,7 @@ import { PLANNER } from "@content/home";
 import { OFFER_ANCHOR } from "@content/product";
 
 /**
- * Chamada do Planner Diário (Figma "Seção 3", 949:788): cartão de 1023×487 no Figma (aqui 1023×440: menos respiro interno)
+ * Chamada do Planner Diário (Figma "Seção 3", 949:788): cartão de 1023×487 no Figma (aqui 4% mais estreito, 982× a mesma proporção, para ficar dentro do grid da página)
  * com borda dourada de 2px, raio 20, texto à esquerda e a folha à direita.
  *
  * A partir de lg as duas colunas ficam posicionadas em % do cartão, medidas
@@ -20,7 +20,7 @@ export function Planner() {
     <section className="bg-surface px-4 pb-16 pt-4 md:px-10 md:pb-24 xl:px-[60px] xl:pb-[163px] xl:pt-[32px]">
       <Reveal
         variant="up"
-        className="relative mx-auto flex w-[1023px] max-w-full flex-col items-center gap-6 overflow-hidden rounded-[20px] border-2 border-gold-start px-6 py-6 text-center lg:block lg:aspect-[1023/440] lg:p-0 lg:text-left"
+        className="relative mx-auto flex w-[96%] max-w-[982px] flex-col items-center gap-6 overflow-hidden rounded-[20px] border-2 border-gold-start px-6 py-6 text-center lg:block lg:aspect-[1023/440] lg:p-0 lg:text-left"
       >
         <div className="lg:absolute lg:left-[7.72%] lg:top-[11%] lg:w-[50.34%]">
           <Badge

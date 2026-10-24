@@ -434,7 +434,7 @@ export function Explore() {
       </Reveal>
       {/* 15px and a little extra inset: at 20px the line fills a 360px
           phone and the glyphs sit on the screen edge. */}
-      <p className="mx-auto mt-[20px] w-[389px] max-w-full text-center text-base text-text max-md:px-3 max-md:text-[15px] max-md:leading-snug">
+      <p className="mx-auto mt-[20px] w-[389px] max-w-full text-balance text-center text-base text-text max-md:px-3 max-md:text-[15px] max-md:leading-snug">
         {EXPLORE.title}
       </p>
 
@@ -562,7 +562,7 @@ export function Explore() {
         </div>
 
         <figure className="mx-auto mt-[28px] w-[582px] max-w-full text-center max-md:mt-5 max-md:px-3 max-md:text-left md:-mt-[3px]">
-          <blockquote className="text-base text-text max-md:text-[15px] max-md:leading-[1.4]">
+          <blockquote className="text-balance text-base text-text max-md:text-[15px] max-md:leading-[1.4]">
             “{QUOTE.text}”
           </blockquote>
           <figcaption className="mt-[20px] text-[24px] font-bold leading-[30px] text-text-strong max-md:mt-1.5 max-md:text-[18px] max-md:leading-snug md:text-[30px] md:leading-[36px]">

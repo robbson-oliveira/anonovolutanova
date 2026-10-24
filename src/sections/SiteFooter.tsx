@@ -84,7 +84,7 @@ export function SiteFooter() {
           </Reveal>
 
           <Reveal variant="up" delay={260} className="mt-6 min-[1440px]:mt-[23px]">
-            <p className="max-w-[354px] text-fine text-text min-[1440px]:text-[12px] min-[1440px]:leading-[14.4px]">
+            <p className="max-w-[354px] text-balance text-fine text-text min-[1440px]:text-[12px] min-[1440px]:leading-[14.4px]">
               {FOOTER.socialNote}
             </p>
           </Reveal>

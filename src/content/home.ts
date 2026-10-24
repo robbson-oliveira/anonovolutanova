@@ -12,10 +12,10 @@ export const NAV_LINKS = [
 export const HERO = {
   badge: "Edição Limitada",
   title: ["Ano Novo,", "Luta Nova"],
-  subtitle: "Menos cálculo. Mais confiança. Patos à água!",
+  subtitle: "Menos cálculo. Mais confiança. Patos\u00A0à\u00A0água!",
   paragraph:
     `Chegou a hora de garantir a sua Agenda Ano Novo, Luta Nova ${CYCLE_YEAR}. ` +
-    "Inspirada por São Josemaria Escrivá, ela é o convite para lançar-se à água " +
+    "Inspirada por São Josemaria Escrivá, ela é o convite para lançar-se à\u00A0água " +
     "como os patos: menos cálculo, mais confiança, um dia de cada vez.",
   cta: `Garantir minha Agenda ${CYCLE_YEAR}`,
   seals: [`Nova Edição ${CYCLE_YEAR}`, "Envio Imediato!"],
@@ -182,5 +182,5 @@ export const FOOTER = {
   socialNote:
     "Parte da receita gerada com a venda da agenda será destinada à ADEC " +
     "(Associação de Desenvolvimento Educativo Cultural), fortalecendo o impacto " +
-    "social de nossas iniciativas e contribuindo para a capacitação de mulheres.",
+    "social de nossas iniciativas e contribuindo para a capacitação de\u00A0mulheres.",
 } as const;

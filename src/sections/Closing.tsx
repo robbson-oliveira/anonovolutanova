@@ -87,14 +87,16 @@ export function Closing() {
             <div className="relative mt-10 flex w-full flex-col items-stretch gap-[15px] md:w-auto md:flex-row md:items-center">
               <a
                 href={OFFER_ANCHOR}
-                className="flex h-[68px] items-center justify-center rounded-[9px] border border-gold-end bg-linear-to-r from-gold-start to-gold-end px-5 text-xl font-bold tracking-[-0.02em] text-text-on-inverse no-underline shadow-cta-gold md:w-[361px]"
+                className="flex h-[68px] items-center justify-center whitespace-nowrap rounded-[9px] border border-gold-end bg-linear-to-r from-gold-start to-gold-end px-3 text-[16px] font-bold tracking-[-0.03em] text-text-on-inverse no-underline shadow-cta-gold md:w-[361px] md:px-5 md:text-xl md:tracking-[-0.02em]"
               >
                 {CLOSING.primaryCta}
               </a>
 
+              {/* Secondary to the gold button: no fill and no border, still
+                  a real link with a 44px target. */}
               <a
                 href="#sobre"
-                className="flex h-[68px] items-center justify-center rounded-md border border-gold-end bg-gold-end px-5 text-base font-bold tracking-[-0.04em] text-text-on-inverse no-underline md:w-[225px]"
+                className="inline-flex min-h-11 items-center justify-center self-center px-3 text-[16px] font-semibold tracking-[-0.02em] text-text-on-inverse underline decoration-gold-end underline-offset-[6px] md:min-h-[68px] md:px-4"
               >
                 {CLOSING.secondaryCta}
               </a>

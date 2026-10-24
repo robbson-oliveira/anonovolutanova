@@ -19,7 +19,16 @@
     text-wrap: balance;
   }
 
-  p {
+  /* Pretty wrap on the blocks that actually hold sentences. A lone `p`
+     rule left card descriptions, quotes and labels free to end on one
+     short word ("à água."). Balance stays on the headings above. */
+  p,
+  li,
+  figcaption,
+  blockquote,
+  label,
+  legend,
+  dd {
     text-wrap: pretty;
   }
 

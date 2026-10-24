@@ -130,7 +130,7 @@ export function Liturgical() {
                 <p className="text-[13px] font-bold leading-4 tracking-[-0.03em] text-text-strong md:mt-[20px] md:text-[24px] md:leading-6 md:tracking-[-0.04em]">
                   {date.title}
                 </p>
-                <p className="mt-1 text-[12px] leading-[15px] text-text md:mt-[10px] md:text-base md:leading-normal">
+                <p className="mt-1 text-balance text-[12px] leading-[15px] text-text md:mt-[10px] md:text-base md:leading-normal">
                   {date.description}
                 </p>
               </div>

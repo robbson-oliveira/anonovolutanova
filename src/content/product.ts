@@ -34,7 +34,9 @@ export const EDITIONS = [
     coverSize: { width: 514, height: 634 },
     /** Where the book itself sits in the file; the rest is drop shadow. */
     coverBox: { x: 9, y: 11, width: 358, height: 463 },
-    description: "Capa em aquarela, com os patos à água.",
+    // The last two words stay with "patos" so "à água." cannot sit alone
+    // on the edition card. The chunk is short enough to fit the card.
+    description: "Capa em aquarela, com os patos\u00A0à\u00A0água.",
     agenda: true,
     unit: "agenda",
   },
@@ -44,7 +46,7 @@ export const EDITIONS = [
     cover: "/img/capa-classica.webp",
     coverSize: { width: 472, height: 600 },
     coverBox: { x: 21, y: 16, width: 344, height: 464 },
-    description: "Capa azul-marinho com detalhes em dourado.",
+    description: "Capa azul-marinho com detalhes em\u00A0dourado.",
     agenda: true,
     unit: "agenda",
   },

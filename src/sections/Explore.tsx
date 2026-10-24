@@ -45,18 +45,6 @@ const COVERS: Record<"color" | "classica", Cover> = {
  */
 const COVER_HEIGHT = 470;
 
-
-/**
- * Altura do livro em telas estreitas: os 645px, ou a altura em que o livro
- * MAIS ALTO em proporção ainda cabe na largura do painel (cqw do `@container`
- * do painel). As duas edições usam o mesmo valor, então a paridade vale em
- * qualquer largura.
- */
-const COVER_HEIGHT_PER_WIDTH = Math.max(
-  ...Object.values(COVERS).map((c) => c.book.h / c.book.w),
-);
-const COVER_VIEW_HEIGHT = `min(${COVER_HEIGHT}px, ${(COVER_HEIGHT_PER_WIDTH * 100).toFixed(3)}cqw)`;
-
 /**
  * Agenda aberta de cada aba (a primeira aba é sempre a capa). Mesmo esquema
  * das capas: `book` é a caixa do livro dentro do arquivo, em px do arquivo,
@@ -206,6 +194,17 @@ const SPREADS: (Spread | null)[] = [
 const SPREAD_HEIGHT = `min(${COVER_HEIGHT}px, ${(100 / Math.max(...SPREADS.flatMap((p) => (p ? [p.book.w / p.leftH] : [])))).toFixed(3)}cqw)`;
 
 /**
+ * The closed cover used to fill the panel width (portrait page vs 100cqw),
+ * so on a phone it was much taller than the open spreads. The cover now
+ * uses the same page height as the spreads. The stage keeps the tallest
+ * open book so switching tabs does not jump.
+ */
+const TALLEST_SPREAD = Math.max(
+  ...SPREADS.flatMap((p) => (p ? [p.book.h / p.leftH] : [])),
+);
+const STAGE_MIN_HEIGHT = `calc(${SPREAD_HEIGHT} * ${TALLEST_SPREAD.toFixed(4)})`;
+
+/**
  * Pontos de interesse sobre o livro. Percentuais medidos no Figma (949:830),
  * onde o livro ocupa 519×645: os três marcadores de 28px têm o centro em
  * (124,3 / 205), (313,6 / 425) e (358,1 / 349) px dentro dele. Como são
@@ -340,12 +339,13 @@ function Hotspots({ items, open, onOpen }: HotspotsProps) {
  *   - padding lateral 16px no celular, 40 no tablet e 60 a partir de xl; o
  *     painel perde o padding próprio abaixo de md;
  *   - o título usa o token text-h2 (clamp que chega aos 60px do wireframe);
- *   - abaixo de md as abas viram uma faixa com rolagem horizontal que sangra
- *     até a borda da tela, com 44px de altura para o toque; de md em diante
- *     voltam a quebrar linha centralizadas, com os 36px medidos;
- *   - capa e páginas internas têm altura min(607px, largura do painel), então
- *     encolhem proporcionalmente em vez de serem espremidas; a área da imagem
- *     guarda sempre a altura da capa, para o painel não pular ao trocar de aba;
+ *   - the category tabs wrap onto new lines at every width (no horizontal
+ *     scroller). Below md each tab is 44px tall for touch; from md they are
+ *     the measured 36px;
+ *   - the closed cover uses the same page height as the open spreads
+ *     (`SPREAD_HEIGHT`, capped at 470px) so a phone does not show a
+ *     full-width cover. The stage min-height follows the tallest spread
+ *     below md and stays 607px from md, so switching tabs does not jump;
  *   - o balão dos pontos de interesse abre ao lado do marcador a partir de md;
  *     no celular ele vira uma faixa no pé da capa, que caberia em qualquer
  *     largura (ao lado do marcador ele sairia da tela).
@@ -392,17 +392,17 @@ export function Explore() {
 
       <div
         className="@container mx-auto mt-[33px] w-[1160px] max-w-full rounded-[18px] md:px-[60px]"
-        style={{ "--cover-h": COVER_VIEW_HEIGHT } as React.CSSProperties}
+        style={
+          {
+            "--cover-h": SPREAD_HEIGHT,
+            "--stage-h": STAGE_MIN_HEIGHT,
+          } as React.CSSProperties
+        }
       >
         <div
           role="tablist"
           aria-label="Páginas da agenda"
-          className={cn(
-            /* celular: faixa rolável que sangra até a borda (-mx-4 desfaz o
-               padding da seção); py-1.5 evita cortar o anel de foco (2px + 3px de offset) */
-            "-mx-4 flex gap-[8px] overflow-x-auto px-4 py-1.5 [scrollbar-width:none]",
-            "md:mx-0 md:flex-wrap md:justify-center md:overflow-visible md:px-0 md:py-0",
-          )}
+          className="flex flex-wrap justify-center gap-2 overflow-visible py-1.5 md:py-0"
         >
           {EXPLORE.tabs.map((label, i) => (
             <button
@@ -430,7 +430,7 @@ export function Explore() {
         </div>
 
         <div
-          className="mt-6 flex min-h-(--cover-h) items-center justify-center md:-mt-[8px] md:min-h-[607px]"
+          className="mt-6 flex min-h-(--stage-h) items-center justify-center md:-mt-[8px] md:min-h-[607px]"
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
         >

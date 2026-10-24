@@ -38,9 +38,9 @@ const ICONS = [
  * - o título usa o token `text-h2` (34px → 60px, já em 60 no 1440);
  * - subtítulo e parágrafo, lado a lado no desktop, empilham centralizados
  *   abaixo de `md`;
- * - a grade vira uma coluna abaixo de `md`, e cada card deita (ícone de 48px
- *   à esquerda, texto à direita) para não esticar a seção; a altura de 270px
- *   vira mínima para o texto nunca vazar do card quando a coluna estreita.
+ * - below `md` the dates sit in two compact columns (icon above the copy,
+ *   smaller type, text wraps). From `md` the measured two-column cards
+ *   return, and the 270px height is a minimum so the copy never spills.
  */
 export function Liturgical() {
   return (
@@ -69,18 +69,18 @@ export function Liturgical() {
           </p>
         </div>
 
-        <ul className="mt-8 grid grid-cols-1 gap-3 md:mt-[39px] md:grid-cols-2 md:gap-[20px]">
+        <ul className="mt-8 grid grid-cols-2 gap-2.5 md:mt-[39px] md:gap-[20px]">
           {LITURGICAL.dates.map((date, i) => (
             <li
               key={date.title}
-              className="flex items-start gap-4 rounded-card bg-surface-plain px-5 py-6 md:block md:min-h-[270px] md:px-[32px] md:py-[42px]"
+              className="flex flex-col items-start gap-2 rounded-card bg-surface-plain px-3 py-3 md:block md:min-h-[270px] md:px-[32px] md:py-[42px]"
             >
               <DateIcon icon={ICONS[i % ICONS.length]} />
               <div className="min-w-0">
-                <p className="text-[20px] font-bold leading-[24px] tracking-[-0.04em] text-gold-start md:mt-[20px] md:text-[24px]">
+                <p className="text-[13px] font-bold leading-4 tracking-[-0.03em] text-gold-start md:mt-[20px] md:text-[24px] md:leading-6 md:tracking-[-0.04em]">
                   {date.title}
                 </p>
-                <p className="mt-2 text-[18px] leading-[22px] text-text md:mt-[10px] md:text-base">
+                <p className="mt-1 text-[12px] leading-[15px] text-text md:mt-[10px] md:text-base md:leading-normal">
                   {date.description}
                 </p>
               </div>
@@ -106,7 +106,7 @@ export function Liturgical() {
 /** O tile creme vive aqui, não dentro do SVG: o ícone é só o glifo. */
 function DateIcon({ icon: Icon }: { icon: React.ComponentType<IconProps> }) {
   return (
-    <span className="grid size-12 shrink-0 place-items-center rounded-card bg-surface-peach text-text-strong md:size-[60px]">
+    <span className="grid size-9 shrink-0 place-items-center rounded-card bg-surface-peach text-text-strong md:size-[60px]">
       <Icon className="size-full" />
     </span>
   );

@@ -13,15 +13,14 @@ import { BenefitList } from "./BenefitList";
  * holding one big white watercolor card. The heading, the PurchasePanel card
  * and the feature list all live inside that big card.
  *
- * The top and bottom rules are 4px. The side rules are 6px: they were absent,
- * and the brief asks for a slightly heavier gold edge without narrowing the
- * inner grid.
+ * Top and bottom gold rules are 4px. There is no left or right rule: a side
+ * border read as a frame and stole a few pixels from the band.
  */
 export function Product({ offer }: { offer: ProductOffer }) {
   return (
     <section
       id="oferta"
-      className="relative isolate scroll-mt-24 overflow-hidden border-y-4 border-x-[6px] border-gold-start bg-action px-4 py-12 sm:px-6 lg:py-24"
+      className="relative isolate scroll-mt-24 overflow-hidden border-y-4 border-gold-start bg-action px-4 py-12 sm:px-6 lg:py-24"
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
@@ -31,7 +30,7 @@ export function Product({ offer }: { offer: ProductOffer }) {
         className="pointer-events-none absolute inset-0 -z-10 size-full object-cover opacity-[0.09]"
       />
 
-      <div className="relative mx-auto w-full max-w-[1316px] overflow-hidden rounded-[32px] bg-surface-plain px-4 py-12 sm:px-8 lg:rounded-[90px] lg:px-16 lg:py-24">
+      <div className="relative mx-auto w-full max-w-page overflow-hidden rounded-[32px] bg-surface-plain px-4 py-12 sm:px-8 lg:rounded-[90px] lg:px-16 lg:py-24">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/img/offer/card-watercolor.webp"

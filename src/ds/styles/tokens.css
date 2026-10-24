@@ -27,10 +27,9 @@
   --brand-moss-600: rgb(18 69 86);     /* display do hero */
   --brand-moss-500: rgb(28 88 108);    /* hover do botão */
   --brand-moss-100: rgb(15 63 79 / 0.15); /* moss-700 at 15%: text selection */
-  /* Olive of the old Framer hotspot pins. The petrol palette replaced this
-     green everywhere else; the pins stay olive so they match that site. */
-  --brand-olive-700: rgb(52 76 36);
-  --brand-olive-600: rgb(68 98 48);
+  /* Explore pins. #0054AC, with a darker step for hover. */
+  --brand-blue-700: rgb(0 84 172);
+  --brand-blue-800: rgb(0 64 138);
   --brand-sage-300: rgb(208 209 177); /* superfície da seção de oferta */
   --brand-clay-800: rgb(139 80 42);   /* cards da seção "Sobre" */
   --brand-amber-400: rgb(255 196 102);
@@ -156,8 +155,8 @@
   /* AÇÃO — fundo de botão. É verde. Separado de `accent` de propósito:
      conflatar os dois foi o erro que inverteu a paleta inteira. */
   --color-action: var(--brand-moss-700);
-  --color-hotspot: var(--brand-olive-700);           /* Explore "+" pins, Framer olive */
-  --color-hotspot-hover: var(--brand-olive-600);
+  --color-hotspot: var(--brand-blue-700);           /* Explore "+" pins, #0054AC */
+  --color-hotspot-hover: var(--brand-blue-800);
   --color-action-track: var(--brand-moss-100);       /* hover of outlined petrol buttons */
   --color-text-idle: var(--brand-stone-400);         /* idle edition tab label */
   --color-action-hover: var(--brand-moss-500);
@@ -314,6 +313,9 @@
      --------------------------------------------------------------------- */
   --container-content: 1200px;
   --container-prose: 640px;
+  /* Hero usable width: the 1380px frame minus 32px of padding on each side.
+     Sections may be narrower. They do not grow past this. */
+  --container-page: 1316px;
 
   --spacing-section: 96px;
   --spacing-section-sm: 64px;
@@ -338,7 +340,7 @@
   --shadow-book: -14px 18px 28px rgb(0 0 0 / 0.24);
   --shadow-book-back: 0 12px 24px rgb(0 0 0 / 0.22);
   --shadow-pop: 0 4px 4px rgb(0 0 0 / 0.1);          /* cartão de preço sobre as agendas do hero */
-  --shadow-hotspot: 0 2px 8px rgb(0 0 0 / 0.2);       /* marcadores "+" sobre a capa */
+  --shadow-hotspot: 0 0 0 4px rgb(0 84 172 / 0.28);  /* halo of the Explore "+" pins */
   --shadow-faq-card: 0 1px 2px rgb(0 0 0 / 0.18);    /* FAQ cards (Figma 949:177) */
   --shadow-cta-gold: 0 12px 12px rgb(0 0 0 / 0.3);   /* gold button of the closing card (Figma 949:145) */
   --shadow-cta-warm: 0 12px 24px rgb(0 0 0 / 0.3);   /* botão quente do fechamento */

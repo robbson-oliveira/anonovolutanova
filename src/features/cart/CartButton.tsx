@@ -1,34 +1,46 @@
 "use client";
 
-import { Button, IconBasket } from "@ds/index";
+import { IconBasket, cn } from "@ds/index";
 import { useOptionalCart } from "./CartProvider";
 
+type CartButtonProps = {
+  className?: string;
+};
+
 /**
- * Botão do carrinho no cabeçalho. Só aparece dentro da loja (com
- * CartProvider) e com algo no carrinho: fora disso não há o que mostrar.
- * No celular fica só o ícone com a contagem, para caber ao lado do "Comprar".
+ * Desktop basket. Icon on the header surface, with the real quantity as
+ * plain text beside it. No tile, no circle, no badge. An empty cart is the
+ * icon alone. Hidden when there is no cart provider (institutional pages).
+ * The phone header uses its own control and does not render this one.
  */
-export function CartButton() {
+export function CartButton({ className }: CartButtonProps) {
   const cart = useOptionalCart();
-  if (!cart || cart.count === 0) return null;
+  if (!cart) return null;
+
+  const count = cart.count;
+  const label = count > 0
+    ? `Abrir carrinho, ${count} ${count === 1 ? "item" : "itens"}`
+    : "Abrir carrinho";
+  const classes = cn(
+    "inline-flex h-11 min-w-11 cursor-pointer items-center justify-center gap-1.5 rounded-card px-2 text-xl text-text-strong",
+    "transition-colors [transition-duration:var(--duration-fast)] hover:text-action",
+    "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-action",
+    className,
+  );
+  const body = (
+    <>
+      <IconBasket />
+      {count > 0 ? (
+        <span className="text-sm font-bold tabular-nums leading-none">
+          {count > 99 ? "99+" : count}
+        </span>
+      ) : null}
+    </>
+  );
 
   return (
-    <Button
-      variant="secondary"
-      shape="block"
-      onClick={cart.openDrawer}
-      aria-label={`Abrir carrinho, ${cart.count} ${cart.count === 1 ? "item" : "itens"}`}
-      // Same Button as the "Comprar" next to it, so both always share the
-      // exact height and font; only the padding is tighter, to fit the count.
-      // The border is white: the default one is nearly transparent and made
-      // the white fill look 1px shorter than Comprar at the top and bottom.
-      className="border-surface-plain! px-3! hover:border-action! sm:px-4!"
-    >
-      <IconBasket className="text-lg sm:hidden" />
-      <span className="max-sm:hidden">Carrinho</span>
-      <span className="grid min-w-6 place-items-center rounded-pill bg-action px-1.5 text-xs font-bold text-on-action">
-        {cart.count}
-      </span>
-    </Button>
+    <button type="button" onClick={cart.openDrawer} aria-label={label} className={classes}>
+      {body}
+    </button>
   );
 }

@@ -421,7 +421,7 @@ function Hotspots({ items, open, onOpen }: HotspotsProps) {
           {/* White ring that grows to 1.8× the pin, as on the old site. */}
           <span
             aria-hidden
-            className="pointer-events-none absolute inset-0 rounded-pill border-2 border-on-action opacity-0 motion-safe:animate-pin-pulse"
+            className="pointer-events-none absolute inset-0 rounded-pill border-2 border-hotspot opacity-0 motion-safe:animate-pin-pulse"
           />
           {/* Drawn at 20 / 26 / 28px; the ::before grows the hit area to 44px. */}
           <button
@@ -432,7 +432,7 @@ function Hotspots({ items, open, onOpen }: HotspotsProps) {
             aria-expanded={open === i}
             aria-label={s.title}
             onClick={() => onOpen(open === i ? null : i)}
-            className="relative flex size-full cursor-pointer items-center justify-center rounded-pill border-2 border-on-action/80 bg-hotspot p-0 text-on-action shadow-hotspot transition-colors [transition-duration:var(--duration-fast)] before:absolute before:-inset-2.5 hover:bg-hotspot-hover"
+            className="relative flex size-full cursor-pointer items-center justify-center rounded-pill border-2 border-hotspot bg-hotspot p-0 text-on-action shadow-hotspot transition-colors [transition-duration:var(--duration-fast)] before:absolute before:-inset-2.5 hover:bg-hotspot-hover"
           >
             <svg
               aria-hidden
@@ -477,7 +477,8 @@ function Hotspots({ items, open, onOpen }: HotspotsProps) {
  *     below md and stays 607px from md, so switching tabs does not jump;
  *   - the hotspot card is anchored to the pin at every width and shifted
  *     so it stays inside the viewport. Pins are 20px below md, 26px through
- *     tablet and 28px from 1200px, in the old site's olive.
+ *     tablet and 28px from 1200px. Circle, border, halo and hover are #0054AC;
+ *     the plus stays white so it keeps contrast on that blue.
  */
 export function Explore() {
   const [edition, setEdition] = useState<string>(AGENDA_EDITIONS[0].id);

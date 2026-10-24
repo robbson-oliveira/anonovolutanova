@@ -67,6 +67,8 @@ function usePersonaStack(
       li.style.zIndex = "";
       li.style.height = "";
       li.style.marginBottom = "";
+      li.style.paddingBottom = "";
+      li.style.boxSizing = "";
       li.style.removeProperty("animation");
     };
 
@@ -77,6 +79,8 @@ function usePersonaStack(
         if (li) clearLi(li);
       }
       list.style.display = "";
+      list.style.flexDirection = "";
+      list.style.gap = "";
       list.style.marginTop = "";
       list.style.position = "";
       list.style.zIndex = "";
@@ -100,9 +104,13 @@ function usePersonaStack(
       cardH = 0;
       if (reduce.matches || !narrow.matches) return false;
       // A grid cell is only as tall as its item, so sticky on the <li>
-      // would have nowhere to travel. Block flow lets the next card rise
-      // over the one stuck above it. The 1rem gap matches `gap-4`.
-      list.style.display = "block";
+      // would have nowhere to travel. A column with flex gap (not margin
+      // or padding on the sticky box) lets the next card rise over the
+      // one stuck above it. Margin or padding on that box holds the next
+      // card a step lower, so the one behind peeks out above it.
+      list.style.display = "flex";
+      list.style.flexDirection = "column";
+      list.style.gap = "1rem";
       const items = cards();
       const heights = items.map((card) => card.parentElement?.offsetHeight ?? 0);
       cardH = Math.max(0, ...heights);
@@ -127,7 +135,9 @@ function usePersonaStack(
         li.style.position = "sticky";
         li.style.zIndex = String(i + 1);
         li.style.height = `${cardH}px`;
-        li.style.marginBottom = i === items.length - 1 ? "0" : "1rem";
+        li.style.marginBottom = "0";
+        li.style.paddingBottom = "0";
+        li.style.boxSizing = "border-box";
         // The entrance animation writes `transform` on the <li>. Any
         // transform on the sticky box itself stops it sticking in Safari.
         li.style.setProperty("animation", "none", "important");
@@ -155,23 +165,37 @@ function usePersonaStack(
       const stickLine = (text?.getBoundingClientRect().bottom ?? sticky.getBoundingClientRect().bottom) + gap;
       const items = cards();
 
-      items.forEach((card, i) => {
+      // Front card first, so each card behind can sink under a position
+      // that is already final for this frame.
+      for (let i = items.length - 1; i >= 0; i--) {
+        const card = items[i];
         const li = card.parentElement;
-        if (!li) return;
+        if (!li) continue;
         li.style.top = `${stickLine.toFixed(2)}px`;
-        const next = items[i + 1]?.parentElement;
-        if (!next) {
+        const nextCard = items[i + 1];
+        if (!nextCard) {
           clearCard(card);
-          return;
+          continue;
         }
-        const nextTop = next.getBoundingClientRect().top;
+        const nextTop = nextCard.getBoundingClientRect().top;
         const progress = Math.min(1, Math.max(0, (stickLine + cardH - nextTop) / cardH));
-        const scale = 1 - progress * 0.08;
-        const opacity = 1 - progress * 0.5;
-        card.style.transformOrigin = "center top";
-        card.style.transform = `scale(${scale.toFixed(3)})`;
+        const scale = 1 - progress * 0.06;
+        const opacity = 1 - progress * 0.45;
+        // Sink from the top edge. Once the next card has actually arrived,
+        // close a remaining sliver (subpixels, the gold border). A large
+        // gap just means the next card is still on its way up.
+        let tuck = progress * 8;
+        card.style.transformOrigin = "top center";
+        card.style.transform = `translateY(${tuck.toFixed(1)}px) scale(${scale.toFixed(3)})`;
+        if (progress > 0.75) {
+          const peek = nextTop - card.getBoundingClientRect().top;
+          if (peek > 0 && peek < 32) {
+            tuck += peek + 1;
+            card.style.transform = `translateY(${tuck.toFixed(1)}px) scale(${scale.toFixed(3)})`;
+          }
+        }
         card.style.opacity = opacity.toFixed(3);
-      });
+      }
     };
 
     const onScroll = () => {

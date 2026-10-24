@@ -432,7 +432,7 @@ function Hotspots({ items, open, onOpen }: HotspotsProps) {
             aria-expanded={open === i}
             aria-label={s.title}
             onClick={() => onOpen(open === i ? null : i)}
-            className="relative flex size-full cursor-pointer items-center justify-center rounded-pill border-2 border-hotspot bg-hotspot p-0 text-on-action shadow-hotspot transition-colors [transition-duration:var(--duration-fast)] before:absolute before:-inset-2.5 hover:bg-hotspot-hover"
+            className="relative flex size-full cursor-pointer items-center justify-center rounded-pill border-2 border-on-action bg-hotspot p-0 text-on-action shadow-hotspot transition-colors [transition-duration:var(--duration-fast)] before:absolute before:-inset-2.5 hover:bg-hotspot-hover"
           >
             <svg
               aria-hidden
@@ -476,9 +476,10 @@ function Hotspots({ items, open, onOpen }: HotspotsProps) {
  *     full-width cover. The stage min-height follows the tallest spread
  *     below md and stays 607px from md, so switching tabs does not jump;
  *   - the hotspot card is anchored to the pin at every width and shifted
- *     so it stays inside the viewport. Pins are 20px below md, 26px through
- *     tablet and 28px from 1200px. Circle, border, halo and hover are #0054AC;
- *     the plus stays white so it keeps contrast on that blue.
+   *     so it stays inside the viewport. Pins are 20px below md, 26px through
+   *     tablet and 28px from 1200px. Fill, halo and hover are the primary
+   *     petrol (the Capa tab and the shipping bar). A white ring sits on the
+   *     pin; the plus stays white.
  */
 export function Explore() {
   const [edition, setEdition] = useState<string>(AGENDA_EDITIONS[0].id);
@@ -628,11 +629,11 @@ export function Explore() {
           </div>
         </div>
 
-        <figure className="mx-auto mt-[28px] w-[582px] max-w-full text-center max-md:mt-5 max-md:px-3 max-md:text-left md:-mt-[3px]">
-          <blockquote className="text-balance text-base text-text max-md:text-[15px] max-md:leading-[1.4]">
+        <figure className="mx-auto mt-5 w-[582px] max-w-full text-center max-md:px-3 max-md:text-left md:mt-4">
+          <blockquote className="text-pretty text-[14px] leading-snug text-text md:text-[15px] md:leading-6">
             “{QUOTE.text}”
           </blockquote>
-          <figcaption className="mt-[20px] text-[24px] font-bold leading-[30px] text-text-strong max-md:mt-1.5 max-md:text-[18px] max-md:leading-snug md:text-[30px] md:leading-[36px]">
+          <figcaption className="mt-1 text-[16px] leading-snug font-bold whitespace-nowrap text-text-strong md:mt-2 md:text-[20px] md:leading-6">
             <span className="md:hidden">— </span>
             {QUOTE.author}
           </figcaption>

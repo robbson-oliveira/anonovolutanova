@@ -10,6 +10,7 @@ import {
 } from "@ds/index";
 import { ABOUT } from "@content/home";
 import { OFFER_ANCHOR } from "@content/product";
+import { PageArt } from "./PageArt";
 const planoDeVida = "/img/sobre-plano-de-vida.webp";
 const metasAnuais = "/img/sobre-metas-anuais.webp";
 const fraseDia = "/img/sobre-frase-dia.webp";
@@ -20,6 +21,18 @@ const folhaJaneiro = "/img/sobre-folha-janeiro.webp";
 const folhaOutubro = "/img/sobre-folha-outubro.webp";
 const sombra = "/img/sobre-sombra.svg";
 const fundo = "/img/sobre-fundo.webp";
+
+/** Pixel size of each page bitmap, for width/height and the responsive srcSet. */
+const ART_SIZE: Record<string, { w: number; h: number }> = {
+  [planoDeVida]: { w: 455, h: 298 },
+  [metasAnuais]: { w: 324, h: 457 },
+  [fraseDia]: { w: 415, h: 578 },
+  [frase]: { w: 338, h: 246 },
+  [vidaOracao]: { w: 427, h: 482 },
+  [propositos]: { w: 382, h: 359 },
+  [folhaJaneiro]: { w: 441, h: 405 },
+  [folhaOutubro]: { w: 417, h: 345 },
+};
 
 /**
  * Cada card tem título em duas ênfases — a primeira parte em tom apagado, a
@@ -321,15 +334,26 @@ export function FeatureCard({
         </div>
 
         {feature.layers.map((layer, j) => {
+          const frame = paperFrameStyle(layer);
           const content = (
             <>
-              <img
-                src={layer.src}
-                alt=""
-                aria-hidden
-                className="h-auto w-full max-w-none"
-                style={paperFrameStyle(layer)}
-              />
+              {layer.src.endsWith(".webp") ? (
+                <PageArt
+                  src={layer.src}
+                  width={ART_SIZE[layer.src].w}
+                  height={ART_SIZE[layer.src].h}
+                  className="h-auto w-full max-w-none"
+                  style={frame}
+                />
+              ) : (
+                <img
+                  src={layer.src}
+                  alt=""
+                  aria-hidden
+                  className="h-auto w-full max-w-none"
+                  style={frame}
+                />
+              )}
               {layer.handwriting ? <Handwriting {...layer.handwriting} /> : null}
             </>
           );

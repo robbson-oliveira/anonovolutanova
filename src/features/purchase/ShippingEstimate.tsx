@@ -193,11 +193,11 @@ export function ShippingEstimate({ productId, quantity }: ShippingEstimateProps)
   const badge = (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 self-start rounded-pill px-2.5 py-1 text-caption font-bold uppercase",
+        "inline-flex max-w-full items-center gap-1 self-start rounded-pill px-2 py-1 text-[clamp(10.5px,3.6cqi,12px)] leading-none font-bold tracking-[-0.03em] whitespace-nowrap uppercase",
         qualifies ? "bg-action text-on-action" : "bg-badge text-on-badge",
       )}
     >
-      <IconTruck className="size-3.5" />
+      <IconTruck className="size-3 shrink-0" />
       {qualifies ? "Frete grátis neste pedido" : `Frete grátis a partir de ${minQty} unidades`}
     </span>
   );
@@ -205,7 +205,7 @@ export function ShippingEstimate({ productId, quantity }: ShippingEstimateProps)
   // Sem CEP ainda: o campo direto no card, sem precisar abrir o modal.
   if (!shownCep) {
     return (
-      <section aria-label="Frete e prazo de entrega" className="flex flex-col gap-3 rounded-card border border-border bg-surface-plain p-4 sm:p-5">
+      <section aria-label="Frete e prazo de entrega" className="@container flex flex-col gap-3 rounded-card border border-border bg-surface-plain p-4 sm:p-5">
         {badge}
         <CepForm
           label="Calcular frete e prazo"
@@ -219,7 +219,7 @@ export function ShippingEstimate({ productId, quantity }: ShippingEstimateProps)
   }
 
   return (
-    <section aria-label="Frete e prazo de entrega" className="flex flex-col gap-3 rounded-card border border-border bg-surface-plain p-4 sm:p-5">
+    <section aria-label="Frete e prazo de entrega" className="@container flex flex-col gap-3 rounded-card border border-border bg-surface-plain p-4 sm:p-5">
       {badge}
 
       <div

@@ -282,7 +282,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
             Quantidade
           </span>
           <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-4 max-md:gap-2.5">
+            <div className="flex items-center gap-4 max-md:gap-2">
               <div
                 role="group"
                 aria-labelledby={`${groupName}-qty`}
@@ -293,7 +293,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
                   onClick={() => changeQty(qty - 1)}
                   disabled={qty <= 1}
                   aria-label="Diminuir quantidade"
-                  className="grid h-full w-12 cursor-pointer place-items-center text-text-strong disabled:cursor-not-allowed disabled:opacity-40 max-md:w-11"
+                  className="grid h-full w-12 cursor-pointer place-items-center text-text-strong disabled:cursor-not-allowed disabled:opacity-40 max-md:w-10"
                 >
                   <IconMinus />
                 </button>
@@ -305,14 +305,14 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
                   value={qty}
                   onChange={(ev) => changeQty(parseInt(ev.target.value, 10))}
                   aria-label={`Quantidade de ${edition.unit === "agenda" ? "agendas" : "blocos"}`}
-                  className="h-full w-12 [appearance:textfield] bg-transparent text-center text-base font-bold text-text-strong max-md:w-10 max-md:text-sm [&::-webkit-inner-spin-button]:appearance-none"
+                  className="h-full w-12 [appearance:textfield] bg-transparent text-center text-base font-bold text-text-strong max-md:w-9 max-md:text-sm [&::-webkit-inner-spin-button]:appearance-none"
                 />
                 <button
                   type="button"
                   onClick={() => changeQty(qty + 1)}
                   disabled={qty >= MAX_QTY}
                   aria-label="Aumentar quantidade"
-                  className="grid h-full w-12 cursor-pointer place-items-center text-text-strong disabled:cursor-not-allowed disabled:opacity-40 max-md:w-11"
+                  className="grid h-full w-12 cursor-pointer place-items-center text-text-strong disabled:cursor-not-allowed disabled:opacity-40 max-md:w-10"
                 >
                   <IconPlus />
                 </button>

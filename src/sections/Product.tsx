@@ -61,7 +61,7 @@ export function Product({ offer }: { offer: ProductOffer }) {
             </Text>
             {/* The group is as wide as its text and centered; each row stays
                 left-aligned so the checks line up, including two-line items. */}
-            <ul className="mt-4 grid gap-3 sm:grid-cols-2 max-md:mx-auto max-md:w-fit max-md:max-w-full">
+            <ul className="mt-4 grid gap-3 sm:grid-cols-2 max-md:mx-auto max-md:w-full max-md:max-w-[17rem]">
               {OFFER.list.map((line) => (
                 <li key={line} className="flex items-start gap-3 text-text max-md:gap-2.5">
                   <span aria-hidden className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-pill bg-action text-on-action max-md:size-[18px] max-md:text-[15px]">

@@ -43,8 +43,11 @@ export function TopBar({ sticky = true }: TopBarProps) {
     );
   });
 
+  // data-anln-topbar: the mobile menu measures this node so its panel
+  // starts underneath the bar instead of covering it.
   return (
     <div
+      data-anln-topbar=""
       className={cn(
         "flex h-9 items-center bg-surface-inverse",
         sticky ? "fixed inset-x-0 top-0 z-50" : "relative",

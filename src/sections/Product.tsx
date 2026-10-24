@@ -59,8 +59,9 @@ export function Product({ offer }: { offer: ProductOffer }) {
             <Text size="sm" className="text-center font-bold text-gold-start">
               {OFFER.listTitle}
             </Text>
-            {/* The group is as wide as its text and centered; each row stays
-                left-aligned so the checks line up, including two-line items. */}
+            {/* A fixed measure keeps the group narrower than the card so it
+                can sit in the center. Rows stay left-aligned, including
+                the ones that wrap to two lines. */}
             <ul className="mt-4 grid gap-3 sm:grid-cols-2 max-md:mx-auto max-md:w-full max-md:max-w-[17rem]">
               {OFFER.list.map((line) => (
                 <li key={line} className="flex items-start gap-3 text-text max-md:gap-2.5">

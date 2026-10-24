@@ -101,7 +101,7 @@ export function Testimonials() {
                     ))}
                   </p>
 
-                  <blockquote className="m-0 mt-6 text-[18px] leading-[1.35] text-text sm:mt-[30px] sm:text-base xl:w-[421px]">
+                  <blockquote className="m-0 mt-6 text-balance text-[18px] leading-[1.35] text-text sm:mt-[30px] sm:text-base xl:w-[421px]">
                     {item.quote}
                   </blockquote>
                 </article>

@@ -5,7 +5,7 @@ export const OFFER = {
   paragraph:
     `${CYCLE_YEAR} já começou por aqui. A nova edição será produzida em ` +
     "quantidade limitada, então não espere o momento perfeito para garantir " +
-    "a sua. Patos à água!",
+    "a\u00A0sua.\u00A0Patos\u00A0à\u00A0água!",
   badge: "Edição Limitada",
   cta: "Comprar Agora",
   listTitle: "Uma agenda completa:",

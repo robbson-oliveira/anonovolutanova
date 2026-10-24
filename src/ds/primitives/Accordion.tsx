@@ -97,10 +97,10 @@ export function Accordion({
             >
               <div
                 className={cn(
-                  "text-base text-text",
+                  "text-text",
                   cards
-                    ? "tracking-[-0.01em] opacity-70 md:text-[18px] md:leading-[1.4]"
-                    : "max-w-prose",
+                    ? "text-[15px] leading-[1.45] tracking-[-0.01em] opacity-70 md:text-[18px] md:leading-[1.4] [&_p]:text-balance"
+                    : "max-w-prose text-base",
                 )}
               >
                 {item.answer}

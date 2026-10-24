@@ -12,12 +12,16 @@ import { BenefitList } from "./BenefitList";
  * Figma 949:278: a petrol band with gold rules and a faint watercolor texture,
  * holding one big white watercolor card. The heading, the PurchasePanel card
  * and the feature list all live inside that big card.
+ *
+ * The top and bottom rules are 4px. The side rules are 6px: they were absent,
+ * and the brief asks for a slightly heavier gold edge without narrowing the
+ * inner grid.
  */
 export function Product({ offer }: { offer: ProductOffer }) {
   return (
     <section
       id="oferta"
-      className="relative isolate scroll-mt-24 overflow-hidden border-y-4 border-gold-start bg-action px-4 py-12 sm:px-6 lg:py-24"
+      className="relative isolate scroll-mt-24 overflow-hidden border-y-4 border-x-[6px] border-gold-start bg-action px-4 py-12 sm:px-6 lg:py-24"
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
@@ -44,7 +48,7 @@ export function Product({ offer }: { offer: ProductOffer }) {
               </Heading>
               {/* One step down from the section title, and only on mobile:
                   the desktop paragraph keeps the body size. */}
-              <Text className="leading-snug text-text-strong max-md:text-sm max-md:leading-snug">{OFFER.paragraph}</Text>
+              <Text className="text-balance leading-snug text-text-strong max-md:text-sm max-md:leading-snug">{OFFER.paragraph}</Text>
             </div>
           </Reveal>
 

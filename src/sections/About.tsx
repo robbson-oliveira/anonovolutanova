@@ -38,10 +38,9 @@ type Layer = {
   src: string;
   box: { w: number; x: number; y: number };
   /**
-   * Art cut by the bottom edge of the card in Figma. The export lands up to
-   * 1px short of the card (crop rounding), which left a blue line of the card
-   * fill underneath. With `bleed` the art runs 1px past that edge and the
-   * card clips it.
+   * Art cut by the bottom of the card. The export and the bitmap fringe land
+   * a fraction short of that edge, so the petrol card fill reads as a hairline.
+   * `bleed` runs the art 3 device pixels past the edge and the card clips it.
    */
   bleed?: true;
   /**
@@ -240,6 +239,39 @@ export function About() {
  */
 const cardPx = (px: number) => `calc(${px} * 100cqw / ${CARD_W})`;
 
+/** Device pixels of paper pulled past a card edge so subpixel rounding cannot reveal the fill. */
+const PAPER_OVERSCAN = 3;
+/** A layer this close to the card edge (design px) is treated as touching it. */
+const PAPER_EDGE = 12;
+
+/**
+ * The teal line is not a CSS border. It is the petrol card showing through a
+ * semi-transparent WebP fringe, plus a crop that stops a fraction short of the
+ * edge. Stretch the bitmap 3px past every edge it actually meets; the rounded
+ * card clips the excess. The drop shadow stays on its own SVG layer.
+ */
+function paperFrameStyle(layer: Layer): React.CSSProperties | undefined {
+  if (layer.src.endsWith(".svg")) return undefined;
+  const { x, y, w } = layer.box;
+  const nearLeft = x <= PAPER_EDGE;
+  const nearRight = x + w >= CARD_W - PAPER_EDGE;
+  const sides = (nearLeft ? 1 : 0) + (nearRight ? 1 : 0);
+  const style: React.CSSProperties = {};
+  if (sides > 0) {
+    style.width = `calc(100% + ${sides * PAPER_OVERSCAN}px)`;
+    style.maxWidth = "none";
+    if (nearLeft) style.marginLeft = `-${PAPER_OVERSCAN}px`;
+  }
+  if (layer.bleed) {
+    style.height = `calc(${cardPx(CARD_H - y)} + ${PAPER_OVERSCAN}px)`;
+  }
+  if (layer.fit) {
+    style.transform = `scale(${layer.fit})`;
+    style.transformOrigin = layer.fitOrigin;
+  }
+  return Object.keys(style).length > 0 ? style : undefined;
+}
+
 /**
  * Um box da seção "O que a torna especial" — 586 × 600 px no desktop,
  * exatamente como no wireframe. A animação de entrada (Reveal) vem junto:
@@ -296,13 +328,8 @@ export function FeatureCard({
                 src={layer.src}
                 alt=""
                 aria-hidden
-                className="h-auto w-full"
-                style={{
-                  ...(layer.bleed ? { height: cardPx(CARD_H + 1 - layer.box.y) } : {}),
-                  ...(layer.fit
-                    ? { transform: `scale(${layer.fit})`, transformOrigin: layer.fitOrigin }
-                    : {}),
-                }}
+                className="h-auto w-full max-w-none"
+                style={paperFrameStyle(layer)}
               />
               {layer.handwriting ? <Handwriting {...layer.handwriting} /> : null}
             </>

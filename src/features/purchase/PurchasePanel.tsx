@@ -212,7 +212,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
           </Heading>
           <Text className="leading-snug max-md:text-[14px] max-md:leading-normal">
             Tema do mês, frase de São Josemaria Escrivá para cada dia e as práticas
-            de vida interior e muito mais.
+            de vida interior e{"\u00A0"}muito{"\u00A0"}mais.
           </Text>
         </div>
 
@@ -264,7 +264,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
                     <span className="pr-7 text-[15px] font-bold leading-5 text-text-strong md:text-sm">
                       {e.label}
                     </span>
-                    <span className="text-[13px] leading-snug text-text-muted md:text-xs">
+                    <span className="text-balance text-[13px] leading-snug text-text-muted md:text-xs">
                       {e.inStock ? e.description : "Esgotada"}
                     </span>
                     {/* On the title line, out of flow, so the label does not reflow when selected. */}

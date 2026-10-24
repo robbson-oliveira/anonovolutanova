@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Button, EditionSelector, Reveal, cn } from "@ds/index";
 import { EXPLORE, QUOTE } from "@content/home";
 import { AGENDA_EDITIONS, CART_URL, CYCLE_YEAR } from "@content/product";
@@ -245,6 +245,26 @@ const PIN_GAP = 10;
  * inside the viewport. A phone is too narrow for 280px beside the pin, so
  * the card drops above or below it instead of becoming a bottom sheet.
  */
+/**
+ * Height already covered by the fixed shipping bar and, when it is actually
+ * visible, the compact menu. A pin behind either of those is off screen.
+ */
+function coveredTop() {
+  let top = 0;
+  const bar = document.querySelector("[data-anln-topbar]");
+  if (bar) {
+    const rect = bar.getBoundingClientRect();
+    if (rect.height > 0 && rect.bottom > 0) top = Math.max(top, rect.bottom);
+  }
+  const compact = document.querySelector("[data-anln-compact]");
+  if (compact) {
+    const opacity = Number(getComputedStyle(compact).opacity);
+    const rect = compact.getBoundingClientRect();
+    if (opacity > 0.5 && rect.height > 0 && rect.bottom > 0) top = Math.max(top, rect.bottom);
+  }
+  return top;
+}
+
 function placeHotspotCard(card: HTMLElement, pin: HTMLElement) {
   const parent = card.offsetParent as HTMLElement | null;
   if (!parent) return;
@@ -271,8 +291,9 @@ function placeHotspotCard(card: HTMLElement, pin: HTMLElement) {
     absTop = useBelow ? pinRect.bottom + PIN_GAP : pinRect.top - PIN_GAP - h;
   }
 
+  const topInset = Math.max(PIN_MARGIN, coveredTop() + 8);
   absLeft = Math.min(Math.max(absLeft, PIN_MARGIN), window.innerWidth - PIN_MARGIN - w);
-  absTop = Math.min(Math.max(absTop, PIN_MARGIN), window.innerHeight - PIN_MARGIN - h);
+  absTop = Math.min(Math.max(absTop, topInset), window.innerHeight - PIN_MARGIN - h);
   card.style.left = `${absLeft - parentRect.left}px`;
   card.style.top = `${absTop - parentRect.top}px`;
 }
@@ -299,8 +320,51 @@ function HotspotCard({ spot, pinRefs, index, onClose }: HotspotCardProps) {
     return () => {
       window.removeEventListener("resize", place);
       window.removeEventListener("scroll", place);
+      card.style.left = "";
+      card.style.top = "";
     };
   }, [spot, index, pinRefs]);
+
+  // The card follows its pin only while that pin is on screen. Once the pin
+  // slips under the bars or out of the viewport, the card closes and stays
+  // closed until the next click — scrolling the pin back does not reopen it.
+  useEffect(() => {
+    const pin = pinRefs.current?.[index];
+    if (!pin || typeof IntersectionObserver === "undefined") return;
+    let observer: IntersectionObserver | null = null;
+    let frame = 0;
+    const connect = () => {
+      observer?.disconnect();
+      const top = Math.round(coveredTop());
+      observer = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((entry) => entry.isIntersecting)) return;
+          const rect = pin.getBoundingClientRect();
+          const top = coveredTop();
+          const onScreen = rect.bottom > top + 1
+            && rect.top < window.innerHeight - 1
+            && rect.right > 1
+            && rect.left < window.innerWidth - 1;
+          if (!onScreen) onClose();
+        },
+        { threshold: 0, rootMargin: `-${top}px 0px 0px 0px` },
+      );
+      observer.observe(pin);
+    };
+    const watch = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(connect);
+    };
+    connect();
+    window.addEventListener("resize", watch);
+    window.addEventListener("scroll", watch, { passive: true });
+    return () => {
+      cancelAnimationFrame(frame);
+      observer?.disconnect();
+      window.removeEventListener("resize", watch);
+      window.removeEventListener("scroll", watch);
+    };
+  }, [index, pinRefs, onClose]);
 
   return (
     <div
@@ -343,9 +407,11 @@ function HotspotCard({ spot, pinRefs, index, onClose }: HotspotCardProps) {
 function Hotspots({ items, open, onOpen }: HotspotsProps) {
   const spot = open === null ? null : items[open];
   const pinRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const close = useCallback(() => onOpen(null), [onOpen]);
 
   return (
     <>
+      {/* One card at a time: choosing another pin replaces the open one. */}
       {items.map((s, i) => (
         <div
           key={s.title}
@@ -384,7 +450,7 @@ function Hotspots({ items, open, onOpen }: HotspotsProps) {
           spot={spot}
           pinRefs={pinRefs}
           index={open}
-          onClose={() => onOpen(null)}
+          onClose={close}
         />
       )}
     </>
@@ -434,7 +500,7 @@ export function Explore() {
       </Reveal>
       {/* 15px and a little extra inset: at 20px the line fills a 360px
           phone and the glyphs sit on the screen edge. */}
-      <p className="mx-auto mt-[20px] w-[389px] max-w-full text-center text-base text-text max-md:px-3 max-md:text-[15px] max-md:leading-snug">
+      <p className="mx-auto mt-[20px] w-[389px] max-w-full text-balance text-center text-base text-text max-md:px-3 max-md:text-[15px] max-md:leading-snug">
         {EXPLORE.title}
       </p>
 
@@ -562,7 +628,7 @@ export function Explore() {
         </div>
 
         <figure className="mx-auto mt-[28px] w-[582px] max-w-full text-center max-md:mt-5 max-md:px-3 max-md:text-left md:-mt-[3px]">
-          <blockquote className="text-base text-text max-md:text-[15px] max-md:leading-[1.4]">
+          <blockquote className="text-balance text-base text-text max-md:text-[15px] max-md:leading-[1.4]">
             “{QUOTE.text}”
           </blockquote>
           <figcaption className="mt-[20px] text-[24px] font-bold leading-[30px] text-text-strong max-md:mt-1.5 max-md:text-[18px] max-md:leading-snug md:text-[30px] md:leading-[36px]">

@@ -54,9 +54,48 @@ const logoMenu = "/img/logo-menu-modal.png";
 const ACCOUNT_URL = "#";
 
 /**
- * Cart control for the compact bar. Always visible, even at zero, so the
- * shortcut does not appear and disappear. The badge is the real quantity.
- * Desktop draws it on a white square; phones keep the bare icon.
+ * Basket in the phone header, immediately left of the account icon.
+ * Same 44px target and icon size as the account mark. No tile behind it.
+ * The badge is the real cart quantity and stays hidden while the cart is empty.
+ */
+function HeaderCart({ light = false }: { light?: boolean }) {
+  const cart = useOptionalCart();
+  const count = cart?.count ?? 0;
+  const label = count > 0
+    ? `Abrir carrinho, ${count} ${count === 1 ? "item" : "itens"}`
+    : "Abrir carrinho";
+  const className = cn(
+    "relative grid size-11 cursor-pointer place-items-center text-2xl lg:hidden",
+    light ? "text-text-on-inverse" : "text-text-strong",
+    "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-action",
+  );
+  const body = (
+    <>
+      <IconBasket />
+      {count > 0 ? (
+        <span className="absolute top-1 right-0.5 grid h-4 min-w-4 place-items-center rounded-pill bg-action px-1 text-[10px] leading-none font-bold text-on-action">
+          {count > 99 ? "99+" : count}
+        </span>
+      ) : null}
+    </>
+  );
+  if (!cart) {
+    return (
+      <a href={CART_URL} aria-label={label} className={className}>
+        {body}
+      </a>
+    );
+  }
+  return (
+    <button type="button" onClick={cart.openDrawer} aria-label={label} className={className}>
+      {body}
+    </button>
+  );
+}
+
+/**
+ * Cart control for the desktop compact bar. Always visible, even at zero.
+ * The white square is desktop-only; the badge is the real quantity.
  */
 function CompactCart() {
   const cart = useOptionalCart();
@@ -111,22 +150,21 @@ function AccountDropdown({ light = false }: { light?: boolean }) {
 
 type SiteHeaderProps = {
   /**
-   * Home only. Desktop keeps the in-flow header and fades in a compact bar
-   * once that header has scrolled under the shipping notice. Phones keep the
-   * original row and pin the compact bar for the whole visit.
+   * Home only. Below the desktop nav the original row sticks under the
+   * shipping notice. From `lg` the row stays in flow and a compact bar fades
+   * in once that row has scrolled away.
    */
   smartMenu?: boolean;
 };
 
 /** Home shell reserves `pt-9` (36px) for the fixed shipping bar. */
 const SHELL_BAR = 36;
-const COMPACT_H = 56;
 
 export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [barH, setBarH] = useState(smartMenu ? SHELL_BAR : 0);
-  const [narrow, setNarrow] = useState(false);
+  const [shrunk, setShrunk] = useState(false);
   const [compactDesktop, setCompactDesktop] = useState(false);
   // Fallback is the home layout: the 36px bar plus the 80px header row.
   const [panelTop, setPanelTop] = useState(116);
@@ -186,16 +224,24 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
     return () => { document.body.style.overflow = ""; };
   }, [open]);
 
+  // A few pixels of scroll is enough to tuck the logo in and drop the shadow.
+  // The row height stays 80px, so the page underneath does not jump.
   useEffect(() => {
     if (!smartMenu) return;
-    const mq = window.matchMedia("(max-width: 1023px)");
-    const apply = () => setNarrow(mq.matches);
-    apply();
-    mq.addEventListener("change", apply);
-    return () => mq.removeEventListener("change", apply);
+    let frame = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => setShrunk(window.scrollY > 12));
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, [smartMenu]);
 
-  // The shipping bar can be dismissed. Re-measure so the compact bar sits
+  // The shipping bar can be dismissed. Re-measure so the header sticks
   // directly under whatever is actually fixed, including a safe-area top.
   useEffect(() => {
     if (!smartMenu) return;
@@ -227,25 +273,27 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
     return () => observer?.disconnect();
   }, [smartMenu, barH]);
 
-  const compactOffset = Math.max(0, barH + COMPACT_H - SHELL_BAR);
-  const compactShown = smartMenu && !open && (narrow || compactDesktop);
+  const headerTop = barH > 0 ? `${barH}px` : "env(safe-area-inset-top, 0px)";
 
   return (
     <>
       {/* ─── Top bar: non-sticky, same max-w as the Hero text block ─── */}
       <header
         ref={headerRef}
+        data-anln-header=""
         style={
           smartMenu
-            ? ({ "--anln-compact-offset": `${compactOffset}px` } as React.CSSProperties)
+            ? ({ "--anln-header-top": headerTop } as React.CSSProperties)
             : undefined
         }
         className={cn(
           "relative z-40 bg-surface",
-          // Phones reserve the compact bar's height. The 36px shell padding
-          // already accounts for the shipping notice, so the offset shrinks
-          // when that notice is dismissed.
-          smartMenu && "max-lg:mt-[var(--anln-compact-offset)]",
+          // Below the desktop nav the row sticks under the shipping notice.
+          // `top` is only applied there: on desktop a relative `top` would
+          // shift the in-flow header.
+          smartMenu && "max-lg:sticky max-lg:top-[var(--anln-header-top)]",
+          smartMenu && shrunk && !open && "max-lg:shadow-card",
+          "transition-shadow duration-300 motion-reduce:transition-none",
           // Open menu only, and only below the desktop nav: the row joins
           // the announcement bar and the panel as one dark surface.
           open && "max-lg:bg-surface-inverse",
@@ -281,7 +329,10 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
               src={open ? logoMenu : logoMobile}
               alt={PRODUCT_NAME}
               loading="eager"
-              className="h-[44px] w-auto lg:hidden"
+              className={cn(
+                "h-[44px] w-auto transition-[height] duration-300 motion-reduce:transition-none lg:hidden",
+                shrunk && !open && "max-lg:h-9",
+              )}
             />
             {/* Desktop: ornate logo */}
             <img
@@ -308,8 +359,11 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
             </ul>
           </nav>
 
-          {/* ── Mobile: account dropdown ── */}
-          <AccountDropdown light={open} />
+          {/* Mobile: basket, then account. Desktop keeps its own cluster. */}
+          <div className="flex items-center lg:hidden">
+            <HeaderCart light={open} />
+            <AccountDropdown light={open} />
+          </div>
 
           {/* ── Right side: cart + CTA (desktop only) ── */}
           <div className="hidden items-center gap-3 lg:flex">
@@ -325,26 +379,21 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
       {smartMenu ? (
         <div
           data-anln-compact=""
-          inert={compactShown ? undefined : true}
-          style={{ top: barH > 0 ? `${barH}px` : "env(safe-area-inset-top, 0px)" }}
+          inert={compactDesktop ? undefined : true}
+          style={{ top: headerTop }}
           className={cn(
-            "fixed inset-x-0 z-40 h-14 bg-surface shadow-float transition-opacity duration-300 motion-reduce:transition-none",
+            "fixed inset-x-0 z-40 hidden h-14 bg-surface shadow-float transition-opacity duration-300 motion-reduce:transition-none lg:flex",
             "pl-[max(1.25rem,env(safe-area-inset-left,0px))] pr-[max(1.25rem,env(safe-area-inset-right,0px))]",
-            // Phones keep this bar for the whole visit. While the menu panel
-            // is open it turns into the same dark strip as the header, with
-            // the actions hidden, so no cream gap opens under the notice.
-            "max-lg:pointer-events-auto max-lg:opacity-100",
-            open && "max-lg:bg-surface-inverse",
             compactDesktop
               ? "lg:pointer-events-auto lg:opacity-100"
               : "lg:pointer-events-none lg:opacity-0",
           )}
         >
-          <div className="mx-auto flex h-full w-full max-w-[1316px] items-center justify-end gap-2 lg:justify-between">
-            <a href="#inicio" className="hidden shrink-0 items-center lg:flex">
+          <div className="mx-auto flex h-full w-full max-w-[1316px] items-center justify-between gap-2">
+            <a href="#inicio" className="flex shrink-0 items-center">
               <img src={logo} alt={PRODUCT_NAME} className="h-10 w-auto" />
             </a>
-            <div className={cn("flex items-center gap-2", open && "max-lg:invisible")}>
+            <div className="flex items-center gap-2">
               <CompactCart />
               <Button href={OFFER_ANCHOR} size="md" shape="block" className="px-4! lg:px-5!">
                 Comprar

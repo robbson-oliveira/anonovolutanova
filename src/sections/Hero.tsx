@@ -86,11 +86,11 @@ export function Hero() {
             </Reveal>
 
             <Reveal variant="up" delay={120}>
-              <p className="mt-[19px] text-h3 text-subtitle">{HERO.subtitle}</p>
+              <p className="mt-[19px] text-h3 text-subtitle max-md:text-[18px] max-md:leading-snug">{HERO.subtitle}</p>
             </Reveal>
 
             <Reveal variant="up" delay={180}>
-              <Text className="mt-[19px] max-w-[540px] text-pretty text-lead">
+              <Text className="mt-[19px] max-w-[540px] text-pretty text-lead max-md:text-[16px] max-md:leading-normal">
                 {HERO.paragraph}
               </Text>
             </Reveal>

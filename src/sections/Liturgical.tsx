@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useRef } from "react";
 import {
   type IconProps,
   IconAniversarios,
@@ -42,7 +45,53 @@ const ICONS = [
  *   smaller type, text wraps). From `md` the measured two-column cards
  *   return, and the 270px height is a minimum so the copy never spills.
  */
+/**
+ * One height for every date card: the tallest in the current row layout.
+ * Clearing the inline min-height before measuring keeps a width change from
+ * locking in a stale value. The observer watches width only, so writing
+ * the height does not retrigger it.
+ */
+function useEqualCards(listRef: { readonly current: HTMLUListElement | null }) {
+  useEffect(() => {
+    const ul = listRef.current;
+    if (!ul) return;
+    let frame = 0;
+    let lastWidth = -1;
+
+    const measure = () => {
+      frame = 0;
+      const cards = [...ul.querySelectorAll<HTMLElement>("[data-date-card]")];
+      if (!cards.length) return;
+      for (const card of cards) card.style.minHeight = "";
+      const max = Math.max(...cards.map((card) => card.getBoundingClientRect().height));
+      const px = `${Math.ceil(max)}px`;
+      for (const card of cards) card.style.minHeight = px;
+    };
+
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(measure);
+    };
+
+    schedule();
+    const ro = new ResizeObserver((entries) => {
+      const width = entries[0]?.contentRect.width ?? 0;
+      if (Math.abs(width - lastWidth) < 0.5) return;
+      lastWidth = width;
+      schedule();
+    });
+    ro.observe(ul);
+    document.fonts?.ready.then(schedule).catch(() => {});
+    return () => {
+      cancelAnimationFrame(frame);
+      ro.disconnect();
+    };
+  }, [listRef]);
+}
+
 export function Liturgical() {
+  const listRef = useRef<HTMLUListElement>(null);
+  useEqualCards(listRef);
+
   return (
     <section className="relative overflow-hidden bg-surface px-4 py-16 sm:px-6 md:px-10 md:py-20 xl:px-[60px] xl:py-[100px]">
       <div
@@ -55,29 +104,30 @@ export function Liturgical() {
 
       <div className="relative mx-auto w-full max-w-[1018px]">
         <Reveal variant="up">
-          <h2 className="text-center text-h2 font-bold text-text-lead">
+          <h2 className="text-center text-h2 font-bold text-text-lead max-md:px-2 max-md:text-[28px] max-md:leading-[1.12]">
             {LITURGICAL.title}
           </h2>
         </Reveal>
 
         <div className="mt-4 flex flex-col gap-3 text-center md:mt-[13px] md:flex-row md:justify-between md:gap-10 md:text-left lg:px-[55px]">
-          <p className="text-base text-text md:w-[270px]">
+          <p className="text-base text-text max-md:px-2 max-md:text-[15px] max-md:leading-snug md:w-[270px]">
             {LITURGICAL.subtitle}
           </p>
-          <p className="text-base text-text-strong md:w-[372px]">
+          <p className="text-base text-text-strong max-md:px-1 max-md:text-[15px] max-md:leading-snug md:w-[372px]">
             {LITURGICAL.paragraph}
           </p>
         </div>
 
-        <ul className="mt-8 grid grid-cols-2 gap-2.5 md:mt-[39px] md:gap-[20px]">
+        <ul ref={listRef} className="mt-8 grid grid-cols-2 gap-2.5 md:mt-[39px] md:gap-[20px]">
           {LITURGICAL.dates.map((date, i) => (
             <li
               key={date.title}
-              className="flex flex-col items-start gap-2 rounded-card bg-surface-plain px-3 py-3 md:block md:min-h-[270px] md:px-[32px] md:py-[42px]"
+              data-date-card
+              className="flex h-full flex-col items-start gap-2 rounded-card bg-surface-plain px-3 py-3 md:block md:min-h-[270px] md:px-[32px] md:py-[42px]"
             >
               <DateIcon icon={ICONS[i % ICONS.length]} />
               <div className="min-w-0">
-                <p className="text-[13px] font-bold leading-4 tracking-[-0.03em] text-gold-start md:mt-[20px] md:text-[24px] md:leading-6 md:tracking-[-0.04em]">
+                <p className="text-[13px] font-bold leading-4 tracking-[-0.03em] text-text-strong md:mt-[20px] md:text-[24px] md:leading-6 md:tracking-[-0.04em]">
                   {date.title}
                 </p>
                 <p className="mt-1 text-[12px] leading-[15px] text-text md:mt-[10px] md:text-base md:leading-normal">
@@ -88,7 +138,7 @@ export function Liturgical() {
           ))}
         </ul>
 
-        <p className="mt-8 text-center text-base text-text md:mt-[39px]">
+        <p className="mt-8 text-center text-base text-text max-md:px-3 max-md:text-[15px] max-md:leading-snug md:mt-[39px]">
           {LITURGICAL.closing}
         </p>
 

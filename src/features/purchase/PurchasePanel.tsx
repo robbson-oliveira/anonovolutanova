@@ -210,7 +210,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
           <Heading as={headingAs} level={headingAs === "h1" ? "section" : "subsection"}>
             {offer.name}
           </Heading>
-          <Text className="leading-snug">
+          <Text className="leading-snug max-md:text-[14px] max-md:leading-normal">
             Tema do mês, frase de São Josemaria Escrivá para cada dia e as práticas
             de vida interior e muito mais.
           </Text>
@@ -226,7 +226,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
                 <label
                   key={e.id}
                   className={cn(
-                    "relative flex cursor-pointer items-center gap-4 rounded-card border bg-surface-plain p-3",
+                    "relative flex cursor-pointer items-center gap-3 rounded-card border bg-surface-plain py-2 pr-2.5 pl-2.5",
                     "transition-colors [transition-duration:var(--duration-fast)]",
                     "has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-action",
                     active ? "border-action" : "border-border hover:border-action/50",
@@ -246,8 +246,8 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
                   <ProductThumb
                     image={e.image}
                     fallback={e}
-                    sizes="72px"
-                    className="size-[72px]"
+                    sizes="64px"
+                    className="size-14 shrink-0 md:size-16"
                     focus={
                       e.id === "bloco"
                         ? {
@@ -260,15 +260,20 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
                         : null
                     }
                   />
-                  <span className="flex min-w-0 flex-1 flex-col gap-1">
-                    <span className="text-sm font-bold text-text-strong">{e.label}</span>
-                    <span className="text-xs leading-snug text-text-muted">
+                  <span className="relative flex min-w-0 flex-1 flex-col justify-center gap-0.5">
+                    <span className="pr-7 text-[15px] font-bold leading-5 text-text-strong md:text-sm">
+                      {e.label}
+                    </span>
+                    <span className="text-[13px] leading-snug text-text-muted md:text-xs">
                       {e.inStock ? e.description : "Esgotada"}
                     </span>
-                  </span>
-                  {/* Always reserved, so selecting an edition does not reflow the title. */}
-                  <span aria-hidden className="grid size-7 shrink-0 place-items-center text-[22px] text-action">
-                    {active ? <IconCheck /> : null}
+                    {/* On the title line, out of flow, so the label does not reflow when selected. */}
+                    <span
+                      aria-hidden
+                      className="pointer-events-none absolute top-0 right-0 grid size-5 place-items-center text-[18px] text-action"
+                    >
+                      {active ? <IconCheck /> : null}
+                    </span>
                   </span>
                 </label>
               );

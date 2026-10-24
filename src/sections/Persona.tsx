@@ -53,7 +53,11 @@ function useBenefitFocus(listRef: { readonly current: HTMLUListElement | null })
         return;
       }
       const viewH = window.innerHeight || 1;
-      const focus = viewH * 0.46;
+      // The intro is sticky on a phone, so the reading line sits just
+      // under it. Otherwise the focused card hides behind the title.
+      const head = list.previousElementSibling as HTMLElement | null;
+      const headBottom = head ? head.getBoundingClientRect().bottom : viewH * 0.32;
+      const focus = Math.max(viewH * 0.42, headBottom + 48);
       for (const card of cards()) {
         const rect = card.getBoundingClientRect();
         const center = rect.top + rect.height * 0.5;
@@ -100,7 +104,7 @@ export function Persona() {
       className="bg-surface px-4 py-16 sm:px-6 md:px-10 md:py-20 xl:px-[60px] xl:py-[100px]"
     >
       <RevealGroup className="mx-auto w-full max-w-[1305px]">
-        <div className="flex flex-col gap-6 xl:flex-row xl:items-center xl:justify-between xl:gap-[114px]">
+        <div className="flex flex-col gap-6 max-sm:sticky max-sm:top-0 max-sm:z-20 max-sm:-mx-4 max-sm:bg-surface max-sm:px-4 max-sm:pb-5 max-sm:pt-3 xl:flex-row xl:items-center xl:justify-between xl:gap-[114px]">
           <Reveal variant="up">
             {/* text-h2 = clamp(34px, 4.2vw, 60px), lh 1, ls -0.05em (= -3px at 60px).
                 Phone breaks are explicit so the three lines match the reference. */}
@@ -115,7 +119,7 @@ export function Persona() {
             </h2>
           </Reveal>
           <Reveal variant="up" delay={90}>
-            <p className="m-0 max-w-[640px] text-base font-normal leading-6 text-text xl:w-[458px] xl:text-[20px] xl:leading-6">
+            <p className="m-0 max-w-[640px] text-base font-normal leading-6 text-text max-sm:text-[15px] max-sm:leading-snug xl:w-[458px] xl:text-[20px] xl:leading-6">
               <span className="md:hidden">
                 A Agenda Ano Novo, Luta Nova é
                 <br />

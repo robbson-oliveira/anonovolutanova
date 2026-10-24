@@ -1,6 +1,6 @@
 import { Reveal, RevealGroup } from "@ds/index";
 import { CLOSING } from "@content/home";
-import { OFFER_ANCHOR } from "@content/product";
+import { CYCLE_YEAR, OFFER_ANCHOR } from "@content/product";
 
 /**
  * Closing card — Figma "Agenda Campanha 2026-2027", node 949:18 (Seção 9).
@@ -27,7 +27,7 @@ export function Closing() {
     >
       <RevealGroup>
         <Reveal variant="up">
-          <div className="relative mx-auto flex w-full max-w-[1278px] flex-col items-center overflow-hidden rounded-lg border-4 border-gold-start bg-surface-inverse-soft px-5 py-12 text-center sm:px-10 md:py-20 min-[1440px]:h-[692px] min-[1440px]:px-0 min-[1440px]:pb-0 min-[1440px]:pt-[137px]">
+          <div className="relative mx-auto flex w-full max-w-[1278px] flex-col items-center overflow-hidden rounded-lg border-4 border-gold-start bg-surface-inverse-soft px-7 py-12 text-center sm:px-10 md:py-20 min-[1440px]:h-[692px] min-[1440px]:px-0 min-[1440px]:pb-0 min-[1440px]:pt-[137px]">
             <div
               aria-hidden
               className="absolute -inset-1 bg-[url(/img/closing-textura.webp)] bg-[length:100%_173.81%] bg-[position:0_83%] bg-no-repeat opacity-12"
@@ -46,12 +46,42 @@ export function Closing() {
             </div>
 
             <p className="relative mt-5 text-2xl font-bold leading-[1.15] tracking-[-0.04em] text-text-on-inverse md:text-stat md:leading-[30px]">
-              {CLOSING.title}
+              <span className="md:hidden">
+                Com a confiança
+                <br />
+                de quem se
+                <br />
+                lança à água
+              </span>
+              <span className="hidden md:inline">{CLOSING.title}</span>
             </p>
 
-            {/* min-h on desktop: five lines of 24px, which holds the buttons at +266 */}
-            <p className="relative mt-5 max-w-[626px] text-base text-text-on-inverse-muted md:text-xl md:leading-6 min-[1440px]:min-h-[120px]">
-              {CLOSING.paragraph}
+            {/* min-h on desktop: five lines of 24px, which holds the buttons at +266.
+                On a phone the copy is a step smaller and broken on phrases so
+                the lines do not run into the card edge. */}
+            <p className="relative mt-5 max-w-[626px] text-[15px] leading-[1.45] text-text-on-inverse-muted md:text-xl md:leading-6 min-[1440px]:min-h-[120px]">
+              <span className="md:hidden">
+                São Josemaria Escrivá ensinava:
+                <br />
+                lança-te à água como os patos.
+                <br />
+                A vida espiritual cresce quando
+                <br />
+                trocamos o excesso de cálculo
+                <br />
+                pela confiança e damos o
+                <br />
+                primeiro passo, mesmo sem
+                <br />
+                garantias. A Agenda {CYCLE_YEAR} foi
+                <br />
+                feita para acompanhar cada passo
+                <br />
+                da sua luta diária — unindo
+                <br />
+                oração, trabalho e alegria.
+              </span>
+              <span className="hidden md:inline">{CLOSING.paragraph}</span>
             </p>
 
             <div className="relative mt-10 flex w-full flex-col items-stretch gap-[15px] md:w-auto md:flex-row md:items-center">

@@ -27,11 +27,11 @@ export function Faq() {
           <Reveal variant="left">
             <Heading
               as="h2"
-              className="text-[40px]! leading-[1] tracking-[-0.05em]! text-text-faq-title! md:text-[60px]! md:leading-[60px]!"
+              className="text-[32px]! leading-[1.05] tracking-[-0.05em]! text-text-faq-title! md:text-[60px]! md:leading-[60px]!"
             >
               Perguntas Frequentes
             </Heading>
-            <Text className="mt-3 text-lg font-medium tracking-[-0.01em] opacity-70 md:text-xl">
+            <Text className="mt-3 text-[15px] font-medium leading-snug tracking-[-0.01em] opacity-70 md:text-xl">
               Respostas para as perguntas mais comuns
             </Text>
           </Reveal>

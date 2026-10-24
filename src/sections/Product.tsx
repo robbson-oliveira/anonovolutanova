@@ -1,7 +1,8 @@
-import { Heading, IconCheck, Reveal, Text } from "@ds/index";
+import { Heading, Reveal, Text } from "@ds/index";
 import { OFFER } from "@content/offer";
 import { PurchasePanel } from "@/features/purchase/PurchasePanel";
 import type { ProductOffer } from "@/lib/commerce/offer-types";
+import { BenefitList } from "./BenefitList";
 
 /**
  * Product section of the home (#oferta): the visitor picks the edition and
@@ -38,7 +39,7 @@ export function Product({ offer }: { offer: ProductOffer }) {
         <div className="relative">
           <Reveal variant="up">
             <div className="mx-auto flex max-w-[760px] flex-col items-center gap-5 text-center">
-              <Heading as="h2" level="section">
+              <Heading as="h2" level="section" className="max-md:text-[26px] max-md:leading-[1.12]">
                 {OFFER.title}
               </Heading>
               {/* One step down from the section title, and only on mobile:
@@ -62,18 +63,7 @@ export function Product({ offer }: { offer: ProductOffer }) {
             {/* A fixed measure keeps the group narrower than the card so it
                 can sit in the center. Rows stay left-aligned, including
                 the ones that wrap to two lines. */}
-            <ul className="mt-4 grid gap-3 sm:grid-cols-2 max-md:mx-auto max-md:w-full max-md:max-w-[17rem]">
-              {OFFER.list.map((line) => (
-                <li key={line} className="flex items-start gap-3 text-text max-md:gap-2.5">
-                  <span aria-hidden className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-pill bg-action text-on-action max-md:size-[18px] max-md:text-[15px]">
-                    <IconCheck />
-                  </span>
-                  <Text as="span" size="xs" className="leading-snug max-md:text-[14px] max-md:leading-relaxed">
-                    {line}
-                  </Text>
-                </li>
-              ))}
-            </ul>
+            <BenefitList lines={OFFER.list} />
           </div>
         </div>
       </div>

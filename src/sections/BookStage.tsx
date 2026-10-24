@@ -120,8 +120,8 @@ function Cover({
  * at 15px). On mobile the same column is a little smaller (140×93) and its
  * center sits on the middle of the two covers: the opaque art (shadow
  * excluded) is centered on the stage, so left is calc(50% - half the card).
- * The top stays 157px, which was 49% of the previous 321px stage, so growing
- * the stage does not slide the card up or down. Colors stay the 2027 tokens.
+ * The top is 189px, 32px below the 157px mark, so more of the back cover
+ * stays visible. Colors stay the 2027 tokens.
  * Unprefixed values are the desktop card and must not change.
  *
  * The mobile button height is explicit: "Comprar Agora" wraps inside a
@@ -132,7 +132,7 @@ function PriceCard({ thumbSrc }: { thumbSrc: CoverSrc }) {
     <div
       className={cn(
         "pointer-events-auto absolute left-[30%] top-[57%] z-10 flex h-[119px] w-[191px] flex-col items-center justify-start gap-[3px] rounded-md border border-gold-end bg-surface-card p-2.5 animate-pop-in motion-reduce:animate-none shadow-pop",
-        "max-md:left-[calc(50%-70px)] max-md:right-auto max-md:top-[157px] max-md:h-[93px] max-md:w-[140px] max-md:gap-2 max-md:px-3 max-md:py-[9px]",
+        "max-md:left-[calc(50%-70px)] max-md:right-auto max-md:top-[189px] max-md:h-[93px] max-md:w-[140px] max-md:gap-2 max-md:px-3 max-md:py-[9px]",
         "md:max-[1199px]:left-[12%] md:max-[1199px]:top-[46%] md:max-[1199px]:right-auto md:max-[1199px]:h-auto md:max-[1199px]:w-max md:max-[1199px]:gap-[9px] md:max-[1199px]:px-[14px] md:max-[1199px]:py-3",
       )}
     >

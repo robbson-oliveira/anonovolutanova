@@ -146,10 +146,10 @@ export function Hero() {
           {/* Below 1200 the stage is in flow (under the stats on mobile, in the
               right column on tablet). From 1200 it is the measured absolute
               stage: left min(600px, 54%)+8px, right -32px, nudged up 9.1216%. */}
-          {/* 360px of stage on a 390px screen grows the cover art about 12%
-              from the 321px stage and recenters it. The -9px pull is what
-              puts that square's center on the viewport center. */}
-          <div className="relative mx-auto mt-6 w-[min(360px,96vw)] max-md:-ml-[9px] md:max-[1199px]:mx-0 md:max-[1199px]:mt-0 md:max-[1199px]:ml-0 md:max-[1199px]:w-auto md:max-[1199px]:min-w-0 md:max-[1199px]:flex-1 min-[1200px]:absolute min-[1200px]:-right-8 min-[1200px]:left-[calc(min(600px,54%)+8px)] min-[1200px]:top-0 min-[1200px]:-z-10 min-[1200px]:mx-0 min-[1200px]:mt-0 min-[1200px]:w-auto min-[1200px]:max-w-none min-[1200px]:translate-y-[calc(10px-9.1216%)]">
+          {/* 388px of stage on a 390px screen, pulled 4px left of the
+              padding so the cover art sits a little right of center and
+              the painted edge stays inside the viewport. */}
+          <div className="relative mx-auto mt-6 w-[min(388px,100vw)] max-md:-ml-[4px] md:max-[1199px]:mx-0 md:max-[1199px]:mt-0 md:max-[1199px]:ml-0 md:max-[1199px]:w-auto md:max-[1199px]:min-w-0 md:max-[1199px]:flex-1 min-[1200px]:absolute min-[1200px]:-right-8 min-[1200px]:left-[calc(min(600px,54%)+8px)] min-[1200px]:top-0 min-[1200px]:-z-10 min-[1200px]:mx-0 min-[1200px]:mt-0 min-[1200px]:w-auto min-[1200px]:max-w-none min-[1200px]:translate-y-[calc(10px-9.1216%)]">
             <BookStage fluid />
           </div>
         </div>

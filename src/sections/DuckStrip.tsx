@@ -29,6 +29,13 @@ const SETTLE_MS = STAGGER_CAP * STAGGER_MS + STEP_MS + 400;
  *
  * The cycle only runs while the strip is on screen, and not at all for people
  * who ask for reduced motion (the row then just sits there).
+ *
+ * Below lg the hero's bottom padding is the only air above this band (about
+ * 85px on a phone, about 96px on a tablet, measured to the nearest cover
+ * pixel) and the next section sits flush against the band. 80px underneath
+ * is a little less than that gap, so the two sides read as even. From lg the
+ * band is pulled up 80px into the hero, which already leaves 80px of air
+ * under it, so the margin is removed there.
  */
 export function DuckStrip() {
   const ref = useRef<HTMLDivElement>(null);
@@ -74,7 +81,7 @@ export function DuckStrip() {
     <div
       ref={ref}
       aria-hidden
-      className="relative z-10 h-[71px] overflow-hidden bg-surface-inverse-soft lg:top-[-80px]"
+      className="relative z-10 mb-20 h-[71px] overflow-hidden bg-surface-inverse-soft lg:top-[-80px] lg:mb-0"
     >
       <div className="-ml-[76px] flex h-full w-max animate-duck-drift items-center gap-7 motion-reduce:animate-none">
         {Array.from({ length: DUCK_COUNT }, (_, i) => (

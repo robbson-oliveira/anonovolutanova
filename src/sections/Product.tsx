@@ -1,4 +1,4 @@
-import { Heading, Reveal, Text, pageFrameClass } from "@ds/index";
+import { Heading, Reveal, Text, cn, pageFrameClass } from "@ds/index";
 import { OFFER } from "@content/offer";
 import { PurchasePanel } from "@/features/purchase/PurchasePanel";
 import type { ProductOffer } from "@/lib/commerce/offer-types";
@@ -35,9 +35,15 @@ export function Product({ offer }: { offer: ProductOffer }) {
       />
 
       {/* clip, not hidden: hidden would be a scroll container and the
-          cover column could not stick while this card scrolls by. */}
-      <div className={pageFrameClass}>
-      <div className="relative w-full overflow-clip rounded-[32px] bg-surface-plain px-4 py-12 sm:px-8 lg:rounded-[90px] lg:px-16 lg:py-24">
+          cover column could not stick while this card scrolls by.
+          Below md the petrol band stays, but only as a 3px line. The
+          watercolor card grows into the rest of that band. The price
+          card inside gains 10px a side, not the whole 17px. */}
+      <div className={cn(
+        pageFrameClass,
+        "max-md:pl-[max(3px,env(safe-area-inset-left,0px))]! max-md:pr-[max(3px,env(safe-area-inset-right,0px))]!",
+      )}>
+      <div className="relative w-full overflow-clip rounded-[32px] bg-surface-plain px-4 py-12 max-md:px-[23px]! sm:px-8 lg:rounded-[90px] lg:px-16 lg:py-24">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/img/offer/card-watercolor.webp"

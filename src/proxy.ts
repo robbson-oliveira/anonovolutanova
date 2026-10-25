@@ -22,8 +22,9 @@ import { GONE_HTML, isGone } from "@/lib/legacy-urls";
  * The store's feature switches, read on each request so that flipping one
  * takes a restart and not a rebuild (the pages behind them stay static):
  *
- * - ANLN_HOME_COMMING_SOON: `/` shows the "Em breve" page (a rewrite: the
- *   address stays `/`). Off, `/em-breve` itself sends visitors to the home.
+ * - homeComingSoon: `/` shows the "Em breve" page (a rewrite: the address
+ *   stays `/`). It is off for the public launch, so `/em-breve` sends visitors
+ *   to the home.
  * - ANLN_PRECHECKOUT: `/carrinho` is the pre-checkout page. Off, it goes to
  *   the offer on the home, as the old WordPress cart URL always did.
  *

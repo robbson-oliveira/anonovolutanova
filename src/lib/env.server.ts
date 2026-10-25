@@ -25,9 +25,12 @@ export const serverEnv = {
   } satisfies Record<EditionId, number | null>,
   /**
    * Serves the "Em breve" page at `/` instead of the landing page. Read by the
-   * proxy on each request, so flipping it needs a restart, not a rebuild.
+   * proxy on each request. The public home is open, so the switch stays off.
+   * Vercel production had ANLN_HOME_COMMING_SOON=true while the teaser was up;
+   * that value no longer closes the home. Revert this line to bring the teaser
+   * back (the variable is still true there).
    */
-  homeComingSoon: process.env.ANLN_HOME_COMMING_SOON === "true",
+  homeComingSoon: false,
   /**
    * Opens `/carrinho`: the edition choice and the cart on their own page,
    * before the checkout. Off, `/carrinho` redirects to the landing offer.

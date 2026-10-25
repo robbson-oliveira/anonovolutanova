@@ -208,8 +208,8 @@ const STAGE_MIN_HEIGHT = `calc(${SPREAD_HEIGHT} * ${TALLEST_SPREAD.toFixed(4)})`
  * Cover pins, as percentages of each edition's book box. The two covers are
  * different art, so they do not share one layout: the spiral sits on the
  * metal, the hot-stamp pin on that edition's foil, and the third pin on the
- * detail that edition actually shows (spot varnish on the Color ducks, the
- * matte navy field on the Clássica).
+ * detail that edition actually shows (spot varnish just under the Color
+ * duck, the matte navy field on the Clássica).
  */
 const SPIRAL_HOTSPOT: Hotspot = {
   x: 15,
@@ -222,14 +222,16 @@ const COVER_HOTSPOTS: Record<"color" | "classica", Hotspot[]> = {
   color: [
     SPIRAL_HOTSPOT,
     {
-      x: 55,
+      // Just to the right of the title, so the pin does not cover the foil.
+      x: 78,
       y: 25,
       title: "Hot stamp azul",
       text: "Título e ano em película metalizada azul, aplicada a quente sobre a capa dura.",
     },
     {
+      // Just under the large duck, not on its back.
       x: 40,
-      y: 68,
+      y: 78,
       title: "Verniz localizado",
       text: "Cada pato ganha brilho próprio com verniz aplicado só sobre a ilustração.",
     },

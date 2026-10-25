@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Button, EditionSelector, Reveal, cn } from "@ds/index";
+import { Button, EditionSelector, Reveal, cn, pageFrameClass } from "@ds/index";
 import { EXPLORE, QUOTE } from "@content/home";
 import { AGENDA_EDITIONS, CYCLE_YEAR, OFFER_ANCHOR } from "@content/product";
 
@@ -609,7 +609,7 @@ export function Explore() {
   return (
     <section
       id="explore"
-      className="bg-surface px-5 pb-16 pt-16 md:px-8 md:pb-[40px] md:pt-[120px] lg:px-12 xl:px-[60px]"
+      className={cn(pageFrameClass, "bg-surface pb-16 pt-16 md:pb-[40px] md:pt-[120px]")}
     >
       <Reveal variant="up" className="text-center">
         <h2 className="text-h2 font-bold text-text-lead">
@@ -643,7 +643,7 @@ export function Explore() {
       </div>
 
       <div
-        className="@container mx-auto mt-[33px] w-[1160px] max-w-full rounded-[18px] md:px-[60px]"
+        className="@container mt-[33px] w-full rounded-[18px] md:px-[60px]"
         style={
           {
             "--cover-h": SPREAD_HEIGHT,

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { IconStar, Reveal, RevealGroup } from "@ds/index";
+import { IconStar, Reveal, RevealGroup, pageFrameClass } from "@ds/index";
 import { TESTIMONIALS } from "@content/offer";
 
 const AVATARS = ["/img/avatar-robson.jpeg", "/img/avatar-andrea.jpg", "/img/avatar-jeje.jpg"];
@@ -43,17 +43,11 @@ export function Testimonials() {
   return (
     <section
       id="depoimentos"
-      className="overflow-hidden bg-surface pb-16 pt-8 md:pb-24 md:pt-16 xl:pb-[118px] xl:pt-[60px]"
+      className={`${pageFrameClass} overflow-hidden bg-surface pb-16 pt-8 md:pb-24 md:pt-16 xl:pb-[118px] xl:pt-[60px]`}
     >
-      <RevealGroup
-        className={
-          "pl-5 md:pl-8 lg:pl-12 " +
-          /* 201 = 60 do padding da seção + 141 do recuo, na coluna de 1440 */
-          "xl:pl-[max(201px,calc((100%_-_1440px)/2_+_201px))]"
-        }
-      >
+      <RevealGroup>
         <Reveal variant="up">
-          <h2 className="m-0 max-w-full pr-4 text-h2-hero font-semibold text-text-card xl:w-[800px] xl:text-[120px] xl:leading-[132px] xl:tracking-[-6px]">
+          <h2 className="m-0 max-w-full text-h2-hero font-semibold text-text-card xl:w-[800px] xl:text-[120px] xl:leading-[132px] xl:tracking-[-6px]">
             Depoimentos
           </h2>
         </Reveal>
@@ -62,9 +56,9 @@ export function Testimonials() {
           <ul
             ref={trackRef}
             className={
-              "m-0 mt-8 flex list-none snap-x snap-mandatory gap-4 overflow-x-auto pb-1 pl-0 pr-4 " +
+              "m-0 mt-8 flex list-none snap-x snap-mandatory gap-4 overflow-x-auto pb-1 pl-0 " +
               "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden " +
-              "sm:gap-6 sm:pr-6 md:mt-12 xl:mt-[58px] xl:pr-0"
+              "sm:gap-6 md:mt-12 xl:mt-[58px]"
             }
           >
             {TESTIMONIALS.map((item, i) => (

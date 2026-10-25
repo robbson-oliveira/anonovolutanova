@@ -27,7 +27,7 @@ export function Closing() {
     >
       <RevealGroup>
         <Reveal variant="up">
-          <div className="relative mx-auto flex w-full max-w-[1278px] flex-col items-center overflow-hidden rounded-lg border-4 border-gold-start bg-surface-inverse-soft px-7 py-12 text-center sm:px-10 md:py-20 min-[1440px]:h-[692px] min-[1440px]:px-0 min-[1440px]:pb-0 min-[1440px]:pt-[137px]">
+          <div className="relative flex w-full flex-col items-center overflow-hidden rounded-lg border-4 border-gold-start bg-surface-inverse-soft px-7 py-12 text-center sm:px-10 md:py-20 min-[1440px]:h-[692px] min-[1440px]:px-0 min-[1440px]:pb-0 min-[1440px]:pt-[137px]">
             <div
               aria-hidden
               className="absolute -inset-1 bg-[url(/img/closing-textura.webp)] bg-[length:100%_173.81%] bg-[position:0_83%] bg-no-repeat opacity-12"

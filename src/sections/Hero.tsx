@@ -31,10 +31,10 @@ import { BookStage } from "./BookStage";
  * absolutely placed inside the page frame. A right inset keeps the 25°
  * fan (it extends past the stage box) inside that frame.
  *
- *   < 768    one column, centered: badge, title, subtitle, paragraph,
- *            button, seals, then the three stats in a single row, then the
- *            books. The stage is inset (not edge to edge) so the rotated
- *            back cover stays inside the viewport.
+ *   < 768    one column, left-aligned to the page frame (same x as the
+ *            header logo): badge, title, subtitle, paragraph, button, seals,
+ *            then the three stats in a single row, then the books. The stage
+ *            is inset so the rotated back cover stays inside the viewport.
  *   768–1199 two columns. The text takes 47% and the stage fills the rest,
  *            The stage is a fraction of that column so the rotated cover
  *            stays inside the frame. Stats stay in one row (the fixed
@@ -61,7 +61,7 @@ export function Hero() {
         {/* isolate: o palco fica atrás do texto (-z-10) sem cair para trás
             do fundo da seção. */}
         <div className="relative isolate md:max-[1199px]:flex md:max-[1199px]:items-center md:max-[1199px]:gap-4">
-          <div className="flex flex-col max-md:items-center max-md:text-center md:max-[1199px]:w-[47%] md:max-[1199px]:max-w-none md:max-[1199px]:min-w-0 md:max-[1199px]:shrink-0 min-[1200px]:max-w-[min(647.5px,54%)]">
+          <div className="flex flex-col md:max-[1199px]:w-[47%] md:max-[1199px]:max-w-none md:max-[1199px]:min-w-0 md:max-[1199px]:shrink-0 min-[1200px]:max-w-[min(647.5px,54%)]">
             <Reveal variant="up">
               <Badge
                 tone="plain"
@@ -102,14 +102,14 @@ export function Hero() {
                 href={OFFER_ANCHOR}
                 size="lg"
                 shape="block"
-                className="mt-[29px] h-[68px] w-full max-w-[425px] max-md:w-[329px] max-md:max-w-[329px] md:max-[1199px]:max-w-[312px] rounded-[10px]! border border-gold-end bg-linear-90 from-gold-start to-gold-end text-[16px]! leading-[16px]! font-bold! tracking-[-0.64px]! transition-[transform,box-shadow] [transition-duration:var(--duration-fast)] hover:-translate-y-0.5 hover:shadow-[0_8px_18px_-6px] hover:shadow-gold-start/60 motion-reduce:hover:translate-y-0"
+                className="mt-[29px] h-[68px] w-full max-w-[425px] md:max-[1199px]:max-w-[312px] rounded-[10px]! border border-gold-end bg-linear-90 from-gold-start to-gold-end text-[16px]! leading-[16px]! font-bold! tracking-[-0.64px]! transition-[transform,box-shadow] [transition-duration:var(--duration-fast)] hover:-translate-y-0.5 hover:shadow-[0_8px_18px_-6px] hover:shadow-gold-start/60 motion-reduce:hover:translate-y-0"
               >
                 {HERO.cta}
               </Button>
             </Reveal>
 
             <Reveal variant="up" delay={280}>
-              <div className="mt-[10px] flex flex-wrap items-center gap-[12px] max-md:justify-center">
+              <div className="mt-[10px] flex flex-wrap items-center gap-[12px]">
                 {HERO.seals.map((seal) => (
                   <Badge
                     key={seal}

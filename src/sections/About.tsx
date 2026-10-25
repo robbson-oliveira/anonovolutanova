@@ -7,6 +7,7 @@ import {
   IconSparkle,
   Reveal,
   RevealGroup,
+  pageFrameClass,
 } from "@ds/index";
 import { ABOUT } from "@content/home";
 import { OFFER_ANCHOR } from "@content/product";
@@ -210,19 +211,15 @@ export function AboutHeader() {
  * Desktop: two 586px columns with a 28px gap. The grid fills the 1200px
  * Container (`-mx-10` cancels that Container's own padding).
  *
- * The gold panel stops at the page frame's content width (1280px) and keeps
- * that frame's gutters: 20px, 32px from `md`, 48px from `lg`. The cards are
- * not scaled down to achieve that: a narrower viewport just shrinks the
- * panel around them.
+ * The gold panel is the page frame's content box, so its left and right
+ * edges are the same x as the header logo and the hero text.
  *   < 1024  one column, card at most 586px
  *   ≥ 1024  two fluid columns, reaching 586px once the panel is wide enough
  */
 export function About() {
   return (
-    <section
-      id="sobre"
-      className="relative mx-auto w-[calc(100%-2.5rem)] max-w-[1280px] overflow-clip rounded-[40px] bg-surface-gold pt-24 pb-16 md:w-[calc(100%-4rem)] md:rounded-[90px] md:pt-[208px] md:pb-[117px] lg:w-[calc(100%-6rem)]"
-    >
+    <section id="sobre" className={pageFrameClass}>
+      <div className="relative overflow-clip rounded-[40px] bg-surface-gold pt-24 pb-16 md:rounded-[90px] md:pt-[208px] md:pb-[117px]">
       {/* Aquarela do Figma (949:892), cortada pelos cantos arredondados da seção. */}
       <img
         src={fundo}
@@ -241,6 +238,7 @@ export function About() {
           ))}
         </ul>
       </Container>
+      </div>
     </section>
   );
 }

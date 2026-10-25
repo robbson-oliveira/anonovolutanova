@@ -1,7 +1,7 @@
 "use client";
 
 import { useLayoutEffect, useRef } from "react";
-import { IconCheck, Reveal, RevealGroup } from "@ds/index";
+import { IconCheck, Reveal, RevealGroup, pageFrameClass } from "@ds/index";
 import { PERSONA } from "@content/home";
 
 /* -----------------------------------------------------------------------------
@@ -251,7 +251,7 @@ export function Persona() {
   return (
     <section
       id="persona"
-      className="bg-surface px-5 py-16 md:px-8 md:py-20 lg:px-12 xl:px-[60px] xl:py-[100px]"
+      className={`${pageFrameClass} bg-surface py-16 md:py-20 xl:py-[100px]`}
     >
       <div ref={trackRef} className="mx-auto w-full max-w-[1305px]">
         <RevealGroup>

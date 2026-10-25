@@ -7,7 +7,9 @@ import { BenefitList } from "./BenefitList";
 /**
  * Product section of the home (#oferta): the visitor picks the edition and
  * quantity right here and the button goes straight to checkout. Every buy
- * button on the page scrolls to it.
+ * button on the page scrolls to it. scroll-mt clears the sticky phone
+ * stack (36px bar + 80px row) and, from lg, the fixed bar plus the
+ * compact row.
  *
  * Figma 949:278: a petrol band with gold rules and a faint watercolor texture,
  * holding one big white watercolor card. The heading, the PurchasePanel card
@@ -20,7 +22,7 @@ export function Product({ offer }: { offer: ProductOffer }) {
   return (
     <section
       id="oferta"
-      className="relative isolate scroll-mt-24 overflow-clip border-y-4 border-gold-start bg-action px-4 py-12 sm:px-6 lg:py-24"
+      className="relative isolate scroll-mt-[124px] overflow-clip border-y-4 border-gold-start bg-action px-4 py-12 sm:px-6 lg:scroll-mt-[100px] lg:py-24"
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img

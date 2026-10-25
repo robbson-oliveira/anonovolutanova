@@ -50,15 +50,9 @@ const logoMobile = "/img/logo-2027-mobile.png";
 /** White lockup, same pixel size as the mobile logo, for the dark open menu. */
 const logoMenu = "/img/logo-menu-modal.png";
 
-/**
- * There is no storefront login. The account icon used to be `href="#"`.
- * "Afiliados" in the nav and the footer both go to the contact page, and the
- * migration plan sends the old customer account (`/minha-conta`) there too
- * because no account exists (D6). Both entries use that page until a real
- * login is named.
- */
-const BUYER_LOGIN_URL = "/contato";
-const AFFILIATE_LOGIN_URL = "/contato";
+/** Buyer and affiliate logins live on the admin host. */
+const BUYER_LOGIN_URL = "https://admin.anonovolutanova.com.br/my-account/";
+const AFFILIATE_LOGIN_URL = "https://admin.anonovolutanova.com.br/area-afiliado/";
 
 /**
  * Basket in the phone header, immediately left of the account icon.
@@ -242,8 +236,6 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
   const [mounted, setMounted] = useState(false);
   const [barH, setBarH] = useState(smartMenu ? SHELL_BAR : 0);
   const [compactDesktop, setCompactDesktop] = useState(false);
-  /** Phone header shadow only after the page leaves the top. */
-  const [headerShadow, setHeaderShadow] = useState(false);
   // Fallback is the home layout: the 36px bar plus the 80px header row.
   const [panelTop, setPanelTop] = useState(116);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -321,9 +313,9 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
     const parent = bar?.parentElement;
     const mo = parent ? new MutationObserver(read) : null;
     mo?.observe(parent!, { childList: true });
-    window.addEventListener("resize", read);
+    // No window resize listener: iOS fires resize while the address bar
+    // shows and hides, and reading layout there shakes the sticky row.
     return () => {
-      window.removeEventListener("resize", read);
       ro.disconnect();
       mo?.disconnect();
     };
@@ -331,24 +323,29 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
 
   useEffect(() => {
     if (!smartMenu) return;
-    // Class toggle only, past a few pixels. Reading scrollY here does not
-    // change height; an IntersectionObserver on a 4px sentinel missed the
-    // return to the top in WebKit and left the shadow on.
+    const header = headerRef.current;
+    if (!header) return;
+    // Shadow only, and only after the page has actually left the top.
+    // The attribute is not React state: a setState on every crossing
+    // re-rendered the sticky row while Safari's toolbar resized.
+    // Hysteresis keeps a rubber-band around the threshold from flashing it.
     let frame = 0;
+    let shown = false;
+    const apply = (next: boolean) => {
+      if (next === shown) return;
+      shown = next;
+      header.dataset.headerShadow = next ? "1" : "0";
+    };
     const read = () => {
       frame = 0;
-      const next = window.scrollY > 8;
-      setHeaderShadow((prev) => (prev === next ? prev : next));
+      const y = window.scrollY;
+      apply(shown ? y > 4 : y > 12);
     };
     const onScroll = () => {
       if (frame) return;
-      frame = requestAnimationFrame(() => {
-        read();
-        // The last scroll event can land a frame before the position settles.
-        requestAnimationFrame(read);
-      });
+      frame = requestAnimationFrame(read);
     };
-    frame = requestAnimationFrame(read);
+    read();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("scrollend", read);
     return () => {
@@ -361,13 +358,30 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
   useEffect(() => {
     const header = headerRef.current;
     if (!smartMenu || !header) return;
+    // The compact bar is desktop only. On a phone the row is sticky, so it
+    // never leaves the viewport; observing it there flickers as the address
+    // bar resizes and re-renders the header on every scroll frame.
+    const desktop = window.matchMedia("(min-width: 1024px)");
     let observer: IntersectionObserver | null = null;
-    observer = new IntersectionObserver(
-      ([entry]) => setCompactDesktop(!entry.isIntersecting),
-      { threshold: 0, rootMargin: `-${barH}px 0px 0px 0px` },
-    );
-    observer.observe(header);
-    return () => observer?.disconnect();
+    const connect = () => {
+      observer?.disconnect();
+      observer = null;
+      if (!desktop.matches) {
+        setCompactDesktop(false);
+        return;
+      }
+      observer = new IntersectionObserver(
+        ([entry]) => setCompactDesktop(!entry.isIntersecting),
+        { threshold: 0, rootMargin: `-${barH}px 0px 0px 0px` },
+      );
+      observer.observe(header);
+    };
+    connect();
+    desktop.addEventListener("change", connect);
+    return () => {
+      desktop.removeEventListener("change", connect);
+      observer?.disconnect();
+    };
   }, [smartMenu, barH]);
 
   const headerTop = barH > 0 ? `${barH}px` : "env(safe-area-inset-top, 0px)";
@@ -380,10 +394,9 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
       <header
         ref={headerRef}
         data-anln-header=""
-        data-header-shadow={headerShadow ? "1" : "0"}
         className={cn(
           "relative z-40 bg-surface transition-shadow duration-300 motion-reduce:transition-none",
-          smartMenu && !open && headerShadow && "max-lg:shadow-card",
+          smartMenu && !open && "max-lg:data-[header-shadow=1]:shadow-card",
           // Open menu only, and only below the desktop nav: the row joins
           // the announcement bar and the panel as one dark surface.
           // The strip below covers the seam where the page would show through.
@@ -558,19 +571,16 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
               </a>
             </nav>
 
-            {/* Bottom: "Siga-nos" + Instagram */}
-            <div className="flex items-center justify-center gap-2 pb-10 text-sm font-semibold text-text-on-inverse">
+            {/* Bottom: "Siga-nos" opens the Instagram profile. */}
+            <a
+              href={INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener"
+              className="flex items-center justify-center gap-2 pb-10 text-sm font-semibold text-text-on-inverse transition-colors [transition-duration:var(--duration-fast)] hover:text-action"
+            >
               <span>Siga-nos</span>
-              <a
-                href={INSTAGRAM_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram"
-                className="text-xl transition-colors [transition-duration:var(--duration-fast)] hover:text-action"
-              >
-                <IconInstagram />
-              </a>
-            </div>
+              <IconInstagram className="text-xl" />
+            </a>
           </div>,
           document.body,
         )}

@@ -69,39 +69,42 @@ export default async function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
       {/* pt-9 only from lg: on the phone the shipping bar is in flow, inside
-          the sticky group below. overflow-x-clip: the sideways entrance
-          animations start 56px off and would widen the page without the clip. */}
-      <div className="relative isolate overflow-x-clip bg-surface lg:pt-9">
-        {/* One sticky layer for the shipping bar and the phone header. They
-            used to be fixed and sticky separately, which jitters while
-            Safari's toolbar changes the visual viewport. */}
-        <div className="max-lg:sticky max-lg:top-0 max-lg:z-50 max-lg:bg-surface lg:contents">
+          the sticky group below. The clip stays on the content under the
+          header: a clip (or hidden) ancestor makes iOS Safari repaint the
+          sticky bar on every frame while the address bar moves. */}
+      <div className="relative isolate bg-surface lg:pt-9">
+        {/* One sticky layer for the shipping bar and the phone header.
+            translateZ(0) promotes that layer so it does not shake while
+            the visual viewport resizes. Height and padding stay fixed. */}
+        <div className="max-lg:sticky max-lg:top-0 max-lg:z-50 max-lg:bg-surface max-lg:will-change-transform max-lg:[transform:translateZ(0)] lg:contents">
           <TopBar />
           <SiteHeader smartMenu />
         </div>
-        {/* Watercolor shared by the FAQ, the closing card and the footer (Figma
-            "BG inferior", 949:15): 1920px wide, centered and cropped by the
-            page on narrower screens, glued to the bottom, with a mask that keeps
-            the top third clear. 2824px = the 2965px of the frame minus the 141px
-            that hang below the footer. */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute bottom-0 left-1/2 -z-10 aspect-[1920/2824] w-[max(100%,1100px)] -translate-x-1/2 bg-[url(/img/footer/bg-aquarela.webp)] bg-[length:100%_auto] bg-top bg-no-repeat [mask-image:var(--mask-lower-aquarela)] min-[1440px]:w-[max(100%,1920px)]"
-        />
-        <main>
-          <Hero />
-          <DuckStrip />
-          <About />
-          <Explore />
-          <Planner />
-          <Liturgical />
-          <Persona />
-          <Testimonials />
-          <Product offer={offer} />
-          <Faq />
-          <Closing />
-        </main>
-        <SiteFooter />
+        <div className="relative overflow-x-clip">
+          {/* Watercolor shared by the FAQ, the closing card and the footer (Figma
+              "BG inferior", 949:15): 1920px wide, centered and cropped by the
+              page on narrower screens, glued to the bottom, with a mask that keeps
+              the top third clear. 2824px = the 2965px of the frame minus the 141px
+              that hang below the footer. */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute bottom-0 left-1/2 -z-10 aspect-[1920/2824] w-[max(100%,1100px)] -translate-x-1/2 bg-[url(/img/footer/bg-aquarela.webp)] bg-[length:100%_auto] bg-top bg-no-repeat [mask-image:var(--mask-lower-aquarela)] min-[1440px]:w-[max(100%,1920px)]"
+          />
+          <main>
+            <Hero />
+            <DuckStrip />
+            <About />
+            <Explore />
+            <Planner />
+            <Liturgical />
+            <Persona />
+            <Testimonials />
+            <Product offer={offer} />
+            <Faq />
+            <Closing />
+          </main>
+          <SiteFooter />
+        </div>
       </div>
     </>
   );

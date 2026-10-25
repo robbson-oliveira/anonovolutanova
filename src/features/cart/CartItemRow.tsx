@@ -17,8 +17,8 @@ function unitsLabel(quantity: number) {
 /**
  * Visual only. The checked value stays in this component; nothing reads it
  * into the cart, the price or the order while `GIFT_WRAP_AFFECTS_ORDER` is false.
- * Below md the capitals are 22px tall, the same as the box, which in this
- * condensed face is a 31px size. From md the label stays the small line.
+ * Below md the line is a small condensed label inside the name column.
+ * From md the box stays 22px and the label stays the 16px line.
  */
 function GiftWrapControl() {
   const [checked, setChecked] = useState(false);
@@ -31,8 +31,8 @@ function GiftWrapControl() {
       onCheckedChange={setChecked}
       align="center"
       className="gap-0"
-      boxClassName="size-[22px]! rounded-[3px]"
-      labelClassName="font-condensed text-[31px]! font-semibold! uppercase leading-none! tracking-[-0.02em] whitespace-nowrap text-text-strong md:text-xs!"
+      boxClassName="size-4! rounded-[3px] [&_svg]:size-3! md:size-[22px]! md:[&_svg]:size-4!"
+      labelClassName="font-condensed text-[12px]! font-semibold! uppercase leading-none! tracking-[-0.02em] whitespace-nowrap text-text-strong md:text-xs!"
     >
       Embalagem para presente
     </Checkbox>
@@ -42,8 +42,9 @@ function GiftWrapControl() {
 /**
  * One cart line: thumbnail, name, quantity and the line total. The
  * miniature is the product's main image in WooCommerce, with the edition's
- * local cover as the fallback. Below md the name sits on the stepper and
- * the price is centered on the photo; from md both sit a little higher.
+ * local cover as the fallback. Below md the name, the stepper and the gift
+ * line stack in the middle column, and the price centers on that whole
+ * block. From md the stepper and the price sit a little higher.
  */
 export function CartItemRow({
   item,
@@ -66,75 +67,62 @@ export function CartItemRow({
   const title = edition ? edition.label : item.name;
 
   return (
-    <li className="flex flex-col font-condensed">
-      <div className="flex items-start gap-2.5 md:items-stretch md:gap-4">
-        <ProductThumb
-          image={mainImage(item.images)}
-          fallback={edition}
-          sizes={compact ? "72px" : "104px"}
-          className={compact ? "size-[72px]" : "size-[88px] sm:size-[104px]"}
-        />
-        {/* Below md the name sits on the stepper: the larger type replaces
-            the old gap, so the stack does not grow past the photo. From md
-            the stepper is pulled up a little closer to the name. */}
-        <div className="flex min-w-0 flex-1 flex-col justify-start gap-0 md:justify-between md:gap-1">
-          <span className="text-[17px] font-bold leading-tight tracking-[-0.02em] text-text-strong md:text-base">
-            {title}
-          </span>
-          {onQuantity ? (
-            <div className="flex flex-col items-start gap-2">
-              <div
-                role="group"
-                aria-label={`Quantidade de ${title}`}
-                className="inline-flex h-8 items-stretch overflow-hidden rounded-[10px] border border-border text-text-strong md:-mt-4 md:h-9"
-              >
-                <button
-                  type="button"
-                  disabled={busy}
-                  onClick={() => onQuantity(item.quantity - 1)}
-                  aria-label={item.quantity === 1 ? `Remover ${title}` : "Diminuir quantidade"}
-                  className="grid w-8 cursor-pointer place-items-center border-r border-border text-sm disabled:cursor-wait disabled:opacity-40 sm:w-9"
-                >
-                  <IconMinus />
-                </button>
-                <span
-                  className="grid min-w-8 place-items-center border-r border-border px-1 text-[13px] font-semibold tabular-nums tracking-[-0.02em] sm:min-w-10 sm:text-sm"
-                  aria-live="polite"
-                >
-                  {unitsLabel(item.quantity)}
-                </span>
-                <button
-                  type="button"
-                  disabled={busy || item.quantity >= max}
-                  onClick={() => onQuantity(item.quantity + 1)}
-                  aria-label="Aumentar quantidade"
-                  className="grid w-8 cursor-pointer place-items-center text-sm disabled:cursor-not-allowed disabled:opacity-40 sm:w-9"
-                >
-                  <IconPlus />
-                </button>
-              </div>
-              {giftWrap ? (
-                <div className="hidden md:block">
-                  <GiftWrapControl />
-                </div>
-              ) : null}
-            </div>
-          ) : (
-            <span className="text-xs text-text-muted">Quantidade: {unitsLabel(item.quantity)}</span>
-          )}
-        </div>
-        {/* Below md the price is centered on the photo (88px, 104px from sm),
-            not on the row, and one step larger. From md it sits a little
-            above the row center. */}
-        <span className="shrink-0 self-start text-[24px] font-bold leading-none tracking-[-0.04em] text-text-strong max-md:mt-8 sm:max-md:mt-10 md:mt-0! md:self-center md:-translate-y-2 md:text-[26px]">
-          {formatBRL(lineTotal)}
+    <li className="flex items-start gap-2.5 font-condensed md:items-stretch md:gap-4">
+      <ProductThumb
+        image={mainImage(item.images)}
+        fallback={edition}
+        sizes={compact ? "72px" : "104px"}
+        className={compact ? "size-[72px]" : "size-[88px] sm:size-[104px]"}
+      />
+      {/* Below md the name, stepper and gift line share the middle column.
+          From md the stepper is pulled up a little closer to the name. */}
+      <div className="flex min-w-0 flex-1 flex-col justify-start gap-1.5 md:justify-between md:gap-1">
+        <span className="text-[24px] font-bold leading-none tracking-[-0.02em] text-text-strong md:text-base md:leading-tight">
+          {title}
         </span>
+        {onQuantity ? (
+          <div className="flex flex-col items-start gap-1.5 md:gap-2">
+            <div
+              role="group"
+              aria-label={`Quantidade de ${title}`}
+              className="inline-flex h-9 items-stretch overflow-hidden rounded-[10px] border border-border text-text-strong md:-mt-4 md:h-9"
+            >
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => onQuantity(item.quantity - 1)}
+                aria-label={item.quantity === 1 ? `Remover ${title}` : "Diminuir quantidade"}
+                className="grid w-9 cursor-pointer place-items-center border-r border-border text-sm disabled:cursor-wait disabled:opacity-40"
+              >
+                <IconMinus />
+              </button>
+              <span
+                className="grid min-w-9 place-items-center border-r border-border px-1 text-[15px] font-semibold tabular-nums tracking-[-0.02em] sm:min-w-10 sm:text-sm"
+                aria-live="polite"
+              >
+                {unitsLabel(item.quantity)}
+              </span>
+              <button
+                type="button"
+                disabled={busy || item.quantity >= max}
+                onClick={() => onQuantity(item.quantity + 1)}
+                aria-label="Aumentar quantidade"
+                className="grid w-9 cursor-pointer place-items-center text-sm disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                <IconPlus />
+              </button>
+            </div>
+            {giftWrap ? <GiftWrapControl /> : null}
+          </div>
+        ) : (
+          <span className="text-xs text-text-muted">Quantidade: {unitsLabel(item.quantity)}</span>
+        )}
       </div>
-      {giftWrap ? (
-        <div className="mt-2 md:hidden">
-          <GiftWrapControl />
-        </div>
-      ) : null}
+      {/* Below md the price centers on the whole row (name, stepper, gift).
+          From md it sits a little above the row center. */}
+      <span className="shrink-0 self-center text-[26px] font-bold leading-none tracking-[-0.04em] text-text-strong md:-translate-y-2">
+        {formatBRL(lineTotal)}
+      </span>
     </li>
   );
 }

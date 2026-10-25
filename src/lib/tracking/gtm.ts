@@ -6,8 +6,12 @@
  *
  * Todo consentimento começa NEGADO (LGPD): o GTM carrega, mas GA4 e Meta só
  * gravam cookies depois que a pessoa aceita no aviso de cookies
- * (`src/features/shell/ConsentBanner.tsx`), que chama `gtag('consent', 'update', …)`. Uma escolha
- * já feita é reaplicada aqui, antes do GTM, para não haver página sem ela.
+ * (`src/features/shell/ConsentBanner.tsx`), que chama `gtag('consent', 'update', …)`
+ * e empurra `anln_consent_granted`. Uma escolha já feita é reaplicada aqui,
+ * antes do GTM, inclusive esse evento: a tag de base do Meta escuta só ele,
+ * então sem o replay o pixel não existe nas visitas seguintes. O clique no
+ * aviso só acontece sem escolha gravada, então o evento não sai duas vezes
+ * na mesma visita.
  */
 
 export const CONSENT_STORAGE_KEY = "anln_consent";
@@ -22,10 +26,27 @@ gtag('consent', 'default', {
 });
 try {
   var c = localStorage.getItem('${CONSENT_STORAGE_KEY}');
-  if (c === 'granted') gtag('consent', 'update', {
-    ad_storage: 'granted', ad_user_data: 'granted', ad_personalization: 'granted',
-    analytics_storage: 'granted'
+  // 'granted' is the banner's all-in choice (marketing included). A stored
+  // object with categories gates the Meta event on marketing alone.
+  var marketing = c === 'granted';
+  var analytics = c === 'granted';
+  if (c && c.charAt(0) === '{') {
+    var parsed = JSON.parse(c);
+    var cats = parsed && parsed.categories;
+    if (cats) {
+      var mark = cats.marketing;
+      var stats = cats.analytics;
+      marketing = mark === true || mark === 'granted';
+      analytics = stats === true || stats === 'granted';
+    }
+  }
+  if (marketing || analytics) gtag('consent', 'update', {
+    ad_storage: marketing ? 'granted' : 'denied',
+    ad_user_data: marketing ? 'granted' : 'denied',
+    ad_personalization: marketing ? 'granted' : 'denied',
+    analytics_storage: analytics ? 'granted' : 'denied'
   });
+  if (marketing) dataLayer.push({event:'anln_consent_granted'});
 } catch (e) {}
 `;
 

@@ -55,8 +55,10 @@ export function Product({ offer }: { offer: ProductOffer }) {
                 {OFFER.title}
               </Heading>
               {/* One step down from the section title, and only on mobile:
-                  the desktop paragraph keeps the body size. */}
-              <Text className="text-balance leading-snug text-text-strong max-md:text-sm max-md:leading-snug">{OFFER.paragraph}</Text>
+                  16.75px is about 7% under the 18px step, so a narrow phone
+                  does not leave a single word on the last line. Desktop
+                  keeps the body size. */}
+              <Text className="text-balance leading-snug text-text-strong max-md:text-[16.75px]! max-md:text-pretty">{OFFER.paragraph}</Text>
             </div>
           </Reveal>
 

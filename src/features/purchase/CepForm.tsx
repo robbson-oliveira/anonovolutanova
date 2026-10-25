@@ -79,7 +79,12 @@ export function CepForm({
             if (localError) setLocalError(null);
           }}
           className={cn(
-            "h-12 min-w-0 flex-1 rounded-card border bg-surface-plain px-4 text-field text-text-strong",
+            // Below md the field is narrow beside Calcular. 15px, a shorter
+            // box and 8px of side padding keep "00000-000" inside the box
+            // at 360px. line-height 1 stops Android from clipping the glyphs.
+            // From md the field stays 16px / 48px / 12px radius.
+            "h-11 min-w-0 flex-1 rounded-[10px] border bg-surface-plain px-2 text-[15px] leading-none text-text-strong",
+            "md:h-12 md:rounded-card md:px-4 md:text-field md:leading-[1.4]",
             "placeholder:text-text-muted focus:outline-none",
             "transition-colors [transition-duration:var(--duration-fast)]",
             shownError ? "border-accent" : "border-border focus:border-action",
@@ -90,7 +95,8 @@ export function CepForm({
           disabled={pending}
           aria-busy={pending || undefined}
           className={cn(
-            "inline-flex h-12 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-card bg-action px-5 text-label font-semibold text-on-action",
+            "inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-[10px] bg-action px-5 text-label font-semibold text-on-action",
+            "md:h-12 md:rounded-card",
             "transition-colors [transition-duration:var(--duration-fast)] hover:bg-action-hover",
             "disabled:cursor-not-allowed disabled:opacity-60",
           )}

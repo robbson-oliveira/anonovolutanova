@@ -413,29 +413,12 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
         {/* Gutters stay on from the phone up. Zeroing them at lg made the
             logo and Comprar sit on the viewport edge between 1024 and 1316. */}
         <div className={cn(pageFrameClass, "flex h-20 items-center justify-between gap-3 xl:gap-6")}>
-          {/* ── Mobile: hamburger left ── */}
-          <button
-            ref={triggerRef}
-            type="button"
-            aria-expanded={open}
-            aria-controls="mobile-menu"
-            aria-label={open ? "Fechar menu" : "Abrir menu"}
-            onClick={() => {
-              if (!open) syncPanelTop();
-              setOpen((v) => !v);
-            }}
-            className={cn(
-              "grid size-11 cursor-pointer place-items-center text-xl lg:hidden",
-              open ? "text-text-on-inverse" : "text-text-strong",
-            )}
-          >
-            <IconMenu close={open} />
-          </button>
-
-          {/* ── Logo: stacked year on mobile, ornate logo on desktop ── */}
+          {/* Logo is the first item in the shared frame, so its left edge is
+              the same x as the hero heading. Centering it on the phone put
+              that edge on a different x from the text below. */}
           <a
             href="#inicio"
-            className="flex shrink-0 items-center max-lg:absolute max-lg:left-1/2 max-lg:-translate-x-1/2"
+            className="flex shrink-0 items-center"
           >
             {/* Mobile: full 2027 branding logo */}
             <img
@@ -469,8 +452,26 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
             </ul>
           </nav>
 
-          {/* Mobile: basket, then account. Desktop keeps its own cluster. */}
+          {/* Phone: menu, basket, account. The menu sits on this side so the
+              logo can keep the frame's left edge. */}
           <div className="flex items-center lg:hidden">
+            <button
+              ref={triggerRef}
+              type="button"
+              aria-expanded={open}
+              aria-controls="mobile-menu"
+              aria-label={open ? "Fechar menu" : "Abrir menu"}
+              onClick={() => {
+                if (!open) syncPanelTop();
+                setOpen((v) => !v);
+              }}
+              className={cn(
+                "grid size-11 cursor-pointer place-items-center text-xl",
+                open ? "text-text-on-inverse" : "text-text-strong",
+              )}
+            >
+              <IconMenu close={open} />
+            </button>
             <HeaderCart light={open} onBeforeOpen={() => setOpen(false)} />
             <AccountMenu light={open} onBeforeOpen={() => setOpen(false)} />
           </div>

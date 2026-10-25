@@ -10,6 +10,7 @@ import {
   IconSeteDomingosSaoJose,
   IconTrisagio,
   Reveal,
+  pageFrameClass,
 } from "@ds/index";
 import { LITURGICAL } from "@content/home";
 import { OFFER_ANCHOR } from "@content/product";
@@ -93,7 +94,7 @@ export function Liturgical() {
   useEqualCards(listRef);
 
   return (
-    <section className="relative overflow-hidden bg-surface px-5 py-16 md:px-8 md:py-20 lg:px-12 xl:px-[60px] xl:py-[100px]">
+    <section className="relative overflow-hidden bg-surface py-16 md:py-20 xl:py-[100px]">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 overflow-hidden opacity-[0.19] mix-blend-darken"
@@ -101,14 +102,14 @@ export function Liturgical() {
         <div className="absolute inset-0 bg-[url('/img/textura-liturgica.webp')] bg-cover bg-center" />
       </div>
 
-      <div className="relative mx-auto w-full max-w-[1018px]">
+      <div className={`${pageFrameClass} relative`}>
         <Reveal variant="up">
           <h2 className="text-center text-h2 font-bold text-text-lead max-md:px-2 max-md:text-[28px] max-md:leading-[1.12]">
             {LITURGICAL.title}
           </h2>
         </Reveal>
 
-        <div className="mt-4 flex flex-col gap-3 text-center md:mt-[13px] md:flex-row md:justify-between md:gap-10 md:text-left lg:px-[55px]">
+        <div className="mt-4 flex flex-col gap-3 text-center md:mt-[13px] md:flex-row md:justify-between md:gap-10 md:text-left">
           <p className="text-base text-text max-md:px-2 max-md:text-[15px] max-md:leading-snug md:w-[270px]">
             {LITURGICAL.subtitle}
           </p>

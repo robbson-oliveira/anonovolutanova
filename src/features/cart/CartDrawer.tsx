@@ -117,7 +117,7 @@ export function CartDrawer() {
                     <span>− {formatBRL(discount)}</span>
                   </div>
                 ) : null}
-                <div className="flex justify-between text-base font-bold text-text-strong">
+                <div className="flex justify-between text-base font-bold text-text-strong max-md:font-condensed">
                   <span>Subtotal</span>
                   <span>{formatBRL(subtotal - discount)}</span>
                 </div>

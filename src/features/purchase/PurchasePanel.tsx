@@ -123,7 +123,10 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
           altura fixa e largura automática, nunca object-fit — as duas capas
           têm proporções diferentes. Aqui via next/image porque os PNGs têm
           ~2,5 MB e a compra acontece no celular, vinda do Instagram. */}
-      <div className="flex flex-col items-center gap-5 lg:sticky lg:top-8">
+      {/* Sticks under the fixed shipping bar (36px) and the compact menu
+          (56px). The grid is only as tall as the buy column, so the cover
+          releases when that column ends — at the wholesale line. */}
+      <div className="flex flex-col items-center gap-5 lg:sticky lg:top-[100px]">
         <div
           ref={stageRef}
           className="relative flex h-(--stage-h) w-full items-center justify-center [--stage-h:260px] sm:[--stage-h:480px]"

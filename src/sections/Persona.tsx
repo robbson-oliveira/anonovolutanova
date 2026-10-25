@@ -20,9 +20,9 @@ import { PERSONA } from "@content/home";
    On a phone the six cards are a scroll-linked stack (see `usePersonaStack`):
    the title stays put under the header and each next card rises over the
    one in front, which scales down and fades. The list keeps its own height,
-   so nothing inserts an empty stage. After the last card the section
-   scrolls away with the page. Reduced motion and widths from `sm` up keep
-   the plain grid.
+   so nothing inserts an empty stage. The section ends as the last card
+   covers the one before it; Depoimentos follows at the section's own
+   padding. Reduced motion and widths from `sm` up keep the plain grid.
    -------------------------------------------------------------------------- */
 
 /**
@@ -123,11 +123,12 @@ function usePersonaStack(
       if (!cardH) return false;
 
       // The gap under the paragraph becomes padding on the sticky intro,
-      // and the list is pulled back over a one-card spacer. The intro box
-      // then ends exactly where the card pile ends, so the title and the
-      // last card leave together instead of separating. The cards stay a
-      // small flex gap apart: extra siblings made a blank stage between
-      // them. The overlap eases across that same short travel.
+      // and the list is pulled back over that padding. The intro box then
+      // ends where the card pile ends, so the title and the last card
+      // leave together. No padding on the track: a card of it stayed in
+      // the document after the last card had already covered the one
+      // before it, and that was the blank band before Depoimentos. The
+      // list's own height is the whole runway.
       gap = parseFloat(getComputedStyle(list).marginTop) || 0;
       sticky.style.position = "sticky";
       sticky.style.top = `${pinTop()}px`;
@@ -136,9 +137,7 @@ function usePersonaStack(
       list.style.position = "relative";
       list.style.zIndex = "1";
       track.dataset.personaStack = "on";
-      // Keeps the short intro stuck until the last card lands. Padding on
-      // the intro itself would make that box taller and release it sooner.
-      track.style.paddingBottom = `${cardH}px`;
+      track.style.paddingBottom = "";
 
       items.forEach((card, i) => {
         const li = card.parentElement;

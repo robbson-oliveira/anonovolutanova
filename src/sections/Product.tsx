@@ -20,7 +20,7 @@ export function Product({ offer }: { offer: ProductOffer }) {
   return (
     <section
       id="oferta"
-      className="relative isolate scroll-mt-24 overflow-hidden border-y-4 border-gold-start bg-action px-4 py-12 sm:px-6 lg:py-24"
+      className="relative isolate scroll-mt-24 overflow-clip border-y-4 border-gold-start bg-action px-4 py-12 sm:px-6 lg:py-24"
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
@@ -32,7 +32,9 @@ export function Product({ offer }: { offer: ProductOffer }) {
         className="pointer-events-none absolute inset-0 -z-10 size-full object-cover opacity-[0.09]"
       />
 
-      <div className="relative mx-auto w-full max-w-page overflow-hidden rounded-[32px] bg-surface-plain px-4 py-12 sm:px-8 lg:rounded-[90px] lg:px-16 lg:py-24">
+      {/* clip, not hidden: hidden would be a scroll container and the
+          cover column could not stick while this card scrolls by. */}
+      <div className="relative mx-auto w-full max-w-page overflow-clip rounded-[32px] bg-surface-plain px-4 py-12 sm:px-8 lg:rounded-[90px] lg:px-16 lg:py-24">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/img/offer/card-watercolor.webp"

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Button, EditionSelector, Reveal, cn } from "@ds/index";
 import { EXPLORE, QUOTE } from "@content/home";
-import { AGENDA_EDITIONS, CART_URL, CYCLE_YEAR } from "@content/product";
+import { AGENDA_EDITIONS, CYCLE_YEAR, OFFER_ANCHOR } from "@content/product";
 
 const capaColor = "/img/capa-color.webp";
 const capaClassica = "/img/capa-classica.webp";
@@ -438,7 +438,7 @@ function HotspotCard({ spot, pinRefs, index, onClose }: HotspotCardProps) {
         {spot.text}
       </p>
       <Button
-        href={CART_URL}
+        href={OFFER_ANCHOR}
         className="mt-2.5 h-auto! rounded-[8px]! bg-hotspot! px-3.5! py-1.5! text-[14px]! leading-[1.3]! tracking-[-0.01em]! hover:bg-hotspot-hover!"
       >
         Garantir minha Agenda

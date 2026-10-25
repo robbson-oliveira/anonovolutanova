@@ -6,7 +6,6 @@ import {
   Heading,
   Reveal,
   Text,
-  pageFrameClass,
 } from "@ds/index";
 import { HERO, STATS } from "@content/home";
 import { OFFER_ANCHOR } from "@content/product";
@@ -26,19 +25,19 @@ import { BookStage } from "./BookStage";
  *   stats         29px below the seals, center-aligned as a group
  *   stage         740 × 740; color cover at x=653.5 / y=4 of the section
  *
- * Below 1200px the layout follows the Framer mobile/tablet home
- * (anonovolutanova.framer.website/old-home). From 1200px the stage is
- * absolutely placed inside the page frame. A right inset keeps the 25°
- * fan (it extends past the stage box) inside that frame.
+ * Below 1200px this is the tuned stage from d99bf83: 24px padding, then
+ * 32px, a 388px stage pulled 4px left on the phone, and the tablet column
+ * filling whatever width is left. From 1200px the stage keeps that same
+ * pixel width (min(viewport, 1380px) - 640px) but its right edge stops on
+ * the page frame (1376px, 48px padding) instead of bleeding to the screen.
  *
- *   < 768    one column, left-aligned to the page frame (same x as the
- *            header logo): badge, title, subtitle, paragraph, button, seals,
- *            then the three stats in a single row, then the books. The stage
- *            is inset so the rotated back cover stays inside the viewport.
+ *   < 768    one column, centered: badge, title, subtitle, paragraph,
+ *            button, seals, then the three stats in a single row, then the
+ *            books. The stage is inset (not edge to edge) so the rotated
+ *            back cover stays inside the viewport.
  *   768–1199 two columns. The text takes 47% and the stage fills the rest,
- *            The stage is a fraction of that column so the rotated cover
- *            stays inside the frame. Stats stay in one row (the fixed
- *            122/107/182 widths only fit from 1200px).
+ *            with room on the right for the 25° cover. Stats stay in one
+ *            row (the fixed 122/107/182 widths only fit from 1200px).
  *
  * Tablet-only utilities are `md:max-[1199px]:`. A plain `md:` rule is
  * emitted after `min-[1200px]:` in this Tailwind build, so it would
@@ -57,11 +56,13 @@ export function Hero() {
       id="inicio"
       className="relative overflow-x-clip bg-surface pb-16 pt-[29px] md:pb-24 lg:pb-[158px]"
     >
-      <div className={pageFrameClass}>
+      {/* Below 1200 the padding is the tuned stage container (24px, then 32px).
+          From 1200 it is the page frame: 1376px, 48px padding, centered. */}
+      <div className="mx-auto w-full max-w-[1380px] px-6 md:max-[1199px]:px-8 min-[1200px]:max-w-[1376px] min-[1200px]:px-12">
         {/* isolate: o palco fica atrás do texto (-z-10) sem cair para trás
             do fundo da seção. */}
         <div className="relative isolate md:max-[1199px]:flex md:max-[1199px]:items-center md:max-[1199px]:gap-4">
-          <div className="flex flex-col md:max-[1199px]:w-[47%] md:max-[1199px]:max-w-none md:max-[1199px]:min-w-0 md:max-[1199px]:shrink-0 min-[1200px]:max-w-[min(647.5px,54%)]">
+          <div className="flex flex-col max-md:items-center max-md:text-center md:max-[1199px]:w-[47%] md:max-[1199px]:max-w-none md:max-[1199px]:min-w-0 md:max-[1199px]:shrink-0 min-[1200px]:max-w-[min(647.5px,54%)]">
             <Reveal variant="up">
               <Badge
                 tone="plain"
@@ -102,14 +103,14 @@ export function Hero() {
                 href={OFFER_ANCHOR}
                 size="lg"
                 shape="block"
-                className="mt-[29px] h-[68px] w-full max-w-[425px] md:max-[1199px]:max-w-[312px] rounded-[10px]! border border-gold-end bg-linear-90 from-gold-start to-gold-end text-[16px]! leading-[16px]! font-bold! tracking-[-0.64px]! transition-[transform,box-shadow] [transition-duration:var(--duration-fast)] hover:-translate-y-0.5 hover:shadow-[0_8px_18px_-6px] hover:shadow-gold-start/60 motion-reduce:hover:translate-y-0"
+                className="mt-[29px] h-[68px] w-full max-w-[425px] max-md:w-[329px] max-md:max-w-[329px] md:max-[1199px]:max-w-[312px] rounded-[10px]! border border-gold-end bg-linear-90 from-gold-start to-gold-end text-[16px]! leading-[16px]! font-bold! tracking-[-0.64px]! transition-[transform,box-shadow] [transition-duration:var(--duration-fast)] hover:-translate-y-0.5 hover:shadow-[0_8px_18px_-6px] hover:shadow-gold-start/60 motion-reduce:hover:translate-y-0"
               >
                 {HERO.cta}
               </Button>
             </Reveal>
 
             <Reveal variant="up" delay={280}>
-              <div className="mt-[10px] flex flex-wrap items-center gap-[12px]">
+              <div className="mt-[10px] flex flex-wrap items-center gap-[12px] max-md:justify-center">
                 {HERO.seals.map((seal) => (
                   <Badge
                     key={seal}
@@ -145,16 +146,13 @@ export function Hero() {
             </Reveal>
           </div>
 
-          {/* Below 1200 the stage is in flow. On the phone it is 80% of the
-              frame so the fan and its shadow stay inside the 20px gutter.
-              On tablet the outer box takes the leftover column and the
-              stage is 84% of that, leaving the rest for the 25° cover.
-              From 1200 it is absolute: left min(600px, 54%)+8px, 64px in
-              from the frame's right edge, nudged up 9.1216%. */}
-          <div className="md:max-[1199px]:flex md:max-[1199px]:min-w-0 md:max-[1199px]:flex-1 md:max-[1199px]:justify-start">
-            <div className="relative mx-auto mt-6 w-[80%] max-w-[420px] md:max-[1199px]:mx-0 md:max-[1199px]:mt-0 md:max-[1199px]:w-[84%] md:max-[1199px]:max-w-[640px] min-[1200px]:absolute min-[1200px]:right-16 min-[1200px]:left-[calc(min(600px,54%)+8px)] min-[1200px]:top-0 min-[1200px]:-z-10 min-[1200px]:mx-0 min-[1200px]:mt-0 min-[1200px]:w-auto min-[1200px]:max-w-none min-[1200px]:translate-y-[calc(10px-9.1216%)]">
-              <BookStage fluid />
-            </div>
+          {/* 388px of stage on a 390px screen, pulled 4px left of the
+              padding so the cover art sits a little right of center and
+              the painted edge stays inside the viewport. From 1200 the
+              width stays min(viewport, 1380px) - 640px and the right edge
+              stops on the page frame. */}
+          <div className="relative mx-auto mt-6 w-[min(388px,100vw)] max-md:-ml-[4px] md:max-[1199px]:mx-0 md:max-[1199px]:mt-0 md:max-[1199px]:ml-0 md:max-[1199px]:w-auto md:max-[1199px]:min-w-0 md:max-[1199px]:flex-1 min-[1200px]:absolute min-[1200px]:right-0 min-[1200px]:left-auto min-[1200px]:top-0 min-[1200px]:-z-10 min-[1200px]:mx-0 min-[1200px]:mt-0 min-[1200px]:w-[calc(min(100vw,1380px)-640px)] min-[1200px]:max-w-none min-[1200px]:translate-y-[calc(10px-9.1216%)]">
+            <BookStage fluid />
           </div>
         </div>
       </div>

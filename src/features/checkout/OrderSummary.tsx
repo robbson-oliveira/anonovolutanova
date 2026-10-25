@@ -5,6 +5,7 @@ import { PRODUCT_NAME } from "@content/product";
 import { useCart } from "@/features/cart/CartProvider";
 import { CouponForm } from "@/features/cart/CouponForm";
 import { ProductThumb } from "@/features/cart/ProductThumb";
+import { cartLineTitle } from "@/features/cart/line-title";
 import { editionOfCartItem } from "@/lib/commerce/editions";
 import { mainImage } from "@/lib/commerce/product-image";
 import { fromMinor, type StoreCartItem } from "@/lib/commerce/store-api";
@@ -91,7 +92,7 @@ function SummaryItem({
   const edition = editionOfCartItem(item);
   const minor = item.totals.currency_minor_unit ?? item.prices.currency_minor_unit;
   const max = item.quantity_limits?.maximum ?? 49;
-  const label = edition?.label ?? item.name;
+  const label = cartLineTitle(item);
 
   return (
     <li className="flex gap-4">
@@ -110,7 +111,7 @@ function SummaryItem({
           </button>
         </div>
         <span className="text-label text-text-muted">
-          Edição: <span className="text-text">{edition ? edition.label.replace(/^Edição /, "") : item.name}</span>
+          Edição: <span className="text-text">{edition ? edition.label.replace(/^Edição /, "") : label}</span>
         </span>
         <div className="mt-2 flex items-center justify-between gap-3">
           <div className="inline-flex h-8 items-center rounded-card border border-border bg-surface-plain">

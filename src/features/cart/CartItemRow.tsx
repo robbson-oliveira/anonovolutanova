@@ -7,6 +7,7 @@ import { mainImage } from "@/lib/commerce/product-image";
 import { fromMinor, type StoreCartItem } from "@/lib/commerce/store-api";
 import { formatBRL } from "@/lib/format";
 import { GIFT_WRAP_AFFECTS_ORDER } from "./gift-wrap";
+import { cartLineTitle } from "./line-title";
 import { ProductThumb } from "./ProductThumb";
 
 /** Two digits in the middle cell ("02"), as on the cart reference. */
@@ -64,7 +65,7 @@ export function CartItemRow({
   const minor = item.totals.currency_minor_unit ?? item.prices.currency_minor_unit;
   const lineTotal = fromMinor(item.totals.line_subtotal, minor);
   const max = item.quantity_limits?.maximum ?? 49;
-  const title = edition ? edition.label : item.name;
+  const title = cartLineTitle(item);
 
   return (
     <li className="flex items-start gap-2.5 font-condensed md:items-stretch md:gap-4">
@@ -77,7 +78,7 @@ export function CartItemRow({
       {/* Below md the name, stepper and gift line share the middle column.
           From md the stepper is pulled up a little closer to the name. */}
       <div className="flex min-w-0 flex-1 flex-col justify-start gap-1.5 md:justify-between md:gap-1">
-        <span className="text-[24px] font-bold leading-none tracking-[-0.02em] text-text-strong md:text-base md:leading-tight">
+        <span className="text-[24px] font-medium leading-none tracking-[-0.02em] text-text-strong md:text-base md:leading-tight">
           {title}
         </span>
         {onQuantity ? (

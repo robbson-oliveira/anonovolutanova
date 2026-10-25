@@ -1,11 +1,12 @@
 import { Toaster } from "@ds/index";
 import { CartDrawer } from "@/features/cart/CartDrawer";
 import { CartProvider } from "@/features/cart/CartProvider";
+import { StorefrontChat } from "@/features/shell/StorefrontChat";
 
 /**
- * Páginas da loja (a home, com a seção de produto, e o /checkout):
- * compartilham o carrinho. As institucionais ficam de fora e não criam sessão
- * no WooCommerce.
+ * Store pages (the home, the cart and the checkout) share one cart. Institutional
+ * pages stay outside this layout and do not open a WooCommerce session. The
+ * WhatsApp chat is mounted here and hides itself on the checkout.
  */
 export default function LojaLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -13,6 +14,7 @@ export default function LojaLayout({ children }: { children: React.ReactNode }) 
       {children}
       <CartDrawer />
       <Toaster />
+      <StorefrontChat />
     </CartProvider>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   Button,
@@ -254,6 +254,16 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
     // the cream page (and the hero type) between two dark surfaces.
     setPanelTop(headerBottom > 0 ? Math.max(0, Math.floor(headerBottom) - 8) : 108);
   }, []);
+
+  // Before paint, so the storefront chat is gone on the same frame as the menu.
+  useLayoutEffect(() => {
+    const root = document.documentElement;
+    if (open) root.dataset.anlnMenu = "1";
+    else delete root.dataset.anlnMenu;
+    return () => {
+      delete root.dataset.anlnMenu;
+    };
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;

@@ -251,7 +251,7 @@ export function Persona() {
   return (
     <section
       id="persona"
-      className="bg-surface px-6 py-16 md:px-10 md:py-20 xl:px-[60px] xl:py-[100px]"
+      className="bg-surface px-5 py-16 md:px-8 md:py-20 lg:px-12 xl:px-[60px] xl:py-[100px]"
     >
       <div ref={trackRef} className="mx-auto w-full max-w-[1305px]">
         <RevealGroup>

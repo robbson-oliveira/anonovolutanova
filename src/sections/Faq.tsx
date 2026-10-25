@@ -1,4 +1,4 @@
-import { Accordion, Container, Heading, Reveal, Text } from "@ds/index";
+import { Accordion, Heading, Reveal, Text, pageFrameClass } from "@ds/index";
 import { FAQ } from "@content/faq";
 
 /**
@@ -10,19 +10,18 @@ import { FAQ } from "@content/faq";
  * bottom, title column 480px wide and the accordion column 588px, flush right
  * inside a 1200px container.
  *
- * Below `lg` the columns stack. The section does not add its own side padding
- * below `md` to the <Container>'s (it would be 48px per side on a 375px phone),
- * and clips the X axis with `overflow-x-clip`: the left/right <Reveal>s start
- * 56px off place, and that offset widened the page. `clip` (not `hidden`)
- * so no scroll container is created.
+ * Below `lg` the columns stack. Side space is the page frame (20 / 32 / 48px),
+ * and the section clips the X axis with `overflow-x-clip`: the left/right
+ * <Reveal>s start 56px off place, and that offset widened the page. `clip`
+ * (not `hidden`) so no scroll container is created.
  */
 export function Faq() {
   return (
     <section
       id="faq"
-      className="overflow-x-clip py-16 md:px-10 md:py-24 min-[1440px]:py-[120px]"
+      className="overflow-x-clip py-16 md:py-24 min-[1440px]:py-[120px]"
     >
-      <Container className="md:px-0">
+      <div className={pageFrameClass}>
         <div className="grid gap-10 lg:grid-cols-[minmax(0,480px)_minmax(0,588px)] lg:justify-between lg:gap-12">
           <Reveal variant="left">
             <Heading
@@ -40,7 +39,7 @@ export function Faq() {
             <Accordion items={FAQ} variant="cards" numbered defaultOpen={0} />
           </Reveal>
         </div>
-      </Container>
+      </div>
     </section>
   );
 }

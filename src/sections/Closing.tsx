@@ -1,4 +1,4 @@
-import { Reveal, RevealGroup } from "@ds/index";
+import { Reveal, RevealGroup, pageFrameClass } from "@ds/index";
 import { CLOSING } from "@content/home";
 import { CYCLE_YEAR, OFFER_ANCHOR } from "@content/product";
 
@@ -23,7 +23,7 @@ export function Closing() {
   return (
     <section
       id="fechamento-bloco"
-      className="relative mx-auto w-full max-w-page px-6 pb-8 pt-2 md:pb-12 lg:px-10 min-[1316px]:px-0 min-[1440px]:pb-[49px] min-[1440px]:pt-0"
+      className={`${pageFrameClass} relative pb-8 pt-2 md:pb-12 min-[1440px]:pb-[49px] min-[1440px]:pt-0`}
     >
       <RevealGroup>
         <Reveal variant="up">

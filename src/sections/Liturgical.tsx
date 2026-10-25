@@ -93,7 +93,7 @@ export function Liturgical() {
   useEqualCards(listRef);
 
   return (
-    <section className="relative overflow-hidden bg-surface px-4 py-16 sm:px-6 md:px-10 md:py-20 xl:px-[60px] xl:py-[100px]">
+    <section className="relative overflow-hidden bg-surface px-5 py-16 md:px-8 md:py-20 lg:px-12 xl:px-[60px] xl:py-[100px]">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 overflow-hidden opacity-[0.19] mix-blend-darken"

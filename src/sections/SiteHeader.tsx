@@ -8,6 +8,7 @@ import {
   IconArrowRight,
   IconInstagram,
   cn,
+  pageFrameClass,
 } from "@ds/index";
 import { NAV_LINKS } from "@content/home";
 import {
@@ -409,7 +410,9 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
             className="pointer-events-none absolute inset-x-0 top-full z-10 h-3 bg-surface-inverse lg:hidden"
           />
         ) : null}
-        <div className="mx-auto flex h-20 w-full max-w-page items-center justify-between gap-6 px-6 lg:px-0">
+        {/* Gutters stay on from the phone up. Zeroing them at lg made the
+            logo and Comprar sit on the viewport edge between 1024 and 1316. */}
+        <div className={cn(pageFrameClass, "flex h-20 items-center justify-between gap-3 xl:gap-6")}>
           {/* ── Mobile: hamburger left ── */}
           <button
             ref={triggerRef}
@@ -452,7 +455,7 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
 
           {/* ── Desktop nav ── */}
           <nav aria-label="Principal" className="hidden lg:block">
-            <ul className="flex items-center gap-8">
+            <ul className="flex items-center gap-6 xl:gap-8">
               {NAV_LINKS.map((link) => (
                 <li key={link.href}>
                   <a
@@ -473,9 +476,9 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
           </div>
 
           {/* ── Right side: cart + CTA (desktop only) ── */}
-          <div className="hidden items-center gap-3 lg:flex">
+          <div className="hidden shrink-0 items-center gap-2 xl:gap-3 lg:flex">
             <CartButton />
-            <Button href={OFFER_ANCHOR} size="md" shape="block" className="px-8!">
+            <Button href={OFFER_ANCHOR} size="md" shape="block" className="px-5! xl:px-8!">
               Comprar
               <IconArrowRight />
             </Button>
@@ -490,13 +493,12 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
           style={{ top: headerTop }}
           className={cn(
             "fixed inset-x-0 z-40 hidden h-14 bg-surface shadow-card transition-opacity duration-300 motion-reduce:transition-none lg:flex",
-            "pl-[max(1.25rem,env(safe-area-inset-left,0px))] pr-[max(1.25rem,env(safe-area-inset-right,0px))]",
             compactDesktop
               ? "lg:pointer-events-auto lg:opacity-100"
               : "lg:pointer-events-none lg:opacity-0",
           )}
         >
-          <div className="mx-auto flex h-full w-full max-w-page items-center gap-3">
+          <div className={cn(pageFrameClass, "flex h-full items-center gap-3")}>
             <a href="#inicio" className="flex shrink-0 items-center" aria-label={PRODUCT_NAME}>
               {/* 391×171 lockup. At 40px tall the file is still above 2×. */}
               <img src={logoCompact} alt="" width={391} height={171} className="h-10 w-auto" />

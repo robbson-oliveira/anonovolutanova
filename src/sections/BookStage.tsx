@@ -29,15 +29,14 @@ type BookStageProps = {
 };
 
 /**
- * As duas agendas entram em leque: a Clássica assenta primeiro, a Color pousa
- * sobre ela, encosta e desliza girando ao redor da própria âncora até a
- * posição final. Ângulos, porcentagens e o `transform-origin` são o resultado
- * aprovado no protótipo — não são valores arbitrários e não devem ser
- * "arredondados".
+ * The two covers open as a fan: Clássica settles first, Color lands on it,
+ * touches down and slides, rotating around its own anchor to the final pose.
+ * Angles, percentages and `transform-origin` are the approved prototype
+ * values — they are not round numbers and must not be "cleaned up".
  *
- * O componente é só o palco 740×740; onde ele fica na página é decisão de
- * quem o usa (o Hero o posiciona sangrando para fora do container). Para
- * ajustar a animação isoladamente, ver app/lab/hero-animation.
+ * The component is only the 740×740 stage; where it sits on the page is
+ * up to the caller. The Hero keeps the rotated fan inside the page frame.
+ * To tune the animation on its own, see app/lab/hero-animation.
  *
  * On smaller screens the Hero passes `fluid`: the stage fills its column
  * (up to STAGE_SIZE) and the covers, which are percentages of the stage,
@@ -45,9 +44,9 @@ type BookStageProps = {
  * scaling the whole 740px stage would shrink that label to a few pixels.
  * At 740px (lab, catalog and desktop) the card is the wireframe one.
  *
- * Só as capas são decorativas (aria-hidden); o card de compra fica acessível,
- * porque um link focável dentro de aria-hidden some para o leitor de tela mas
- * continua recebendo o foco do teclado.
+ * Only the covers are decorative (aria-hidden); the buy card stays
+ * accessible, because a focusable link inside aria-hidden disappears from
+ * the screen reader but still receives keyboard focus.
  */
 export function BookStage({
   colorSrc = capaColor,

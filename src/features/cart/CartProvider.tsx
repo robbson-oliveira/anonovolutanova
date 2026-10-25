@@ -128,11 +128,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const scope = options?.scope ?? "cart";
     pending.current += 1;
     setBusy(true);
-    if (scope === "coupon") setCouponError(null);
-    else setError(null);
+    // Coupon errors stay up until this attempt finishes. Clearing them
+    // here wiped the message when a second submit started (the field had
+    // been reset and the same code was sent again) before the first
+    // failure had painted.
+    if (scope !== "coupon") setError(null);
     try {
       const next = await action();
       setCart(next);
+      if (scope === "coupon") setCouponError(null);
       return next;
     } catch (err) {
       if (storeApi.isStoreApiError(err) && err.cart) setCart(err.cart);

@@ -56,9 +56,21 @@ const BUYER_LOGIN_URL = "https://admin.anonovolutanova.com.br/my-account/";
 const AFFILIATE_LOGIN_URL = "https://admin.anonovolutanova.com.br/area-afiliado/";
 
 /**
+ * Shared phone target for the menu, the cart and the account mark.
+ * One 44px box. The cart badge is positioned inside that box, so a count
+ * cannot make the cart taller than the other two or drop its glyph off
+ * their line. Each glyph's em is chosen so the drawn mark (not the empty
+ * viewBox) is about the same size: the account fills its box, the bag and
+ * the menu strokes do not.
+ */
+const PHONE_ICON_BUTTON =
+  "relative grid size-11 shrink-0 cursor-pointer place-items-center leading-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-action";
+
+/**
  * Basket in the phone header, immediately left of the account icon.
- * Same 44px target and icon size as the account mark. No tile behind it.
- * The badge is the real cart quantity and stays hidden while the cart is empty.
+ * Same 44px tap box as the menu and the account mark. No tile behind
+ * it. The badge is the real cart quantity and stays hidden while the
+ * cart is empty.
  */
 function HeaderCart({
   light = false,
@@ -74,9 +86,11 @@ function HeaderCart({
     ? `Abrir carrinho, ${count} ${count === 1 ? "item" : "itens"}`
     : "Abrir carrinho";
   const className = cn(
-    "relative grid size-11 cursor-pointer place-items-center text-[26px] lg:hidden",
+    PHONE_ICON_BUTTON,
+    // The bag's ink sits about 1px low in its viewBox. Shift only the
+    // glyph; the badge stays put in the corner of the tap box.
+    "text-[34px] lg:hidden [&_svg]:-translate-y-px",
     light ? "text-text-on-inverse" : "text-text-strong",
-    "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-action",
   );
   const body = (
     <>
@@ -180,9 +194,9 @@ function AccountMenu({
           }
         }}
         className={cn(
-          "grid size-11 cursor-pointer place-items-center text-2xl lg:hidden",
+          PHONE_ICON_BUTTON,
+          "text-2xl lg:hidden",
           light ? "text-text-on-inverse" : "text-text-strong",
-          "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-action",
         )}
       >
         <IconAccount />
@@ -420,12 +434,52 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
             className="pointer-events-none absolute inset-x-0 top-full z-10 h-3 bg-surface-inverse lg:hidden"
           />
         ) : null}
+        {/* Phone only. Menu on the left, cart and account on the right,
+            logo on the true center of the bar. The side columns are equal,
+            so the two icons on the right do not pull the logo off center.
+            Desktop uses the row below and never sees this one. */}
+        <div className={cn(pageFrameClass, "grid h-20 grid-cols-[1fr_auto_1fr] items-center lg:hidden")}>
+          <div className="flex items-center justify-self-start">
+            <button
+              ref={triggerRef}
+              type="button"
+              aria-expanded={open}
+              aria-controls="mobile-menu"
+              aria-label={open ? "Fechar menu" : "Abrir menu"}
+              onClick={() => {
+                if (!open) syncPanelTop();
+                setOpen((v) => !v);
+              }}
+              className={cn(
+                PHONE_ICON_BUTTON,
+                "text-[32px]",
+                open ? "text-text-on-inverse" : "text-text-strong",
+              )}
+            >
+              <IconMenu close={open} />
+            </button>
+          </div>
+          <a href="#inicio" className="flex items-center justify-self-center">
+            <img
+              src={open ? logoMenu : logoMobile}
+              alt={PRODUCT_NAME}
+              loading="eager"
+              className="h-[44px] w-auto"
+            />
+          </a>
+          <div className="flex items-center justify-self-end">
+            <HeaderCart light={open} onBeforeOpen={() => setOpen(false)} />
+            <AccountMenu light={open} onBeforeOpen={() => setOpen(false)} />
+          </div>
+        </div>
+
         {/* Gutters stay on from the phone up. Zeroing them at lg made the
-            logo and Comprar sit on the viewport edge between 1024 and 1316. */}
-        <div className={cn(pageFrameClass, "flex h-20 items-center justify-between gap-3 xl:gap-6")}>
+            logo and Comprar sit on the viewport edge between 1024 and 1316.
+            `hidden` is overridden by `lg:flex`; the phone row above is the
+            one that shows below that breakpoint. */}
+        <div className={cn(pageFrameClass, "hidden h-20 items-center justify-between gap-3 xl:gap-6 lg:flex")}>
           {/* Logo is the first item in the shared frame, so its left edge is
-              the same x as the hero heading. Centering it on the phone put
-              that edge on a different x from the text below. */}
+              the same x as the sections below. */}
           <a
             href="#inicio"
             className="flex shrink-0 items-center"
@@ -461,30 +515,6 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
               ))}
             </ul>
           </nav>
-
-          {/* Phone: menu, basket, account. The menu sits on this side so the
-              logo can keep the frame's left edge. */}
-          <div className="flex items-center lg:hidden">
-            <button
-              ref={triggerRef}
-              type="button"
-              aria-expanded={open}
-              aria-controls="mobile-menu"
-              aria-label={open ? "Fechar menu" : "Abrir menu"}
-              onClick={() => {
-                if (!open) syncPanelTop();
-                setOpen((v) => !v);
-              }}
-              className={cn(
-                "grid size-11 cursor-pointer place-items-center text-xl",
-                open ? "text-text-on-inverse" : "text-text-strong",
-              )}
-            >
-              <IconMenu close={open} />
-            </button>
-            <HeaderCart light={open} onBeforeOpen={() => setOpen(false)} />
-            <AccountMenu light={open} onBeforeOpen={() => setOpen(false)} />
-          </div>
 
           {/* ── Right side: cart + CTA (desktop only) ── */}
           <div className="hidden shrink-0 items-center gap-2 xl:gap-3 lg:flex">

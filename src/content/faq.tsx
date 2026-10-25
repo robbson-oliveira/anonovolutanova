@@ -1,6 +1,6 @@
 import Image from "next/image";
 import type { AccordionItem } from "@ds/index";
-import { INSTAGRAM_URL, WHATSAPP_URL } from "@content/product";
+import { FREE_SHIPPING_MIN_QTY, INSTAGRAM_URL, WHATSAPP_URL } from "@content/product";
 
 /**
  * `.tsx` porque duas respostas têm link no meio do texto. É o único conteúdo
@@ -55,9 +55,9 @@ export const FAQ: AccordionItem[] = [
     answer: (
       <>
         <p>
-          Sim! Acima de 4 agendas, o frete é grátis para todo o Brasil! 🚚 E tem
-          mais: oferecemos condições especiais a partir de 50 unidades, ideais
-          para revenda e livrarias.
+          Sim! A partir de {FREE_SHIPPING_MIN_QTY} unidades, o frete é grátis
+          para todo o Brasil! 🚚 E tem mais: oferecemos condições especiais a
+          partir de 50 unidades, ideais para revenda e livrarias.
         </p>
         <p className="mt-3">
           👉{" "}

@@ -25,7 +25,7 @@ export function OrderSummary({
   /** Já há um frete escolhido? Antes disso o total não inclui entrega. */
   shippingKnown: boolean;
 }) {
-  const { cart, count, busy, setQuantity } = useCart();
+  const { cart, count, busy, isLinePending, setQuantity } = useCart();
   if (!cart) return null;
 
   const minor = cart.totals.currency_minor_unit;
@@ -48,7 +48,7 @@ export function OrderSummary({
 
       <ul className="flex flex-col gap-6">
         {cart.items.map((item) => (
-          <SummaryItem key={item.key} item={item} busy={busy} onQuantity={(q) => void setQuantity(item.key, q)} />
+          <SummaryItem key={item.key} item={item} busy={busy || isLinePending(item.key)} onQuantity={(q) => void setQuantity(item.key, q)} />
         ))}
       </ul>
 

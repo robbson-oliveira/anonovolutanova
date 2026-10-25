@@ -235,6 +235,8 @@ type HotspotsProps = {
   items: Hotspot[];
   open: number | null;
   onOpen: (index: number | null) => void;
+  /** False until the spread has decoded and the entrance delay has passed. */
+  revealed: boolean;
 };
 
 const PIN_MARGIN = 12;
@@ -404,10 +406,12 @@ function HotspotCard({ spot, pinRefs, index, onClose }: HotspotCardProps) {
 }
 
 /** Marcadores "+" sobre o livro e o balão do que está aberto, em % da caixa do livro. */
-function Hotspots({ items, open, onOpen }: HotspotsProps) {
+function Hotspots({ items, open, onOpen, revealed }: HotspotsProps) {
   const spot = open === null ? null : items[open];
   const pinRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const close = useCallback(() => onOpen(null), [onOpen]);
+
+  if (!revealed) return null;
 
   return (
     <>
@@ -418,6 +422,8 @@ function Hotspots({ items, open, onOpen }: HotspotsProps) {
           className="absolute size-5 -translate-x-1/2 -translate-y-1/2 md:max-[1199px]:size-[26px] min-[1200px]:size-7"
           style={{ left: `${s.x}%`, top: `${s.y}%` }}
         >
+          {/* Pop lives inside the centering translate, or the two transforms fight. */}
+          <div className="relative size-full motion-safe:animate-pin-pop">
           {/* White ring that grows to 1.8× the pin, as on the old site. */}
           <span
             aria-hidden
@@ -442,6 +448,7 @@ function Hotspots({ items, open, onOpen }: HotspotsProps) {
               <path d="M12 5v14M5 12h14" />
             </svg>
           </button>
+          </div>
         </div>
       ))}
       {spot && open !== null && (
@@ -489,6 +496,50 @@ export function Explore() {
 
   const cover = COVERS[edition as keyof typeof COVERS];
   const page = SPREADS[tab];
+  const agendaSrc = page?.src ?? cover.src;
+  const pinKey = `${edition}|${tab}|${agendaSrc}`;
+  const [pinsOn, setPinsOn] = useState(false);
+  const [shownPinKey, setShownPinKey] = useState(pinKey);
+  if (shownPinKey !== pinKey) {
+    setShownPinKey(pinKey);
+    setPinsOn(false);
+  }
+  const agendaImg = useRef<HTMLImageElement | null>(null);
+  const bindAgenda = useCallback((img: HTMLImageElement | null) => {
+    agendaImg.current = img;
+  }, []);
+  useEffect(() => {
+    const img = agendaImg.current;
+    if (!img) return;
+    let cancelled = false;
+    let timer = 0;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const delay = reduce ? 0 : 1000;
+    const go = () => {
+      if (cancelled) return;
+      timer = window.setTimeout(() => {
+        if (!cancelled) setPinsOn(true);
+      }, delay);
+    };
+    const start = () => {
+      if (cancelled) return;
+      if (typeof img.decode !== "function") {
+        go();
+        return;
+      }
+      void Promise.race([
+        img.decode().then(() => undefined, () => undefined),
+        new Promise((resolve) => window.setTimeout(resolve, 400)),
+      ]).then(go);
+    };
+    if (img.complete && img.naturalWidth > 0) start();
+    else img.addEventListener("load", start);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+      img.removeEventListener("load", start);
+    };
+  }, [pinKey]);
 
   return (
     <section
@@ -578,6 +629,7 @@ export function Explore() {
                 }}
               >
                 <img
+                  ref={bindAgenda}
                   src={page.src}
                   srcSet={page.src.includes("/agenda-") ? `${page.src.replace(/\.webp$/, "-sm.webp")} ${Math.round(page.img.w * 0.62)}w, ${page.src} ${page.img.w}w` : undefined}
                   sizes="(max-width: 767px) 92vw, 520px"
@@ -598,6 +650,7 @@ export function Explore() {
                   items={page.hotspots}
                   open={openSpot}
                   onOpen={setOpenSpot}
+                  revealed={pinsOn}
                 />
               </div>
             ) : (
@@ -610,6 +663,7 @@ export function Explore() {
                   style={{ aspectRatio: `${cover.book.w} / ${cover.book.h}` }}
                 >
                   <img
+                    ref={bindAgenda}
                     src={cover.src}
                     alt={cover.alt}
                     width={cover.img.w}
@@ -628,6 +682,7 @@ export function Explore() {
                     items={HOTSPOTS}
                     open={openSpot}
                     onOpen={setOpenSpot}
+                    revealed={pinsOn}
                   />
                 </div>
               </>

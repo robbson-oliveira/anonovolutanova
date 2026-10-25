@@ -248,6 +248,8 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
   const [mounted, setMounted] = useState(false);
   const [barH, setBarH] = useState(smartMenu ? SHELL_BAR : 0);
   const [compactDesktop, setCompactDesktop] = useState(false);
+  /** Phone header shadow only after the page leaves the top. */
+  const [headerShadow, setHeaderShadow] = useState(false);
   // Fallback is the home layout: the 36px bar plus the 80px header row.
   const [panelTop, setPanelTop] = useState(116);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -334,6 +336,35 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
   }, [smartMenu]);
 
   useEffect(() => {
+    if (!smartMenu) return;
+    // Class toggle only, past a few pixels. Reading scrollY here does not
+    // change height; an IntersectionObserver on a 4px sentinel missed the
+    // return to the top in WebKit and left the shadow on.
+    let frame = 0;
+    const read = () => {
+      frame = 0;
+      const next = window.scrollY > 8;
+      setHeaderShadow((prev) => (prev === next ? prev : next));
+    };
+    const onScroll = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        read();
+        // The last scroll event can land a frame before the position settles.
+        requestAnimationFrame(read);
+      });
+    };
+    frame = requestAnimationFrame(read);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("scrollend", read);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("scrollend", read);
+    };
+  }, [smartMenu]);
+
+  useEffect(() => {
     const header = headerRef.current;
     if (!smartMenu || !header) return;
     let observer: IntersectionObserver | null = null;
@@ -355,9 +386,10 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
       <header
         ref={headerRef}
         data-anln-header=""
+        data-header-shadow={headerShadow ? "1" : "0"}
         className={cn(
-          "relative z-40 bg-surface",
-          smartMenu && !open && "max-lg:shadow-card",
+          "relative z-40 bg-surface transition-shadow duration-300 motion-reduce:transition-none",
+          smartMenu && !open && headerShadow && "max-lg:shadow-card",
           // Open menu only, and only below the desktop nav: the row joins
           // the announcement bar and the panel as one dark surface.
           // The strip below covers the seam where the page would show through.

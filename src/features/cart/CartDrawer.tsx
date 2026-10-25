@@ -12,7 +12,7 @@ import { SHOW_GIFT_WRAP } from "./gift-wrap";
 
 /** Gaveta do carrinho, pela direita. Fecha com Esc, no fundo ou no X. */
 export function CartDrawer() {
-  const { cart, count, busy, error, drawerOpen, closeDrawer, setQuantity } = useCart();
+  const { cart, count, busy, error, isLinePending, drawerOpen, closeDrawer, setQuantity } = useCart();
   const closeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -64,9 +64,11 @@ export function CartDrawer() {
             type="button"
             onClick={closeDrawer}
             aria-label="Fechar carrinho"
-            className="grid size-11 cursor-pointer place-items-center text-2xl text-text-strong"
+            className="grid size-11 cursor-pointer place-items-center text-text-strong"
           >
-            <IconClose />
+            {/* The glyph's circle sits inset in the 24 box. Cropping to it
+                makes the drawn circle ~30px inside the 44px tap target. */}
+            <IconClose viewBox="4 4 16 16" className="text-[34px]" />
           </button>
         </header>
 
@@ -79,12 +81,12 @@ export function CartDrawer() {
           </div>
         ) : (
           <>
-            <ul className="flex flex-1 flex-col gap-5 overflow-y-auto px-6 py-6">
+            <ul className="flex flex-1 flex-col gap-5 overflow-y-auto px-4 py-5 sm:px-6 sm:py-6">
               {cart!.items.map((item) => (
                 <CartItemRow
                   key={item.key}
                   item={item}
-                  busy={busy}
+                  busy={busy || isLinePending(item.key)}
                   onQuantity={(q) => void setQuantity(item.key, q)}
                   giftWrap={SHOW_GIFT_WRAP}
                 />

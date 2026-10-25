@@ -125,11 +125,10 @@ function usePersonaStack(
       // The gap under the paragraph becomes padding on the sticky intro,
       // and the list is pulled back over a one-card spacer. The intro box
       // then ends exactly where the card pile ends, so the title and the
-      // last card leave together instead of separating.
+      // last card leave together instead of separating. The cards stay a
+      // small flex gap apart: extra siblings made a blank stage between
+      // them. The overlap eases across that same short travel.
       gap = parseFloat(getComputedStyle(list).marginTop) || 0;
-      // A real sibling, not margin on the sticky card. Margin on that box
-      // does not become scroll travel: the next card never caught up.
-      const runway = Math.round(cardH * 0.85);
       sticky.style.position = "sticky";
       sticky.style.top = `${pinTop()}px`;
       sticky.style.paddingBottom = `${cardH + gap}px`;
@@ -149,14 +148,6 @@ function usePersonaStack(
         li.style.height = `${cardH}px`;
         li.style.marginBottom = "0";
         li.style.paddingBottom = "0";
-        if (i < items.length - 1) {
-          const spacer = document.createElement("li");
-          spacer.dataset.personaSpacer = "";
-          spacer.setAttribute("aria-hidden", "true");
-          spacer.style.height = `${runway}px`;
-          spacer.style.pointerEvents = "none";
-          li.after(spacer);
-        }
         li.style.boxSizing = "border-box";
         // The entrance animation writes `transform` on the <li>. Any
         // transform on the sticky box itself stops it sticking in Safari.
@@ -202,7 +193,10 @@ function usePersonaStack(
           continue;
         }
         const nextVisual = Math.max(stickLine, tops[i + 1] - y);
-        const progress = Math.min(1, Math.max(0, (stickLine + cardH - nextVisual) / cardH));
+        const linear = Math.min(1, Math.max(0, (stickLine + cardH - nextVisual) / cardH));
+        // Smoothstep: the scale and fade ease across the same short gap
+        // the cards already have. Full cover still lands when linear is 1.
+        const progress = linear * linear * (3 - 2 * linear);
         const scale = 1 - progress * 0.06;
         const opacity = 1 - progress * 0.45;
         // 14px at rest is enough to sink the gold edge under the card in

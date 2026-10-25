@@ -13,7 +13,11 @@ type CartContextValue = {
   count: number;
   /** Alguma chamada ao carrinho em andamento. */
   busy: boolean;
+  /** True while this line's quantity request is in flight. */
+  isLinePending: (key: string) => boolean;
   error: string | null;
+  /** Coupon failures stay off the product page. */
+  couponError: string | null;
   /** Aviso sobre o cupom do link de afiliada (aplicado ou recusado). */
   couponNotice: string | null;
   drawerOpen: boolean;
@@ -43,6 +47,44 @@ const hasStoredToken = () => {
 };
 
 /**
+ * Paints a quantity change before the Store API answers. The line price
+ * scales with the unit price already on the item; the response replaces this.
+ */
+function optimisticQuantity(cart: StoreCart, key: string, quantity: number): StoreCart {
+  const items = cart.items.flatMap((item) => {
+    if (item.key !== key) return [item];
+    if (quantity <= 0) return [];
+    const minor = item.prices.currency_minor_unit ?? item.totals.currency_minor_unit ?? 2;
+    const unit = Number(item.prices.price) || 0;
+    const line = String(Math.round(unit * quantity));
+    return [{
+      ...item,
+      quantity,
+      totals: {
+        ...item.totals,
+        line_subtotal: line,
+        line_total: line,
+        currency_minor_unit: item.totals.currency_minor_unit ?? minor,
+      },
+    }];
+  });
+  const totalItems = items.reduce((sum, item) => sum + Number(item.totals.line_subtotal || 0), 0);
+  const discount = Number(cart.totals.total_discount || 0);
+  const shipping = Number(cart.totals.total_shipping || 0);
+  const fees = Number(cart.totals.total_fees || 0);
+  return {
+    ...cart,
+    items,
+    items_count: items.reduce((sum, item) => sum + item.quantity, 0),
+    totals: {
+      ...cart.totals,
+      total_items: String(totalItems),
+      total_price: String(Math.max(0, totalItems - discount + shipping + fees)),
+    },
+  };
+}
+
+/**
  * Estado do carrinho, espelhando o do WooCommerce (a fonte da verdade é
  * sempre a Store API: cada ação devolve o carrinho inteiro e ele substitui o
  * local). Portado de `contexts/cart-context.tsx` do storefront, sem a
@@ -53,26 +95,51 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<StoreCart | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [couponError, setCouponError] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [ready, setReady] = useState(false);
   const [couponNotice, setCouponNotice] = useState<string | null>(null);
+  const [pendingLines, setPendingLines] = useState<ReadonlySet<string>>(() => new Set());
   const linkCouponTried = useRef(false);
   const pending = useRef(0);
+  const lineLocks = useRef(new Set<string>());
+
+  const lockLine = useCallback((key: string) => {
+    if (lineLocks.current.has(key)) return false;
+    lineLocks.current.add(key);
+    setPendingLines(new Set(lineLocks.current));
+    return true;
+  }, []);
+
+  const unlockLine = useCallback((key: string) => {
+    lineLocks.current.delete(key);
+    setPendingLines(new Set(lineLocks.current));
+  }, []);
 
   // Toda ação passa por aqui: marca ocupado, troca o carrinho pela resposta e
   // guarda a mensagem de erro (o WooCommerce manda o carrinho atual junto de
-  // erros de estoque, então ele é aplicado mesmo na falha).
-  const run = useCallback(async (action: () => Promise<StoreCart>, fallback: string) => {
+  // erros de estoque, então ele é aplicado mesmo na falha). Coupon failures
+  // use their own message so the product page, which reads `error`, stays quiet.
+  const run = useCallback(async (
+    action: () => Promise<StoreCart>,
+    fallback: string,
+    options?: { scope?: "cart" | "coupon"; rollback?: StoreCart | null },
+  ) => {
+    const scope = options?.scope ?? "cart";
     pending.current += 1;
     setBusy(true);
-    setError(null);
+    if (scope === "coupon") setCouponError(null);
+    else setError(null);
     try {
       const next = await action();
       setCart(next);
       return next;
     } catch (err) {
       if (storeApi.isStoreApiError(err) && err.cart) setCart(err.cart);
-      setError(errorMessage(err, fallback));
+      else if (options && "rollback" in options) setCart(options.rollback ?? null);
+      const message = errorMessage(err, fallback);
+      if (scope === "coupon") setCouponError(message);
+      else setError(message);
       return null;
     } finally {
       pending.current -= 1;
@@ -123,50 +190,78 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       ready,
       count: cart?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0,
       busy,
+      isLinePending: (key: string) => pendingLines.has(key),
       error,
+      couponError,
       couponNotice,
       drawerOpen,
       openDrawer: () => setDrawerOpen(true),
       closeDrawer: () => setDrawerOpen(false),
       refresh,
-      add: async (productId, quantity) =>
-        Boolean(
-          await run(
-            () => storeApi.addCartItem({ id: productId, quantity }),
-            "Não foi possível adicionar ao carrinho.",
-          ),
-        ),
+      add: async (productId, quantity) => {
+        if (!lockLine(`add:${productId}`)) return false;
+        const previous = cart;
+        const existing = previous?.items.find((item) => item.id === productId);
+        if (previous && existing) setCart(optimisticQuantity(previous, existing.key, existing.quantity + quantity));
+        try {
+          return Boolean(
+            await run(
+              () => storeApi.addCartItem({ id: productId, quantity }),
+              "Não foi possível adicionar ao carrinho.",
+              { rollback: previous },
+            ),
+          );
+        } finally {
+          unlockLine(`add:${productId}`);
+        }
+      },
       setQuantity: async (key, quantity) => {
-        await run(
-          () =>
-            quantity > 0
-              ? storeApi.updateCartItem({ key, quantity })
-              : storeApi.removeCartItem({ key }),
-          "Não foi possível atualizar a quantidade.",
-        );
+        // A second click in the same turn (one tap firing twice) sees the
+        // lock before React re-renders the disabled button.
+        if (!lockLine(key)) return;
+        const previous = cart;
+        if (previous) setCart(optimisticQuantity(previous, key, quantity));
+        setError(null);
+        try {
+          const next = quantity > 0
+            ? await storeApi.updateCartItem({ key, quantity })
+            : await storeApi.removeCartItem({ key });
+          setCart(next);
+        } catch (err) {
+          if (storeApi.isStoreApiError(err) && err.cart) setCart(err.cart);
+          else setCart(previous);
+          setError(errorMessage(err, "Não foi possível atualizar a quantidade."));
+        } finally {
+          unlockLine(key);
+        }
       },
       remove: async (key) => {
         await run(() => storeApi.removeCartItem({ key }), "Não foi possível remover o item.");
       },
       applyCoupon: async (code) =>
-        Boolean(await run(() => storeApi.applyCoupon(code.trim()), "Não foi possível aplicar o cupom.")),
+        Boolean(
+          await run(() => storeApi.applyCoupon(code.trim()), "Não foi possível aplicar o cupom.", {
+            scope: "coupon",
+          }),
+        ),
       removeCoupon: async (code) => {
         // Tirou o cupom da afiliada à mão: ele não volta sozinho.
         if (readCookie(COUPON_COOKIE) === code.toUpperCase()) deleteCookie(COUPON_COOKIE);
         setCouponNotice(null);
-        await run(() => storeApi.removeCoupon(code), "Não foi possível remover o cupom.");
+        await run(() => storeApi.removeCoupon(code), "Não foi possível remover o cupom.", { scope: "coupon" });
       },
       replace: setCart,
       reset: () => {
         storeApi.forgetCartToken();
         setCart(null);
         setError(null);
+        setCouponError(null);
         setCouponNotice(null);
         // Uma próxima compra no mesmo aparelho também leva o cupom do link.
         linkCouponTried.current = false;
       },
     }),
-    [cart, ready, busy, error, couponNotice, drawerOpen, refresh, run],
+    [cart, ready, busy, pendingLines, error, couponError, couponNotice, drawerOpen, refresh, run, lockLine, unlockLine],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

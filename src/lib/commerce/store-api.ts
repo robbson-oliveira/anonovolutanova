@@ -73,7 +73,7 @@ const BRIDGE_CHECKOUT_MESSAGES: Record<string, string> = {
 /** Mensagem legível de qualquer erro (a Store API lança objetos, não Error). */
 export function errorMessage(err: unknown, fallback: string): string {
   if (isStoreApiError(err) && BRIDGE_CHECKOUT_MESSAGES[err.code]) return BRIDGE_CHECKOUT_MESSAGES[err.code];
-  if (isStoreApiError(err) && err.message.trim()) return stripTags(err.message);
+  if (isStoreApiError(err) && err.message.trim()) return decodeEntities(stripTags(err.message));
   // fetch() sem resposta (rede caiu, ou o servidor quebrou sem CORS): o
   // navegador só diz "Failed to fetch", em inglês e sem ajudar ninguém.
   if (err instanceof TypeError) return "Não conseguimos falar com a loja. Confira sua conexão e tente de novo.";
@@ -82,6 +82,39 @@ export function errorMessage(err: unknown, fallback: string): string {
 }
 
 const stripTags = (s: string) => s.replace(/<[^>]+>/g, "").trim();
+
+const NAMED_ENTITIES: Record<string, string> = {
+  quot: "\"",
+  apos: "'",
+  amp: "&",
+  lt: "<",
+  gt: ">",
+  nbsp: "\u00A0",
+};
+
+/**
+ * WooCommerce messages arrive with HTML entities (`Cupom &quot;…&quot;`).
+ * Two passes so a double-encoded `&amp;quot;` still becomes a quote.
+ */
+function decodeEntities(value: string): string {
+  let current = value;
+  for (let pass = 0; pass < 2; pass += 1) {
+    const next = current.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (all, body: string) => {
+      if (body[0] !== "#") return NAMED_ENTITIES[body.toLowerCase()] ?? all;
+      const hex = body[1] === "x" || body[1] === "X";
+      const code = hex ? Number.parseInt(body.slice(2), 16) : Number.parseInt(body.slice(1), 10);
+      if (!Number.isFinite(code) || code < 0 || code > 0x10ffff) return all;
+      try {
+        return String.fromCodePoint(code);
+      } catch {
+        return all;
+      }
+    });
+    if (next === current) break;
+    current = next;
+  }
+  return current;
+}
 
 export type StoreAddress = {
   first_name?: string;

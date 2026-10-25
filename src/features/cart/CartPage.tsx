@@ -77,7 +77,7 @@ export function CartPage({ offer }: CartPageProps) {
                 edition={e}
                 price={e.price}
                 line={line}
-                busy={cart.busy || !cart.ready}
+                busy={cart.busy || !cart.ready || (line ? cart.isLinePending(line.key) : false)}
                 onAdd={async () => {
                   if (!e.productId) return;
                   if (await cart.add(e.productId, 1)) trackAddToCart([item(e.productId, e.label, e.price, 1)]);
@@ -97,7 +97,7 @@ export function CartPage({ offer }: CartPageProps) {
         {otherLines.length ? (
           <ul className="flex flex-col gap-4 rounded-card border border-border bg-surface-plain p-4 sm:p-5">
             {otherLines.map((line) => (
-              <CartItemRow key={line.key} item={line} busy={cart.busy} onQuantity={(q) => void cart.setQuantity(line.key, q)} />
+              <CartItemRow key={line.key} item={line} busy={cart.busy || cart.isLinePending(line.key)} onQuantity={(q) => void cart.setQuantity(line.key, q)} />
             ))}
           </ul>
         ) : null}

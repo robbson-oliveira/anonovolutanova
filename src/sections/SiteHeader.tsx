@@ -510,7 +510,7 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
                   <li key={link.href}>
                     <a
                       href={link.href}
-                      className="text-[11px] font-bold whitespace-nowrap text-text-strong transition-colors [transition-duration:var(--duration-fast)] hover:text-action xl:text-xs"
+                      className="text-[13px] font-bold whitespace-nowrap text-text-strong transition-colors [transition-duration:var(--duration-fast)] hover:text-action xl:text-xs"
                     >
                       {link.label}
                     </a>

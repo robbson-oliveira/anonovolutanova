@@ -66,7 +66,14 @@ const AFFILIATE_LOGIN_URL = "/contato";
  * Same 44px target and icon size as the account mark. No tile behind it.
  * The badge is the real cart quantity and stays hidden while the cart is empty.
  */
-function HeaderCart({ light = false }: { light?: boolean }) {
+function HeaderCart({
+  light = false,
+  onBeforeOpen,
+}: {
+  light?: boolean;
+  /** Closes the phone nav before the drawer, so the cart is not behind it. */
+  onBeforeOpen?: () => void;
+}) {
   const cart = useOptionalCart();
   const count = cart?.count ?? 0;
   const label = count > 0
@@ -89,13 +96,21 @@ function HeaderCart({ light = false }: { light?: boolean }) {
   );
   if (!cart) {
     return (
-      <a href={CART_URL} aria-label={label} className={className}>
+      <a href={CART_URL} aria-label={label} className={className} onClick={onBeforeOpen}>
         {body}
       </a>
     );
   }
   return (
-    <button type="button" onClick={cart.openDrawer} aria-label={label} className={className}>
+    <button
+      type="button"
+      onClick={() => {
+        onBeforeOpen?.();
+        cart.openDrawer();
+      }}
+      aria-label={label}
+      className={className}
+    >
       {body}
     </button>
   );
@@ -106,7 +121,14 @@ function HeaderCart({ light = false }: { light?: boolean }) {
  * and while the navigation panel is open (the icon stays in the header row,
  * which remains above that panel). Closes on an outside tap or Escape.
  */
-function AccountMenu({ light = false }: { light?: boolean }) {
+function AccountMenu({
+  light = false,
+  onBeforeOpen,
+}: {
+  light?: boolean;
+  /** Closes the phone nav so the dropdown is not covered by that panel. */
+  onBeforeOpen?: () => void;
+}) {
   const [open, setOpen] = useState(false);
   const [box, setBox] = useState<{ top: number; right: number } | null>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -163,6 +185,7 @@ function AccountMenu({ light = false }: { light?: boolean }) {
         onClick={() => {
           if (open) setOpen(false);
           else {
+            onBeforeOpen?.();
             place();
             setOpen(true);
           }
@@ -224,7 +247,6 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [barH, setBarH] = useState(smartMenu ? SHELL_BAR : 0);
-  const [shrunk, setShrunk] = useState(false);
   const [compactDesktop, setCompactDesktop] = useState(false);
   // Fallback is the home layout: the 36px bar plus the 80px header row.
   const [panelTop, setPanelTop] = useState(116);
@@ -235,13 +257,13 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
   useEffect(() => { setMounted(true); }, []);
 
   // The panel is portalled to <body>, so it does not inherit the header's
-  // place in the page. Measure both bars and start the panel under the lower
-  // one, or the fixed announcement would be covered and the header would jump.
+  // place in the page. Start it a few pixels into the header so the cream
+  // page cannot show as a line between the two dark surfaces.
   const syncPanelTop = useCallback(() => {
     const headerBottom = headerRef.current?.getBoundingClientRect().bottom ?? 0;
-    const bar = document.querySelector("[data-anln-topbar]");
-    const barBottom = bar?.getBoundingClientRect().bottom ?? 0;
-    setPanelTop(Math.max(headerBottom, barBottom));
+    // Overlap the header by a few pixels. A measured seam of even 1px shows
+    // the cream page (and the hero type) between two dark surfaces.
+    setPanelTop(headerBottom > 0 ? Math.max(0, Math.floor(headerBottom) - 8) : 108);
   }, []);
 
   useEffect(() => {
@@ -285,40 +307,29 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
     return () => { document.body.style.overflow = ""; };
   }, [open]);
 
-  // A few pixels of scroll is enough to tuck the logo in and drop the shadow.
-  // The row height stays 80px, so the page underneath does not jump.
-  useEffect(() => {
-    if (!smartMenu) return;
-    let frame = 0;
-    const onScroll = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => setShrunk(window.scrollY > 12));
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", onScroll);
-    };
-  }, [smartMenu]);
-
-  // The shipping bar can be dismissed. Re-measure so the header sticks
-  // directly under whatever is actually fixed, including a safe-area top.
+  // The shipping bar can be dismissed. Only that node's size matters: a
+  // subtree observer on <body> refires while the persona stack writes
+  // styles, and a scroll listener that changes height is what jittered
+  // the phone header in Safari.
   useEffect(() => {
     if (!smartMenu) return;
     const read = () => {
-      const bar = document.querySelector("[data-anln-topbar]");
-      const fixed = !!bar && getComputedStyle(bar).position === "fixed";
-      const next = fixed ? Math.round(bar!.getBoundingClientRect().height) : 0;
+      const bar = document.querySelector<HTMLElement>("[data-anln-topbar]");
+      const next = bar ? Math.round(bar.getBoundingClientRect().height) : 0;
       setBarH((prev) => (prev === next ? prev : next));
     };
     read();
+    const bar = document.querySelector<HTMLElement>("[data-anln-topbar]");
+    const ro = new ResizeObserver(read);
+    if (bar) ro.observe(bar);
+    const parent = bar?.parentElement;
+    const mo = parent ? new MutationObserver(read) : null;
+    mo?.observe(parent!, { childList: true });
     window.addEventListener("resize", read);
-    const observer = new MutationObserver(read);
-    observer.observe(document.body, { childList: true, subtree: true });
     return () => {
       window.removeEventListener("resize", read);
-      observer.disconnect();
+      ro.disconnect();
+      mo?.disconnect();
     };
   }, [smartMenu]);
 
@@ -338,28 +349,27 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
 
   return (
     <>
-      {/* ─── Top bar: non-sticky, same max-w as the Hero text block ─── */}
+      {/* The phone row is not sticky on its own. The home wraps this header
+          and the shipping bar in one sticky layer, so neither height nor
+          `top` changes while scrolling. Desktop stays in flow. */}
       <header
         ref={headerRef}
         data-anln-header=""
-        style={
-          smartMenu
-            ? ({ "--anln-header-top": headerTop } as React.CSSProperties)
-            : undefined
-        }
         className={cn(
           "relative z-40 bg-surface",
-          // Below the desktop nav the row sticks under the shipping notice.
-          // `top` is only applied there: on desktop a relative `top` would
-          // shift the in-flow header.
-          smartMenu && "max-lg:sticky max-lg:top-[var(--anln-header-top)]",
-          smartMenu && shrunk && !open && "max-lg:shadow-card",
-          "transition-shadow duration-300 motion-reduce:transition-none",
+          smartMenu && !open && "max-lg:shadow-card",
           // Open menu only, and only below the desktop nav: the row joins
           // the announcement bar and the panel as one dark surface.
+          // The strip below covers the seam where the page would show through.
           open && "max-lg:bg-surface-inverse",
         )}
       >
+        {open ? (
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-full z-10 h-3 bg-surface-inverse lg:hidden"
+          />
+        ) : null}
         <div className="mx-auto flex h-20 w-full max-w-page items-center justify-between gap-6 px-6 lg:px-0">
           {/* ── Mobile: hamburger left ── */}
           <button
@@ -390,10 +400,7 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
               src={open ? logoMenu : logoMobile}
               alt={PRODUCT_NAME}
               loading="eager"
-              className={cn(
-                "h-[44px] w-auto transition-[height] duration-300 motion-reduce:transition-none lg:hidden",
-                shrunk && !open && "max-lg:h-9",
-              )}
+              className="h-[44px] w-auto lg:hidden"
             />
             {/* Desktop: ornate logo */}
             <img
@@ -422,8 +429,8 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
 
           {/* Mobile: basket, then account. Desktop keeps its own cluster. */}
           <div className="flex items-center lg:hidden">
-            <HeaderCart light={open} />
-            <AccountMenu light={open} />
+            <HeaderCart light={open} onBeforeOpen={() => setOpen(false)} />
+            <AccountMenu light={open} onBeforeOpen={() => setOpen(false)} />
           </div>
 
           {/* ── Right side: cart + CTA (desktop only) ── */}

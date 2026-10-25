@@ -27,6 +27,8 @@ export function Product({ offer }: { offer: ProductOffer }) {
         src="/img/offer/section-texture.webp"
         alt=""
         aria-hidden
+        loading="lazy"
+        decoding="async"
         className="pointer-events-none absolute inset-0 -z-10 size-full object-cover opacity-[0.09]"
       />
 
@@ -36,6 +38,8 @@ export function Product({ offer }: { offer: ProductOffer }) {
           src="/img/offer/card-watercolor.webp"
           alt=""
           aria-hidden
+          loading="lazy"
+          decoding="async"
           className="pointer-events-none absolute inset-0 size-full object-cover opacity-[0.24]"
         />
 

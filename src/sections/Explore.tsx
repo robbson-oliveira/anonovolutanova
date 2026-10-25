@@ -5,7 +5,7 @@ import { Button, EditionSelector, Reveal, cn } from "@ds/index";
 import { EXPLORE, QUOTE } from "@content/home";
 import { AGENDA_EDITIONS, CART_URL, CYCLE_YEAR } from "@content/product";
 
-const capaColor = "/img/capa-color.png";
+const capaColor = "/img/capa-color.webp";
 const capaClassica = "/img/capa-classica.webp";
 
 /**
@@ -579,9 +579,13 @@ export function Explore() {
               >
                 <img
                   src={page.src}
+                  srcSet={page.src.includes("/agenda-") ? `${page.src.replace(/\.webp$/, "-sm.webp")} ${Math.round(page.img.w * 0.62)}w, ${page.src} ${page.img.w}w` : undefined}
+                  sizes="(max-width: 767px) 92vw, 520px"
                   alt={page.alt}
                   width={page.img.w}
                   height={page.img.h}
+                  loading="lazy"
+                  decoding="async"
                   className="pointer-events-none absolute max-w-none"
                   style={{
                     left: `${(-page.book.x / page.book.w) * 100}%`,
@@ -610,6 +614,8 @@ export function Explore() {
                     alt={cover.alt}
                     width={cover.img.w}
                     height={cover.img.h}
+                    loading="lazy"
+                    decoding="async"
                     className="pointer-events-none absolute max-w-none"
                     style={{
                       left: `${(-cover.book.x / cover.book.w) * 100}%`,

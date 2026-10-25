@@ -63,19 +63,23 @@ export function Planner() {
          */}
         <div className="relative aspect-[434/335] w-full max-w-[480px] lg:hidden">
           <img
-            src="/img/planner-diario.png"
+            src="/img/planner-diario.webp"
             alt={PLANNER.imageAlt}
             width={642}
             height={472}
+            loading="lazy"
+            decoding="async"
             className="pointer-events-none absolute top-[-8.96%] left-[-8.99%] w-[147.93%] max-w-none"
           />
         </div>
         <img
-          src="/img/planner-diario.png"
+          src="/img/planner-diario.webp"
           alt=""
           aria-hidden
           width={642}
           height={472}
+          loading="lazy"
+          decoding="async"
           className="pointer-events-none hidden lg:absolute lg:left-[50.2%] lg:top-[2.9%] lg:block lg:h-auto lg:w-[62.9%] lg:max-w-none"
         />
       </Reveal>

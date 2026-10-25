@@ -50,7 +50,11 @@ export function TopBar({ sticky = true }: TopBarProps) {
       data-anln-topbar=""
       className={cn(
         "flex h-9 items-center bg-surface-inverse",
-        sticky ? "fixed inset-x-0 top-0 z-50" : "relative",
+        // On the phone the bar sits in normal flow inside the sticky header
+        // group, so it scrolls as one layer with the menu. A fixed bar and a
+        // sticky header move on different viewports in iOS Safari and jitter.
+        // Desktop keeps the bar fixed; the shell's lg:pt-9 reserves its height.
+        sticky ? "max-lg:relative lg:fixed lg:inset-x-0 lg:top-0 lg:z-50" : "relative",
       )}
     >
       <div className="relative flex flex-1 justify-center overflow-hidden">

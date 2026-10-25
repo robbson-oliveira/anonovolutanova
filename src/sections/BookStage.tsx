@@ -1,8 +1,8 @@
 import { cn } from "@ds/index";
 import { OFFER_ANCHOR, CYCLE_YEAR, priceLabel } from "@content/product";
-const capaColor = "/img/capa-color.png";
+const capaColor = "/img/capa-color.webp";
 const capaClassica = "/img/capa-classica.webp";
-const capaSolo = "/img/capa-solo.png";
+const capaSolo = "/img/capa-solo.webp";
 
 /** Um asset trocado no lab chega como blob: URL, sem dimensões conhecidas. */
 export type CoverSrc = string;
@@ -100,7 +100,16 @@ function Cover({
   alt: string;
   priority?: boolean;
 }) {
-  return <img src={src} alt={alt} loading={priority ? "eager" : "lazy"} className="h-auto w-full" />;
+  return (
+    <img
+      src={src}
+      alt={alt}
+      loading={priority ? "eager" : "lazy"}
+      decoding="async"
+      fetchPriority={priority ? "high" : "auto"}
+      className="h-auto w-full"
+    />
+  );
 }
 
 /**

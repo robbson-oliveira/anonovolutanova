@@ -7,11 +7,30 @@ type CartButtonProps = {
   className?: string;
 };
 
+const badgeClass =
+  "absolute top-0.5 right-0.5 grid size-4 min-w-4 place-items-center rounded-pill bg-surface-inverse px-0.5 text-[10px] leading-none font-bold text-text-on-inverse";
+
 /**
- * Desktop basket. The drawn glyph is nearly as tall as the Comprar button
- * (the viewBox padding is why the em is larger than the button), and the
- * real quantity sits in a small badge. An empty cart is the icon alone.
- * Hidden when there is no cart provider. The phone header uses HeaderCart.
+ * The drawn bag is the same size in the phone header and beside Comprar.
+ * The count sits in a small dark circle at the bag's top-right. No badge
+ * when the cart is empty.
+ */
+export function BasketMark({ count, light = false }: { count: number; light?: boolean }) {
+  return (
+    <>
+      <IconBasket />
+      {count > 0 ? (
+        <span className={cn(badgeClass, light && "bg-surface text-text-strong")}>
+          {count > 99 ? "99+" : count}
+        </span>
+      ) : null}
+    </>
+  );
+}
+
+/**
+ * Desktop basket, beside Comprar. Hidden without a cart provider.
+ * The phone header uses the same mark inside its own button.
  */
 export function CartButton({ className }: CartButtonProps) {
   const cart = useOptionalCart();
@@ -28,21 +47,13 @@ export function CartButton({ className }: CartButtonProps) {
       onClick={cart.openDrawer}
       aria-label={label}
       className={cn(
-        // The 16px viewBox leaves padding around the glyph, so the em has
-        // to overshoot the 44px Comprar button for the drawing itself to
-        // approach that height. w-16 keeps the overflow inside the button.
-        "relative inline-flex h-11 w-16 shrink-0 cursor-pointer items-center justify-center text-text-strong",
+        "relative inline-flex size-11 shrink-0 cursor-pointer items-center justify-center text-[26px] text-text-strong",
         "transition-colors [transition-duration:var(--duration-fast)] hover:text-action",
         "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-action",
         className,
       )}
     >
-      <IconBasket className="text-[56px]" />
-      {count > 0 ? (
-        <span className="absolute top-0 right-1 grid h-4 min-w-4 place-items-center rounded-pill bg-action px-1 text-[10px] leading-none font-bold text-on-action">
-          {count > 99 ? "99+" : count}
-        </span>
-      ) : null}
+      <BasketMark count={count} />
     </button>
   );
 }

@@ -267,7 +267,44 @@ function coveredTop() {
   return top;
 }
 
+/**
+ * `width: max-content` stops at the max-width, and pretty wrap then
+ * leaves a gap beside every line. Pull the card in to the longest
+ * line (the button included) so the right edge meets the copy.
+ */
+function fitHotspotCard(card: HTMLElement) {
+  const cs = getComputedStyle(card);
+  const max = parseFloat(cs.maxWidth);
+  if (!Number.isFinite(max) || max <= 0) return;
+  const padX = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+  const borderX = parseFloat(cs.borderLeftWidth) + parseFloat(cs.borderRightWidth);
+  card.style.width = `${max}px`;
+  // The entrance animation scales the card. Rects are visual; the
+  // width we set is layout, so divide the scale back out. One pass:
+  // measuring again after the shrink lets pretty wrap pull every line
+  // in and the card collapses onto the button.
+  const scale = card.offsetWidth > 0 ? card.getBoundingClientRect().width / card.offsetWidth : 1;
+  const factor = scale > 0.01 ? scale : 1;
+  let content = 0;
+  [...card.querySelectorAll("p, a")].forEach((el, index) => {
+    if (el.tagName === "A") {
+      content = Math.max(content, el.getBoundingClientRect().width / factor);
+      return;
+    }
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    let line = 0;
+    for (const rect of range.getClientRects()) line = Math.max(line, rect.width / factor);
+    // The title's right padding only clears the close mark.
+    const extra = index === 0 ? parseFloat(getComputedStyle(el).paddingRight) : 0;
+    content = Math.max(content, line + extra);
+  });
+  if (content <= 0) return;
+  card.style.width = `${Math.min(max, Math.ceil(content + padX + borderX))}px`;
+}
+
 function placeHotspotCard(card: HTMLElement, pin: HTMLElement) {
+  fitHotspotCard(card);
   const parent = card.offsetParent as HTMLElement | null;
   if (!parent) return;
   const parentRect = parent.getBoundingClientRect();
@@ -307,7 +344,12 @@ type HotspotCardProps = {
   onClose: () => void;
 };
 
-/** Card anchored to the pin that opened it, on every viewport. */
+/**
+ * Card anchored to the pin that opened it, on every viewport.
+ * Width is the copy (`max-content`), capped so a long sentence wraps
+ * instead of stretching the page: ~240px on a phone, ~272px from `sm`.
+ * The close control is absolute so it does not reserve a column.
+ */
 function HotspotCard({ spot, pinRefs, index, onClose }: HotspotCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -373,18 +415,18 @@ function HotspotCard({ spot, pinRefs, index, onClose }: HotspotCardProps) {
       ref={cardRef}
       role="dialog"
       aria-label={spot.title}
-      className="absolute z-30 w-[min(280px,calc(100vw-24px))] rounded-[10px] border border-border bg-surface p-4 shadow-float motion-safe:animate-pin-card"
+      className="absolute z-30 w-max max-w-[min(240px,calc(100vw-24px))] rounded-[10px] border border-border bg-surface p-3 shadow-float motion-safe:animate-pin-card sm:max-w-[272px]"
     >
       <button
         type="button"
         aria-label="Fechar"
         onClick={onClose}
-        className="absolute right-2 top-2 grid size-6 cursor-pointer place-items-center rounded-[4px] text-text opacity-60 transition-opacity [transition-duration:var(--duration-fast)] hover:opacity-100"
+        className="absolute top-1.5 right-1.5 grid size-6 cursor-pointer place-items-center rounded-[4px] text-text opacity-60 transition-opacity [transition-duration:var(--duration-fast)] hover:opacity-100"
       >
         <svg
           aria-hidden
           viewBox="0 0 24 24"
-          className="size-4 fill-none stroke-current stroke-2 [stroke-linecap:round]"
+          className="size-3.5 fill-none stroke-current stroke-2 [stroke-linecap:round]"
         >
           <path d="M18 6 6 18M6 6l12 12" />
         </svg>
@@ -392,12 +434,12 @@ function HotspotCard({ spot, pinRefs, index, onClose }: HotspotCardProps) {
       <p className="pr-6 text-[16px] font-semibold leading-[1.2] tracking-[-0.01em] text-text-strong">
         {spot.title}
       </p>
-      <p className="mt-2 text-[14px] font-medium leading-[1.45] tracking-[-0.01em] text-text-muted">
+      <p className="mt-1.5 text-[14px] font-medium leading-[1.45] tracking-[-0.01em] text-text-muted">
         {spot.text}
       </p>
       <Button
         href={CART_URL}
-        className="mt-3 h-auto! rounded-[8px]! bg-hotspot! px-4! py-2! text-[14px]! leading-[1.3]! tracking-[-0.01em]! hover:bg-hotspot-hover!"
+        className="mt-2.5 h-auto! rounded-[8px]! bg-hotspot! px-3.5! py-1.5! text-[14px]! leading-[1.3]! tracking-[-0.01em]! hover:bg-hotspot-hover!"
       >
         Garantir minha Agenda
       </Button>

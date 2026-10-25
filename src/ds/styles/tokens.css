@@ -223,6 +223,8 @@
      Tipografia — medidas computadas do design aprovado
      --------------------------------------------------------------------- */
   --font-sans: var(--font-manrope), "Manrope", ui-sans-serif, system-ui, sans-serif;
+  /* Cart row only. The family is loaded with next/font and set on <html>. */
+  --font-condensed: var(--font-condensed-family), "Arial Narrow", ui-sans-serif, sans-serif;
   /* Manuscrita dos mockups de pagina interna. Segunda familia do design aprovado. */
   --font-script: var(--font-yellowtail), "Yellowtail", ui-serif, cursive;
   /* "Em breve" page only; declared there, not in the root layout. */

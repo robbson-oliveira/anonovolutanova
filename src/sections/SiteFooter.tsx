@@ -52,7 +52,7 @@ export function SiteFooter() {
               width={106}
               height={143}
               unoptimized
-              className="block h-[143px] w-[106px]"
+              className="block h-[121.55px] w-[90.1px] md:h-[143px] md:w-[106px]"
             />
           </Reveal>
 

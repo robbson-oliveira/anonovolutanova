@@ -27,9 +27,10 @@ function GiftWrapControl() {
       id={id}
       checked={checked}
       onCheckedChange={setChecked}
+      align="center"
       className="gap-0"
-      boxClassName="mt-0! size-[22px]! rounded-[3px]"
-      labelClassName="text-[10px]! font-semibold! uppercase leading-none! tracking-[-0.04em] whitespace-nowrap text-text-strong min-[380px]:text-[11px]! sm:text-xs!"
+      boxClassName="size-[22px]! rounded-[3px]"
+      labelClassName="font-condensed text-[10px]! font-semibold! uppercase leading-none! tracking-[-0.02em] whitespace-nowrap text-text-strong min-[380px]:text-[11px]! sm:text-xs!"
     >
       Embalagem para presente
     </Checkbox>
@@ -63,7 +64,7 @@ export function CartItemRow({
   const title = edition ? edition.label : item.name;
 
   return (
-    <li className="flex items-stretch gap-2.5 sm:gap-4">
+    <li className="flex items-stretch gap-2.5 font-condensed sm:gap-4">
       <ProductThumb
         image={mainImage(item.images)}
         fallback={edition}
@@ -79,7 +80,7 @@ export function CartItemRow({
             <div
               role="group"
               aria-label={`Quantidade de ${title}`}
-              className="inline-flex h-8 items-stretch overflow-hidden rounded-[10px] border border-border text-text-strong sm:h-9"
+              className="-mt-1.5 inline-flex h-8 items-stretch overflow-hidden rounded-[10px] border border-border text-text-strong sm:h-9"
             >
               <button
                 type="button"

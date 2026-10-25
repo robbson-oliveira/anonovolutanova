@@ -98,7 +98,6 @@ export function Liturgical() {
         aria-hidden
         className="pointer-events-none absolute inset-0 overflow-hidden opacity-[0.19] mix-blend-darken"
       >
-        <div className="absolute inset-y-0 left-[12.96%] right-[4.53%] bg-[url('/img/textura-liturgica.png')] bg-[length:100%_100%]" />
         <div className="absolute inset-0 bg-[url('/img/textura-liturgica.webp')] bg-cover bg-center" />
       </div>
 

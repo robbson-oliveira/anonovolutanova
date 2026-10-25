@@ -50,7 +50,10 @@ function usePersonaStack(
     let frame = 0;
     let cardH = 0;
     let gap = 0;
-    let lastTop = -1;
+    /** Viewport Y the cards stick to. Cached; not read on scroll. */
+    let stickLine = 0;
+    /** Layout document-Y of each card. Scroll math uses these, not rects. */
+    let tops: number[] = [];
     let cancelled = false;
 
     const cards = () => [...list.querySelectorAll<HTMLElement>("[data-persona-card]")];
@@ -59,6 +62,7 @@ function usePersonaStack(
       card.style.transform = "";
       card.style.opacity = "";
       card.style.transformOrigin = "";
+      card.style.willChange = "";
     };
 
     const clearLi = (li: HTMLElement) => {
@@ -84,9 +88,11 @@ function usePersonaStack(
       list.style.marginTop = "";
       list.style.position = "";
       list.style.zIndex = "";
+      list.querySelectorAll("[data-persona-spacer]").forEach((node) => node.remove());
       sticky.style.position = "";
       sticky.style.top = "";
       sticky.style.paddingBottom = "";
+      track.style.paddingBottom = "";
       track.removeAttribute("data-persona-stack");
     };
 
@@ -121,6 +127,9 @@ function usePersonaStack(
       // then ends exactly where the card pile ends, so the title and the
       // last card leave together instead of separating.
       gap = parseFloat(getComputedStyle(list).marginTop) || 0;
+      // A real sibling, not margin on the sticky card. Margin on that box
+      // does not become scroll travel: the next card never caught up.
+      const runway = Math.round(cardH * 0.85);
       sticky.style.position = "sticky";
       sticky.style.top = `${pinTop()}px`;
       sticky.style.paddingBottom = `${cardH + gap}px`;
@@ -128,6 +137,9 @@ function usePersonaStack(
       list.style.position = "relative";
       list.style.zIndex = "1";
       track.dataset.personaStack = "on";
+      // Keeps the short intro stuck until the last card lands. Padding on
+      // the intro itself would make that box taller and release it sooner.
+      track.style.paddingBottom = `${cardH}px`;
 
       items.forEach((card, i) => {
         const li = card.parentElement;
@@ -137,10 +149,36 @@ function usePersonaStack(
         li.style.height = `${cardH}px`;
         li.style.marginBottom = "0";
         li.style.paddingBottom = "0";
+        if (i < items.length - 1) {
+          const spacer = document.createElement("li");
+          spacer.dataset.personaSpacer = "";
+          spacer.setAttribute("aria-hidden", "true");
+          spacer.style.height = `${runway}px`;
+          spacer.style.pointerEvents = "none";
+          li.after(spacer);
+        }
         li.style.boxSizing = "border-box";
         // The entrance animation writes `transform` on the <li>. Any
         // transform on the sticky box itself stops it sticking in Safari.
         li.style.setProperty("animation", "none", "important");
+        card.style.willChange = "transform";
+        card.style.transformOrigin = "top center";
+      });
+
+      const top = pinTop();
+      sticky.style.top = `${top}px`;
+      const text = sticky.querySelector<HTMLElement>("[data-persona-intro]");
+      // Layout height, not the current viewport position. Measuring the
+      // text with getBoundingClientRect while the section is still down
+      // the page stored that distance as the sticky offset.
+      const textH = text?.offsetHeight ?? sticky.offsetHeight;
+      stickLine = top + textH + gap;
+      const listDoc = list.getBoundingClientRect().top + window.scrollY;
+      tops = items.map((card) => {
+        const li = card.parentElement;
+        if (!li) return 0;
+        li.style.top = `${stickLine.toFixed(2)}px`;
+        return listDoc + li.offsetTop;
       });
       return true;
     };
@@ -153,47 +191,25 @@ function usePersonaStack(
       }
       if (!cardH && !measure()) return;
 
-      const top = pinTop();
-      if (lastTop >= 0 && Math.abs(top - lastTop) > 8) cardH = 0;
-      lastTop = top;
-      if (!cardH && !measure()) return;
-
-      sticky.style.top = `${top}px`;
-      const text = sticky.querySelector<HTMLElement>("[data-persona-intro]");
-      // The card slot starts just under the paragraph. The padding below
-      // that slot is only there so the title releases with the pile.
-      const stickLine = (text?.getBoundingClientRect().bottom ?? sticky.getBoundingClientRect().bottom) + gap;
+      const y = window.scrollY;
       const items = cards();
-
-      // Front card first, so each card behind can sink under a position
-      // that is already final for this frame.
+      // Transforms only. Reading layout here is what shook the pile on
+      // iPhone: sticky `top` and getBoundingClientRect on every frame.
       for (let i = items.length - 1; i >= 0; i--) {
         const card = items[i];
-        const li = card.parentElement;
-        if (!li) continue;
-        li.style.top = `${stickLine.toFixed(2)}px`;
-        const nextCard = items[i + 1];
-        if (!nextCard) {
-          clearCard(card);
+        if (!items[i + 1]) {
+          if (card.style.transform) clearCard(card);
           continue;
         }
-        const nextTop = nextCard.getBoundingClientRect().top;
-        const progress = Math.min(1, Math.max(0, (stickLine + cardH - nextTop) / cardH));
+        const nextVisual = Math.max(stickLine, tops[i + 1] - y);
+        const progress = Math.min(1, Math.max(0, (stickLine + cardH - nextVisual) / cardH));
         const scale = 1 - progress * 0.06;
         const opacity = 1 - progress * 0.45;
-        // Sink from the top edge. Once the next card has actually arrived,
-        // close a remaining sliver (subpixels, the gold border). A large
-        // gap just means the next card is still on its way up.
-        let tuck = progress * 8;
+        // 14px at rest is enough to sink the gold edge under the card in
+        // front. A live rect correction forced layout and jittered.
+        const tuck = progress * 14;
         card.style.transformOrigin = "top center";
-        card.style.transform = `translateY(${tuck.toFixed(1)}px) scale(${scale.toFixed(3)})`;
-        if (progress > 0.75) {
-          const peek = nextTop - card.getBoundingClientRect().top;
-          if (peek > 0 && peek < 32) {
-            tuck += peek + 1;
-            card.style.transform = `translateY(${tuck.toFixed(1)}px) scale(${scale.toFixed(3)})`;
-          }
-        }
+        card.style.transform = `translate3d(0,${tuck.toFixed(1)}px,0) scale(${scale.toFixed(3)})`;
         card.style.opacity = opacity.toFixed(3);
       }
     };
@@ -210,8 +226,11 @@ function usePersonaStack(
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
-    // iOS Safari grows and shrinks the visual viewport as the toolbar shows.
-    window.visualViewport?.addEventListener("resize", onResize);
+    // Toolbar show/hide resizes the visual viewport without changing
+    // layout. Remeasuring on that event was a second source of jitter.
+    const shell = document.querySelector("[data-anln-header]")?.parentElement;
+    const shellObserver = shell ? new ResizeObserver(onResize) : null;
+    if (shell) shellObserver?.observe(shell);
     reduce.addEventListener("change", onResize);
     narrow.addEventListener("change", onResize);
     void document.fonts?.ready.then(() => {
@@ -222,7 +241,7 @@ function usePersonaStack(
       cancelAnimationFrame(frame);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
-      window.visualViewport?.removeEventListener("resize", onResize);
+      shellObserver?.disconnect();
       reduce.removeEventListener("change", onResize);
       narrow.removeEventListener("change", onResize);
       reset();

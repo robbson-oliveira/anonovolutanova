@@ -68,11 +68,17 @@ export default async function Home() {
         // JSON.stringify não escapa "<"; sem isto um "</script>" no conteúdo fecharia a tag.
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
-      <TopBar />
-      {/* pt-9: a barra de frete é fixa e tem 36px. overflow-x-clip: as
-          animações de entrada laterais (Reveal left/right) partem 56px fora
-          do lugar e, sem o corte, alargariam a página no celular. */}
-      <div className="relative isolate overflow-x-clip bg-surface pt-9">
+      {/* pt-9 only from lg: on the phone the shipping bar is in flow, inside
+          the sticky group below. overflow-x-clip: the sideways entrance
+          animations start 56px off and would widen the page without the clip. */}
+      <div className="relative isolate overflow-x-clip bg-surface lg:pt-9">
+        {/* One sticky layer for the shipping bar and the phone header. They
+            used to be fixed and sticky separately, which jitters while
+            Safari's toolbar changes the visual viewport. */}
+        <div className="max-lg:sticky max-lg:top-0 max-lg:z-50 max-lg:bg-surface lg:contents">
+          <TopBar />
+          <SiteHeader smartMenu />
+        </div>
         {/* Watercolor shared by the FAQ, the closing card and the footer (Figma
             "BG inferior", 949:15): 1920px wide, centered and cropped by the
             page on narrower screens, glued to the bottom, with a mask that keeps
@@ -80,9 +86,8 @@ export default async function Home() {
             that hang below the footer. */}
         <div
           aria-hidden
-          className="pointer-events-none absolute bottom-0 left-1/2 -z-10 aspect-[1920/2824] w-[max(100%,1100px)] -translate-x-1/2 bg-[url(/img/footer/bg-aquarela.png)] bg-[length:100%_auto] bg-top bg-no-repeat [mask-image:var(--mask-lower-aquarela)] min-[1440px]:w-[max(100%,1920px)]"
+          className="pointer-events-none absolute bottom-0 left-1/2 -z-10 aspect-[1920/2824] w-[max(100%,1100px)] -translate-x-1/2 bg-[url(/img/footer/bg-aquarela.webp)] bg-[length:100%_auto] bg-top bg-no-repeat [mask-image:var(--mask-lower-aquarela)] min-[1440px]:w-[max(100%,1920px)]"
         />
-        <SiteHeader smartMenu />
         <main>
           <Hero />
           <DuckStrip />

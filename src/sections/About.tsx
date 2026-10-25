@@ -228,6 +228,8 @@ export function About() {
         src={fundo}
         alt=""
         aria-hidden
+        loading="lazy"
+        decoding="async"
         className="pointer-events-none absolute inset-0 size-full object-cover object-top"
       />
       <Container className="relative">

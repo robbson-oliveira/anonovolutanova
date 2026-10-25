@@ -30,7 +30,7 @@ export const EDITIONS = [
   {
     id: "color",
     label: "Edição Color",
-    cover: "/img/capa-color.png",
+    cover: "/img/capa-color.webp",
     coverSize: { width: 514, height: 634 },
     /** Where the book itself sits in the file; the rest is drop shadow. */
     coverBox: { x: 9, y: 11, width: 358, height: 463 },

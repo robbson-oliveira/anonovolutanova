@@ -8,6 +8,7 @@ import { formatBRL } from "@/lib/format";
 import { CartItemRow } from "./CartItemRow";
 import { CouponForm } from "./CouponForm";
 import { useCart } from "./CartProvider";
+import { SHOW_GIFT_WRAP } from "./gift-wrap";
 
 /** Gaveta do carrinho, pela direita. Fecha com Esc, no fundo ou no X. */
 export function CartDrawer() {
@@ -34,7 +35,7 @@ export function CartDrawer() {
 
   return (
     <div
-      className={cn("fixed inset-0 z-50", drawerOpen ? "" : "pointer-events-none")}
+      className={cn("fixed inset-0 z-[80]", drawerOpen ? "" : "pointer-events-none")}
       aria-hidden={!drawerOpen}
     >
       <div
@@ -63,7 +64,7 @@ export function CartDrawer() {
             type="button"
             onClick={closeDrawer}
             aria-label="Fechar carrinho"
-            className="grid size-10 cursor-pointer place-items-center text-xl text-text-strong"
+            className="grid size-11 cursor-pointer place-items-center text-2xl text-text-strong"
           >
             <IconClose />
           </button>
@@ -85,6 +86,7 @@ export function CartDrawer() {
                   item={item}
                   busy={busy}
                   onQuantity={(q) => void setQuantity(item.key, q)}
+                  giftWrap={SHOW_GIFT_WRAP}
                 />
               ))}
             </ul>

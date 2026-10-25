@@ -402,8 +402,17 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
               size="lg"
               shape="block"
               type="button"
-              disabled={cart.busy || !edition.inStock}
+              disabled={cart.busy || !cart.ready || !edition.inStock}
               onClick={async () => {
+                if (!edition.productId || !cart.ready) return;
+                // Adicionar already stored this edition. A second add-item
+                // would stack another unit, including after a reload, when
+                // the selector is back to 1. Finish with the cart as saved.
+                const already = cart.cart?.items.some((item) => item.id === edition.productId);
+                if (already) {
+                  router.push("/checkout");
+                  return;
+                }
                 if (await addToCart()) router.push("/checkout");
               }}
             >

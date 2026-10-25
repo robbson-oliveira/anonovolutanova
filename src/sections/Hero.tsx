@@ -109,14 +109,22 @@ export function Hero() {
               </Button>
             </Reveal>
 
-            <Reveal variant="up" delay={280}>
-              <div className="mt-[10px] flex flex-wrap items-center gap-[12px] max-md:justify-center">
+            {/* Stretch this wrapper. The column centers its children, and a
+                size container inside a shrink-wrapped flex item collapses
+                to 0. Full width gives the row a real measure to size against. */}
+            <Reveal variant="up" delay={280} className="w-full min-w-0 self-stretch">
+              {/* One line at every width, including a larger Android text
+                  scale. At 16px the pair is about 339px, so it wraps in a
+                  phone gutter and in the tablet column. The size tracks
+                  this row and caps at the current 16px / 10px / 12px once
+                  the row can hold that pair under a 1.3× text scale. */}
+              <div className="@container mt-[10px] flex w-full min-w-0 flex-nowrap items-center gap-[clamp(4px,2.7cqw,12px)] max-md:justify-center">
                 {HERO.seals.map((seal) => (
                   <Badge
                     key={seal}
                     tone="plain"
                     icon={<IconSparkle />}
-                    className="h-9 gap-2.5 rounded-[10px]! px-2.5 font-bold! text-text-strong"
+                    className="h-9 shrink-0 gap-[clamp(4px,2.25cqw,10px)] whitespace-nowrap rounded-[10px]! px-[clamp(4px,2.25cqw,10px)] text-[clamp(10px,3.6cqw,16px)]! font-bold! text-text-strong"
                   >
                     {seal}
                   </Badge>

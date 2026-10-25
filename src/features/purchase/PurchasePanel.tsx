@@ -376,11 +376,16 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
           </Text>
         </div>
 
-        {/* Frete e prazo pelo CEP, com as formas de entrega do WooCommerce. A
-            cotação soma o que já está no carrinho: é esse pacote que vai
-            ser enviado (e é ele que alcança o frete grátis por quantidade). */}
+        {/* Frete e prazo pelo CEP. The card quotes the order as it stands:
+            units already in the cart, or the selector when the cart is
+            still empty. Adding the selector on top of a cart of 3 made
+            the badge say free shipping one unit early. The line under
+            the stepper is what previews "ao adicionar". */}
         {offer.checkoutEnabled && edition.productId && !soldOut ? (
-          <ShippingEstimate productId={edition.productId} quantity={qty + (cart?.count ?? 0)} />
+          <ShippingEstimate
+            productId={edition.productId}
+            quantity={(cart?.count ?? 0) > 0 ? (cart?.count ?? qty) : qty}
+          />
         ) : null}
 
         {/* CTA */}

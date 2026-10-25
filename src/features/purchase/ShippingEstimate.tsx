@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { IconChevronRight, IconTruck, cn } from "@ds/index";
 import { FREE_SHIPPING_MIN_QTY, whatsappUrlWith } from "@content/product";
+import { formatBRL } from "@/lib/format";
 import { maskCep } from "@/lib/commerce/br";
 import {
   deliveryDateLabel,
@@ -31,10 +32,14 @@ type Outcome = "ok" | "error" | "stale";
 
 const lineKey = (productId: number, quantity: number, cep: string) => `${productId}|${quantity}|${cep}`;
 
-/** Título do card: "Chegará grátis até dia 5 de outubro", "Receba até dia 5 de outubro"… */
-function headline(rate: ShippingRate): string {
+/** Paid label even when a rate is marked free below the unit rule. */
+function formatRateCost(rate: ShippingRate): string {
+  return rate.is_free && rate.cost === 0 ? formatBRL(rate.cost) : ratePriceLabel(rate);
+}
+
+function headline(rate: ShippingRate, qualifies: boolean): string {
   const date = deliveryDateLabel(rate);
-  if (rate.is_free) return date ? `Chegará grátis até ${date}` : "Chegará grátis";
+  if (qualifies && rate.is_free) return date ? `Chegará grátis até ${date}` : "Chegará grátis";
   return date ? `Receba até ${date}` : `Entrega via ${rate.label}`;
 }
 
@@ -179,16 +184,13 @@ export function ShippingEstimate({ productId, quantity }: ShippingEstimateProps)
   const selected = resolveChosenRate(rates, choice);
   const shownCep = quote?.cep ?? storedCep;
 
-  // Frete grátis por quantidade. Enquanto a cotação é de outra linha (antes da
-  // primeira, ou nos 400ms depois de mudar a quantidade), vale a regra local.
-  const isCurrentLine = quote !== null && quote.productId === productId && quote.quantity === quantity;
+  // Frete grátis por quantidade, contada uma vez. A rota de cotação não vê
+  // o carrinho (sem Cart-Token), então quem chama manda o total. Um método
+  // com custo zero, ou o flag do servidor discordando dessa quantidade, não
+  // pode marcar o selo como grátis antes das unidades da regra.
   const minQty = data?.free_shipping.min_qty || FREE_SHIPPING_MIN_QTY;
-  const qualifies =
-    isCurrentLine && data
-      ? data.free_shipping.qualifies || rates.some((r) => r.is_free)
-      : quantity >= minQty;
-  const remaining =
-    isCurrentLine && data ? data.free_shipping.remaining : Math.max(0, minQty - quantity);
+  const qualifies = quantity >= minQty;
+  const remaining = Math.max(0, minQty - quantity);
 
   const badge = (
     <span
@@ -232,9 +234,9 @@ export function ShippingEstimate({ productId, quantity }: ShippingEstimateProps)
       >
         {data && selected ? (
           <>
-            <p className="text-field font-bold text-text-strong">{headline(selected)}</p>
+            <p className="text-field font-bold text-text-strong">{headline(selected, qualifies)}</p>
             <p className="text-fine text-text-muted">
-              {selected.label} · {ratePriceLabel(selected)} · para o CEP {maskCep(shownCep)}
+              {selected.label} · {qualifies ? ratePriceLabel(selected) : formatRateCost(selected)} · para o CEP {maskCep(shownCep)}
             </p>
           </>
         ) : data ? (

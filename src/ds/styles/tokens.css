@@ -397,6 +397,8 @@
      it grows, the card rises 10px and scales up from 0.9. */
   --animate-pin-pulse: ds-pin-pulse 1.6s ease-out infinite;
   --animate-pin-card: ds-pin-card 0.2s var(--ease-enter) both;
+  /* Explore pins: hidden until the spread has decoded, then 0 → 1.1 → 1. */
+  --animate-pin-pop: ds-pin-pop 0.45s var(--ease-overshoot) both;
   /* Account menu: drops down from under the icon, instead of rising into place. */
   --animate-menu-drop: ds-menu-drop 0.18s var(--ease-enter) both;
 
@@ -409,6 +411,12 @@
   @keyframes ds-pin-card {
     from { opacity: 0; transform: translateY(10px) scale(0.9); }
     to { opacity: 1; transform: none; }
+  }
+
+  @keyframes ds-pin-pop {
+    0% { transform: scale(0); }
+    70% { transform: scale(1.1); }
+    100% { transform: scale(1); }
   }
 
   @keyframes ds-menu-drop {

@@ -16,6 +16,10 @@ type CheckboxProps = {
   error?: string;
   name?: string;
   className?: string;
+  /** Classes on the square, when a row needs a larger box. */
+  boxClassName?: string;
+  /** Classes on the label. */
+  labelClassName?: string;
 };
 
 /**
@@ -33,6 +37,8 @@ export function Checkbox({
   error,
   name,
   className,
+  boxClassName,
+  labelClassName,
 }: CheckboxProps) {
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
@@ -52,13 +58,14 @@ export function Checkbox({
             "data-[state=checked]:border-action data-[state=checked]:bg-action data-[state=checked]:text-on-action",
             "disabled:cursor-not-allowed disabled:opacity-40",
             error ? "border-accent" : "border-border hover:border-action/60",
+            boxClassName,
           )}
         >
           <RadixCheckbox.Indicator className="grid place-items-center">
             <IconCheck className="size-4" />
           </RadixCheckbox.Indicator>
         </RadixCheckbox.Root>
-        <label htmlFor={id} className="cursor-pointer text-label text-text-strong">
+        <label htmlFor={id} className={cn("cursor-pointer text-label text-text-strong", labelClassName)}>
           {children}
         </label>
       </div>

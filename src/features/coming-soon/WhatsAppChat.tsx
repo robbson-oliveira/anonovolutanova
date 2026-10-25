@@ -237,11 +237,12 @@ export function WhatsAppChat({ placement = "teaser", hidden = false }: WhatsAppC
                 sizes="31px"
                 className="size-[31px] shrink-0 rounded-[17px] object-cover"
               />
-              {/* The bubble's tail, under its top-left corner. */}
-              <svg aria-hidden viewBox="0 0 20 14" className="absolute top-0 left-[30px] h-[14px] w-5 fill-whatsapp-bubble">
-                <path d="M20 0H0l20 14Z" />
+              {/* Tail sits in the corner beside the avatar. The bubble's
+                  top-left stays square so the triangle meets it without a gap. */}
+              <svg aria-hidden viewBox="0 0 20 12" className="absolute top-0 left-[22px] h-3 w-5 fill-whatsapp-bubble">
+                <path d="M20 0H0l20 12Z" />
               </svg>
-              <div className="relative ml-[11px] flex w-[196px] flex-col rounded-lg bg-whatsapp-bubble pt-2 pr-[15px] pb-[7px] pl-4">
+              <div className="relative ml-2 flex w-[196px] flex-col rounded-tl-none rounded-tr-[12px] rounded-br-[12px] rounded-bl-[12px] bg-whatsapp-bubble pt-2 pr-[15px] pb-[7px] pl-4">
                 <p className="text-[10.4px] leading-[1.2] font-medium text-whatsapp-sender">{COMING_SOON_CHAT.agent}</p>
                 <p className="mt-0.5 text-[13.6px] leading-[1.2] font-medium text-whatsapp-text">{COMING_SOON_CHAT.greeting}</p>
                 <p className="mt-0.5 pt-[3px] text-[10.4px] leading-none text-whatsapp-time">{time}</p>

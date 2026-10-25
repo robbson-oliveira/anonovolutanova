@@ -504,13 +504,15 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
               {/* 391×171 lockup. At 40px tall the file is still above 2×. */}
               <img src={logoCompact} alt="" width={391} height={171} className="h-10 w-auto" />
             </a>
-            <nav aria-label="Principal" className="min-w-0 flex-1">
-              <ul className="flex flex-nowrap items-center justify-center gap-x-3 xl:gap-x-5">
+            <nav aria-label="Principal" className="flex min-w-0 flex-1 items-center">
+              {/* The list item must be a flex box. As a list-item it keeps the
+                  body's 20px strut, and the 13px link baseline sits low in the bar. */}
+              <ul className="flex w-full flex-nowrap items-center justify-center gap-x-3 xl:gap-x-5">
                 {NAV_LINKS.map((link) => (
-                  <li key={link.href}>
+                  <li key={link.href} className="flex">
                     <a
                       href={link.href}
-                      className="text-[13px] font-bold whitespace-nowrap text-text-strong transition-colors [transition-duration:var(--duration-fast)] hover:text-action xl:text-xs"
+                      className="text-[13px] font-bold leading-none whitespace-nowrap text-text-strong transition-colors [transition-duration:var(--duration-fast)] hover:text-action xl:text-xs"
                     >
                       {link.label}
                     </a>

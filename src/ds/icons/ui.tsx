@@ -209,12 +209,13 @@ export function IconCalendar(props: IconProps) {
   );
 }
 
-/** Carrinho (cabeçalho do resumo do pedido) */
+/** Thin shopping-bag outline. Same glyph in the phone header and on desktop. */
 export function IconBasket(props: IconProps) {
+  const stroke = { stroke: "currentColor", strokeWidth: 1.15, strokeLinecap: "round" as const, strokeLinejoin: "round" as const, fill: "none" };
   return (
     <IconBase viewBox={UI_BOX} fill="none" {...props}>
-      <path d="M1.8 6.5h12.4l-1.3 6.1a1.3 1.3 0 0 1-1.3 1H4.4a1.3 1.3 0 0 1-1.3-1Z" {...STROKE} />
-      <path d="M5.2 6.5 7 2.5m3.8 4L9 2.5M6 9.2v2m2-2v2m2-2v2" {...STROKE} />
+      <path d="M3.15 6.35h9.7l-.8 7.15a.9.9 0 0 1-.9.75H4.85a.9.9 0 0 1-.9-.75Z" {...stroke} />
+      <path d="M6.05 6.35V4.85a1.95 1.95 0 0 1 3.9 0v1.5" {...stroke} />
     </IconBase>
   );
 }

@@ -6,7 +6,6 @@ import {
   Button,
   IconAccount,
   IconArrowRight,
-  IconBasket,
   IconInstagram,
   cn,
 } from "@ds/index";
@@ -17,7 +16,7 @@ import {
   OFFER_ANCHOR,
   PRODUCT_NAME,
 } from "@content/product";
-import { CartButton } from "@/features/cart/CartButton";
+import { BasketMark, CartButton } from "@/features/cart/CartButton";
 import { useOptionalCart } from "@/features/cart/CartProvider";
 const logo = "/img/logo-header.svg";
 /** Lockup for the desktop compact bar. Served as this file, not the seal SVG. */
@@ -80,18 +79,13 @@ function HeaderCart({
     ? `Abrir carrinho, ${count} ${count === 1 ? "item" : "itens"}`
     : "Abrir carrinho";
   const className = cn(
-    "relative grid size-11 cursor-pointer place-items-center text-2xl lg:hidden",
+    "relative grid size-11 cursor-pointer place-items-center text-[26px] lg:hidden",
     light ? "text-text-on-inverse" : "text-text-strong",
     "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-action",
   );
   const body = (
     <>
-      <IconBasket />
-      {count > 0 ? (
-        <span className="absolute top-1 right-0.5 grid h-4 min-w-4 place-items-center rounded-pill bg-action px-1 text-[10px] leading-none font-bold text-on-action">
-          {count > 99 ? "99+" : count}
-        </span>
-      ) : null}
+      <BasketMark count={count} light={light} />
     </>
   );
   if (!cart) {
@@ -468,7 +462,7 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
           {/* ── Right side: cart + CTA (desktop only) ── */}
           <div className="hidden items-center gap-3 lg:flex">
             <CartButton />
-            <Button href={OFFER_ANCHOR} size="md" shape="block" className="px-12!">
+            <Button href={OFFER_ANCHOR} size="md" shape="block" className="px-8!">
               Comprar
               <IconArrowRight />
             </Button>
@@ -510,7 +504,7 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
             </nav>
             <div className="flex shrink-0 items-center gap-1.5">
               <CartButton />
-              <Button href={OFFER_ANCHOR} size="md" shape="block" className="h-10! px-12! text-[13px]!">
+              <Button href={OFFER_ANCHOR} size="md" shape="block" className="h-10! px-6! text-[13px]!">
                 Comprar
                 <IconArrowRight />
               </Button>

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { Barlow_Condensed } from "next/font/google";
 import { REVEAL_READY_SCRIPT } from "@ds/index";
+import { SmoothScroll } from "@/features/shell/SmoothScroll";
 import { PRODUCT_NAME } from "@content/product";
 import { publicEnv } from "@/lib/env";
 import { gtmHeadSnippet } from "@/lib/tracking/gtm";
@@ -14,7 +16,17 @@ import "./globals.css";
  *
  * Manrope em todo o site. Yellowtail é a segunda família do design aprovado:
  * simula a letra de quem já preencheu a agenda, nos mockups de página interna.
+ * Barlow Condensed is the exception: the cart row needs a real condensed face,
+ * and next/font is how that one family is loaded.
  */
+/** Cart item text. Manrope has no condensed cut; this face is only that row. */
+const condensed = Barlow_Condensed({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-condensed-family",
+  display: "swap",
+});
+
 const FONT_FILES = [
   { family: "Manrope", weight: 400, file: "manrope-latin-400-normal.woff2" },
   { family: "Manrope", weight: 500, file: "manrope-latin-500-normal.woff2" },
@@ -75,7 +87,7 @@ export default function RootLayout({
     // suppressHydrationWarning: os scripts abaixo marcam o <html> ANTES da
     // hidratação (de propósito, para não haver um quadro de animação solta
     // nem de fonte provisória). Sem isso o React acusa divergência.
-    <html lang="pt-BR" className="scroll-smooth" suppressHydrationWarning>
+    <html lang="pt-BR" className={`scroll-smooth ${condensed.variable}`} suppressHydrationWarning>
       <head>
         <style dangerouslySetInnerHTML={{ __html: criticalFontCss }} />
         {FONT_FILES.map((f) => (
@@ -99,6 +111,7 @@ export default function RootLayout({
       </head>
       <body className="bg-surface-warm font-sans text-base leading-normal text-text antialiased">
         {children}
+        <SmoothScroll />
         <ConsentBanner />
       </body>
     </html>

@@ -56,7 +56,7 @@ export function CartDrawer() {
         )}
       >
         <header className="flex items-center justify-between border-b border-border px-6 py-5">
-          <Heading as="h2" level="card">
+          <Heading as="h2" level="card" className="text-[19px]! leading-tight! font-bold! tracking-[-0.02em]!">
             Seu carrinho
           </Heading>
           <button
@@ -66,9 +66,10 @@ export function CartDrawer() {
             aria-label="Fechar carrinho"
             className="grid size-11 cursor-pointer place-items-center text-text-strong"
           >
-            {/* The glyph's circle sits inset in the 24 box. Cropping to it
-                makes the drawn circle ~30px inside the 44px tap target. */}
-            <IconClose viewBox="4 4 16 16" className="text-[34px]" />
+            {/* The circle is the whole 16-unit crop, so 24px of type is a
+                24px mark — the same visual size as the header icons. The
+                tap target stays 44px. */}
+            <IconClose viewBox="4 4 16 16" className="text-2xl" />
           </button>
         </header>
 
@@ -94,7 +95,13 @@ export function CartDrawer() {
             </ul>
 
             <footer className="flex flex-col gap-4 border-t border-border px-6 py-5">
-              <Text as="p" size="xs" tone={missing ? "muted" : "accent"} className="font-semibold" aria-live="polite">
+              <Text
+                as="p"
+                size="xs"
+                tone={missing ? "muted" : "accent"}
+                className={cn("font-semibold", !missing && "whitespace-nowrap")}
+                aria-live="polite"
+              >
                 {missing ? `Faltam ${missing} para o frete grátis` : "Frete grátis neste pedido"}
               </Text>
               <CouponForm />

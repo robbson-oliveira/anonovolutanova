@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, IconArrowRight, IconLock, IconTruck, Text } from "@ds/index";
+import { Button, IconArrowRight, IconLock, IconTruck, Text, cn } from "@ds/index";
 import { SHIPPING_NOTICE } from "@content/product";
 import type { ProductOffer } from "@/lib/commerce/offer-types";
 import { fromMinor } from "@/lib/commerce/store-api";
@@ -61,7 +61,7 @@ export function CartSummary({ offer }: CartSummaryProps) {
 
       {!empty ? (
         <div className="flex flex-col gap-2" aria-live="polite">
-          <Text as="p" size="xs" tone={missing ? "muted" : "accent"} className="font-semibold">
+          <Text as="p" size="xs" tone={missing ? "muted" : "accent"} className={cn("font-semibold", missing === 0 && "whitespace-nowrap")}>
             {missing
               ? `Faltam ${missing} ${missing === 1 ? "agenda" : "agendas"} para o frete grátis`
               : "Frete grátis neste pedido"}

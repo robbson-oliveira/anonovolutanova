@@ -32,6 +32,7 @@ export function MobileSummaryBar({ total, children }: { total: number; children:
         type="button"
         onClick={() => setOpen(true)}
         aria-expanded={open}
+        data-anln-sticky-bottom=""
         className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 rounded-t-card bg-action px-5 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))] text-field font-medium text-on-action shadow-float"
       >
         <span className="flex items-center gap-2">

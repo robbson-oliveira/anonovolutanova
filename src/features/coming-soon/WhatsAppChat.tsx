@@ -13,6 +13,29 @@ const whatsappSendUrl = (text: string) =>
   `https://api.whatsapp.com/send/?phone=${publicEnv.whatsappChatNumber}` +
   `&text=${encodeURIComponent(text)}&type=phone_number&app_absent=0`;
 
+type DataLayerWindow = Window & { dataLayer?: unknown[] };
+
+/**
+ * The widget never fired a tag of its own. GTM can listen for this later;
+ * the container itself is not changed here.
+ */
+function trackWhatsAppClick(): void {
+  const w = window as DataLayerWindow;
+  w.dataLayer = w.dataLayer || [];
+  w.dataLayer.push({ event: "whatsapp_click" });
+}
+
+type WhatsAppChatProps = {
+  /**
+   * `teaser` is the Em breve corner (hidden below `md`). `storefront` shows
+   * on every breakpoint, inside the page frame, and the shell can hide it
+   * without throwing away the draft.
+   */
+  placement?: "teaser" | "storefront";
+  /** Drawer, menu or checkout: keep it mounted, but out of the way. */
+  hidden?: boolean;
+};
+
 /**
  * The chat widget in the corner of the "Em breve" page, as in the Framer
  * teaser: a floating WhatsApp button that opens a small conversation panel.
@@ -21,9 +44,10 @@ const whatsappSendUrl = (text: string) =>
  *
  * Measurements from the live page: 312 × 397 panel, doodle wallpaper at 7%
  * over the sand background, 56px button, 50px from the corner on desktop,
- * 40/36 on tablet and 30/26 on the phone.
+ * 40/36 on tablet and 30/26 on the phone. The storefront uses the same
+ * panel and sits in the page gutter instead.
  */
-export function WhatsAppChat() {
+export function WhatsAppChat({ placement = "teaser", hidden = false }: WhatsAppChatProps) {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   // The greeting shows the time the panel opened, like a message just sent.
@@ -33,6 +57,7 @@ export function WhatsAppChat() {
   const inputRef = useRef<HTMLInputElement>(null);
   const pickerRef = useRef<HTMLDivElement>(null);
   const emojiButtonRef = useRef<HTMLButtonElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
   // Where the caret was when the input lost focus to the picker.
   const caret = useRef(0);
   const panelId = useId();
@@ -53,6 +78,51 @@ export function WhatsAppChat() {
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
+  // Sticky bars and the cookie banner (data-anln-sticky-bottom) sit on the
+  // bottom edge. Lift the button above whichever of them overlaps its column.
+  useEffect(() => {
+    if (placement !== "storefront") return;
+    const root = rootRef.current;
+    if (!root) return;
+    let frame = 0;
+    const measure = () => {
+      const columnLeft = window.innerWidth - 120;
+      const vh = window.innerHeight;
+      let lift = 0;
+      document.querySelectorAll<HTMLElement>("[data-anln-sticky-bottom]").forEach((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.width < 1 || r.height < 1) return;
+        if (r.bottom < vh * 0.45 || r.top > vh) return;
+        if (r.right < columnLeft || r.left > window.innerWidth) return;
+        lift = Math.max(lift, vh - r.top + 12);
+      });
+      const next = `${Math.ceil(lift)}px`;
+      if (root.style.getPropertyValue("--anln-chat-lift") !== next) {
+        root.style.setProperty("--anln-chat-lift", next);
+      }
+    };
+    const schedule = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(measure);
+    };
+    const resize = new ResizeObserver(schedule);
+    const watch = () => {
+      resize.disconnect();
+      document.querySelectorAll("[data-anln-sticky-bottom]").forEach((el) => resize.observe(el));
+      schedule();
+    };
+    const mutations = new MutationObserver(watch);
+    mutations.observe(document.body, { childList: true, subtree: true });
+    window.addEventListener("resize", schedule);
+    watch();
+    return () => {
+      cancelAnimationFrame(frame);
+      resize.disconnect();
+      mutations.disconnect();
+      window.removeEventListener("resize", schedule);
+    };
+  }, [placement]);
+
   useEffect(() => {
     if (!pickerOpen) return;
     const onDown = (ev: MouseEvent) => {
@@ -64,7 +134,10 @@ export function WhatsAppChat() {
   }, [pickerOpen]);
 
   const toggle = () => {
-    if (!open) setTime(TIME.format(new Date()));
+    if (!open) {
+      setTime(TIME.format(new Date()));
+      trackWhatsAppClick();
+    }
     setOpen((v) => !v);
     setPickerOpen(false);
   };
@@ -88,18 +161,46 @@ export function WhatsAppChat() {
     ev.preventDefault();
     const text = message.trim();
     if (!text) return;
+    trackWhatsAppClick();
     window.open(whatsappSendUrl(text), "_blank", "noopener,noreferrer");
     setMessage("");
     setPickerOpen(false);
   };
 
   return (
-    <div className="fixed right-[26px] bottom-[30px] z-40 hidden flex-col items-end gap-4 font-inter animate-soon-float motion-reduce:animate-none md:flex md:right-9 md:bottom-10 min-[75rem]:right-[50px] min-[75rem]:bottom-[50px]">
+    <div
+      ref={rootRef}
+      data-anln-storefront-chat={placement === "storefront" ? "" : undefined}
+      inert={hidden ? true : undefined}
+      aria-hidden={hidden || undefined}
+      className={
+        placement === "storefront"
+          ? cn(
+              "fixed z-40 flex flex-col items-end gap-4 font-inter [--anln-chat-lift:0px] animate-soon-float motion-reduce:animate-none",
+              // Same inset as the page frame: 20 / 32 / 48, and from the
+              // point the frame is centered, the extra margin around 1376px.
+              // A sticky bar or the cookie banner raises --anln-chat-lift.
+              "right-[max(1.25rem,env(safe-area-inset-right,0px))]",
+              "bottom-[max(1.25rem,env(safe-area-inset-bottom,0px),var(--anln-chat-lift))]",
+              "md:right-[max(2rem,env(safe-area-inset-right,0px))]",
+              "md:bottom-[max(2rem,env(safe-area-inset-bottom,0px),var(--anln-chat-lift))]",
+              "lg:right-[max(3rem,env(safe-area-inset-right,0px),calc((100vw-1376px)/2+3rem))]",
+              "lg:bottom-[max(3rem,env(safe-area-inset-bottom,0px),var(--anln-chat-lift))]",
+              hidden && "hidden!",
+            )
+          : "fixed right-[26px] bottom-[30px] z-40 hidden flex-col items-end gap-4 font-inter animate-soon-float motion-reduce:animate-none md:flex md:right-9 md:bottom-10 min-[75rem]:right-[50px] min-[75rem]:bottom-[50px]"
+      }
+    >
       {open ? (
         <section
           id={panelId}
           aria-label={COMING_SOON_CHAT.title}
-          className="relative flex h-[397px] w-[312px] max-w-[calc(100vw-52px)] origin-bottom-right animate-soon-panel flex-col overflow-hidden rounded-[10px] bg-whatsapp-panel shadow-whatsapp-panel motion-reduce:animate-none"
+          className={cn(
+            "relative flex h-[397px] w-[312px] origin-bottom-right animate-soon-panel flex-col overflow-hidden rounded-[10px] bg-whatsapp-panel shadow-whatsapp-panel motion-reduce:animate-none",
+            placement === "storefront"
+              ? "max-h-[min(397px,calc(100dvh-7.5rem-var(--anln-chat-lift,0px)))] max-w-[calc(100vw-2.5rem-env(safe-area-inset-left,0px)-env(safe-area-inset-right,0px))] md:max-w-[calc(100vw-4rem)] lg:max-w-[312px]"
+              : "max-w-[calc(100vw-52px)]",
+          )}
         >
           {/* WhatsApp's doodle wallpaper, barely there (7%, as measured). */}
           <Image

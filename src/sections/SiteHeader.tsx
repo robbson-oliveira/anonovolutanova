@@ -436,7 +436,7 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
         ) : null}
         {/* Phone only. Menu on the left, cart and account on the right.
             The side columns are equal, so the logo starts on the true
-            center; a 5px shift pulls it left without reaching the menu
+            center; a 10px shift pulls it left without reaching the menu
             or the frame edge. Desktop uses the row below and never sees
             this one. */}
         <div className={cn(pageFrameClass, "grid h-20 grid-cols-[1fr_auto_1fr] items-center lg:hidden")}>
@@ -460,7 +460,7 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
               <IconMenu close={open} />
             </button>
           </div>
-          <a href="#inicio" className="flex -translate-x-[5px] items-center justify-self-center">
+          <a href="#inicio" className="flex -translate-x-[10px] items-center justify-self-center">
             <img
               src={open ? logoMenu : logoMobile}
               alt={PRODUCT_NAME}

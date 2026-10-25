@@ -57,11 +57,11 @@ const AFFILIATE_LOGIN_URL = "https://admin.anonovolutanova.com.br/area-afiliado/
 
 /**
  * Shared phone target for the menu, the cart and the account mark.
- * One 44px box. The cart badge is positioned inside that box, so a count
+ * One 44px box, which stays above the 40px touch floor when the glyphs
+ * shrink. The cart badge is positioned inside that box, so a count
  * cannot make the cart taller than the other two or drop its glyph off
- * their line. Each glyph's em is chosen so the drawn mark (not the empty
- * viewBox) is about the same size: the account fills its box, the bag and
- * the menu strokes do not.
+ * their line. The account fills its box; the bag and the menu are a
+ * little smaller than that optical match.
  */
 const PHONE_ICON_BUTTON =
   "relative grid size-11 shrink-0 cursor-pointer place-items-center leading-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-action";
@@ -89,7 +89,7 @@ function HeaderCart({
     PHONE_ICON_BUTTON,
     // The bag's ink sits about 1px low in its viewBox. Shift only the
     // glyph; the badge stays put in the corner of the tap box.
-    "text-[34px] lg:hidden [&_svg]:-translate-y-px",
+    "text-[31px] lg:hidden [&_svg]:-translate-y-px",
     light ? "text-text-on-inverse" : "text-text-strong",
   );
   const body = (
@@ -434,10 +434,11 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
             className="pointer-events-none absolute inset-x-0 top-full z-10 h-3 bg-surface-inverse lg:hidden"
           />
         ) : null}
-        {/* Phone only. Menu on the left, cart and account on the right,
-            logo on the true center of the bar. The side columns are equal,
-            so the two icons on the right do not pull the logo off center.
-            Desktop uses the row below and never sees this one. */}
+        {/* Phone only. Menu on the left, cart and account on the right.
+            The side columns are equal, so the logo starts on the true
+            center; a 5px shift pulls it left without reaching the menu
+            or the frame edge. Desktop uses the row below and never sees
+            this one. */}
         <div className={cn(pageFrameClass, "grid h-20 grid-cols-[1fr_auto_1fr] items-center lg:hidden")}>
           <div className="flex items-center justify-self-start">
             <button
@@ -452,14 +453,14 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
               }}
               className={cn(
                 PHONE_ICON_BUTTON,
-                "text-[32px]",
+                "text-[29px]",
                 open ? "text-text-on-inverse" : "text-text-strong",
               )}
             >
               <IconMenu close={open} />
             </button>
           </div>
-          <a href="#inicio" className="flex items-center justify-self-center">
+          <a href="#inicio" className="flex -translate-x-[5px] items-center justify-self-center">
             <img
               src={open ? logoMenu : logoMobile}
               alt={PRODUCT_NAME}

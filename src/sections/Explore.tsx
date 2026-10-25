@@ -205,31 +205,51 @@ const TALLEST_SPREAD = Math.max(
 const STAGE_MIN_HEIGHT = `calc(${SPREAD_HEIGHT} * ${TALLEST_SPREAD.toFixed(4)})`;
 
 /**
- * Pontos de interesse sobre o livro. Percentuais medidos no Figma (949:830),
- * onde o livro ocupa 519×645: os três marcadores de 28px têm o centro em
- * (124,3 / 205), (313,6 / 425) e (358,1 / 349) px dentro dele. Como são
- * porcentagens, acompanham o livro em qualquer altura.
+ * Cover pins, as percentages of each edition's book box. The two covers are
+ * different art, so they do not share one layout: the spiral sits on the
+ * metal, the hot-stamp pin on that edition's foil, and the third pin on the
+ * detail that edition actually shows (spot varnish on the Color ducks, the
+ * matte navy field on the Clássica).
  */
-const HOTSPOTS = [
-  {
-    x: 23.95,
-    y: 31.78,
-    title: "Espiral metálica",
-    text: "Abre 360°, para escrever com a agenda dobrada sobre a mesa.",
-  },
-  {
-    x: 60.42,
-    y: 65.89,
-    title: "Patos à água",
-    text: "O tema do ano: lançar-se à água com confiança, um dia de cada vez.",
-  },
-  {
-    x: 69.06,
-    y: 54.11,
-    title: "Hotstamp",
-    text: "O ano em película metalizada, aplicada a quente sobre a capa dura.",
-  },
-];
+const SPIRAL_HOTSPOT: Hotspot = {
+  x: 15,
+  y: 31.78,
+  title: "Espiral metálica",
+  text: "Abre 360°, para escrever com a agenda dobrada sobre a mesa.",
+};
+
+const COVER_HOTSPOTS: Record<"color" | "classica", Hotspot[]> = {
+  color: [
+    SPIRAL_HOTSPOT,
+    {
+      x: 55,
+      y: 25,
+      title: "Hot stamp azul",
+      text: "Título e ano em película metalizada azul, aplicada a quente sobre a capa dura.",
+    },
+    {
+      x: 40,
+      y: 68,
+      title: "Verniz localizado",
+      text: "Cada pato ganha brilho próprio com verniz aplicado só sobre a ilustração.",
+    },
+  ],
+  classica: [
+    SPIRAL_HOTSPOT,
+    {
+      x: 69.06,
+      y: 54.11,
+      title: "Hot stamp dourado",
+      text: "Título e ano em dourado metalizado de alto brilho, um acabamento refinado sobre o azul.",
+    },
+    {
+      x: 74,
+      y: 84,
+      title: "Azul fosco",
+      text: "Capa dura azul com acabamento 100% fosco, macia ao toque e sem reflexos.",
+    },
+  ],
+};
 
 type HotspotsProps = {
   items: Hotspot[];
@@ -536,7 +556,8 @@ export function Explore() {
   const [tab, setTab] = useState(0);
   const [openSpot, setOpenSpot] = useState<number | null>(null);
 
-  const cover = COVERS[edition as keyof typeof COVERS];
+  const coverId = edition === "classica" ? "classica" : "color";
+  const cover = COVERS[coverId];
   const page = SPREADS[tab];
   const agendaSrc = page?.src ?? cover.src;
   const pinKey = `${edition}|${tab}|${agendaSrc}`;
@@ -607,10 +628,13 @@ export function Explore() {
         {/* No celular os dois rótulos de 22px + o gap de 56px passam da
             largura da tela: gap e fonte menores, e 8px a mais em cima para a
             área de toque chegar a 44px (a linha de progresso fica no pé). */}
-        <EditionSelector
+          <EditionSelector
           options={AGENDA_EDITIONS}
           value={edition}
-          onChange={setEdition}
+          onChange={(id) => {
+            setEdition(id);
+            setOpenSpot(null);
+          }}
           paused={paused}
           className="max-sm:gap-8 max-sm:[&_button]:text-sm max-md:[&_button]:pt-2"
         />
@@ -721,7 +745,7 @@ export function Explore() {
                     }}
                   />
                   <Hotspots
-                    items={HOTSPOTS}
+                    items={COVER_HOTSPOTS[coverId]}
                     open={openSpot}
                     onOpen={setOpenSpot}
                     revealed={pinsOn}

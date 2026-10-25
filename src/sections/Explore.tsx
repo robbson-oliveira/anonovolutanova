@@ -267,7 +267,44 @@ function coveredTop() {
   return top;
 }
 
+/**
+ * `width: max-content` stops at the max-width, and pretty wrap then
+ * leaves a gap beside every line. Pull the card in to the longest
+ * line (the button included) so the right edge meets the copy.
+ */
+function fitHotspotCard(card: HTMLElement) {
+  const cs = getComputedStyle(card);
+  const max = parseFloat(cs.maxWidth);
+  if (!Number.isFinite(max) || max <= 0) return;
+  const padX = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+  const borderX = parseFloat(cs.borderLeftWidth) + parseFloat(cs.borderRightWidth);
+  card.style.width = `${max}px`;
+  // The entrance animation scales the card. Rects are visual; the
+  // width we set is layout, so divide the scale back out. One pass:
+  // measuring again after the shrink lets pretty wrap pull every line
+  // in and the card collapses onto the button.
+  const scale = card.offsetWidth > 0 ? card.getBoundingClientRect().width / card.offsetWidth : 1;
+  const factor = scale > 0.01 ? scale : 1;
+  let content = 0;
+  [...card.querySelectorAll("p, a")].forEach((el, index) => {
+    if (el.tagName === "A") {
+      content = Math.max(content, el.getBoundingClientRect().width / factor);
+      return;
+    }
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    let line = 0;
+    for (const rect of range.getClientRects()) line = Math.max(line, rect.width / factor);
+    // The title's right padding only clears the close mark.
+    const extra = index === 0 ? parseFloat(getComputedStyle(el).paddingRight) : 0;
+    content = Math.max(content, line + extra);
+  });
+  if (content <= 0) return;
+  card.style.width = `${Math.min(max, Math.ceil(content + padX + borderX))}px`;
+}
+
 function placeHotspotCard(card: HTMLElement, pin: HTMLElement) {
+  fitHotspotCard(card);
   const parent = card.offsetParent as HTMLElement | null;
   if (!parent) return;
   const parentRect = parent.getBoundingClientRect();

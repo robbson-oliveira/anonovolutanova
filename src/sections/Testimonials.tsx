@@ -47,7 +47,7 @@ export function Testimonials() {
     >
       <RevealGroup
         className={
-          "pl-4 sm:pl-6 md:pl-10 " +
+          "pl-5 md:pl-8 lg:pl-12 " +
           /* 201 = 60 do padding da seção + 141 do recuo, na coluna de 1440 */
           "xl:pl-[max(201px,calc((100%_-_1440px)/2_+_201px))]"
         }

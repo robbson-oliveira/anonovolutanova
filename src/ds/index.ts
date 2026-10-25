@@ -6,7 +6,7 @@
  * `packages/ui` depois é mover a pasta, não refatorar.
  */
 
-export { Container } from "@ds/primitives/Container";
+export { Container, pageFrameClass } from "@ds/primitives/Container";
 export { Section } from "@ds/primitives/Section";
 export { Heading, Text, Eyebrow } from "@ds/primitives/Text";
 export { Button } from "@ds/primitives/Button";

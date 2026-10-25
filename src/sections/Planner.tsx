@@ -17,7 +17,7 @@ import { OFFER_ANCHOR } from "@content/product";
  */
 export function Planner() {
   return (
-    <section className="bg-surface px-4 pb-16 pt-4 md:px-10 md:pb-24 xl:px-[60px] xl:pb-[163px] xl:pt-[32px]">
+    <section className="bg-surface px-5 pb-16 pt-4 md:px-8 md:pb-24 lg:px-12 xl:px-[60px] xl:pb-[163px] xl:pt-[32px]">
       <Reveal
         variant="up"
         className="relative mx-auto flex w-[96%] max-w-[982px] flex-col items-center gap-6 overflow-hidden rounded-[20px] border-2 border-gold-start px-6 py-6 text-center lg:block lg:aspect-[1023/440] lg:p-0 lg:text-left"

@@ -210,10 +210,10 @@ export function AboutHeader() {
  * Desktop: two 586px columns with a 28px gap. The grid fills the 1200px
  * Container (`-mx-10` cancels that Container's own padding).
  *
- * The gold panel itself stops at the hero's usable width (`max-w-page`,
- * 1316px) and keeps the hero's side margins (24px, 32px from `md`). It used
- * to run out to 1440px, past the hero. The cards are not scaled down to
- * achieve that: a narrower viewport just shrinks the panel around them.
+ * The gold panel stops at the page frame's content width (1280px) and keeps
+ * that frame's gutters: 20px, 32px from `md`, 48px from `lg`. The cards are
+ * not scaled down to achieve that: a narrower viewport just shrinks the
+ * panel around them.
  *   < 1024  one column, card at most 586px
  *   ≥ 1024  two fluid columns, reaching 586px once the panel is wide enough
  */
@@ -221,7 +221,7 @@ export function About() {
   return (
     <section
       id="sobre"
-      className="relative mx-auto w-[calc(100%-3rem)] max-w-page overflow-clip rounded-[40px] bg-surface-gold pt-24 pb-16 md:w-[calc(100%-4rem)] md:rounded-[90px] md:pt-[208px] md:pb-[117px]"
+      className="relative mx-auto w-[calc(100%-2.5rem)] max-w-[1280px] overflow-clip rounded-[40px] bg-surface-gold pt-24 pb-16 md:w-[calc(100%-4rem)] md:rounded-[90px] md:pt-[208px] md:pb-[117px] lg:w-[calc(100%-6rem)]"
     >
       {/* Aquarela do Figma (949:892), cortada pelos cantos arredondados da seção. */}
       <img

@@ -3,6 +3,7 @@
  * Funções puras — os componentes só as chamam.
  */
 
+import { metaCheckoutFields } from "@/lib/attribution";
 import {
   BR_STATES,
   isValidCnpj,
@@ -243,8 +244,9 @@ const isoDate = (br: string) => {
 };
 
 /**
- * `extensions.anln_checkout`: o que o anln-storefront-bridge grava no pedido.
- * Pessoa física manda o CPF; jurídica manda CNPJ e razão social (e não o CPF).
+ * `extensions.anln_checkout`: what the bridge stores on the order.
+ * A person sends CPF; a company sends CNPJ and the legal name (not CPF).
+ * Meta click ids are spread only when `ANLN_SEND_META_IDS` is on.
  */
 export function checkoutExtension(form: CheckoutForm) {
   const c = form.contact;
@@ -259,6 +261,8 @@ export function checkoutExtension(form: CheckoutForm) {
     billing_neighborhood: form.address.neighborhood.trim(),
     shipping_number: form.address.number.trim(),
     shipping_neighborhood: form.address.neighborhood.trim(),
+    // Omitted entirely while ANLN_SEND_META_IDS is false (bridge schema).
+    ...metaCheckoutFields(),
   };
 }
 

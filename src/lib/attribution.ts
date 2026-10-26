@@ -137,3 +137,75 @@ export function orderAttribution(): Record<string, string> {
     ),
   ) as Record<string, string>;
 }
+
+// ----- Meta click ids -----
+// The bridge schema does not accept fbp/fbc/fbclid yet. The Store API rejects
+// unknown extension fields, so the checkout payload stays unchanged until
+// this flag is turned on after the bridge update.
+
+/** When false, fbp/fbc/fbclid are captured but never sent on checkout. */
+export const ANLN_SEND_META_IDS = false;
+
+const FBCLID_KEY = "anln_fbclid";
+const FBC_KEY = "anln_fbc";
+
+function readSession(key: string): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    return window.sessionStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function writeSession(key: string, value: string): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.sessionStorage.setItem(key, value);
+  } catch {
+    // Private mode: the id is still returned for this call.
+  }
+}
+
+export type MetaIds = { fbp?: string; fbc?: string; fbclid?: string };
+
+/**
+ * Reads `_fbp` and `_fbc`, and keeps `fbclid` from the landing URL for the
+ * rest of the tab. Without an `_fbc` cookie, `fbc` is `fb.1.<ts>.<fbclid>`.
+ */
+export function captureMetaIds(): MetaIds {
+  if (typeof window === "undefined") return {};
+  const fbp = readCookie("_fbp") ?? undefined;
+  const fbcCookie = readCookie("_fbc") ?? undefined;
+
+  let fbclid = "";
+  try {
+    fbclid = new URL(window.location.href).searchParams.get("fbclid")?.trim() ?? "";
+  } catch {
+    fbclid = "";
+  }
+  if (fbclid) writeSession(FBCLID_KEY, fbclid);
+  else fbclid = readSession(FBCLID_KEY) ?? "";
+
+  let fbc = fbcCookie ?? "";
+  if (!fbc && fbclid) {
+    fbc = readSession(FBC_KEY) ?? "";
+    if (!fbc || !fbc.endsWith(`.${fbclid}`)) {
+      fbc = `fb.1.${Date.now()}.${fbclid}`;
+      writeSession(FBC_KEY, fbc);
+    }
+  }
+
+  return {
+    ...(fbp ? { fbp } : {}),
+    ...(fbc ? { fbc } : {}),
+    ...(fbclid ? { fbclid } : {}),
+  };
+}
+
+/** Checkout extension fields. Empty while `ANLN_SEND_META_IDS` is off. */
+export function metaCheckoutFields(): Record<string, string> {
+  const ids = captureMetaIds();
+  if (!ANLN_SEND_META_IDS) return {};
+  return Object.fromEntries(Object.entries(ids).filter((entry): entry is [string, string] => typeof entry[1] === "string" && entry[1] !== ""));
+}

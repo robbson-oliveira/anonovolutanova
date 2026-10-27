@@ -4,6 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import * as storeApi from "@/lib/commerce/store-api";
 import { errorMessage, type StoreCart } from "@/lib/commerce/store-api";
 import { COUPON_COOKIE, deleteCookie, readCookie } from "@/lib/attribution";
+import { readGiftWrapIds, writeGiftWrapIds } from "./gift-wrap";
 
 type CartContextValue = {
   cart: StoreCart | null;
@@ -34,6 +35,10 @@ type CartContextValue = {
   replace: (cart: StoreCart) => void;
   /** Depois do pedido: o WooCommerce já esvaziou o carrinho, começa outro. */
   reset: () => void;
+  /** Product ids marked "Embalagem para presente". */
+  giftWrapIds: readonly number[];
+  /** Remembers or forgets gift wrap for one product. Does not change the price. */
+  setGiftWrap: (productId: number, checked: boolean) => void;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -100,9 +105,33 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [ready, setReady] = useState(false);
   const [couponNotice, setCouponNotice] = useState<string | null>(null);
   const [pendingLines, setPendingLines] = useState<ReadonlySet<string>>(() => new Set());
+  const [giftWrapIds, setGiftWrapIds] = useState<number[]>([]);
   const linkCouponTried = useRef(false);
   const pending = useRef(0);
   const lineLocks = useRef(new Set<string>());
+  // A check before this effect runs must not be overwritten by the stored list.
+  const giftWrapTouched = useRef(false);
+
+  // localStorage is empty during SSR, and the client does not re-run the
+  // state initializer on hydrate, so the stored choice is read after mount.
+  useEffect(() => {
+    if (giftWrapTouched.current) return;
+    setGiftWrapIds(readGiftWrapIds());
+  }, []);
+
+  const setGiftWrap = useCallback((productId: number, checked: boolean) => {
+    if (!Number.isInteger(productId) || productId <= 0) return;
+    giftWrapTouched.current = true;
+    setGiftWrapIds((current) => {
+      const has = current.includes(productId);
+      if (checked === has) return current;
+      const next = checked ? [...current, productId] : current.filter((id) => id !== productId);
+      // Written here, not in an effect: the checkout link navigates away
+      // before a later effect would flush.
+      writeGiftWrapIds(next);
+      return next;
+    });
+  }, []);
 
   const lockLine = useCallback((key: string) => {
     if (lineLocks.current.has(key)) return false;
@@ -224,6 +253,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         // lock before React re-renders the disabled button.
         if (!lockLine(key)) return;
         const previous = cart;
+        const removedId = quantity <= 0 ? previous?.items.find((item) => item.key === key)?.id : undefined;
         if (previous) setCart(optimisticQuantity(previous, key, quantity));
         setError(null);
         try {
@@ -231,6 +261,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             ? await storeApi.updateCartItem({ key, quantity })
             : await storeApi.removeCartItem({ key });
           setCart(next);
+          if (removedId) setGiftWrap(removedId, false);
         } catch (err) {
           if (storeApi.isStoreApiError(err) && err.cart) setCart(err.cart);
           else setCart(previous);
@@ -240,7 +271,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         }
       },
       remove: async (key) => {
-        await run(() => storeApi.removeCartItem({ key }), "Não foi possível remover o item.");
+        const removedId = cart?.items.find((item) => item.key === key)?.id;
+        const next = await run(() => storeApi.removeCartItem({ key }), "Não foi possível remover o item.");
+        if (next && removedId) setGiftWrap(removedId, false);
       },
       applyCoupon: async (code) =>
         Boolean(
@@ -261,11 +294,31 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setError(null);
         setCouponError(null);
         setCouponNotice(null);
-        // Uma próxima compra no mesmo aparelho também leva o cupom do link.
+        setGiftWrapIds([]);
+        writeGiftWrapIds([]);
+        giftWrapTouched.current = true;
+        // A later purchase on this device still picks up the affiliate coupon.
         linkCouponTried.current = false;
       },
+      giftWrapIds,
+      setGiftWrap,
     }),
-    [cart, ready, busy, pendingLines, error, couponError, couponNotice, drawerOpen, refresh, run, lockLine, unlockLine],
+    [
+      cart,
+      ready,
+      busy,
+      pendingLines,
+      error,
+      couponError,
+      couponNotice,
+      drawerOpen,
+      giftWrapIds,
+      refresh,
+      run,
+      lockLine,
+      unlockLine,
+      setGiftWrap,
+    ],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

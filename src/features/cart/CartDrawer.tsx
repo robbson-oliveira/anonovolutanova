@@ -8,11 +8,11 @@ import { formatBRL } from "@/lib/format";
 import { CartItemRow } from "./CartItemRow";
 import { CouponForm } from "./CouponForm";
 import { useCart } from "./CartProvider";
-import { SHOW_GIFT_WRAP } from "./gift-wrap";
+import { GIFT_WRAP_AFFECTS_ORDER, SHOW_GIFT_WRAP } from "./gift-wrap";
 
 /** Gaveta do carrinho, pela direita. Fecha com Esc, no fundo ou no X. */
 export function CartDrawer() {
-  const { cart, count, busy, error, isLinePending, drawerOpen, closeDrawer, setQuantity } = useCart();
+  const { cart, count, busy, error, isLinePending, drawerOpen, closeDrawer, setQuantity, giftWrapIds, setGiftWrap } = useCart();
   const closeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -90,6 +90,10 @@ export function CartDrawer() {
                   busy={busy || isLinePending(item.key)}
                   onQuantity={(q) => void setQuantity(item.key, q)}
                   giftWrap={SHOW_GIFT_WRAP}
+                  giftWrapped={giftWrapIds.includes(item.id)}
+                  onGiftWrap={
+                    GIFT_WRAP_AFFECTS_ORDER ? (checked) => setGiftWrap(item.id, checked) : undefined
+                  }
                   matchTitleWeight
                 />
               ))}

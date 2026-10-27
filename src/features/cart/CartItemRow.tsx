@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
-import { Checkbox, IconMinus, IconPlus } from "@ds/index";
+import { Checkbox, IconMinus, IconPlus, cn } from "@ds/index";
 import { editionOfCartItem } from "@/lib/commerce/editions";
 import { mainImage } from "@/lib/commerce/product-image";
 import { fromMinor, type StoreCartItem } from "@/lib/commerce/store-api";
@@ -53,6 +53,7 @@ export function CartItemRow({
   onQuantity,
   compact = false,
   giftWrap = false,
+  matchTitleWeight = false,
 }: {
   item: StoreCartItem;
   busy: boolean;
@@ -60,6 +61,11 @@ export function CartItemRow({
   compact?: boolean;
   /** Draws the gift-wrap checkbox. It does not change the line price. */
   giftWrap?: boolean;
+  /**
+   * Below md, the line price uses the title's weight (medium, 500).
+   * From md it stays bold. Only the cart drawer turns this on.
+   */
+  matchTitleWeight?: boolean;
 }) {
   const edition = editionOfCartItem(item);
   const minor = item.totals.currency_minor_unit ?? item.prices.currency_minor_unit;
@@ -121,7 +127,12 @@ export function CartItemRow({
       </div>
       {/* Below md the price centers on the whole row (name, stepper, gift).
           From md it sits a little above the row center. */}
-      <span className="shrink-0 self-center text-[26px] font-bold leading-none tracking-[-0.04em] text-text-strong md:-translate-y-2">
+      <span
+        className={cn(
+          "shrink-0 self-center text-[26px] leading-none tracking-[-0.04em] text-text-strong md:-translate-y-2",
+          matchTitleWeight ? "font-medium md:font-bold" : "font-bold",
+        )}
+      >
         {formatBRL(lineTotal)}
       </span>
     </li>

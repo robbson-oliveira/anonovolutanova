@@ -90,6 +90,7 @@ export function CartDrawer() {
                   busy={busy || isLinePending(item.key)}
                   onQuantity={(q) => void setQuantity(item.key, q)}
                   giftWrap={SHOW_GIFT_WRAP}
+                  matchTitleWeight
                 />
               ))}
             </ul>
@@ -117,7 +118,9 @@ export function CartDrawer() {
                     <span>− {formatBRL(discount)}</span>
                   </div>
                 ) : null}
-                <div className="flex justify-between text-base font-bold text-text-strong max-md:font-condensed">
+                {/* Below md this matches the 26px line price and sits one weight
+                    step above it (semibold, 600). From md it stays 20px bold. */}
+                <div className="flex justify-between text-[26px]/[1.2] font-semibold text-text-strong max-md:font-condensed md:text-base md:font-bold">
                   <span>Subtotal</span>
                   <span>{formatBRL(subtotal - discount)}</span>
                 </div>

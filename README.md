@@ -357,7 +357,7 @@ Modelo em [`.env.example`](.env.example). Localmente, em `.env.local`.
 | `NEXT_PUBLIC_WHATSAPP_CHAT_NUMBER` | `5527992794290` | build | Número que recebe as mensagens do chat do WhatsApp da página "Em breve". Vazio: `5527992794290` |
 | `ANLN_PRODUCT_COLOR` | `23` | execução (servidor) | Id do produto da Edição Color (seção 4.3) |
 | `ANLN_PRODUCT_CLASSIC` | `25` | execução (servidor) | Id do produto da Edição Clássica (seção 4.3) |
-| `ANLN_PRODUCT_NOTEPAD` | — | execução (servidor) | Id do produto simples "Bloco de Notas Color" (opcional: sem ele, a seção de oferta mostra só as duas agendas) |
+| `ANLN_PRODUCT_NOTEPAD` | — | execução (servidor) | Id do produto simples "Planner Diário" (opcional: sem ele, a seção de oferta mostra só as duas agendas) |
 | `ANLN_HOME_COMMING_SOON` | `true` | execução (servidor) | A home mostra a página "Em breve" (a do Grupo VIP) no lugar da landing page |
 | `ANLN_HOME_DEV_PASSWORD` | uma senha longa | execução (servidor) | Senha de `/home-dev`, a landing page atrás de login enquanto a home está em "Em breve". Vazia: `/home-dev` dá 404 |
 | `ANLN_PRECHECKOUT` | `true` | execução (servidor) | Abre a página `/carrinho` (escolha da edição e carrinho antes do checkout). Desligada, `/carrinho` leva à oferta da home |

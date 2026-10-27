@@ -30,6 +30,7 @@ import {
 } from "@ds/index";
 import { CART_URL, PRODUCT_NAME } from "@content/product";
 import { useCart } from "@/features/cart/CartProvider";
+import { orderCustomerNote, readGiftWrapIds } from "@/features/cart/gift-wrap";
 import { orderAttribution } from "@/lib/attribution";
 import { BR_STATES, BR_STATE_NAMES, lookupCep, maskCep, maskCnpj, maskCpf, normalizeCnpj, onlyDigits } from "@/lib/commerce/br";
 import { getCheckoutConfig, type CheckoutConfig, type GatewayKind } from "@/lib/commerce/bridge-api";
@@ -466,11 +467,18 @@ export function CheckoutPage() {
 
       const payment_data = await paymentDataFor(chosen, card);
 
+      // The checkout form has no free-text note. `orderCustomerNote` still
+      // appends gift wrap after one, so a note passed in is kept.
+      // Memory covers a check on this page; storage covers the cart page,
+      // which is a full load away and may not have hydrated yet.
+      const selected = [...new Set([...cart.giftWrapIds, ...readGiftWrapIds()])];
+      const customerNote = orderCustomerNote(cart.cart?.items ?? [], "", selected);
       const result = await processCheckout({
         billing_address: billing,
         shipping_address: shippingAddress,
         payment_method: chosen.gateway.id,
         payment_data,
+        ...(customerNote ? { customer_note: customerNote } : {}),
         extensions: { anln_checkout: { ...checkoutExtension(formForStore), attribution: orderAttribution() } },
       });
 

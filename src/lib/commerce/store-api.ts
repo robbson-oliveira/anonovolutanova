@@ -286,6 +286,11 @@ export const processCheckout = (input: {
   shipping_address: StoreAddress;
   payment_method: string;
   payment_data: Array<{ key: string; value: string }>;
+  /**
+   * WooCommerce order customer note. The Store API writes it with
+   * `set_customer_note`; newlines are kept (`wc_sanitize_textarea`).
+   */
+  customer_note?: string;
   extensions?: Record<string, unknown>;
 }) => request<StoreCheckoutResponse>("/checkout", { method: "POST", body: input });
 

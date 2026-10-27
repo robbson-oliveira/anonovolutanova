@@ -6,7 +6,6 @@ import { editionOfCartItem } from "@/lib/commerce/editions";
 import { mainImage } from "@/lib/commerce/product-image";
 import { fromMinor, type StoreCartItem } from "@/lib/commerce/store-api";
 import { formatBRL } from "@/lib/format";
-import { GIFT_WRAP_AFFECTS_ORDER } from "./gift-wrap";
 import { cartLineTitle } from "./line-title";
 import { ProductThumb } from "./ProductThumb";
 
@@ -16,20 +15,26 @@ function unitsLabel(quantity: number) {
 }
 
 /**
- * Visual only. The checked value stays in this component; nothing reads it
- * into the cart, the price or the order while `GIFT_WRAP_AFFECTS_ORDER` is false.
  * Below md the line is a small condensed label inside the name column.
  * From md the box stays 22px and the label stays the 16px line.
+ * Without `onCheckedChange` the check stays in this component (it does not
+ * reach the order). With it, the parent stores the choice.
  */
-function GiftWrapControl() {
-  const [checked, setChecked] = useState(false);
+function GiftWrapControl({
+  checked,
+  onCheckedChange,
+}: {
+  checked?: boolean;
+  onCheckedChange?: (checked: boolean) => void;
+}) {
+  const [localChecked, setLocalChecked] = useState(false);
   const id = useId();
-  void GIFT_WRAP_AFFECTS_ORDER;
+  const controlled = onCheckedChange !== undefined;
   return (
     <Checkbox
       id={id}
-      checked={checked}
-      onCheckedChange={setChecked}
+      checked={controlled ? Boolean(checked) : localChecked}
+      onCheckedChange={controlled ? onCheckedChange : setLocalChecked}
       align="center"
       className="gap-0"
       boxClassName="size-4! rounded-[3px] [&_svg]:size-3! md:size-[22px]! md:[&_svg]:size-4!"
@@ -53,6 +58,8 @@ export function CartItemRow({
   onQuantity,
   compact = false,
   giftWrap = false,
+  giftWrapped = false,
+  onGiftWrap,
   matchTitleWeight = false,
 }: {
   item: StoreCartItem;
@@ -61,6 +68,10 @@ export function CartItemRow({
   compact?: boolean;
   /** Draws the gift-wrap checkbox. It does not change the line price. */
   giftWrap?: boolean;
+  /** Checked when the parent is storing the choice. */
+  giftWrapped?: boolean;
+  /** Stores the choice. Absent, the checkbox keeps it to itself. */
+  onGiftWrap?: (checked: boolean) => void;
   /**
    * Below md, the line price uses the title's weight (medium, 500).
    * From md it stays bold. Only the cart drawer turns this on.
@@ -119,7 +130,7 @@ export function CartItemRow({
                 <IconPlus />
               </button>
             </div>
-            {giftWrap ? <GiftWrapControl /> : null}
+            {giftWrap ? <GiftWrapControl checked={giftWrapped} onCheckedChange={onGiftWrap} /> : null}
           </div>
         ) : (
           <span className="text-xs text-text-muted">Quantidade: {unitsLabel(item.quantity)}</span>

@@ -121,6 +121,7 @@ async function storeOffer(ids: Record<EditionId, number | null>): Promise<Produc
     editions: await Promise.all(
       EDITIONS.filter((e) => byEdition.has(e.id)).map(async (e) => {
         const { product, price: editionPrice } = byEdition.get(e.id)!;
+        const image = mainImage(product.images);
         return {
           id: e.id,
           label: e.label,
@@ -134,7 +135,10 @@ async function storeOffer(ids: Record<EditionId, number | null>): Promise<Produc
           installmentAmount: installmentOf(editionPrice),
           inStock: product.is_in_stock && product.is_purchasable,
           productId: product.id,
-          image: mainImage(product.images),
+          // The notepad's cutout carries a drop shadow the local cover box does
+          // not match. Measure that file so the selector thumb can center the
+          // paper instead of the shadow.
+          image: e.id === "bloco" && image ? await withBounds(image) : image,
           gallery: await Promise.all(galleryImages(product.images).map(withBounds)),
         };
       }),

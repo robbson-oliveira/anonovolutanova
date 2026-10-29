@@ -331,6 +331,7 @@
      page    -> imagens de pagina interna dentro dos cards da secao Sobre (8x)
      inset   -> os 4 cards da secao Sobre (4x); e a unica sombra interna do design */
   --shadow-subtle: 0 1px 2px rgb(0 0 0 / 0.1);
+  --shadow-radio: 0 1px 4px rgb(0 0 0 / 0.12); /* selected edition radio */
   --shadow-page: 0 10px 60px rgb(102 56 15 / 0.3), 0 4px 20px rgb(57 32 9 / 0.4);
   --shadow-inset-card: 8px 7px 36px rgb(64 35 10 / 0.38) inset, 0 1px 7px rgb(0 0 0 / 0.06);
 

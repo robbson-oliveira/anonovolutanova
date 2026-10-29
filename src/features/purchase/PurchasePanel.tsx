@@ -255,8 +255,8 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
 
         {/* Edição */}
         <fieldset className="flex flex-col gap-3">
-          <legend className="mb-3 pr-3 text-xs font-bold leading-snug text-text-strong">
-            Escolha a edição e a quantidade, depois clique em Adicionar ao{"\u00A0"}carrinho:
+          <legend className="mb-3 pr-3 text-xs font-bold leading-snug text-text-strong max-md:text-[14px]">
+            Escolha a edição e a quantidade:
           </legend>
           <div className="grid gap-3">
             {offer.editions.map((e) => {
@@ -265,7 +265,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
                 <label
                   key={e.id}
                   className={cn(
-                    "relative flex cursor-pointer items-center gap-3 rounded-card border bg-surface-plain py-2 pr-2.5 pl-2.5",
+                    "flex cursor-pointer items-center gap-3 rounded-card border bg-surface-plain py-2 pr-2.5 pl-2.5",
                     "transition-colors [transition-duration:var(--duration-fast)]",
                     "has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-action",
                     active ? "border-action" : "border-border hover:border-action/50",
@@ -290,7 +290,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
                     className="size-14 shrink-0 md:size-16"
                     focus={e.id === "bloco" ? plannerThumbFocus(e) : null}
                   />
-                  <span className="flex min-w-0 flex-1 flex-col justify-center gap-0.5 pr-8">
+                  <span className="flex min-w-0 flex-1 flex-col justify-center gap-0.5">
                     <span className="text-[15px] font-bold leading-5 text-text-strong md:text-sm">
                       {e.label}
                     </span>
@@ -298,15 +298,15 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
                       {e.inStock ? e.description : "Esgotada"}
                     </span>
                   </span>
-                  {/* Same mark on every row, so the choice reads as a radio group. */}
+                  {/* Even sizes and grid centering: a half-pixel translate left the dot off the ring. */}
                   <span
                     aria-hidden
                     className={cn(
-                      "pointer-events-none absolute top-1/2 right-2.5 grid size-[22px] -translate-y-1/2 place-items-center rounded-full border-2 bg-surface-plain",
-                      active ? "border-action" : "border-text-muted",
+                      "grid size-[22px] shrink-0 place-items-center rounded-full border-2 bg-surface-plain leading-none",
+                      active ? "border-action shadow-radio" : "border-text-muted",
                     )}
                   >
-                    {active ? <span className="size-[10px] rounded-full bg-action" /> : null}
+                    {active ? <span className="size-[10px] shrink-0 rounded-full bg-action" /> : null}
                   </span>
                 </label>
               );

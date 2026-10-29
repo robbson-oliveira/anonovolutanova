@@ -40,7 +40,7 @@ function GiftWrapControl({
       className="gap-0"
       rowClassName="max-md:gap-1.5!"
       boxClassName="relative size-4! rounded-[3px] [&_svg]:size-3! max-md:before:absolute max-md:before:-inset-3 max-md:before:content-[''] md:size-[22px]! md:[&_svg]:size-4!"
-      labelClassName="font-condensed text-[13px]! font-semibold! uppercase leading-snug! tracking-[0.015em] text-balance text-text-strong max-md:inline-flex max-md:min-h-10 max-md:items-center md:text-[11.5px]!"
+      labelClassName="font-condensed text-[13px]! font-semibold! uppercase leading-snug! tracking-[0.015em] max-md:text-balance text-text-strong max-md:inline-flex max-md:min-h-10 max-md:items-center md:text-[11.5px]! md:whitespace-nowrap"
     >
       Embalagem para presente
     </Checkbox>
@@ -145,7 +145,7 @@ export function CartItemRow({
       <span
         className={cn(
           "shrink-0 self-center text-[26px] leading-none tracking-[-0.04em] text-text-strong md:-translate-y-2",
-          matchTitleWeight ? "font-medium md:font-bold" : "font-bold",
+          matchTitleWeight ? "font-medium md:font-semibold" : "font-bold",
         )}
       >
         {formatBRL(lineTotal)}

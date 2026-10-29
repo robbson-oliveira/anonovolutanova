@@ -8,7 +8,6 @@ import {
   Button,
   Heading,
   IconArrowRight,
-  IconCheck,
   IconMinus,
   IconPlus,
   IconSparkle,
@@ -221,7 +220,9 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
 
         {/* Edição */}
         <fieldset className="flex flex-col gap-3">
-          <legend className="mb-3 text-xs font-bold text-text-strong">Escolha a edição</legend>
+          <legend className="mb-3 pr-3 text-xs font-bold leading-snug text-text-strong">
+            Escolha a edição e a quantidade, depois clique em Adicionar ao{"\u00A0"}carrinho:
+          </legend>
           <div className="grid gap-3">
             {offer.editions.map((e) => {
               const active = e.id === editionId;
@@ -241,6 +242,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
                     name={groupName}
                     value={e.id}
                     aria-label={e.label}
+                    aria-checked={active}
                     checked={active}
                     disabled={!e.inStock}
                     onChange={() => setEditionId(e.id)}
@@ -263,20 +265,23 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
                         : null
                     }
                   />
-                  <span className="relative flex min-w-0 flex-1 flex-col justify-center gap-0.5">
-                    <span className="pr-7 text-[15px] font-bold leading-5 text-text-strong md:text-sm">
+                  <span className="flex min-w-0 flex-1 flex-col justify-center gap-0.5 pr-8">
+                    <span className="text-[15px] font-bold leading-5 text-text-strong md:text-sm">
                       {e.label}
                     </span>
                     <span className="text-balance text-[13px] leading-snug text-text-muted md:text-xs">
                       {e.inStock ? e.description : "Esgotada"}
                     </span>
-                    {/* On the title line, out of flow, so the label does not reflow when selected. */}
-                    <span
-                      aria-hidden
-                      className="pointer-events-none absolute top-0 right-0 grid size-5 place-items-center text-[18px] text-action"
-                    >
-                      {active ? <IconCheck /> : null}
-                    </span>
+                  </span>
+                  {/* Same mark on every row, so the choice reads as a radio group. */}
+                  <span
+                    aria-hidden
+                    className={cn(
+                      "pointer-events-none absolute top-1/2 right-2.5 grid size-[22px] -translate-y-1/2 place-items-center rounded-full border-2 bg-surface-plain",
+                      active ? "border-action" : "border-text-muted",
+                    )}
+                  >
+                    {active ? <span className="size-[10px] rounded-full bg-action" /> : null}
                   </span>
                 </label>
               );

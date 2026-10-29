@@ -65,7 +65,8 @@ export function WhatsAppChat({ placement = "teaser", hidden = false }: WhatsAppC
 
   useEffect(() => {
     if (!open) return;
-    inputRef.current?.focus();
+    // No auto-focus: on iPhone it pops the keyboard immediately and the
+    // panel jumps behind the viewport before the visitor chose anything.
     const onKey = (ev: KeyboardEvent) => {
       if (ev.key !== "Escape") return;
       // Escape closes the picker first, then the panel.

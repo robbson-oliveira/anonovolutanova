@@ -18,6 +18,7 @@ import { whatsappUrlWith, type EditionId } from "@content/product";
 import type { ProductImage, ProductOffer } from "@/lib/commerce/offer-types";
 import { formatBRL } from "@/lib/format";
 import { useOptionalCart } from "@/features/cart/CartProvider";
+import { plannerThumbFocus } from "@/features/cart/planner-thumb";
 import { ProductThumb } from "@/features/cart/ProductThumb";
 import { GalleryStrip } from "./GalleryStrip";
 import { ShippingEstimate } from "./ShippingEstimate";
@@ -25,41 +26,6 @@ import { item, trackAddToCart, trackViewItem } from "@/lib/tracking/events";
 
 /** Acima disso é revenda: o atendimento é pelo WhatsApp (B2B a partir de 50). */
 const MAX_QTY = 49;
-
-/**
- * The planner photo is a wide cutout with a drop shadow on the right. Fit the
- * paper to the square (not the shadow) and scale it until the paper, rather
- * than the transparent margin, fills the frame.
- */
-function plannerThumbFocus(e: {
-  coverBox: { x: number; y: number; width: number; height: number };
-  coverSize: { width: number; height: number };
-  image: { bounds?: { aspect: number; x: number; y: number; width: number; height: number } } | null;
-}) {
-  const measured = e.image?.bounds;
-  // No measurement: the local cover box already describes that file. Scaling
-  // it would move a different photo (the Woo cutout) by the wrong amount.
-  if (!measured || measured.aspect <= 0) {
-    return {
-      x: e.coverBox.x / e.coverSize.width,
-      y: e.coverBox.y / e.coverSize.height,
-      width: e.coverBox.width / e.coverSize.width,
-      height: e.coverBox.height / e.coverSize.height,
-      fileAspect: e.coverSize.height / e.coverSize.width,
-    };
-  }
-  const box = {
-    x: measured.x,
-    y: measured.y,
-    width: measured.width,
-    height: measured.height,
-    fileAspect: 1 / measured.aspect,
-  };
-  const subjectW = box.fileAspect < 1 ? box.width : box.width * box.fileAspect;
-  const subjectH = box.fileAspect < 1 ? box.height * box.fileAspect : box.height;
-  const scale = subjectW > 0 && subjectH > 0 ? Math.min(0.88 / subjectW, 0.88 / subjectH) : 1;
-  return { ...box, scale: Math.min(Math.max(scale, 1), 1.45) };
-}
 
 type PurchasePanelProps = {
   offer: ProductOffer;

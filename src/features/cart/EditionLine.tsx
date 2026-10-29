@@ -5,6 +5,7 @@ import { PRODUCT_NAME } from "@content/product";
 import type { EditionOffer } from "@/lib/commerce/offer-types";
 import { fromMinor, type StoreCartItem } from "@/lib/commerce/store-api";
 import { formatBRL } from "@/lib/format";
+import { plannerPaperFocus } from "./planner-thumb";
 import { ProductThumb } from "./ProductThumb";
 
 /** Above this it is resale: handled on WhatsApp (B2B from 50 units). */
@@ -41,7 +42,13 @@ export function EditionLine({ edition, price, line, busy, onAdd, onQuantity }: E
       )}
     >
       <div className="flex gap-4 sm:gap-5">
-        <ProductThumb image={edition.image} fallback={edition} sizes="(min-width: 640px) 112px, 80px" className="size-20 sm:size-28" />
+        <ProductThumb
+          image={edition.image}
+          fallback={edition}
+          sizes="(min-width: 640px) 112px, 80px"
+          className="size-20 sm:size-28"
+          focus={edition.id === "bloco" ? plannerPaperFocus(edition.image, edition) : null}
+        />
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <div className="flex items-baseline justify-between gap-3">
             <h3 className="text-field font-bold text-text-strong">{edition.label}</h3>

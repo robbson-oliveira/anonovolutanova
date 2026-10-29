@@ -20,6 +20,8 @@ type CheckboxProps = {
   boxClassName?: string;
   /** Classes on the label. */
   labelClassName?: string;
+  /** Classes on the row that holds the box and the label. */
+  rowClassName?: string;
   /**
    * `center` lines a single-line label up with the box. Multi-line labels
    * (terms, policies) stay top-aligned.
@@ -44,11 +46,12 @@ export function Checkbox({
   className,
   boxClassName,
   labelClassName,
+  rowClassName,
   align = "start",
 }: CheckboxProps) {
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
-      <div className={cn("flex gap-3", align === "center" ? "items-center" : "items-start")}>
+      <div className={cn("flex gap-3", align === "center" ? "items-center" : "items-start", rowClassName)}>
         <RadixCheckbox.Root
           id={id}
           checked={checked}

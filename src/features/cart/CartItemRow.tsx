@@ -7,6 +7,7 @@ import { mainImage } from "@/lib/commerce/product-image";
 import { fromMinor, type StoreCartItem } from "@/lib/commerce/store-api";
 import { formatBRL } from "@/lib/format";
 import { cartLineTitle } from "./line-title";
+import { plannerPaperFocus } from "./planner-thumb";
 import { ProductThumb } from "./ProductThumb";
 
 /** Two digits in the middle cell ("02"), as on the cart reference. */
@@ -37,8 +38,9 @@ function GiftWrapControl({
       onCheckedChange={controlled ? onCheckedChange : setLocalChecked}
       align="center"
       className="gap-0"
-      boxClassName="size-4! rounded-[3px] [&_svg]:size-3! md:size-[22px]! md:[&_svg]:size-4!"
-      labelClassName="font-condensed text-[12px]! font-semibold! uppercase leading-none! tracking-[-0.02em] whitespace-nowrap text-text-strong md:text-xs!"
+      rowClassName="max-md:gap-1.5!"
+      boxClassName="relative size-4! rounded-[3px] [&_svg]:size-3! max-md:before:absolute max-md:before:-inset-3 max-md:before:content-[''] md:size-[22px]! md:[&_svg]:size-4!"
+      labelClassName="font-condensed text-[13px]! font-semibold! uppercase leading-snug! tracking-[0.015em] text-balance text-text-strong max-md:inline-flex max-md:min-h-10 max-md:items-center md:text-xs!"
     >
       Embalagem para presente
     </Checkbox>
@@ -79,6 +81,7 @@ export function CartItemRow({
   matchTitleWeight?: boolean;
 }) {
   const edition = editionOfCartItem(item);
+  const image = mainImage(item.images);
   const minor = item.totals.currency_minor_unit ?? item.prices.currency_minor_unit;
   const lineTotal = fromMinor(item.totals.line_subtotal, minor);
   const max = item.quantity_limits?.maximum ?? 49;
@@ -87,10 +90,11 @@ export function CartItemRow({
   return (
     <li className="flex items-start gap-2.5 font-condensed md:items-stretch md:gap-4">
       <ProductThumb
-        image={mainImage(item.images)}
+        image={image}
         fallback={edition}
         sizes={compact ? "72px" : "104px"}
         className={compact ? "size-[72px]" : "size-[88px] sm:size-[104px]"}
+        focus={edition?.id === "bloco" ? plannerPaperFocus(image, edition) : null}
       />
       {/* Below md the name, stepper and gift line share the middle column.
           From md the stepper is pulled up a little closer to the name. */}

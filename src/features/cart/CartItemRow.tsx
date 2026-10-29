@@ -40,7 +40,7 @@ function GiftWrapControl({
       className="gap-0"
       rowClassName="max-md:gap-1.5!"
       boxClassName="relative size-4! rounded-[3px] [&_svg]:size-3! max-md:before:absolute max-md:before:-inset-3 max-md:before:content-[''] md:size-[22px]! md:[&_svg]:size-4!"
-      labelClassName="font-condensed text-[13px]! font-semibold! uppercase leading-snug! tracking-[0.015em] text-balance text-text-strong max-md:inline-flex max-md:min-h-10 max-md:items-center md:text-xs!"
+      labelClassName="font-condensed text-[13px]! font-semibold! uppercase leading-snug! tracking-[0.015em] text-balance text-text-strong max-md:inline-flex max-md:min-h-10 max-md:items-center md:text-[11px]!"
     >
       Embalagem para presente
     </Checkbox>

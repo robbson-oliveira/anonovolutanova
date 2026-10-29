@@ -23,6 +23,12 @@ type ProductThumbProps = {
     height: number;
     /** File height divided by width. Only landscape files (below 1) are shifted. */
     fileAspect: number;
+    /**
+     * How much of the square the subject should fill. Above 1 the image
+     * scales up after the shift, so the transparent margin and the shadow
+     * crop off and the subject stays on the center.
+     */
+    scale?: number;
   } | null;
 };
 
@@ -38,8 +44,12 @@ function frameShift(focus: NonNullable<ProductThumbProps["focus"]>): string | un
   const cy = focus.y + focus.height / 2;
   const x = (0.5 - cx) * 100;
   const y = (0.5 - cy) * focus.fileAspect * 100;
-  if (Math.abs(x) < 0.4 && Math.abs(y) < 0.4) return undefined;
-  return `translate(${x.toFixed(2)}%, ${y.toFixed(2)}%)`;
+  const scale = focus.scale && focus.scale > 1 ? focus.scale : 1;
+  if (Math.abs(x) < 0.4 && Math.abs(y) < 0.4 && scale === 1) return undefined;
+  const shift = `translate(${x.toFixed(2)}%, ${y.toFixed(2)}%)`;
+  // Scale is listed first so it runs after the shift: the subject is already
+  // on the center, and growing it does not push it off again.
+  return scale === 1 ? shift : `scale(${scale.toFixed(3)}) ${shift}`;
 }
 
 /**

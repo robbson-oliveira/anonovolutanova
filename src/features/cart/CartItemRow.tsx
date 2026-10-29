@@ -107,7 +107,7 @@ export function CartItemRow({
             <div
               role="group"
               aria-label={`Quantidade de ${title}`}
-              className="inline-flex h-9 items-stretch overflow-hidden rounded-[10px] border border-border text-text-strong md:-mt-4 md:h-9"
+              className="inline-flex h-9 items-stretch overflow-hidden rounded-[10px] border border-border text-text-strong md:-mt-5 md:h-9"
             >
               <button
                 type="button"

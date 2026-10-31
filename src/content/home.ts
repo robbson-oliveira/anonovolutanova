@@ -5,7 +5,7 @@ export const NAV_LINKS = [
   { label: "Sobre", href: "#sobre" },
   { label: "O que tem dentro", href: "#explore" },
   { label: "Depoimentos", href: "#depoimentos" },
-  { label: "Afiliados", href: "/contato" },
+  { label: "Afiliados", href: "https://admin.anonovolutanova.com.br/area-afiliado/" },
   { label: "FAQ", href: "#faq" },
 ] as const;
 
@@ -176,7 +176,7 @@ export const FOOTER = {
   links: [
     { label: "Sobre", href: "#sobre" },
     { label: "Contato", href: "#contato" },
-    { label: "Afiliados", href: "/contato" },
+    { label: "Afiliados", href: "https://admin.anonovolutanova.com.br/area-afiliado/" },
     { label: "Política de Privacidade", href: "#privacidade" },
     { label: "Termos de Uso", href: "#termos" },
   ],

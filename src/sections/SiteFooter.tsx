@@ -6,14 +6,13 @@ import { ConsentLink } from "@/features/shell/ConsentLink";
 
 /**
  * The content links are still the wireframe anchors (#privacidade...); here they
- * point to the real pages. "Afiliados" has no page of its own and falls back to
- * the contact page. "Sobre" keeps the leading "/" so it also works outside the
- * home page.
+ * point to the real pages. "Sobre" keeps the leading "/" so it also works
+ * outside the home page.
  */
 const HREFS: Record<string, string> = {
   "#sobre": "/#sobre",
   "#contato": "/contato",
-  "#afiliados": "/contato",
+  "#afiliados": "https://admin.anonovolutanova.com.br/area-afiliado/",
   "#privacidade": "/politica-de-privacidade",
   "#termos": "/termos-e-condicoes",
 };

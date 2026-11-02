@@ -209,3 +209,36 @@ export function metaCheckoutFields(): Record<string, string> {
   if (!ANLN_SEND_META_IDS) return {};
   return Object.fromEntries(Object.entries(ids).filter((entry): entry is [string, string] => typeof entry[1] === "string" && entry[1] !== ""));
 }
+
+// ----- Server-side purchase tracking -----
+
+/** GA session id from the first `_ga_<ID>` cookie (GS1 or GS2 format). */
+function gaSessionId(): string {
+  if (typeof document === "undefined") return "";
+  for (const part of document.cookie.split(";")) {
+    const [rawName, ...rest] = part.trim().split("=");
+    if (!rawName.startsWith("_ga_")) continue;
+    const value = decodeURIComponent(rest.join("="));
+    const m = /^GS1\.\d\.(\d+)\./.exec(value) ?? /^GS2\.\d\.s(\d+)/.exec(value);
+    if (m) return m[1];
+  }
+  return "";
+}
+
+/**
+ * Payload for `extensions.anln_tracking` (namespace registered by the
+ * mu-plugin anln-server-tracking). Lets the server send the purchase to
+ * GA4 and the Meta Conversions API with the browser ids.
+ */
+export function serverTrackingExtension(consent: boolean): Record<string, string> {
+  if (typeof window === "undefined") return {};
+  const ids = captureMetaIds();
+  return {
+    client_id: readCookie("_ga") ?? "",
+    session_id: gaSessionId(),
+    fbp: ids.fbp ?? "",
+    fbc: ids.fbc ?? "",
+    consent: consent ? "sim" : "nao",
+    source_url: `${window.location.origin}/checkout`,
+  };
+}

@@ -31,7 +31,7 @@ import {
 import { CART_URL, PRODUCT_NAME } from "@content/product";
 import { useCart } from "@/features/cart/CartProvider";
 import { orderCustomerNote, readGiftWrapIds } from "@/features/cart/gift-wrap";
-import { orderAttribution } from "@/lib/attribution";
+import { orderAttribution, serverTrackingExtension } from "@/lib/attribution";
 import { BR_STATES, BR_STATE_NAMES, lookupCep, maskCep, maskCnpj, maskCpf, normalizeCnpj, onlyDigits } from "@/lib/commerce/br";
 import { getCheckoutConfig, type CheckoutConfig, type GatewayKind } from "@/lib/commerce/bridge-api";
 import {
@@ -53,6 +53,7 @@ import {
 } from "@/lib/payments";
 import { cartCoupon, cartTrackItems } from "@/lib/tracking/cart-items";
 import {
+  marketingGranted,
   savePurchaseSnapshot,
   trackAddPaymentInfo,
   trackAddShippingInfo,
@@ -480,7 +481,10 @@ export function CheckoutPage() {
         payment_method: chosen.gateway.id,
         payment_data,
         ...(customerNote ? { customer_note: customerNote } : {}),
-        extensions: { anln_checkout: { ...checkoutExtension(formForStore), attribution: orderAttribution() } },
+        extensions: {
+          anln_checkout: { ...checkoutExtension(formForStore), attribution: orderAttribution() },
+          anln_tracking: serverTrackingExtension(marketingGranted()),
+        },
       });
 
       const status = result.payment_result?.payment_status;

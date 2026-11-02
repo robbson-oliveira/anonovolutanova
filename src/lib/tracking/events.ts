@@ -67,7 +67,8 @@ let memoryQueue: QueuedMetaEvent[] | null = null;
 let flushing = false;
 
 function eventId(event: string, ecommerce: Ecommerce): string {
-  if (event === "purchase" && ecommerce.transaction_id) return String(ecommerce.transaction_id);
+  // Same id the server sends to the Conversions API (mu-plugin anln-server-tracking).
+  if (event === "purchase" && ecommerce.transaction_id) return `order_${ecommerce.transaction_id}`;
   try {
     if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
       return crypto.randomUUID();
@@ -82,7 +83,7 @@ function eventId(event: string, ecommerce: Ecommerce): string {
  * Marketing consent, matching the head snippet: the banner stores `"granted"`,
  * and a JSON payload counts only when `categories.marketing` is granted.
  */
-function marketingGranted(): boolean {
+export function marketingGranted(): boolean {
   if (typeof window === "undefined") return false;
   try {
     const raw = window.localStorage.getItem(CONSENT_STORAGE_KEY);

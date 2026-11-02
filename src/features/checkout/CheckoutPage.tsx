@@ -62,6 +62,7 @@ import { CardForm } from "./CardForm";
 import { Field } from "./Field";
 import { MobileSummaryBar } from "./MobileSummaryBar";
 import { OrderSummary } from "./OrderSummary";
+import { PaymentMobileSummary } from "./PaymentMobileSummary";
 import { PhoneField } from "./PhoneField";
 import { ReviewCard } from "./ReviewCard";
 import {
@@ -871,32 +872,35 @@ export function CheckoutPage() {
           </section>
         ) : null}
 
-        <div className="flex flex-col-reverse items-stretch gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
-          {step === "contato" ? (
-            <a href={CART_URL} className="flex items-center justify-center gap-2 text-field text-text-muted hover:text-text-strong">
-              <IconArrowLeft />
-              Voltar à loja
-            </a>
-          ) : (
-            <button
-              type="button"
-              onClick={() => go(step === "pagamento" ? "entrega" : "contato")}
-              className="flex cursor-pointer items-center justify-center gap-2 text-field text-text-muted hover:text-text-strong"
-            >
-              <IconArrowLeft />
-              Voltar
-            </button>
-          )}
-          {step === "pagamento" ? (
-            <Button size="md" shape="block" type="button" onClick={() => void submit()} disabled={submitting || !chosen || cart.busy} className="h-12 w-full px-6 text-field sm:w-auto">
-              <IconLock />
-              {submitting ? "Processando…" : `Pagar ${formatBRL(payable)}`}
-            </Button>
-          ) : (
-            <Button size="md" shape="block" type="button" onClick={next} disabled={step === "entrega" && shipping.loading} className="h-12 w-full px-6 text-field sm:w-auto">
-              {step === "contato" ? "Continuar para entrega" : "Continuar para pagamento"}
-            </Button>
-          )}
+        <div className="flex flex-col gap-4 border-t border-border pt-6">
+          {step === "pagamento" ? <PaymentMobileSummary pixDiscount={pixDiscount} /> : null}
+          <div className="flex flex-col-reverse items-stretch gap-4 sm:flex-row sm:items-center sm:justify-between">
+            {step === "contato" ? (
+              <a href={CART_URL} className="flex items-center justify-center gap-2 text-field text-text-muted hover:text-text-strong">
+                <IconArrowLeft />
+                Voltar à loja
+              </a>
+            ) : (
+              <button
+                type="button"
+                onClick={() => go(step === "pagamento" ? "entrega" : "contato")}
+                className="flex cursor-pointer items-center justify-center gap-2 text-field text-text-muted hover:text-text-strong"
+              >
+                <IconArrowLeft />
+                Voltar
+              </button>
+            )}
+            {step === "pagamento" ? (
+              <Button size="md" shape="block" type="button" onClick={() => void submit()} disabled={submitting || !chosen || cart.busy} className="h-12 w-full px-6 text-field sm:w-auto">
+                <IconLock />
+                {submitting ? "Processando…" : `Pagar ${formatBRL(payable)}`}
+              </Button>
+            ) : (
+              <Button size="md" shape="block" type="button" onClick={next} disabled={step === "entrega" && shipping.loading} className="h-12 w-full px-6 text-field sm:w-auto">
+                {step === "contato" ? "Continuar para entrega" : "Continuar para pagamento"}
+              </Button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -906,8 +910,9 @@ export function CheckoutPage() {
         </div>
       </aside>
 
-      {/* No celular o resumo abre de baixo. Na etapa de pagamento a barra dá
-          lugar ao botão "Pagar", como na referência. */}
+      {/* Phones open the summary from the bottom. On the payment step that
+          sticky bar would cover "Pagar", so the coupon stays in
+          PaymentMobileSummary instead. */}
       {step !== "pagamento" ? (
         <MobileSummaryBar total={orderTotal - (shippingKnown ? 0 : fromMinor(cart.cart?.totals.total_shipping, minor))}>
           <OrderSummary pixDiscount={pixDiscount} shippingKnown={shippingKnown} />

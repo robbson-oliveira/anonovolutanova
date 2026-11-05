@@ -45,6 +45,14 @@ describe("buildAbandonedCartBody", () => {
       "total",
       "website",
     ]);
+    // The store reads items[].id (the WooCommerce product id) and quantity.
+    // A local BR number (10 or 11 digits) is what it normalizes with a 55 prefix.
+    const sent = built?.items[0] as { id: number; product_id?: number; quantity: number };
+    assert.equal(sent.id, 19);
+    assert.equal(sent.quantity, 1);
+    assert.equal("product_id" in sent, false);
+    assert.match(built?.phone ?? "", /^\d{10,11}$/);
+    assert.equal(built?.phone.startsWith("55"), false);
   });
 
   it("does not send when the box is absent or unchecked", () => {

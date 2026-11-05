@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IconArrowLeft, IconCheck, Text } from "@ds/index";
 import { OFFER } from "@content/offer";
 import type { ProductOffer } from "@/lib/commerce/offer-types";
+import { parseRecoveryItems } from "@/lib/commerce/recover-cart";
 import { cartTrackItems } from "@/lib/tracking/cart-items";
 import { item, trackAddToCart, trackViewCart, trackViewItem } from "@/lib/tracking/events";
 import { PurchasePanel } from "@/features/purchase/PurchasePanel";
@@ -14,6 +15,11 @@ import { useCart } from "./CartProvider";
 
 type CartPageProps = {
   offer: ProductOffer;
+  /**
+   * The proxy left a recovery cookie. The page asks `/carrinho/recuperar`
+   * once; that route reads the cookie and does not put the token here.
+   */
+  recoveryPending?: boolean;
 };
 
 /**
@@ -24,8 +30,10 @@ type CartPageProps = {
  * With the checkout off (or everything sold out) there is no cart to fill:
  * the page shows the landing page's purchase panel, which ends on WhatsApp.
  */
-export function CartPage({ offer }: CartPageProps) {
+export function CartPage({ offer, recoveryPending = false }: CartPageProps) {
   const cart = useCart();
+  const [recoverySettled, setRecoverySettled] = useState(!recoveryPending);
+  const [recoveredNote, setRecoveredNote] = useState(false);
   const editionIds = new Set(offer.editions.map((e) => e.productId));
   // Lines the editions do not cover (a cart from before the switch to simple
   // products, say) still show up, so they can be removed.
@@ -45,10 +53,30 @@ export function CartPage({ offer }: CartPageProps) {
 
   const viewedCart = useRef(false);
   useEffect(() => {
-    if (viewedCart.current || !cart.ready || !cart.cart?.items.length) return;
+    if (viewedCart.current || !recoverySettled || !cart.ready || !cart.cart?.items.length) return;
     viewedCart.current = true;
     trackViewCart(cartTrackItems(cart.cart));
-  }, [cart.ready, cart.cart]);
+  }, [recoverySettled, cart.ready, cart.cart]);
+
+  const recoveryStarted = useRef(false);
+  const mergeRecovered = cart.mergeRecovered;
+  useEffect(() => {
+    if (!recoveryPending || !cart.ready || recoveryStarted.current) return;
+    recoveryStarted.current = true;
+    // One shot. A later cart render must not cancel it: the cookie is gone
+    // after this request, and cancelling would leave the page waiting.
+    void (async () => {
+      try {
+        const response = await fetch("/carrinho/recuperar", { cache: "no-store", headers: { Accept: "application/json" } });
+        const items = parseRecoveryItems(await response.json().catch(() => null)) ?? [];
+        if (items.length > 0 && await mergeRecovered(items)) setRecoveredNote(true);
+      } catch {
+        // The cart the visitor already had stays on screen.
+      } finally {
+        setRecoverySettled(true);
+      }
+    })();
+  }, [recoveryPending, cart.ready, mergeRecovered]);
 
   if (!selling) {
     return (
@@ -66,6 +94,11 @@ export function CartPage({ offer }: CartPageProps) {
           <Text size="xs" tone="muted" className="leading-snug">
             Leve uma, ou uma de cada: as quantidades somam para o frete grátis.
           </Text>
+          {recoveredNote ? (
+            <Text size="xs" tone="muted" className="leading-snug">
+              Seu carrinho foi atualizado com o que você tinha separado.
+            </Text>
+          ) : null}
         </div>
 
         <ul className="flex flex-col gap-4" aria-busy={!cart.ready}>

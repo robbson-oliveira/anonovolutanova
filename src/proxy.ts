@@ -106,6 +106,10 @@ export function proxy(request: NextRequest) {
     response.headers.set("Cache-Control", "private, no-store");
     response.headers.set("X-Robots-Tag", "noindex");
   }
+  if (url.pathname === "/galeria-teste") {
+    // Public preview for clients. It does not replace `/` or `/home-dev`.
+    response.headers.set("X-Robots-Tag", "noindex, nofollow");
+  }
   if (homeDevToken) {
     response.cookies.set(HOME_DEV_COOKIE, homeDevToken, {
       ...cookieOptions,

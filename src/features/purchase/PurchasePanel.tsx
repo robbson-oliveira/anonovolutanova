@@ -108,7 +108,7 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
   }, [offer]);
 
   const addToCart = async () => {
-    if (!cart || !edition.productId) return false;
+    if (!cart || !edition.inStock || !edition.productId) return false;
     const ok = await cart.add(edition.productId, qty);
     if (ok) trackAddToCart([item(edition.productId, edition.label, edition.price, qty)]);
     return ok;
@@ -243,11 +243,16 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
                     type="radio"
                     name={groupName}
                     value={e.id}
-                    aria-label={e.label}
+                    aria-label={e.inStock ? e.label : `${e.label}, esgotada`}
                     aria-checked={active}
+                    aria-disabled={!e.inStock}
                     checked={active}
-                    disabled={!e.inStock}
-                    onChange={() => setEditionId(e.id)}
+                    onChange={() => {
+                      if (e.inStock) setEditionId(e.id);
+                    }}
+                    onKeyDown={(event) => {
+                      if (!e.inStock && (event.key === " " || event.key === "Enter")) event.preventDefault();
+                    }}
                     className="sr-only"
                   />
                   <ProductThumb

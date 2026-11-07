@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { CLASSIC_CART_NOTICE, isClassicCartItem } from "@/lib/commerce/availability";
 import * as storeApi from "@/lib/commerce/store-api";
 import { errorMessage, type StoreCart } from "@/lib/commerce/store-api";
 import { COUPON_COOKIE, deleteCookie, readCookie } from "@/lib/attribution";
@@ -232,6 +233,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       closeDrawer: () => setDrawerOpen(false),
       refresh,
       add: async (productId, quantity) => {
+        if (isClassicCartItem({ id: productId, name: "" })) {
+          setError(CLASSIC_CART_NOTICE);
+          return false;
+        }
         if (!lockLine(`add:${productId}`)) return false;
         const previous = cart;
         const existing = previous?.items.find((item) => item.id === productId);
@@ -249,6 +254,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         }
       },
       setQuantity: async (key, quantity) => {
+        const line = cart?.items.find((item) => item.key === key);
+        if (line && isClassicCartItem(line) && quantity > line.quantity) {
+          setError(CLASSIC_CART_NOTICE);
+          return;
+        }
         // A second click in the same turn (one tap firing twice) sees the
         // lock before React re-renders the disabled button.
         if (!lockLine(key)) return;

@@ -32,6 +32,7 @@ import { CART_URL, PRODUCT_NAME } from "@content/product";
 import { useCart } from "@/features/cart/CartProvider";
 import { orderCustomerNote, readGiftWrapIds } from "@/features/cart/gift-wrap";
 import { orderAttribution, serverTrackingExtension } from "@/lib/attribution";
+import { CLASSIC_CART_NOTICE, cartBlockedByClassic } from "@/lib/commerce/availability";
 import { BR_STATES, BR_STATE_NAMES, lookupCep, maskCep, maskCnpj, maskCpf, normalizeCnpj, onlyDigits } from "@/lib/commerce/br";
 import { getCheckoutConfig, type CheckoutConfig, type GatewayKind } from "@/lib/commerce/bridge-api";
 import {
@@ -408,7 +409,10 @@ export function CheckoutPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const classicBlocked = cartBlockedByClassic(cart.cart?.items);
+
   const next = () => {
+    if (classicBlocked) return;
     if (step === "contato") {
       setShowErrors((s) => ({ ...s, contato: true }));
       if (contactValid) go("entrega");
@@ -440,7 +444,7 @@ export function CheckoutPage() {
   // ----- Pedido -----
 
   const submit = async () => {
-    if (submitting) return;
+    if (submitting || classicBlocked) return;
     setShowErrors({ contato: true, entrega: true, pagamento: true });
     setSubmitError(null);
     if (submitErrorToast.current !== undefined) toast.dismiss(submitErrorToast.current);
@@ -877,6 +881,11 @@ export function CheckoutPage() {
         ) : null}
 
         <div className="flex flex-col gap-4 border-t border-border pt-6">
+          {classicBlocked ? (
+            <Text size="xs" tone="accent" role="alert" className="leading-snug">
+              {CLASSIC_CART_NOTICE}
+            </Text>
+          ) : null}
           {step === "pagamento" ? <PaymentMobileSummary pixDiscount={pixDiscount} /> : null}
           <div className="flex flex-col-reverse items-stretch gap-4 sm:flex-row sm:items-center sm:justify-between">
             {step === "contato" ? (
@@ -895,12 +904,12 @@ export function CheckoutPage() {
               </button>
             )}
             {step === "pagamento" ? (
-              <Button size="md" shape="block" type="button" onClick={() => void submit()} disabled={submitting || !chosen || cart.busy} className="h-12 w-full px-6 text-field sm:w-auto">
+              <Button size="md" shape="block" type="button" onClick={() => void submit()} disabled={submitting || classicBlocked || !chosen || cart.busy} className="h-12 w-full px-6 text-field sm:w-auto">
                 <IconLock />
                 {submitting ? "Processando…" : `Pagar ${formatBRL(payable)}`}
               </Button>
             ) : (
-              <Button size="md" shape="block" type="button" onClick={next} disabled={step === "entrega" && shipping.loading} className="h-12 w-full px-6 text-field sm:w-auto">
+              <Button size="md" shape="block" type="button" onClick={next} disabled={classicBlocked || (step === "entrega" && shipping.loading)} className="h-12 w-full px-6 text-field sm:w-auto">
                 {step === "contato" ? "Continuar para entrega" : "Continuar para pagamento"}
               </Button>
             )}

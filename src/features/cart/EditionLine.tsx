@@ -98,7 +98,7 @@ export function EditionLine({ edition, price, line, busy, onAdd, onQuantity }: E
               </span>
               <button
                 type="button"
-                disabled={busy || quantity >= max}
+                disabled={busy || !edition.inStock || quantity >= max}
                 onClick={() => onQuantity(quantity + 1)}
                 aria-label="Aumentar quantidade"
                 className="grid h-full w-10 cursor-pointer place-items-center text-text-strong disabled:cursor-not-allowed disabled:opacity-40"

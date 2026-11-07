@@ -7,12 +7,14 @@ import { fromMinor } from "@/lib/commerce/store-api";
 import { formatBRL } from "@/lib/format";
 import { CartItemRow } from "./CartItemRow";
 import { CouponForm } from "./CouponForm";
+import { CLASSIC_CART_NOTICE, cartBlockedByClassic } from "@/lib/commerce/availability";
 import { useCart } from "./CartProvider";
 import { GIFT_WRAP_AFFECTS_ORDER, SHOW_GIFT_WRAP } from "./gift-wrap";
 
 /** Gaveta do carrinho, pela direita. Fecha com Esc, no fundo ou no X. */
 export function CartDrawer() {
   const { cart, count, busy, error, isLinePending, drawerOpen, closeDrawer, setQuantity, giftWrapIds, setGiftWrap } = useCart();
+  const classicBlocked = cartBlockedByClassic(cart?.items);
   const closeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -132,10 +134,22 @@ export function CartDrawer() {
                   O frete é calculado na próxima etapa.
                 </Text>
               </div>
-              <Button href="/checkout" size="lg" shape="block" aria-disabled={busy}>
-                Finalizar compra
-                <IconArrowRight />
-              </Button>
+              {classicBlocked ? (
+                <>
+                  <Text size="xs" tone="accent" role="alert" className="leading-snug">
+                    {CLASSIC_CART_NOTICE}
+                  </Text>
+                  <Button type="button" disabled size="lg" shape="block">
+                    Finalizar compra
+                    <IconArrowRight />
+                  </Button>
+                </>
+              ) : (
+                <Button href="/checkout" size="lg" shape="block" aria-disabled={busy}>
+                  Finalizar compra
+                  <IconArrowRight />
+                </Button>
+              )}
             </footer>
           </>
         )}

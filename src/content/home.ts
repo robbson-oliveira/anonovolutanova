@@ -34,6 +34,8 @@ export const PLANNER = {
     "São 20 folhas A4 para organizar a tarefa mais importante, seus " +
     "compromissos e suas ideias, com presença de Deus em cada dia. " +
     `O companheiro da Agenda ${CYCLE_YEAR}.`,
+  /** Promo card only. What the customer pays is the WooCommerce price. */
+  price: 19.9,
   cta: "Quero o Meu Planner!",
   imageAlt: "Folha do Planner Diário: tarefa mais importante do dia, o que não esquecer e ideias",
 } as const;

@@ -1,6 +1,7 @@
 import { Badge, Button, IconSparkle, Reveal, pageFrameClass } from "@ds/index";
 import { PLANNER } from "@content/home";
 import { OFFER_ANCHOR } from "@content/product";
+import { formatBRL } from "@/lib/format";
 
 /**
  * Chamada do Planner Diário (Figma "Seção 3", 949:788): cartão com borda
@@ -44,12 +45,16 @@ export function Planner() {
             {PLANNER.paragraph}
           </p>
 
+          <p className="mt-4 text-[22px] font-bold leading-none tracking-[-0.03em] text-text-heading-sea">
+            {formatBRL(PLANNER.price)}
+          </p>
+
           <Button
             href={OFFER_ANCHOR}
             size="lg"
             shape="block"
             // As medidas do Figma vencem as do tamanho "lg" do Button (daí o !).
-            className="mt-[41px] h-14 w-[min(310px,calc(100vw-5rem))] rounded-[12px]! border border-gold-end bg-linear-90 from-gold-start to-gold-end text-[20px]! font-semibold! leading-[27.5px]! transition-[transform,box-shadow] [transition-duration:var(--duration-fast)] hover:-translate-y-0.5 hover:shadow-[0_8px_18px_-6px] hover:shadow-gold-start/60 motion-reduce:hover:translate-y-0"
+            className="mt-4 h-14 w-[min(310px,calc(100vw-5rem))] rounded-[12px]! border border-gold-end bg-linear-90 from-gold-start to-gold-end text-[20px]! font-semibold! leading-[27.5px]! transition-[transform,box-shadow] [transition-duration:var(--duration-fast)] hover:-translate-y-0.5 hover:shadow-[0_8px_18px_-6px] hover:shadow-gold-start/60 motion-reduce:hover:translate-y-0"
           >
             {PLANNER.cta}
           </Button>

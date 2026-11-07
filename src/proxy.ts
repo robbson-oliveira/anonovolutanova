@@ -16,6 +16,14 @@ import {
   homeDevLogin,
 } from "@/lib/home-dev";
 import { GONE_HTML, isGone } from "@/lib/legacy-urls";
+import { publicEnv } from "@/lib/env";
+import {
+  RECOVERY_COOKIE,
+  RECOVERY_COOKIE_MAX_AGE,
+  isRecoveryToken,
+  scrubRecoveryReferrer,
+  urlWithoutRecoveryToken,
+} from "@/lib/commerce/recover-cart";
 
 
 /**
@@ -68,7 +76,41 @@ function switchRoute(request: NextRequest, homeDev: boolean): NextResponse | nul
  * Cookies legíveis pelo navegador (não httpOnly): quem os lê é o checkout.
  * Não guardam dado pessoal — só o código do cupom e a origem da visita.
  */
+/**
+ * A recovery link arrives as `/carrinho?rc=<token>`. Redirecting here, before
+ * the document, is what keeps the token out of the first page view: GTM,
+ * the pixel and `history` only ever see the address without it. Clearing the
+ * query after load would already have sent it.
+ *
+ * The cookie is set only while restore is enabled, only for a well-formed
+ * token, and only on `/carrinho` (the page and `/carrinho/recuperar`). It is
+ * httpOnly and lasts two minutes. Invalid tokens are still stripped, so a
+ * bad link opens the cart normally.
+ */
+function recoveryRedirect(request: NextRequest): NextResponse | null {
+  const clean = urlWithoutRecoveryToken(request.nextUrl);
+  if (!clean) return null;
+  const response = NextResponse.redirect(clean, 307);
+  response.headers.set("Cache-Control", "private, no-store");
+  response.headers.set("Referrer-Policy", "no-referrer");
+  response.headers.set("X-Robots-Tag", "noindex");
+  const token = request.nextUrl.searchParams.get("rc") ?? "";
+  if (publicEnv.cartRecoveryEnabled && isRecoveryToken(token)) {
+    response.cookies.set(RECOVERY_COOKIE, token, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: clean.protocol === "https:",
+      path: "/carrinho",
+      maxAge: RECOVERY_COOKIE_MAX_AGE,
+    });
+  }
+  return response;
+}
+
 export function proxy(request: NextRequest) {
+  const recovered = recoveryRedirect(request);
+  if (recovered) return recovered;
+
   const url = request.nextUrl;
 
   // Conteúdo do WordPress antigo sem equivalente: 410 (ver legacy-urls.ts).
@@ -117,7 +159,7 @@ export function proxy(request: NextRequest) {
   const coupon = couponFromUrl(url);
   if (coupon) response.cookies.set(COUPON_COOKIE, coupon, cookieOptions);
 
-  const attribution = attributionFromRequest(url, request.headers.get("referer"));
+  const attribution = attributionFromRequest(url, scrubRecoveryReferrer(request.headers.get("referer")));
   if (attribution) {
     response.cookies.set(ATTRIBUTION_COOKIE, JSON.stringify(attribution), cookieOptions);
   }

@@ -29,5 +29,5 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "old", "wireframe_site_2027"]
+  "exclude": ["node_modules", "old", "wireframe_site_2027", "src/**/*.test.ts"]
 }

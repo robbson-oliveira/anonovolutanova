@@ -6,7 +6,6 @@ import { Button, cn, pageFrameClass } from "@ds/index";
 import {
   GALLERY_LEAD,
   GALLERY_PHOTOS,
-  GALLERY_PLACEHOLDER_NOTE,
   GALLERY_TITLE,
   galleryColumns,
   type GalleryColumnItem,
@@ -45,6 +44,7 @@ function Column({ items, direction, paused, onOpen }: ColumnProps) {
               height={photo.height}
               sizes="(min-width: 1024px) 440px, 45vw"
               loading="eager"
+              unoptimized
               className="h-auto w-full"
             />
           </div>
@@ -62,6 +62,7 @@ function Column({ items, direction, paused, onOpen }: ColumnProps) {
               height={photo.height}
               sizes="(min-width: 1024px) 440px, 45vw"
               loading="eager"
+              unoptimized
               className="h-auto w-full"
             />
           </button>
@@ -148,15 +149,20 @@ export function ProductGallery() {
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       lightbox = new Lightbox({
         dataSource: GALLERY_PHOTOS.map((photo) => ({
-          src: photo.src,
-          width: photo.width,
-          height: photo.height,
+          src: photo.fullSrc,
+          width: photo.fullWidth,
+          height: photo.fullHeight,
           alt: photo.alt,
         })),
         pswpModule: () => import("photoswipe"),
         bgOpacity: 0.92,
         wheelToZoom: true,
         pinchToClose: false,
+        // 1 is the file's own pixel size. The three 720px photos stay sharp
+        // instead of being stretched to fill a wide screen.
+        initialZoomLevel: (zoom) => Math.min(1, zoom.fit),
+        secondaryZoomLevel: (zoom) => Math.max(zoom.initial, Math.min(1, zoom.fit * 2)),
+        maxZoomLevel: () => 1,
         showHideAnimationType: reduce ? "none" : "zoom",
         padding: { top: 56, bottom: 48, left: 16, right: 16 },
       });
@@ -200,9 +206,6 @@ export function ProductGallery() {
           </h2>
           <p className="mt-4 text-balance text-center text-base leading-snug text-text lg:text-left">
             {GALLERY_LEAD}
-          </p>
-          <p className="mt-3 text-balance text-center text-sm leading-snug text-text-muted lg:text-left">
-            {GALLERY_PLACEHOLDER_NOTE}
           </p>
           <div className="mt-5 flex justify-center lg:justify-start">
             <Button

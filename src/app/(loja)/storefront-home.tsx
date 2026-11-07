@@ -1,0 +1,114 @@
+import type { ReactNode } from "react";
+import { getProductOffer } from "@/lib/commerce/offer";
+import { publicEnv } from "@/lib/env";
+import { About } from "@sections/About";
+import { Closing } from "@sections/Closing";
+import { DuckStrip } from "@sections/DuckStrip";
+import { Explore } from "@sections/Explore";
+import { Faq } from "@sections/Faq";
+import { Hero } from "@sections/Hero";
+import { Liturgical } from "@sections/Liturgical";
+import { Planner } from "@sections/Planner";
+import { Persona } from "@sections/Persona";
+import { Product } from "@sections/Product";
+import { SiteFooter } from "@sections/SiteFooter";
+import { SiteHeader } from "@sections/SiteHeader";
+import { Testimonials } from "@sections/Testimonials";
+import { TopBar } from "@sections/TopBar";
+
+export const HOME_DESCRIPTION =
+  "Agenda católica 2027 inspirada em São Josemaria Escrivá: tema do mês, frase " +
+  "do dia e práticas de vida interior. Edição Color e Edição Clássica.";
+
+type StorefrontHomeProps = {
+  /** Extra block between the edition gallery and the planner price. */
+  gallery?: ReactNode;
+  /** The public home is the product page. The gallery preview is not. */
+  structuredData?: boolean;
+};
+
+/**
+ * Home em React, no lugar do wireframe do Framer que era servido como HTML.
+ * A compra acontece aqui mesmo, na seção #oferta: escolhe a edição e segue
+ * direto para o checkout. A antiga /comprar redireciona para cá.
+ *
+ * O preço e o estoque vêm do WooCommerce (getProductOffer revalida a cada
+ * minuto), então a página é regenerada sozinha quando o estoque muda.
+ *
+ * `/` renders this with no extra block. `/galeria-teste` passes the photo
+ * gallery and skips the product JSON-LD.
+ */
+export async function StorefrontHome({
+  gallery,
+  structuredData = true,
+}: StorefrontHomeProps) {
+  const offer = await getProductOffer();
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: offer.name,
+    description: HOME_DESCRIPTION,
+    brand: { "@type": "Brand", name: "Ano Novo, Luta Nova" },
+    image: offer.editions.map((e) => `${publicEnv.siteUrl}${e.cover}`),
+    offers: offer.editions.map((e) => ({
+      "@type": "Offer",
+      name: e.label,
+      price: e.price.toFixed(2),
+      priceCurrency: "BRL",
+      availability: e.inStock ? "https://schema.org/InStock" : "https://schema.org/SoldOut",
+      url: `${publicEnv.siteUrl}/?edicao=${e.id}#oferta`,
+    })),
+  };
+
+  return (
+    <>
+      {structuredData ? (
+        <script
+          type="application/ld+json"
+          // JSON.stringify não escapa "<"; sem isto um "</script>" no conteúdo fecharia a tag.
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
+        />
+      ) : null}
+      {/* pt-9 only from lg: on the phone the shipping bar is in flow, inside
+          the sticky group below. The clip stays on the content under the
+          header: a clip (or hidden) ancestor makes iOS Safari repaint the
+          sticky bar on every frame while the address bar moves. */}
+      <div className="relative isolate bg-surface lg:pt-9">
+        {/* One sticky layer for the shipping bar and the phone header.
+            translateZ(0) promotes that layer so it does not shake while
+            the visual viewport resizes. Height and padding stay fixed. */}
+        <div className="max-lg:sticky max-lg:top-0 max-lg:z-50 max-lg:bg-surface max-lg:will-change-transform max-lg:[transform:translateZ(0)] lg:contents">
+          <TopBar />
+          <SiteHeader smartMenu />
+        </div>
+        <div className="relative overflow-x-clip">
+          {/* Watercolor shared by the FAQ, the closing card and the footer (Figma
+              "BG inferior", 949:15): 1920px wide, centered and cropped by the
+              page on narrower screens, glued to the bottom, with a mask that keeps
+              the top third clear. 2824px = the 2965px of the frame minus the 141px
+              that hang below the footer. */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute bottom-0 left-1/2 -z-10 aspect-[1920/2824] w-[max(100%,1100px)] -translate-x-1/2 bg-[url(/img/footer/bg-aquarela.webp)] bg-[length:100%_auto] bg-top bg-no-repeat [mask-image:var(--mask-lower-aquarela)] min-[1440px]:w-[max(100%,1920px)]"
+          />
+          <main>
+            <Hero />
+            <DuckStrip />
+            <About />
+            <Explore />
+            {gallery}
+            <Planner />
+            <Liturgical />
+            <Persona />
+            <Testimonials />
+            <Product offer={offer} />
+            <Faq />
+            <Closing />
+          </main>
+          <SiteFooter />
+        </div>
+      </div>
+    </>
+  );
+}

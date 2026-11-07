@@ -5,7 +5,7 @@ import { StorefrontHome } from "../storefront-home";
 export const metadata: Metadata = {
   title: "Fotos reais do produto",
   description:
-    "Página de teste da galeria. Imagens ilustrativas; fotos reais em breve.",
+    "Veja de perto a capa, as páginas e os detalhes da agenda. Página de teste.",
   robots: { index: false, follow: false },
 };
 

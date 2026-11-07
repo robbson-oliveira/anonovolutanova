@@ -13,6 +13,7 @@ import { publicEnv } from "@/lib/env";
 import { serverEnv } from "@/lib/env.server";
 import type { ProductOffer } from "./offer-types";
 import { withBounds } from "./image-bounds";
+import { productInStock } from "./availability";
 import { galleryImages, mainImage, type StoreImage } from "./product-image";
 
 export type { EditionOffer, ProductImage, ProductOffer } from "./offer-types";
@@ -60,7 +61,9 @@ function staticOffer(): ProductOffer {
       unit: e.unit,
       price: PRICE.amount,
       installmentAmount: PRICE.installmentAmount,
-      inStock: true,
+      // A failed catalog must not reopen the classic edition. The other
+      // editions keep the static card; checkout stays off in this fallback.
+      inStock: e.id !== "classica",
       productId: null,
       image: null,
       gallery: [],
@@ -133,7 +136,7 @@ async function storeOffer(ids: Record<EditionId, number | null>): Promise<Produc
           unit: e.unit,
           price: editionPrice,
           installmentAmount: installmentOf(editionPrice),
-          inStock: product.is_in_stock && product.is_purchasable,
+          inStock: productInStock(product),
           productId: product.id,
           // The notepad's cutout carries a drop shadow the local cover box does
           // not match. Measure that file so the selector thumb can center the

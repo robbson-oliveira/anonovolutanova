@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 import { Checkbox, IconMinus, IconPlus, cn } from "@ds/index";
+import { isClassicCartItem } from "@/lib/commerce/availability";
 import { editionOfCartItem } from "@/lib/commerce/editions";
 import { mainImage } from "@/lib/commerce/product-image";
 import { fromMinor, type StoreCartItem } from "@/lib/commerce/store-api";
@@ -126,7 +127,7 @@ export function CartItemRow({
               </span>
               <button
                 type="button"
-                disabled={busy || item.quantity >= max}
+                disabled={busy || isClassicCartItem(item) || item.quantity >= max}
                 onClick={() => onQuantity(item.quantity + 1)}
                 aria-label="Aumentar quantidade"
                 className="grid w-9 cursor-pointer place-items-center text-sm disabled:cursor-not-allowed disabled:opacity-40"

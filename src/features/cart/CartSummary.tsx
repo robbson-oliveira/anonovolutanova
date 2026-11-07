@@ -3,6 +3,7 @@
 import { Button, IconArrowRight, IconLock, IconTruck, Text, cn } from "@ds/index";
 import { SHIPPING_NOTICE } from "@content/product";
 import type { ProductOffer } from "@/lib/commerce/offer-types";
+import { CLASSIC_CART_NOTICE, cartBlockedByClassic } from "@/lib/commerce/availability";
 import { fromMinor } from "@/lib/commerce/store-api";
 import { formatBRL } from "@/lib/format";
 import { ShippingEstimate } from "@/features/purchase/ShippingEstimate";
@@ -30,6 +31,7 @@ export function CartSummary({ offer }: CartSummaryProps) {
   const minQty = offer.freeShippingMinQty;
   const missing = Math.max(0, minQty - count);
   const empty = count === 0;
+  const classicBlocked = cartBlockedByClassic(cart?.items);
   // The shipping quote is for one line: the cart's first product, with every
   // unit in the cart (the bridge prices the package by quantity).
   const quoteProduct = cart?.items[0]?.id ?? null;
@@ -101,6 +103,16 @@ export function CartSummary({ offer }: CartSummaryProps) {
         <Text size="xs" tone="muted" className="text-center leading-snug">
           Seu carrinho está vazio. Adicione uma edição para continuar.
         </Text>
+      ) : classicBlocked ? (
+        <>
+          <Text size="xs" tone="accent" role="alert" className="leading-snug">
+            {CLASSIC_CART_NOTICE}
+          </Text>
+          <Button type="button" disabled size="lg" shape="block" className="w-full">
+            Finalizar compra
+            <IconArrowRight />
+          </Button>
+        </>
       ) : (
         <Button href="/checkout" size="lg" shape="block" aria-disabled={busy} className="w-full">
           Finalizar compra

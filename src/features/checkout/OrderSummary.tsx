@@ -6,6 +6,7 @@ import { useCart } from "@/features/cart/CartProvider";
 import { CouponForm } from "@/features/cart/CouponForm";
 import { ProductThumb } from "@/features/cart/ProductThumb";
 import { cartLineTitle } from "@/features/cart/line-title";
+import { isClassicCartItem } from "@/lib/commerce/availability";
 import { editionOfCartItem } from "@/lib/commerce/editions";
 import { mainImage } from "@/lib/commerce/product-image";
 import { fromMinor, type StoreCartItem } from "@/lib/commerce/store-api";
@@ -129,7 +130,7 @@ function SummaryItem({
             </span>
             <button
               type="button"
-              disabled={busy || item.quantity >= max}
+              disabled={busy || isClassicCartItem(item) || item.quantity >= max}
               onClick={() => onQuantity(item.quantity + 1)}
               aria-label="Aumentar quantidade"
               className="grid h-full w-8 cursor-pointer place-items-center text-text-strong disabled:cursor-not-allowed disabled:opacity-40"

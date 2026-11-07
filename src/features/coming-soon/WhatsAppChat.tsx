@@ -310,6 +310,9 @@ export function WhatsAppChat({ placement = "teaser", hidden = false }: WhatsAppC
               >
                 <IconSmile />
               </button>
+              {/* 16px: iOS Safari zooms the page when a focused field is smaller.
+                  That zoom is what shoves this fixed panel off the keyboard.
+                  The page scale stays free for the reader (no maximum-scale). */}
               <input
                 ref={inputRef}
                 value={message}
@@ -318,7 +321,7 @@ export function WhatsAppChat({ placement = "teaser", hidden = false }: WhatsAppC
                 placeholder={COMING_SOON_CHAT.placeholder}
                 aria-label="Sua mensagem"
                 enterKeyHint="send"
-                className="h-[22px] min-w-0 flex-1 bg-transparent text-[13px] leading-normal text-whatsapp-text outline-none placeholder:text-whatsapp-idle"
+                className="h-[22px] min-w-0 flex-1 bg-transparent text-[16px] leading-[22px] text-whatsapp-text outline-none placeholder:text-whatsapp-idle"
               />
             </div>
             <button

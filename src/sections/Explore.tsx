@@ -746,6 +746,12 @@ export function Explore() {
                       height: `${(cover.img.h / cover.book.h) * 100}%`,
                     }}
                   />
+                  {coverId === "classica" ? (
+                    // Upper-right of the cover face, clear of the foil and the pins.
+                    <span className="pointer-events-none absolute top-[7%] right-[6%] z-10 inline-flex items-center rounded-[4px] bg-surface-plain px-2 py-0.5 text-[11px] font-semibold leading-4 text-soldout">
+                      Esgotado
+                    </span>
+                  ) : null}
                   <Hotspots
                     items={COVER_HOTSPOTS[coverId]}
                     open={openSpot}

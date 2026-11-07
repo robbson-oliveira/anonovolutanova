@@ -65,6 +65,33 @@ export function WhatsAppChat({ placement = "teaser", hidden = false }: WhatsAppC
 
   useEffect(() => {
     if (!open) return;
+    const root = rootRef.current;
+    const vv = window.visualViewport;
+    if (!root || !vv) return;
+    // The layout viewport stays tall when the keyboard opens. A fixed
+    // panel then keeps its 397px and the field is clipped on the bottom
+    // edge. Follow the visible viewport instead: lift by the overlap and
+    // let the message list shrink. The 16px field is unchanged.
+    const fit = () => {
+      const layoutH = window.innerHeight;
+      const overlap = Math.max(0, Math.round(layoutH - vv.offsetTop - vv.height));
+      const avail = Math.max(180, Math.round(vv.height - 96));
+      root.style.setProperty("--anln-chat-keyboard", `${overlap}px`);
+      root.style.setProperty("--anln-chat-avail", `${avail}px`);
+    };
+    fit();
+    vv.addEventListener("resize", fit);
+    vv.addEventListener("scroll", fit);
+    return () => {
+      vv.removeEventListener("resize", fit);
+      vv.removeEventListener("scroll", fit);
+      root.style.removeProperty("--anln-chat-keyboard");
+      root.style.removeProperty("--anln-chat-avail");
+    };
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
     // No auto-focus: on iPhone it pops the keyboard immediately and the
     // panel jumps behind the viewport before the visitor chose anything.
     const onKey = (ev: KeyboardEvent) => {
@@ -182,11 +209,11 @@ export function WhatsAppChat({ placement = "teaser", hidden = false }: WhatsAppC
               // point the frame is centered, the extra margin around 1376px.
               // A sticky bar or the cookie banner raises --anln-chat-lift.
               "right-[max(1.25rem,env(safe-area-inset-right,0px))]",
-              "bottom-[max(1.25rem,env(safe-area-inset-bottom,0px),var(--anln-chat-lift))]",
+              "bottom-[max(1.25rem,env(safe-area-inset-bottom,0px),var(--anln-chat-lift),var(--anln-chat-keyboard,0px))]",
               "md:right-[max(2rem,env(safe-area-inset-right,0px))]",
-              "md:bottom-[max(2rem,env(safe-area-inset-bottom,0px),var(--anln-chat-lift))]",
+              "md:bottom-[max(2rem,env(safe-area-inset-bottom,0px),var(--anln-chat-lift),var(--anln-chat-keyboard,0px))]",
               "lg:right-[max(3rem,env(safe-area-inset-right,0px),calc((100vw-1376px)/2+3rem))]",
-              "lg:bottom-[max(3rem,env(safe-area-inset-bottom,0px),var(--anln-chat-lift))]",
+              "lg:bottom-[max(3rem,env(safe-area-inset-bottom,0px),var(--anln-chat-lift),var(--anln-chat-keyboard,0px))]",
               hidden && "hidden!",
             )
           : "fixed right-[26px] bottom-[30px] z-40 hidden flex-col items-end gap-4 font-inter animate-soon-float motion-reduce:animate-none md:flex md:right-9 md:bottom-10 min-[75rem]:right-[50px] min-[75rem]:bottom-[50px]"
@@ -197,9 +224,9 @@ export function WhatsAppChat({ placement = "teaser", hidden = false }: WhatsAppC
           id={panelId}
           aria-label={COMING_SOON_CHAT.title}
           className={cn(
-            "relative flex h-[397px] w-[312px] origin-bottom-right animate-soon-panel flex-col overflow-hidden rounded-[10px] bg-whatsapp-panel shadow-whatsapp-panel motion-reduce:animate-none",
+            "relative flex h-[397px] max-h-[min(397px,var(--anln-chat-avail,397px))] w-[312px] origin-bottom-right animate-soon-panel flex-col overflow-hidden rounded-[10px] bg-whatsapp-panel shadow-whatsapp-panel motion-reduce:animate-none",
             placement === "storefront"
-              ? "max-h-[min(397px,calc(100dvh-7.5rem-var(--anln-chat-lift,0px)))] max-w-[calc(100vw-2.5rem-env(safe-area-inset-left,0px)-env(safe-area-inset-right,0px))] md:max-w-[calc(100vw-4rem)] lg:max-w-[312px]"
+              ? "max-w-[calc(100vw-2.5rem-env(safe-area-inset-left,0px)-env(safe-area-inset-right,0px))] md:max-w-[calc(100vw-4rem)] lg:max-w-[312px]"
               : "max-w-[calc(100vw-52px)]",
           )}
         >
@@ -228,7 +255,7 @@ export function WhatsAppChat({ placement = "teaser", hidden = false }: WhatsAppC
             </button>
           </header>
 
-          <div className="relative flex-1 p-[18px]">
+          <div className="relative min-h-0 flex-1 overflow-y-auto p-[18px]">
             <div className="relative flex items-start">
               <Image
                 src="/img/em-breve/whatsapp-avatar.png"

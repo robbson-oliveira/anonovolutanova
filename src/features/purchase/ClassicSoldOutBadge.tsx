@@ -4,7 +4,7 @@
  */
 export function ClassicSoldOutBadge() {
   return (
-    <span className="inline-flex shrink-0 items-center rounded-pill border border-border bg-surface-muted px-2 py-0.5 text-[11px] font-semibold leading-4 text-text-muted">
+    <span className="inline-flex w-fit shrink-0 items-center rounded-pill bg-soldout px-2 py-0.5 text-[11px] font-semibold leading-4 text-on-soldout">
       Esgotado
     </span>
   );

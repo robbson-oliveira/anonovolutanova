@@ -11,6 +11,11 @@ type BenefitListProps = {
  * Each line fades and rises on its own as it enters, and the same math
  * runs backwards when the reader scrolls up. Only opacity and translate
  * move, so the list does not jump. Reduced motion leaves every line still.
+ *
+ * The band uses a viewport height taken when the width changes. iOS Safari
+ * fires resize and changes innerHeight while the address bar shows on the
+ * way up; retuning the band then slides these four lines down with no
+ * scroll, which reads as the page refusing to move.
  */
 export function BenefitList({ lines }: BenefitListProps) {
   const ref = useRef<HTMLUListElement>(null);
@@ -21,6 +26,8 @@ export function BenefitList({ lines }: BenefitListProps) {
     const items = [...ul.querySelectorAll<HTMLLIElement>("li")];
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
     let frame = 0;
+    let width = window.innerWidth;
+    let vh = window.innerHeight || 1;
 
     const apply = () => {
       frame = 0;
@@ -31,7 +38,6 @@ export function BenefitList({ lines }: BenefitListProps) {
         }
         return;
       }
-      const vh = window.innerHeight || 1;
       const start = vh * 0.96;
       const end = vh * 0.7;
       const span = start - end;
@@ -47,14 +53,22 @@ export function BenefitList({ lines }: BenefitListProps) {
       if (!frame) frame = requestAnimationFrame(apply);
     };
 
+    const onResize = () => {
+      const nextWidth = window.innerWidth;
+      if (nextWidth === width) return;
+      width = nextWidth;
+      vh = window.innerHeight || 1;
+      onScroll();
+    };
+
     apply();
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    window.addEventListener("resize", onResize);
     reduce.addEventListener("change", onScroll);
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("resize", onResize);
       reduce.removeEventListener("change", onScroll);
     };
   }, []);

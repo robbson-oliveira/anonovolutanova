@@ -56,7 +56,7 @@ export const EDITIONS = [
     cover: "/img/bloco-notas-color.webp",
     coverSize: { width: 1036, height: 764 },
     coverBox: { x: 79, y: 111, width: 718, height: 454 },
-    description: "20 Unidades",
+    description: "Bloco com 20 páginas",
     agenda: false,
     unit: "bloco",
   },

@@ -258,15 +258,16 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
                     focus={e.id === "bloco" ? plannerThumbFocus(e) : null}
                   />
                   <span className="flex min-w-0 flex-1 flex-col justify-center gap-0.5">
-                    <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5">
-                      <span className="text-[15px] font-bold leading-5 text-text-strong md:text-sm">
-                        {e.label}
+                    <span className="text-[15px] font-bold leading-5 text-text-strong md:text-sm">
+                      {e.label}
+                    </span>
+                    {e.id === "classica" ? (
+                      <ClassicSoldOutBadge />
+                    ) : (
+                      <span className="text-balance text-[13px] leading-snug text-text-muted md:text-xs">
+                        {e.inStock ? e.description : "Esgotada"}
                       </span>
-                      {e.id === "classica" ? <ClassicSoldOutBadge /> : null}
-                    </span>
-                    <span className="text-balance text-[13px] leading-snug text-text-muted md:text-xs">
-                      {e.inStock ? e.description : "Esgotada"}
-                    </span>
+                    )}
                   </span>
                   {/* Even sizes and grid centering: a half-pixel translate left the dot off the ring. */}
                   <span

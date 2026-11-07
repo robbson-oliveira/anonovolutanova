@@ -52,14 +52,15 @@ export function EditionLine({ edition, price, line, busy, onAdd, onQuantity }: E
         />
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <div className="flex items-baseline justify-between gap-3">
-            <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5">
-              <h3 className="text-field font-bold text-text-strong">{edition.label}</h3>
-              {edition.id === "classica" ? <ClassicSoldOutBadge /> : null}
-            </span>
+            <h3 className="text-field font-bold text-text-strong">{edition.label}</h3>
             <span className="text-field font-bold whitespace-nowrap text-text-strong">{formatBRL(total)}</span>
           </div>
           <p className="text-label text-text-muted">{PRODUCT_NAME}</p>
-          <p className="text-label leading-snug text-text">{edition.description}</p>
+          {edition.id === "classica" ? (
+            <ClassicSoldOutBadge />
+          ) : (
+            <p className="text-label leading-snug text-text">{edition.description}</p>
+          )}
           {quantity > 1 ? <p className="text-fine text-text-muted">{formatBRL(price)} cada</p> : null}
         </div>
       </div>

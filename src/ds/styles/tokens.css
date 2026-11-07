@@ -185,6 +185,9 @@
 
   /* Status: something finished (completed checkout step). Kept apart from
      `action` so the stepper can signal completion without looking like a button. */
+  /* Sold-out mark. Petrol is the purchase-flow blue; paper keeps the label readable. */
+  --color-soldout: var(--brand-petrol-900);
+  --color-on-soldout: var(--brand-paper-100);
   --color-success: var(--brand-green-500);
   --color-on-success: var(--brand-paper-100);
   --color-success-soft: var(--brand-green-100);

@@ -4,6 +4,7 @@ import { Button, IconCheck, IconMinus, IconPlus, cn } from "@ds/index";
 import { PRODUCT_NAME } from "@content/product";
 import type { EditionOffer } from "@/lib/commerce/offer-types";
 import { fromMinor, type StoreCartItem } from "@/lib/commerce/store-api";
+import { ClassicSoldOutBadge } from "@/features/purchase/ClassicSoldOutBadge";
 import { formatBRL } from "@/lib/format";
 import { plannerPaperFocus } from "./planner-thumb";
 import { ProductThumb } from "./ProductThumb";
@@ -51,7 +52,10 @@ export function EditionLine({ edition, price, line, busy, onAdd, onQuantity }: E
         />
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <div className="flex items-baseline justify-between gap-3">
-            <h3 className="text-field font-bold text-text-strong">{edition.label}</h3>
+            <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5">
+              <h3 className="text-field font-bold text-text-strong">{edition.label}</h3>
+              {edition.id === "classica" ? <ClassicSoldOutBadge /> : null}
+            </span>
             <span className="text-field font-bold whitespace-nowrap text-text-strong">{formatBRL(total)}</span>
           </div>
           <p className="text-label text-text-muted">{PRODUCT_NAME}</p>

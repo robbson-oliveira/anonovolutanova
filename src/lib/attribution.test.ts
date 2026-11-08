@@ -92,14 +92,32 @@ describe("captureMetaIds", () => {
     assert.equal(captureMetaIds().fbc, replaced.fbc);
 
     install({
-      href: `${ORIGIN}/checkout`,
+      href: `${ORIGIN}/?fbclid=CLICK_NEW`,
       storage: "throw",
-      cookie: "_fbc=fb.1.50.CLICK_C; _fbp=fb.1.9.browser",
+      cookie: "_fbc=fb.1.50.CLICK_OLD; _fbp=fb.1.9.browser",
     });
-    const fromCookie = captureMetaIds();
-    assert.equal(fromCookie.fbc, "fb.1.50.CLICK_C");
-    assert.equal(fromCookie.fbclid, "CLICK_C");
-    assert.equal(fromCookie.fbp, "fb.1.9.browser");
+    const fromNewClick = captureMetaIds();
+    assert.equal(fromNewClick.fbclid, "CLICK_NEW");
+    assert.match(fromNewClick.fbc ?? "", /^fb\.1\.\d+\.CLICK_NEW$/);
+    assert.equal(fromNewClick.fbp, "fb.1.9.browser");
+
+    (globalThis as unknown as { window: { location: { href: string } } }).window.location.href =
+      `${ORIGIN}/checkout`;
+    const stillNew = captureMetaIds();
+    assert.equal(stillNew.fbc, fromNewClick.fbc);
+    assert.equal(stillNew.fbclid, "CLICK_NEW");
+    assert.notEqual(stillNew.fbc, "fb.1.50.CLICK_OLD");
+    const tracked = serverTrackingExtension(false);
+    assert.equal(tracked.fbc, fromNewClick.fbc);
+    assert.equal(tracked.consent, "nao");
+    assert.equal("fbclid" in tracked, false);
+
+    const pixelTime = Date.now() + 60_000;
+    (globalThis as unknown as { document: { cookie: string } }).document.cookie =
+      `_fbc=fb.1.${pixelTime}.CLICK_PIXEL; _fbp=fb.1.9.browser`;
+    const fromNewCookie = captureMetaIds();
+    assert.equal(fromNewCookie.fbc, `fb.1.${pixelTime}.CLICK_PIXEL`);
+    assert.equal(fromNewCookie.fbclid, "CLICK_PIXEL");
 
     (globalThis as unknown as { window: { location: { href: string } } }).window.location.href =
       `${ORIGIN}/?fbclid=CLICK_D`;

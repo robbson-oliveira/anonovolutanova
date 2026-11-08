@@ -184,12 +184,31 @@ function clickFromFbc(fbc: string): string {
   return fbc.split(".").slice(3).join(".");
 }
 
+/** Creation time in `fb.<index>.<creationTime>.<fbclid>`. Higher means newer. */
+function fbcTime(fbc: string): number {
+  if (!FBC_PATTERN.test(fbc)) return 0;
+  const time = Number(fbc.split(".")[2]);
+  return Number.isFinite(time) ? time : 0;
+}
+
 /** Keeps a stored fbc only when it belongs to this exact click. */
 function matchingFbc(fbclid: string, ...candidates: string[]): string {
+  let best = "";
   for (const candidate of candidates) {
-    if (clickFromFbc(candidate) === fbclid) return candidate;
+    if (clickFromFbc(candidate) !== fbclid) continue;
+    if (!best || fbcTime(candidate) > fbcTime(best)) best = candidate;
   }
-  return "";
+  return best;
+}
+
+/** Newest real fbc. An equal timestamp does not replace the one already chosen. */
+function newestFbc(candidates: string[]): string {
+  let best = "";
+  for (const candidate of candidates) {
+    if (!clickFromFbc(candidate)) continue;
+    if (!best || fbcTime(candidate) > fbcTime(best)) best = candidate;
+  }
+  return best;
 }
 
 function rememberClick(fbclid: string, fbc: string): void {
@@ -204,9 +223,12 @@ export type MetaIds = { fbp?: string; fbc?: string; fbclid?: string };
 
 /**
  * Reads `_fbp` and `_fbc`, and keeps a real `fbclid` for the rest of this
- * document. A click in the URL replaces whatever was stored. A valid `_fbc`
- * cookie is the source when the URL has no newer click. UTM parameters are
- * not clicks. Without an `_fbc` cookie, `fbc` is `fb.1.<ts>.<fbclid>`.
+ * document. A click in the URL replaces whatever was stored. With no click
+ * in the URL, the newest `fbc` wins: the creation time in
+ * `fb.<index>.<creationTime>.<fbclid>` is the clock, so an older `_fbc`
+ * cookie cannot erase a newer click from this visit, and a cookie written
+ * later (higher time) can. UTM parameters are not clicks. Without an `_fbc`
+ * cookie, `fbc` is `fb.1.<ts>.<fbclid>`.
  */
 export function captureMetaIds(): MetaIds {
   if (typeof window === "undefined") return {};
@@ -231,14 +253,10 @@ export function captureMetaIds(): MetaIds {
     fbc =
       matchingFbc(urlClick, validCookie, sessionFbc, memoryFbclid === urlClick ? memoryFbc : "") ||
       `fb.1.${Date.now()}.${urlClick}`;
-  } else if (validCookie) {
-    fbc = validCookie;
-    fbclid = clickFromFbc(validCookie);
   } else {
-    fbclid = sessionClick || memoryFbclid;
-    if (fbclid) {
-      fbc = matchingFbc(fbclid, sessionFbc, memoryFbc) || `fb.1.${Date.now()}.${fbclid}`;
-    }
+    fbc = newestFbc([memoryFbc, sessionFbc, validCookie]);
+    fbclid = clickFromFbc(fbc) || sessionClick || memoryFbclid;
+    if (fbclid && !fbc) fbc = `fb.1.${Date.now()}.${fbclid}`;
   }
 
   if (fbclid && fbc) rememberClick(fbclid, fbc);

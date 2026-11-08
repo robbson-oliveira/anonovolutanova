@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PRODUCT_NAME } from "@content/product";
+import { ProductGallery } from "@sections/ProductGallery";
 import { HOME_DESCRIPTION, StorefrontHome } from "./storefront-home";
 
 export const metadata: Metadata = {
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image" },
 };
 
-/** Public home. The gallery preview lives at `/galeria-teste`. */
+/** Public home. The photo gallery sits between the editions and the planner. */
 export default function Home() {
-  return <StorefrontHome />;
+  return <StorefrontHome gallery={<ProductGallery />} />;
 }

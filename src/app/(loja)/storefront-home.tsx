@@ -35,8 +35,8 @@ type StorefrontHomeProps = {
  * O preço e o estoque vêm do WooCommerce (getProductOffer revalida a cada
  * minuto), então a página é regenerada sozinha quando o estoque muda.
  *
- * `/` renders this with no extra block. `/galeria-teste` passes the photo
- * gallery and skips the product JSON-LD.
+ * `/` and `/galeria-teste` both pass the photo gallery. Only the test
+ * route skips the product JSON-LD; its noindex lives on that route.
  */
 export async function StorefrontHome({
   gallery,

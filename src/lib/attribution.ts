@@ -149,6 +149,18 @@ export const ANLN_SEND_META_IDS = false;
 const FBCLID_KEY = "anln_fbclid";
 const FBC_KEY = "anln_fbc";
 
+/**
+ * Click already seen in this document. `installTracking` calls
+ * `captureMetaIds` and drops the return, and a blocked `sessionStorage`
+ * cannot hold it either. This lasts for the SPA visit only: a full reload
+ * starts empty, and nothing here is a cookie or shared across tabs.
+ */
+let memoryFbclid = "";
+let memoryFbc = "";
+
+/** Meta's `_fbc` value: `fb.<subdomainIndex>.<creationTime>.<fbclid>`. */
+const FBC_PATTERN = /^fb\.\d+\.\d+\..+/;
+
 function readSession(key: string): string | null {
   if (typeof window === "undefined") return null;
   try {
@@ -163,38 +175,73 @@ function writeSession(key: string, value: string): void {
   try {
     window.sessionStorage.setItem(key, value);
   } catch {
-    // Private mode: the id is still returned for this call.
+    // Private mode: memory in this document is the fallback.
   }
+}
+
+function clickFromFbc(fbc: string): string {
+  if (!FBC_PATTERN.test(fbc)) return "";
+  return fbc.split(".").slice(3).join(".");
+}
+
+/** Keeps a stored fbc only when it belongs to this exact click. */
+function matchingFbc(fbclid: string, ...candidates: string[]): string {
+  for (const candidate of candidates) {
+    if (clickFromFbc(candidate) === fbclid) return candidate;
+  }
+  return "";
+}
+
+function rememberClick(fbclid: string, fbc: string): void {
+  if (clickFromFbc(fbc) !== fbclid) return;
+  memoryFbclid = fbclid;
+  memoryFbc = fbc;
+  writeSession(FBCLID_KEY, fbclid);
+  writeSession(FBC_KEY, fbc);
 }
 
 export type MetaIds = { fbp?: string; fbc?: string; fbclid?: string };
 
 /**
- * Reads `_fbp` and `_fbc`, and keeps `fbclid` from the landing URL for the
- * rest of the tab. Without an `_fbc` cookie, `fbc` is `fb.1.<ts>.<fbclid>`.
+ * Reads `_fbp` and `_fbc`, and keeps a real `fbclid` for the rest of this
+ * document. A click in the URL replaces whatever was stored. A valid `_fbc`
+ * cookie is the source when the URL has no newer click. UTM parameters are
+ * not clicks. Without an `_fbc` cookie, `fbc` is `fb.1.<ts>.<fbclid>`.
  */
 export function captureMetaIds(): MetaIds {
   if (typeof window === "undefined") return {};
   const fbp = readCookie("_fbp") ?? undefined;
-  const fbcCookie = readCookie("_fbc") ?? undefined;
+  const cookieFbc = readCookie("_fbc") ?? "";
+  const validCookie = clickFromFbc(cookieFbc) ? cookieFbc : "";
 
-  let fbclid = "";
+  let urlClick = "";
   try {
-    fbclid = new URL(window.location.href).searchParams.get("fbclid")?.trim() ?? "";
+    urlClick = new URL(window.location.href).searchParams.get("fbclid")?.trim() ?? "";
   } catch {
-    fbclid = "";
+    urlClick = "";
   }
-  if (fbclid) writeSession(FBCLID_KEY, fbclid);
-  else fbclid = readSession(FBCLID_KEY) ?? "";
 
-  let fbc = fbcCookie ?? "";
-  if (!fbc && fbclid) {
-    fbc = readSession(FBC_KEY) ?? "";
-    if (!fbc || !fbc.endsWith(`.${fbclid}`)) {
-      fbc = `fb.1.${Date.now()}.${fbclid}`;
-      writeSession(FBC_KEY, fbc);
+  const sessionClick = readSession(FBCLID_KEY) ?? "";
+  const sessionFbc = readSession(FBC_KEY) ?? "";
+  let fbclid = "";
+  let fbc = "";
+
+  if (urlClick) {
+    fbclid = urlClick;
+    fbc =
+      matchingFbc(urlClick, validCookie, sessionFbc, memoryFbclid === urlClick ? memoryFbc : "") ||
+      `fb.1.${Date.now()}.${urlClick}`;
+  } else if (validCookie) {
+    fbc = validCookie;
+    fbclid = clickFromFbc(validCookie);
+  } else {
+    fbclid = sessionClick || memoryFbclid;
+    if (fbclid) {
+      fbc = matchingFbc(fbclid, sessionFbc, memoryFbc) || `fb.1.${Date.now()}.${fbclid}`;
     }
   }
+
+  if (fbclid && fbc) rememberClick(fbclid, fbc);
 
   return {
     ...(fbp ? { fbp } : {}),

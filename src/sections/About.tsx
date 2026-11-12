@@ -350,6 +350,8 @@ export function FeatureCard({
                   src={layer.src}
                   alt=""
                   aria-hidden
+                  loading="lazy"
+                  decoding="async"
                   className="h-auto w-full max-w-none"
                   style={frame}
                 />

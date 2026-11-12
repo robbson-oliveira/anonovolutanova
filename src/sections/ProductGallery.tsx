@@ -28,8 +28,10 @@ type ColumnProps = {
  * track, so the copy sits where the original started and the loop does not
  * jump. Margin lives on each card: a flex `gap` would make -50% miss the seam.
  * The copy is inert, so it is not a second tab stop and not a second photo
- * in the lightbox. Both copies load immediately: the moving half is on
- * screen only because of the transform, so lazy loading would leave it blank.
+ * in the lightbox. Every photo is lazy: eager images were all hoisted into
+ * <head> as preloads (~3 MB on phones). Lazy loading follows the rendered
+ * box, transform included, and the browser fetches well before the section
+ * scrolls in, so the moving copy is ready by the time it shows.
  */
 function Column({ items, direction, paused, onOpen }: ColumnProps) {
   const cards = (clone: boolean) =>
@@ -43,7 +45,8 @@ function Column({ items, direction, paused, onOpen }: ColumnProps) {
               width={photo.width}
               height={photo.height}
               sizes="(min-width: 1024px) 440px, 45vw"
-              loading="eager"
+              loading="lazy"
+              decoding="async"
               unoptimized
               className="h-auto w-full"
             />
@@ -61,7 +64,8 @@ function Column({ items, direction, paused, onOpen }: ColumnProps) {
               width={photo.width}
               height={photo.height}
               sizes="(min-width: 1024px) 440px, 45vw"
-              loading="eager"
+              loading="lazy"
+              decoding="async"
               unoptimized
               className="h-auto w-full"
             />

@@ -1,17 +1,20 @@
 /**
- * Trecho do <head> que liga o Google Tag Manager com Consent Mode v2.
+ * Head snippet that boots Google Tag Manager with Consent Mode v2.
  *
- * Usado em dois lugares com o mesmo texto: o layout das páginas React e a
- * resposta do wireframe (`src/app/route.ts`), que é HTML puro.
+ * Used in two places with the same text: the React layout and the wireframe
+ * response (`src/app/route.ts`), which is plain HTML.
  *
- * Todo consentimento começa NEGADO (LGPD): o GTM carrega, mas GA4 e Meta só
- * gravam cookies depois que a pessoa aceita no aviso de cookies
- * (`src/features/shell/ConsentBanner.tsx`), que chama `gtag('consent', 'update', …)`
- * e empurra `anln_consent_granted`. Uma escolha já feita é reaplicada aqui,
- * antes do GTM, inclusive esse evento: a tag de base do Meta escuta só ele,
- * então sem o replay o pixel não existe nas visitas seguintes. O clique no
- * aviso só acontece sem escolha gravada, então o evento não sai duas vezes
- * na mesma visita.
+ * Consent defaults to denied, then is granted right away unless the visitor
+ * declined before (implicit consent). The Meta base tag (GTM tag 13) listens
+ * only for `anln_consent_granted`, so that event is pushed here, before GTM
+ * boots, on every visit without a stored refusal. The cookie notice
+ * (`src/features/shell/ConsentBanner.tsx`) stays visible until an explicit
+ * choice: "Recusar" stores `denied` and turns consent off; "Aceitar" stores
+ * `granted` and does not push the event again on the same page.
+ *
+ * A stored choice also marks `<html data-anln-consent-stored>` before the
+ * body paints, so the server-rendered notice stays hidden for returning
+ * visitors without a flash.
  */
 
 export const CONSENT_STORAGE_KEY = "anln_consent";
@@ -24,12 +27,14 @@ gtag('consent', 'default', {
   ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied',
   analytics_storage: 'denied', wait_for_update: 500
 });
+// No stored refusal means implicit grant; storage errors count as no choice.
+var marketing = true;
+var analytics = true;
 try {
   var c = localStorage.getItem('${CONSENT_STORAGE_KEY}');
-  // 'granted' is the banner's all-in choice (marketing included). A stored
-  // object with categories gates the Meta event on marketing alone.
-  var marketing = c === 'granted';
-  var analytics = c === 'granted';
+  if (c) document.documentElement.setAttribute('data-anln-consent-stored', '');
+  if (c === 'denied') { marketing = false; analytics = false; }
+  // A stored object with categories gates each category on its own.
   if (c && c.charAt(0) === '{') {
     var parsed = JSON.parse(c);
     var cats = parsed && parsed.categories;
@@ -40,14 +45,14 @@ try {
       analytics = stats === true || stats === 'granted';
     }
   }
-  if (marketing || analytics) gtag('consent', 'update', {
-    ad_storage: marketing ? 'granted' : 'denied',
-    ad_user_data: marketing ? 'granted' : 'denied',
-    ad_personalization: marketing ? 'granted' : 'denied',
-    analytics_storage: analytics ? 'granted' : 'denied'
-  });
-  if (marketing) dataLayer.push({event:'anln_consent_granted'});
 } catch (e) {}
+if (marketing || analytics) gtag('consent', 'update', {
+  ad_storage: marketing ? 'granted' : 'denied',
+  ad_user_data: marketing ? 'granted' : 'denied',
+  ad_personalization: marketing ? 'granted' : 'denied',
+  analytics_storage: analytics ? 'granted' : 'denied'
+});
+if (marketing) dataLayer.push({event:'anln_consent_granted'});
 `;
 
   if (!gtmId || !/^GTM-[A-Z0-9]+$/.test(gtmId)) return consent;

@@ -74,6 +74,8 @@ export function Testimonials() {
                       aria-hidden
                       width={60}
                       height={60}
+                      loading="lazy"
+                      decoding="async"
                       className="size-[60px] shrink-0 rounded-card object-cover"
                     />
                     <div className="flex min-w-0 flex-col gap-0.5 pt-2.5">

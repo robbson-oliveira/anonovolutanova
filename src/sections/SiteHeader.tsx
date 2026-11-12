@@ -464,7 +464,8 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
             <img
               src={open ? logoMenu : logoMobile}
               alt={PRODUCT_NAME}
-              loading="eager"
+              loading="lazy"
+              decoding="async"
               className="h-[44px] w-auto"
             />
           </a>
@@ -489,14 +490,16 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
             <img
               src={open ? logoMenu : logoMobile}
               alt={PRODUCT_NAME}
-              loading="eager"
+              loading="lazy"
+              decoding="async"
               className="h-[44px] w-auto lg:hidden"
             />
             {/* Desktop: ornate logo */}
             <img
               src={logo}
               alt={PRODUCT_NAME}
-              loading="eager"
+              loading="lazy"
+              decoding="async"
               className="hidden h-[72px] w-auto lg:block"
             />
           </a>
@@ -543,7 +546,7 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
           <div className={cn(pageFrameClass, "flex h-full items-center gap-3")}>
             <a href="#inicio" className="flex shrink-0 items-center" aria-label={PRODUCT_NAME}>
               {/* 391×171 lockup. At 40px tall the file is still above 2×. */}
-              <img src={logoCompact} alt="" width={391} height={171} className="h-10 w-auto" />
+              <img src={logoCompact} alt="" width={391} height={171} loading="lazy" decoding="async" className="h-10 w-auto" />
             </a>
             <nav aria-label="Principal" className="flex min-w-0 flex-1 items-center">
               {/* The list item must be a flex box. As a list-item it keeps the

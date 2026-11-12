@@ -80,20 +80,28 @@ function eventId(event: string, ecommerce: Ecommerce): string {
 }
 
 /**
- * Marketing consent, matching the head snippet: the banner stores `"granted"`,
- * and a JSON payload counts only when `categories.marketing` is granted.
+ * Marketing consent, matching the head snippet: granted unless the visitor
+ * stored a refusal (implicit consent). A JSON payload counts only when
+ * `categories.marketing` is granted.
  */
 export function marketingGranted(): boolean {
   if (typeof window === "undefined") return false;
+  let raw: string | null;
   try {
-    const raw = window.localStorage.getItem(CONSENT_STORAGE_KEY);
-    if (raw === "granted") return true;
-    if (!raw || raw.charAt(0) !== "{") return false;
+    raw = window.localStorage.getItem(CONSENT_STORAGE_KEY);
+  } catch {
+    // No storage: the head snippet granted this visit.
+    return true;
+  }
+  if (raw === "denied") return false;
+  if (!raw || raw.charAt(0) !== "{") return true;
+  try {
     const cats = (JSON.parse(raw) as { categories?: { marketing?: unknown } }).categories;
-    const mark = cats?.marketing;
+    if (!cats) return true;
+    const mark = cats.marketing;
     return mark === true || mark === "granted";
   } catch {
-    return false;
+    return true;
   }
 }
 

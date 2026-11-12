@@ -69,7 +69,6 @@ export function BookStage({
         <Cover
           src={classicaSrc}
           alt="Agenda Ano Novo, Luta Nova — Edição Clássica"
-          priority
         />
       </div>
 
@@ -177,5 +176,5 @@ function Thumb({ src }: { src: CoverSrc }) {
   const className =
     "absolute left-[-6.3px] top-[-2px] h-[54px] w-[49px] max-w-none rounded-card object-contain max-md:left-[-4px] max-md:top-[-2px] max-md:h-[41px] max-md:w-[37px] md:max-[1199px]:left-[-6px] md:max-[1199px]:top-[-3px] md:max-[1199px]:h-[50px] md:max-[1199px]:w-[45px]";
 
-  return <img src={src} alt="" className={className} />;
+  return <img src={src} alt="" loading="lazy" decoding="async" className={className} />;
 }

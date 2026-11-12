@@ -45,7 +45,9 @@ const criticalFontCss =
   `--font-sans:"Manrope",ui-sans-serif,system-ui,sans-serif;` +
   `--font-script:"Yellowtail",ui-serif,cursive}` +
   `html,body{font-family:"Manrope",ui-sans-serif,system-ui,sans-serif}` +
-  `html[data-ds-fonts-loading] body{visibility:hidden}`;
+  `html[data-ds-fonts-loading] body{visibility:hidden}` +
+  // Returning visitors already chose: hide the server-rendered cookie notice.
+  `html[data-anln-consent-stored] [data-anln-consent-banner]{display:none}`;
 
 /* Em uma abertura sem cache, o catálogo do design system só fica visível
    quando as duas famílias locais estão prontas (com teto de 3s). Isso evita
@@ -105,8 +107,8 @@ export default function RootLayout({
             contrário, que deixaria blocos invisíveis. */}
         <script dangerouslySetInnerHTML={{ __html: REVEAL_READY_SCRIPT }} />
         <script dangerouslySetInnerHTML={{ __html: fontReadinessScript }} />
-        {/* GTM com Consent Mode v2 (tudo negado até o aceite). O aviso de
-            cookies é o <ConsentBanner>, no corpo. */}
+        {/* GTM with Consent Mode v2 (implicit grant unless a refusal is
+            stored). The cookie notice is <ConsentBanner>, in the body. */}
         <script dangerouslySetInnerHTML={{ __html: gtmHeadSnippet(publicEnv.gtmId) }} />
       </head>
       <body className="bg-surface-warm font-sans text-base leading-normal text-text antialiased">

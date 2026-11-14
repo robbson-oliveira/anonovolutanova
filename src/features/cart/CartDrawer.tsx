@@ -109,7 +109,11 @@ export function CartDrawer() {
                 className={cn("font-semibold", !missing && "whitespace-nowrap")}
                 aria-live="polite"
               >
-                {missing ? `Faltam ${missing} para o frete grátis` : "Frete grátis neste pedido"}
+                {missing
+                  ? missing === 1
+                    ? "Falta 1 agenda para o frete grátis"
+                    : `Faltam ${missing} agendas para o frete grátis`
+                  : "Frete grátis neste pedido"}
               </Text>
               <CouponForm />
               {error ? (

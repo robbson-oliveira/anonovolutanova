@@ -200,7 +200,7 @@ export function ShippingEstimate({ productId, quantity }: ShippingEstimateProps)
       )}
     >
       <IconTruck className="size-3 shrink-0" />
-      {qualifies ? "Frete grátis neste pedido" : `Frete grátis a partir de ${minQty} unidades`}
+      {qualifies ? "Frete grátis neste pedido" : `Frete grátis a partir de ${minQty} agendas`}
     </span>
   );
 

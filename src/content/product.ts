@@ -69,7 +69,7 @@ export type EditionId = (typeof EDITIONS)[number]["id"];
 
 /** Regra comercial: frete grátis a partir desta quantidade de agendas. */
 export const FREE_SHIPPING_MIN_QTY = 4;
-export const SHIPPING_NOTICE = `Frete Grátis a partir de ${FREE_SHIPPING_MIN_QTY} unidades`;
+export const SHIPPING_NOTICE = `Frete Grátis a partir de ${FREE_SHIPPING_MIN_QTY} agendas`;
 
 /**
  * Seção de produto da home. Todos os CTAs de compra do site levam para cá: na

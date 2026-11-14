@@ -358,7 +358,9 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
             {edition.agenda ? (
               <Text as="span" size="xs" tone="muted" aria-live="polite">
                 {missingForFreeShipping
-                  ? `Faltam ${missingForFreeShipping} para o frete grátis`
+                  ? missingForFreeShipping === 1
+                    ? "Falta 1 agenda para o frete grátis"
+                    : `Faltam ${missingForFreeShipping} agendas para o frete grátis`
                   : cartAlreadyQualifies
                     ? "Seu pedido já tem frete grátis"
                     : `Ao adicionar +${qty}, seu pedido ganha frete grátis`}

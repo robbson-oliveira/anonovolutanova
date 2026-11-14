@@ -193,9 +193,11 @@ export function ShippingOptionsDialog({
             <p className="text-label text-text-muted" aria-live="polite">
               {freeShipping.qualifies
                 ? "Este pedido já tem frete grátis."
-                : `Frete grátis a partir de ${freeShipping.minQty} unidades.` +
+                : `Frete grátis a partir de ${freeShipping.minQty} agendas.` +
                   (freeShipping.remaining > 0
-                    ? ` Faltam ${freeShipping.remaining} ${freeShipping.remaining === 1 ? "unidade" : "unidades"}.`
+                    ? freeShipping.remaining === 1
+                      ? " Falta 1 agenda."
+                      : ` Faltam ${freeShipping.remaining} agendas.`
                     : "")}
             </p>
           </div>

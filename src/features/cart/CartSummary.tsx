@@ -65,7 +65,9 @@ export function CartSummary({ offer }: CartSummaryProps) {
         <div className="flex flex-col gap-2" aria-live="polite">
           <Text as="p" size="xs" tone={missing ? "muted" : "accent"} className={cn("font-semibold", missing === 0 && "whitespace-nowrap")}>
             {missing
-              ? `Faltam ${missing} ${missing === 1 ? "agenda" : "agendas"} para o frete grátis`
+              ? missing === 1
+                ? "Falta 1 agenda para o frete grátis"
+                : `Faltam ${missing} agendas para o frete grátis`
               : "Frete grátis neste pedido"}
           </Text>
           <div aria-hidden className="h-1.5 overflow-hidden rounded-pill bg-surface-muted">

@@ -55,7 +55,7 @@ export const FAQ: AccordionItem[] = [
     answer: (
       <>
         <p>
-          Sim! A partir de {FREE_SHIPPING_MIN_QTY} unidades, o frete é grátis
+          Sim! A partir de {FREE_SHIPPING_MIN_QTY} agendas, o frete é grátis
           para todo o Brasil! 🚚 E tem mais: oferecemos condições especiais a
           partir de 50 unidades, ideais para revenda e livrarias.
         </p>

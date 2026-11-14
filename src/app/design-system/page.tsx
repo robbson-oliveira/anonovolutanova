@@ -138,7 +138,7 @@ const TYPE_SCALE = [
   { token: "--text-stat", label: "Número de estatística", sample: "365" },
   { token: "--text-lead", label: "Lead", sample: "Santificar o cotidiano" },
   { token: "--text-base", label: "Corpo", sample: "A santidade se constrói nas pequenas coisas." },
-  { token: "--text-sm", label: "Apoio", sample: "Frete grátis a partir de 4 unidades" },
+  { token: "--text-sm", label: "Apoio", sample: "Frete grátis a partir de 4 agendas" },
   { token: "--text-xs", label: "Legenda", sample: "Edição Limitada" },
   { token: "--text-eyebrow", label: "Olho de seção", sample: "O QUE A TORNA ESPECIAL" },
 ];
@@ -622,7 +622,7 @@ export default function DesignSystemPage() {
                   <Marquee
                     items={Array.from({ length: 6 }, (_, i) => (
                       <span key={i} className="text-xs text-text-on-inverse">
-                        Frete Grátis a partir de 4 unidades
+                        Frete Grátis a partir de 4 agendas
                       </span>
                     ))}
                   />

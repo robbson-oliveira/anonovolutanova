@@ -34,6 +34,11 @@ anonovolutanova.framer.website/
 # Saidas da skill wireframe-para-react: capturas de comparacao geradas sob
 # demanda para conferir uma seccao portada. Descartaveis.
 comparacao.png
+
+# Playwright: relatorio e capturas gerados ao rodar npm run test:e2e.
+/e2e/output/
+/test-results/
+/playwright-report/
 ._wf_*.png
 devlog*.txt
 

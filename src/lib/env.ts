@@ -33,4 +33,10 @@ export const publicEnv = {
    * country and area code (only its digits count).
    */
   whatsappChatNumber: (process.env.NEXT_PUBLIC_WHATSAPP_CHAT_NUMBER || "5527992794290").replace(/\D/g, ""),
+  /**
+   * Abandoned-cart capture. Off unless this is exactly "true" at build time.
+   * Leave it off until the server kill switch is confirmed off: a stored
+   * cart can trigger WhatsApp reminders.
+   */
+  cartRecoveryEnabled: process.env.NEXT_PUBLIC_CART_RECOVERY_ENABLED === "true",
 } as const;

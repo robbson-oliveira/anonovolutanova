@@ -198,6 +198,11 @@ Cores e formas do Figma substituem as do wireframe do Framer onde divergirem.
 - O checkout só liga com `NEXT_PUBLIC_CHECKOUT_ENABLED=true` **e**
   `ANLN_PRODUCT_COLOR`/`ANLN_PRODUCT_CLASSIC` definidos; sem isso, a compra termina no pedido pelo
   WhatsApp. Todo fluxo novo precisa respeitar os dois estados.
+- Manutenção temporária: `MAINTENANCE_MODE` em `src/lib/maintenance.ts`.
+  Com `true`, o `proxy.ts` reescreve toda rota de página para `/manutencao`
+  (503 e `Retry-After: 120`). Assets, `/_next` e `/api` continuam de fora
+  pelo matcher. Para reabrir a loja, mude a constante para `false` e
+  publique, ou reverta o commit que ligou a manutenção.
 - Chaves de servidor, lidas pelo `proxy.ts` a cada pedido (trocar exige só
   reiniciar, e as páginas continuam estáticas): `ANLN_HOME_COMMING_SOON`
   reescreve `/` para `/em-breve`; `ANLN_PRECHECKOUT` abre `/carrinho` (sem ela,

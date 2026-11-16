@@ -400,6 +400,8 @@
   --animate-soon-word: ds-soon-word 0.4s var(--ease-enter) both;
   --animate-soon-float: ds-soon-float 0.9s var(--ease-enter) both;
   --animate-soon-panel: ds-soon-panel 0.25s var(--ease-enter) both;
+  /* Maintenance page: the duck bobs in place. Reduced motion turns it off. */
+  --animate-maintenance-bob: ds-maintenance-bob 2.8s ease-in-out infinite;
   --animate-processing-enter: ds-processing-enter 200ms ease-out both;
   --animate-processing-ring: ds-processing-rotate 2s linear infinite, ds-processing-dash 1.5s linear infinite;
 
@@ -646,6 +648,16 @@
     to {
       opacity: 1;
       transform: none;
+    }
+  }
+
+  @keyframes ds-maintenance-bob {
+    0%,
+    100% {
+      transform: translateY(0) rotate(-3deg);
+    }
+    50% {
+      transform: translateY(-8px) rotate(3deg);
     }
   }
 

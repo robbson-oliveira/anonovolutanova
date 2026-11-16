@@ -3,7 +3,8 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { CLASSIC_CART_NOTICE, isClassicCartItem } from "@/lib/commerce/availability";
 import * as storeApi from "@/lib/commerce/store-api";
-import { errorMessage, type StoreCart } from "@/lib/commerce/store-api";
+import { errorMessage, isStoreApiError, type StoreCart } from "@/lib/commerce/store-api";
+import { planRecoveryMerge, type RecoveryItem } from "@/lib/commerce/recover-cart";
 import { COUPON_COOKIE, deleteCookie, readCookie } from "@/lib/attribution";
 import { readGiftWrapIds, writeGiftWrapIds } from "./gift-wrap";
 
@@ -34,6 +35,12 @@ type CartContextValue = {
   removeCoupon: (code: string) => Promise<void>;
   /** Troca o carrinho pelo que uma chamada do checkout devolveu. */
   replace: (cart: StoreCart) => void;
+  /**
+   * Folds a recovered cart into this one. Keeps the higher quantity of a
+   * product that is already here and does not remove anything. Returns
+   * whether a line changed. A product the store refuses is skipped.
+   */
+  mergeRecovered: (items: RecoveryItem[]) => Promise<boolean>;
   /** Depois do pedido: o WooCommerce já esvaziou o carrinho, começa outro. */
   reset: () => void;
   /** Product ids marked "Embalagem para presente". */
@@ -186,6 +193,42 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     [run],
   );
 
+  // Prices come back from the Store API on each add or update. The recovered
+  // payload has no total, and this never checks out or clears the cart.
+  const mergeRecovered = useCallback(async (items: RecoveryItem[]) => {
+    let current = cart;
+    if (!current && hasStoredToken()) {
+      try {
+        current = await storeApi.getCart();
+      } catch {
+        current = null;
+      }
+    }
+    const ops = planRecoveryMerge(
+      (current?.items ?? []).map((line) => ({ id: line.id, key: line.key, quantity: line.quantity })),
+      items,
+    );
+    let changed = false;
+    for (const op of ops) {
+      try {
+        const next = op.type === "add"
+          ? await storeApi.addCartItem({ id: op.id, quantity: op.quantity })
+          : await storeApi.updateCartItem({ key: op.key, quantity: op.quantity });
+        current = next;
+        setCart(next);
+        changed = true;
+      } catch (err) {
+        if (isStoreApiError(err) && err.cart) {
+          current = err.cart;
+          setCart(err.cart);
+        }
+        // This line is unavailable. The other lines, and the cart the
+        // visitor already had, stay.
+      }
+    }
+    return changed;
+  }, [cart]);
+
   // Só busca o carrinho de quem já tem um: sem token, cada visita criaria uma
   // sessão vazia no WooCommerce.
   useEffect(() => {
@@ -298,6 +341,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         await run(() => storeApi.removeCoupon(code), "Não foi possível remover o cupom.", { scope: "coupon" });
       },
       replace: setCart,
+      mergeRecovered,
       reset: () => {
         storeApi.forgetCartToken();
         setCart(null);
@@ -324,6 +368,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       drawerOpen,
       giftWrapIds,
       refresh,
+      mergeRecovered,
       run,
       lockLine,
       unlockLine,

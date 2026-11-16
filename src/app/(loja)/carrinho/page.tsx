@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { getProductOffer } from "@/lib/commerce/offer";
+import { RECOVERY_COOKIE, isRecoveryToken } from "@/lib/commerce/recover-cart";
+import { publicEnv } from "@/lib/env";
 import { CartPage } from "@/features/cart/CartPage";
 import { PrecheckoutHeader } from "@/features/cart/PrecheckoutHeader";
 import { CheckoutFooter } from "@/features/checkout/CheckoutFooter";
@@ -24,12 +27,19 @@ export const metadata: Metadata = {
  */
 export default async function Carrinho() {
   const offer = await getProductOffer();
+  // Reading the cookie makes this page dynamic. Skip it while restore is
+  // off so the public cart stays the static page it is today.
+  let recoveryPending = false;
+  if (publicEnv.cartRecoveryEnabled) {
+    const token = (await cookies()).get(RECOVERY_COOKIE)?.value ?? "";
+    recoveryPending = isRecoveryToken(token);
+  }
 
   return (
     <div className={`flex min-h-dvh flex-col bg-surface-plain ${STORE_FLOW_THEME}`}>
       <PrecheckoutHeader />
       <main className="mx-auto w-full max-w-[1200px] flex-1 px-4 py-8 sm:px-6 lg:py-12">
-        <CartPage offer={offer} />
+        <CartPage offer={offer} recoveryPending={recoveryPending} />
       </main>
       <CheckoutFooter />
     </div>

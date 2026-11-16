@@ -43,6 +43,7 @@ import {
   updateCustomer,
   type StoreShippingRate,
 } from "@/lib/commerce/store-api";
+import { buildAbandonedCartBody, postAbandonedCart } from "@/lib/commerce/abandoned-cart";
 import { publicEnv } from "@/lib/env";
 import { formatBRL } from "@/lib/format";
 import {
@@ -241,6 +242,9 @@ export function CheckoutPage() {
   const [acceptTerms, setAcceptTerms] = useState(true);
   const [today] = useState(() => new Date());
   const [submitting, setSubmitting] = useState(false);
+  // WhatsApp reminder if the purchase is not finished. Separate from cookie
+  // consent, and unchecked until the buyer marks it.
+  const [cartRecoveryConsent, setCartRecoveryConsent] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   // Toast of the last failed "Pagar", dismissed on retry so copies don't
   // stack. Each failure gets a fresh id: reusing one right after dismissing
@@ -318,6 +322,42 @@ export function CheckoutPage() {
     beganCheckout.current = true;
     trackBeginCheckout(cartTrackItems(cart.cart), cartCoupon(cart.cart));
   }, [cart.cart]);
+
+  // Abandoned-cart capture. Not part of submit: a down store, a timeout or a
+  // rejected body must not stop payment. Nothing is sent unless the buyer
+  // checked the box and the phone is a valid Brazilian number.
+  const recoverySeen = useRef(new Set<string>());
+  useEffect(() => {
+    if (!publicEnv.cartRecoveryEnabled || submitting) return;
+    const totals = cart.cart?.totals;
+    const payload = buildAbandonedCartBody({
+      consent: cartRecoveryConsent,
+      paid: false,
+      name: `${form.contact.firstName} ${form.contact.lastName}`.trim(),
+      email: form.contact.email.trim(),
+      phoneE164: form.contact.phone.number,
+      phoneValid: form.contact.phone.valid,
+      items: (cart.cart?.items ?? []).map((item) => ({ id: item.id, quantity: item.quantity })),
+      totalMinor: totals?.total_price,
+      minorUnit: totals?.currency_minor_unit,
+    });
+    if (!payload) return;
+    const key = JSON.stringify(payload);
+    if (recoverySeen.current.has(key)) return;
+    const timer = window.setTimeout(() => {
+      void postAbandonedCart(publicEnv.wpUrl, payload, { seen: recoverySeen.current });
+    }, 1500);
+    return () => window.clearTimeout(timer);
+  }, [
+    submitting,
+    cartRecoveryConsent,
+    form.contact.firstName,
+    form.contact.lastName,
+    form.contact.email,
+    form.contact.phone.number,
+    form.contact.phone.valid,
+    cart.cart,
+  ]);
 
   // ----- Destinatário -----
   // Enquanto não é editado, o destinatário é o próprio titular. Editado uma
@@ -614,6 +654,16 @@ export function CheckoutPage() {
               <Field id="first-name" label="Nome" required autoComplete="given-name" value={form.contact.firstName} onChange={(e) => setContact({ firstName: e.target.value })} error={ce.firstName} />
               <Field id="last-name" label="Sobrenome" required autoComplete="family-name" value={form.contact.lastName} onChange={(e) => setContact({ lastName: e.target.value })} error={ce.lastName} />
               <PhoneField id="phone" label="Telefone" required value={form.contact.phone.number} onChange={(number, valid) => setContact({ phone: { number, valid } })} error={ce.phone} className="sm:col-span-2" />
+              {publicEnv.cartRecoveryEnabled ? (
+                <Checkbox
+                  id="cart-recovery-consent"
+                  checked={cartRecoveryConsent}
+                  onCheckedChange={setCartRecoveryConsent}
+                  className="sm:col-span-2"
+                >
+                  Quero receber pelo WhatsApp um lembrete se eu não concluir a compra (no máximo 2 mensagens)
+                </Checkbox>
+              ) : null}
               <RadioGroup id="person-type" label="Comprando como" value={form.contact.personType} onValueChange={(v) => setContact({ personType: v === "pj" ? "pj" : "pf" })} options={PERSON_TYPES} className="sm:col-span-2" />
               {form.contact.personType === "pj" ? (
                 <>

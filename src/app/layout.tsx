@@ -6,6 +6,7 @@ import { PRODUCT_NAME } from "@content/product";
 import { publicEnv } from "@/lib/env";
 import { gtmHeadSnippet } from "@/lib/tracking/gtm";
 import { ConsentBanner } from "@/features/shell/ConsentBanner";
+import { MAINTENANCE_MODE } from "@/lib/maintenance";
 import "./globals.css";
 
 /*
@@ -114,7 +115,7 @@ export default function RootLayout({
       <body className="bg-surface-warm font-sans text-base leading-normal text-text antialiased">
         {children}
         <SmoothScroll />
-        <ConsentBanner />
+        {MAINTENANCE_MODE ? null : <ConsentBanner />}
       </body>
     </html>
   );

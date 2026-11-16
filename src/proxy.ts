@@ -16,6 +16,7 @@ import {
   homeDevLogin,
 } from "@/lib/home-dev";
 import { GONE_HTML, isGone } from "@/lib/legacy-urls";
+import { MAINTENANCE_MODE } from "@/lib/maintenance";
 
 
 /**
@@ -68,7 +69,33 @@ function switchRoute(request: NextRequest, homeDev: boolean): NextResponse | nul
  * Cookies legíveis pelo navegador (não httpOnly): quem os lê é o checkout.
  * Não guardam dado pessoal — só o código do cupom e a origem da visita.
  */
+/**
+ * While the store is closed, every page is the maintenance screen.
+ * The matcher already leaves `/_next`, `/api` and files with an extension
+ * (images, fonts) alone. 503 tells clients to come back; `no-store` keeps
+ * the closure from sticking in a shared cache after the flag flips.
+ */
+function maintenanceResponse(request: NextRequest): NextResponse | null {
+  if (!MAINTENANCE_MODE) return null;
+  const headers = {
+    "Retry-After": "120",
+    "Cache-Control": "private, no-store",
+    "X-Robots-Tag": "noindex",
+  };
+  if (request.nextUrl.pathname === "/manutencao") {
+    const response = NextResponse.next();
+    for (const [key, value] of Object.entries(headers)) response.headers.set(key, value);
+    return response;
+  }
+  const response = NextResponse.rewrite(new URL("/manutencao", request.url), { status: 503 });
+  for (const [key, value] of Object.entries(headers)) response.headers.set(key, value);
+  return response;
+}
+
 export function proxy(request: NextRequest) {
+  const closed = maintenanceResponse(request);
+  if (closed) return closed;
+
   const url = request.nextUrl;
 
   // Conteúdo do WordPress antigo sem equivalente: 410 (ver legacy-urls.ts).

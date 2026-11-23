@@ -69,29 +69,32 @@ export function CartPage({ offer }: CartPageProps) {
         </div>
 
         <ul className="flex flex-col gap-4" aria-busy={!cart.ready}>
-          {offer.editions.map((e) => {
-            const line = cart.cart?.items.find((i) => i.id === e.productId) ?? null;
-            return (
-              <EditionLine
-                key={e.id}
-                edition={e}
-                price={e.price}
-                line={line}
-                busy={cart.busy || !cart.ready || (line ? cart.isLinePending(line.key) : false)}
-                onAdd={async () => {
-                  if (!e.productId) return;
-                  if (await cart.add(e.productId, 1)) trackAddToCart([item(e.productId, e.label, e.price, 1)]);
-                }}
-                onQuantity={(quantity) => {
-                  if (!line) return;
-                  if (quantity > line.quantity && e.productId) {
-                    trackAddToCart([item(e.productId, e.label, e.price, quantity - line.quantity)]);
-                  }
-                  void cart.setQuantity(line.key, quantity);
-                }}
-              />
-            );
-          })}
+          {/* Out of stock stays last on this list only. In-stock order is unchanged. */}
+          {[...offer.editions]
+            .sort((a, b) => Number(b.inStock) - Number(a.inStock))
+            .map((e) => {
+              const line = cart.cart?.items.find((i) => i.id === e.productId) ?? null;
+              return (
+                <EditionLine
+                  key={e.id}
+                  edition={e}
+                  price={e.price}
+                  line={line}
+                  busy={cart.busy || !cart.ready || (line ? cart.isLinePending(line.key) : false)}
+                  onAdd={async () => {
+                    if (!e.productId) return;
+                    if (await cart.add(e.productId, 1)) trackAddToCart([item(e.productId, e.label, e.price, 1)]);
+                  }}
+                  onQuantity={(quantity) => {
+                    if (!line) return;
+                    if (quantity > line.quantity && e.productId) {
+                      trackAddToCart([item(e.productId, e.label, e.price, quantity - line.quantity)]);
+                    }
+                    void cart.setQuantity(line.key, quantity);
+                  }}
+                />
+              );
+            })}
         </ul>
 
         {otherLines.length ? (

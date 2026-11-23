@@ -236,6 +236,11 @@ Cores e formas do Figma substituem as do wireframe do Framer onde divergirem.
   (o link "Preferências de cookies" o reabre pelo evento `anln:consent-open`).
 - Cookies de atribuição (`anln_cupom`, `anln_origem`) não guardam dado
   pessoal. Não coloque dado pessoal em cookie, URL ou evento de tracking.
+- O token de recuperação (`rc`) sai da URL no `proxy.ts`, com 307, antes de
+  qualquer HTML. Com a flag desligada ele só é apagado. Com a flag ligada
+  fica num cookie httpOnly de 2 minutos, path `/carrinho`, lido uma vez por
+  `/carrinho/recuperar` e apagado. Não vai para o `dataLayer`, para
+  `anln_origem` nem para o `localStorage`.
 
 ## Armadilhas conhecidas
 

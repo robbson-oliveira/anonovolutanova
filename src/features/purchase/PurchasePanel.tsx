@@ -30,17 +30,35 @@ const MAX_QTY = 49;
 
 type PurchasePanelProps = {
   offer: ProductOffer;
-  /** Nível do título com o nome do produto dentro da seção onde o painel está. */
+  /** Heading level for the product name inside the section that hosts the panel. */
   headingAs?: "h1" | "h2" | "h3";
+  /**
+   * Sends view_item (Meta ViewContent) for the edition this panel opens on.
+   * Off on the cart page: that route is not a product view, and it keeps
+   * view_cart for GA4.
+   */
+  trackView?: boolean;
 };
 
-export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
-  const firstAvailable =
-    offer.editions.find((e) => e.inStock)?.id ?? offer.editions[0].id;
-  const [editionId, setEditionId] = useState<EditionId>(firstAvailable);
+/**
+ * Edition the panel opens on. `?edicao=` wins when that edition is in stock;
+ * otherwise it is the first in-stock edition, the same one the radio selects
+ * on first paint. The catalog lists Color first, so that is the default
+ * while Color is in stock.
+ */
+function openedEdition(offer: ProductOffer, requestedId: string | null) {
+  const requested = offer.editions.find((edition) => edition.id === requestedId && edition.inStock);
+  if (requested) return requested;
+  return offer.editions.find((edition) => edition.inStock);
+}
 
-  // `?edicao=classica` (links antigos de /comprar e de divulgação) escolhe a
-  // edição. Lido no navegador para a home continuar estática.
+export function PurchasePanel({ offer, headingAs = "h2", trackView = true }: PurchasePanelProps) {
+  const [editionId, setEditionId] = useState<EditionId>(
+    () => openedEdition(offer, null)?.id ?? offer.editions[0].id,
+  );
+
+  // `?edicao=classica` (old /comprar and campaign links) picks the edition.
+  // Read in the browser so the home can stay static.
   useEffect(() => {
     const requested = new URLSearchParams(window.location.search).get("edicao");
     const match = offer.editions.find((e) => e.id === requested && e.inStock);
@@ -94,18 +112,18 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
     return () => ro.disconnect();
   }, []);
 
-  // view_item: uma vez por visita à página, com as edições disponíveis. A
-  // trava evita o disparo duplo do Strict Mode (efeitos rodam duas vezes em dev).
+  // view_item once per visit, for the edition the panel opens on and its
+  // own price. Summing every in-stock edition sent 129.80 (Color + Planner).
+  // The ref blocks the extra Strict Mode run. The cart page opts out.
   const viewed = useRef(false);
   useEffect(() => {
-    if (viewed.current) return;
+    if (!trackView || viewed.current) return;
+    const requested = new URLSearchParams(window.location.search).get("edicao");
+    const featured = openedEdition(offer, requested);
+    if (!featured) return;
     viewed.current = true;
-    trackViewItem(
-      offer.editions
-        .filter((e) => e.inStock)
-        .map((e) => item(e.productId ?? e.id, e.label, e.price, 1)),
-    );
-  }, [offer]);
+    trackViewItem([item(featured.productId ?? featured.id, featured.label, featured.price, 1)]);
+  }, [offer, trackView]);
 
   const addToCart = async () => {
     if (!cart || !edition.inStock || !edition.productId) return false;

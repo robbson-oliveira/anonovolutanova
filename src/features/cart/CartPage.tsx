@@ -5,7 +5,7 @@ import { IconArrowLeft, IconCheck, Text } from "@ds/index";
 import { OFFER } from "@content/offer";
 import type { ProductOffer } from "@/lib/commerce/offer-types";
 import { cartTrackItems } from "@/lib/tracking/cart-items";
-import { item, trackAddToCart, trackViewCart, trackViewItem } from "@/lib/tracking/events";
+import { item, trackAddToCart, trackViewCart } from "@/lib/tracking/events";
 import { PurchasePanel } from "@/features/purchase/PurchasePanel";
 import { CartItemRow } from "./CartItemRow";
 import { CartSummary } from "./CartSummary";
@@ -32,17 +32,11 @@ export function CartPage({ offer }: CartPageProps) {
   const otherLines = cart.cart?.items.filter((i) => !editionIds.has(i.id)) ?? [];
   const selling = offer.checkoutEnabled && offer.editions.some((e) => e.inStock && e.productId);
 
-  // view_item once per visit, view_cart once the cart has been read. The refs
-  // keep Strict Mode (effects run twice in development) from sending twice.
-  const viewed = useRef(false);
-  useEffect(() => {
-    if (viewed.current || !selling) return;
-    viewed.current = true;
-    trackViewItem(
-      offer.editions.filter((e) => e.inStock).map((e) => item(e.productId ?? e.id, e.label, e.price, 1)),
-    );
-  }, [offer, selling]);
-
+  // view_cart once the cart has been read (GA4 only). No view_item here:
+  // the cart is not a product page, and summing every edition sent a
+  // ViewContent worth 129.80 (Color + Planner). The landing page sends it
+  // for the edition the purchase panel opens on. The ref blocks the extra
+  // Strict Mode run.
   const viewedCart = useRef(false);
   useEffect(() => {
     if (viewedCart.current || !cart.ready || !cart.cart?.items.length) return;
@@ -53,7 +47,7 @@ export function CartPage({ offer }: CartPageProps) {
   if (!selling) {
     return (
       <div className="rounded-card border border-border bg-surface-plain p-5 shadow-subtle sm:p-8 lg:p-12">
-        <PurchasePanel offer={offer} headingAs="h2" />
+        <PurchasePanel offer={offer} headingAs="h2" trackView={false} />
       </div>
     );
   }

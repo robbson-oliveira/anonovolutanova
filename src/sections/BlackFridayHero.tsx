@@ -120,8 +120,8 @@ export function BlackFridayHero() {
           </dl>
         </div>
 
-        {/* Node 2727:5951. Desktop grows about 9% into the free space on the right; the seal and the arrow stay in the same place on the sheet. */}
-        <div className="relative mx-auto aspect-[743.047/655.498] w-full max-w-[388px] lg:mx-0 lg:w-[108%] lg:max-w-none lg:justify-self-start">
+        {/* Node 2727:5951. Phone: the box sits 14px from the screen and scales so the books use that width. Desktop grows about 9% into the free space on the right. */}
+        <div className="relative mx-auto aspect-[743.047/655.498] w-full max-w-[388px] max-lg:left-1/2 max-lg:w-[calc(100vw-28px)] max-lg:max-w-none max-lg:origin-center max-lg:-translate-x-[calc(50%+4px)] max-lg:scale-[1.18] lg:left-auto lg:mx-0 lg:w-[108%] lg:max-w-none lg:translate-x-0 lg:scale-100 lg:justify-self-start">
           <img
             src="/images/black-friday/agenda-perspectiva.webp"
             alt="Agenda Ano Novo, Luta Nova 2027"
@@ -141,7 +141,8 @@ export function BlackFridayHero() {
               height={1024}
               className="absolute inset-0 size-full object-cover [filter:drop-shadow(var(--shadow-bf-soft))]"
             />
-            <div className="@container absolute top-[-9.98%] right-[21.44%] bottom-[76.58%] left-[44.51%]">
+            {/* About 11% smaller than the first fold, and a little higher, so the arrow still clears the ring and HOJE. The phone box is smaller still because the stage itself scales up. */}
+            <div className="@container absolute max-lg:top-[-7.87%] max-lg:right-[25.63%] max-lg:bottom-[82.69%] max-lg:left-[48.7%] lg:top-[-10.65%] lg:right-[23.31%] lg:bottom-[80.92%] lg:left-[46.39%]">
               <img
                 src="/images/black-friday/selo-brinde.webp"
                 alt=""

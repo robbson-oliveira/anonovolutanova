@@ -67,7 +67,16 @@ function withPlannerChoice(offer: ProductOffer): EditionOffer[] {
       inStock: true,
       productId: null,
       image: null,
-      gallery: [],
+      // Same sheet the planner section already shows. WooCommerce photos replace this when the catalog answers.
+      gallery: [
+        {
+          src: "/img/planner-diario.webp",
+          thumbnail: "/img/planner-diario.webp",
+          srcset: "",
+          sizes: "",
+          alt: "Folha do Planner Diário",
+        },
+      ],
     },
   ];
 }
@@ -177,7 +186,7 @@ export function PurchasePanel({
           ref={stageRef}
           className="relative flex h-(--stage-h) w-full items-center justify-center [--stage-h:260px] sm:[--stage-h:480px]"
         >
-          {offer.editions.map((e) => {
+          {editions.map((e) => {
             const { coverBox: box, coverSize: size } = e;
             // --s scales one cover-file pixel to CSS pixels: the book fills the
             // stage height (or width for a wide cover like the notepad).

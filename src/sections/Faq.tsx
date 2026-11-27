@@ -1,6 +1,11 @@
 import { Accordion, Heading, Reveal, Text, pageFrameClass } from "@ds/index";
 import { FAQ } from "@content/faq";
 
+type FaqProps = {
+  /** Questions shown before the public list. Only `/home-2` passes these. */
+  leading?: readonly { question: string; answer: string }[];
+};
+
 /**
  * FAQ — Figma "Agenda Campanha 2026-2027", node 949:163 (1440x953).
  *
@@ -15,7 +20,7 @@ import { FAQ } from "@content/faq";
  * <Reveal>s start 56px off place, and that offset widened the page. `clip`
  * (not `hidden`) so no scroll container is created.
  */
-export function Faq() {
+export function Faq({ leading }: FaqProps = {}) {
   return (
     <section
       id="faq"
@@ -36,7 +41,18 @@ export function Faq() {
           </Reveal>
 
           <Reveal variant="right" delay={90} className="min-w-0">
-            <Accordion items={FAQ} variant="cards" numbered defaultOpen={0} />
+            <Accordion
+              items={[
+                ...(leading ?? []).map((item) => ({
+                  question: item.question,
+                  answer: <p>{item.answer}</p>,
+                })),
+                ...FAQ,
+              ]}
+              variant="cards"
+              numbered
+              defaultOpen={0}
+            />
           </Reveal>
         </div>
       </div>

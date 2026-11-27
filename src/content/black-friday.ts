@@ -47,4 +47,25 @@ export const BLACK_FRIDAY = {
   plannerLead: "Black Friday de hoje.",
   planner:
     "Comprando a Agenda, você já ganha 1 Planner Diário grátis por agenda, enviado automaticamente. Adicione este avulso só se quiser unidades extras.",
+  /**
+   * Shown first on `/home-2` only. The public FAQ stays `src/content/faq.tsx`.
+   * The accordion adds the number; these titles do not.
+   */
+  faq: [
+    {
+      question: "Se eu comprar mais de uma Agenda 2027, ganho um Planner Diário para cada uma?",
+      answer:
+        "Sim! O brinde é proporcional à quantidade de agendas do pedido: comprou 1 Agenda 2027, ganha 1 Planner Diário; comprou 2 agendas, leva 2 planners; comprou 4 agendas, leva 4 planners e ainda garante frete grátis.",
+    },
+    {
+      question: "Preciso adicionar o Planner Diário no carrinho para ganhar o brinde?",
+      answer:
+        "Não precisa. Em todo pedido com Agenda 2027 feito hoje, 27/11, o Planner Diário grátis já vai incluído automaticamente no seu pacote. Só adicione o Planner avulso ao carrinho se quiser levar unidades extras. A oferta também vale junto com o frete grátis a partir de 4 agendas e com cupons de desconto.",
+    },
+    {
+      question: "Tenho um cupom de 10% de desconto de uma afiliada. Posso usar na Black Friday?",
+      answer:
+        "Sim! Você pode aplicar o seu cupom normalmente no carrinho. Ele funciona junto com o brinde do Planner Diário (1 por agenda comprada) e também com o frete grátis a partir de 4 agendas.",
+    },
+  ],
 } as const;

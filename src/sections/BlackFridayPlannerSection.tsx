@@ -22,7 +22,7 @@ const copy = BLACK_FRIDAY.plannerSection;
 export function BlackFridayPlannerSection() {
   return (
     <section id="planner-bf" className="bg-surface px-4 py-8 md:px-6 md:py-12">
-      <div className="relative mx-auto flex w-full max-w-[1252px] flex-col gap-8 rounded-[20px] border-[1.2px] border-gold-line bg-surface px-5 py-7 lg:block lg:rounded-[24px] lg:px-12 lg:py-10">
+      <div className="relative mx-auto flex w-full max-w-[1252px] flex-col gap-6 rounded-[20px] border-[1.2px] border-gold-line bg-surface px-5 py-7 lg:block lg:rounded-[24px] lg:px-12 lg:py-10">
         <div className="flex w-full flex-col items-start gap-4 lg:w-[540px] lg:shrink-0 lg:gap-4">
           <div className="flex flex-col items-start gap-2.5">
             <p className="inline-flex w-fit items-center gap-2 rounded-pill bg-gold-start px-3.5 py-1.5">
@@ -78,7 +78,8 @@ export function BlackFridayPlannerSection() {
 
         {/* On desktop the sheet starts 111px under the card edge (Figma 2727:817).
             The arrow sits in the beige above that edge; its tip only meets the border. */}
-        <div className="relative mx-auto mt-8 w-full max-w-[340px] pt-12 lg:contents">
+        {/* 24px under the button on the phone (the card gap). pt-12 only reserves the seal above the sheet. Desktop ignores this box (`contents`). */}
+        <div className="relative mx-auto w-full max-w-[340px] pt-12 lg:contents">
           <img
             src="/black-friday/planner-secao-inclined.png"
             alt="Folha inclinada do Planner Diário"

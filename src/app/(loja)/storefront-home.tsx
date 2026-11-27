@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import { withHome2Galleries } from "@/lib/commerce/campaign-galleries";
+import { BLACK_FRIDAY } from "@content/black-friday";
 import { getProductOffer } from "@/lib/commerce/offer";
 import { publicEnv } from "@/lib/env";
 import { About } from "@sections/About";
@@ -60,7 +62,11 @@ export async function StorefrontHome({
   planner,
   plannerChoice = false,
 }: StorefrontHomeProps) {
-  const offer = await getProductOffer();
+  // `/` keeps the offer exactly as the store built it. `/home-2` only fills
+  // an empty gallery, so the strip matches the public home when the preview
+  // has no product ids.
+  const loaded = await getProductOffer();
+  const offer = plannerChoice ? await withHome2Galleries(loaded) : loaded;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -122,7 +128,7 @@ export async function StorefrontHome({
             <Persona />
             <Testimonials />
             <Product offer={offer} forceBlackFriday={forceBlackFriday} plannerChoice={plannerChoice} />
-            <Faq />
+            <Faq leading={plannerChoice ? BLACK_FRIDAY.faq : undefined} />
             <Closing />
           </main>
           <SiteFooter />

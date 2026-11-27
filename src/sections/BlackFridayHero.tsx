@@ -60,7 +60,7 @@ export function BlackFridayHero() {
             </p>
           </div>
 
-          <p className="flex w-full max-w-[326px] items-center justify-center gap-[18px] rounded-[11px] border-[1.2px] border-gold-line bg-surface-plain/38 py-2.5 pr-5 pl-4 lg:max-w-[430px] lg:justify-start lg:gap-2 lg:rounded-pill lg:border-pill-border lg:bg-surface-card lg:px-4 lg:py-2">
+          <p className="flex w-full max-w-[326px] items-center justify-center gap-[18px] rounded-[11px] border-[1.2px] border-gold-line bg-surface-plain/38 py-2.5 pr-5 pl-4 lg:w-auto lg:max-w-full lg:justify-start lg:gap-2 lg:rounded-pill lg:border-pill-border lg:bg-surface-card lg:px-3.5 lg:py-2 lg:whitespace-nowrap">
             <img
               src="/images/black-friday/icone-presente.svg"
               alt=""
@@ -68,11 +68,11 @@ export function BlackFridayHero() {
               height={27}
               className="size-[27px] shrink-0 lg:size-[18px]"
             />
-            <span className="text-center lg:text-left">
-              <span className="block text-[14px] leading-[18px] font-medium text-on-badge lg:inline lg:text-[clamp(13px,1.06cqw,14px)] lg:leading-snug lg:text-text-strong">
+            <span className="text-center lg:text-left lg:whitespace-nowrap">
+              <span className="block text-[14px] leading-[18px] font-medium text-on-badge lg:inline lg:text-[13px] lg:leading-snug lg:text-text-strong min-[1440px]:text-[14.5px]">
                 {BLACK_FRIDAY.heroPillLead}
               </span>
-              <span className="block text-[15px] leading-[19px] font-bold text-gold-start lg:inline lg:text-[clamp(13px,1.06cqw,14px)] lg:leading-snug">
+              <span className="block text-[15px] leading-[19px] font-bold text-gold-start lg:inline lg:text-[13px] lg:leading-snug min-[1440px]:text-[14.5px]">
                 {BLACK_FRIDAY.heroPillStrong}
               </span>
             </span>

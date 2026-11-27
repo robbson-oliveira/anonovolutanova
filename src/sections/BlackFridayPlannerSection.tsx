@@ -22,7 +22,7 @@ const copy = BLACK_FRIDAY.plannerSection;
 export function BlackFridayPlannerSection() {
   return (
     <section id="planner-bf" className="bg-surface px-4 py-8 md:px-6 md:py-12">
-      <div className="relative mx-auto flex w-full max-w-[1252px] flex-col gap-8 rounded-[20px] border-[1.2px] border-gold-line bg-surface px-5 py-7 lg:flex-row lg:items-center lg:gap-8 lg:rounded-[24px] lg:px-12 lg:py-10">
+      <div className="relative mx-auto flex w-full max-w-[1252px] flex-col gap-8 rounded-[20px] border-[1.2px] border-gold-line bg-surface px-5 py-7 lg:block lg:rounded-[24px] lg:px-12 lg:py-10">
         <div className="flex w-full flex-col items-start gap-4 lg:w-[540px] lg:shrink-0 lg:gap-4">
           <div className="flex flex-col items-start gap-2.5">
             <p className="inline-flex w-fit items-center gap-2 rounded-pill bg-gold-start px-3.5 py-1.5">
@@ -76,22 +76,24 @@ export function BlackFridayPlannerSection() {
           </a>
         </div>
 
-        <div className="relative mx-auto min-h-[280px] w-full max-w-[620px] lg:min-h-[440px] lg:flex-1">
+        {/* On desktop the sheet starts 111px under the card edge (Figma 2727:817).
+            The arrow sits in the beige above that edge; its tip only meets the border. */}
+        <div className="relative mx-auto mt-8 w-full max-w-[340px] pt-12 lg:contents">
           <img
             src="/black-friday/planner-secao-inclined.png"
             alt="Folha inclinada do Planner Diário"
             width={1200}
             height={896}
-            className="ml-auto w-[92%] max-w-[625px] [filter:drop-shadow(var(--shadow-bf-soft))] lg:absolute lg:right-0 lg:bottom-4 lg:w-[min(625px,100%)]"
+            className="w-full [filter:drop-shadow(var(--shadow-bf-soft))] lg:absolute lg:top-[111px] lg:right-[21px] lg:w-[626px] lg:max-w-none"
           />
           <img
             src="/images/black-friday/seta-curva.webp"
             alt=""
             width={280}
             height={318}
-            className="pointer-events-none absolute top-[8%] right-[34%] w-16 rotate-[89.44deg] lg:top-[4%] lg:w-24"
+            className="pointer-events-none absolute top-1 right-[28%] size-[52px] rotate-[89.44deg] object-contain lg:top-[36px] lg:right-[228px] lg:size-[92px]"
           />
-          <div className="@container absolute top-0 right-0 w-[128px] lg:w-[174px]">
+          <div className="@container absolute top-0 right-0 w-[96px] lg:top-[28px] lg:right-[18px] lg:w-[174px]">
             <img
               src="/images/black-friday/selo-brinde.webp"
               alt=""

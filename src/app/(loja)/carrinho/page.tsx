@@ -5,7 +5,6 @@ import { PrecheckoutHeader } from "@/features/cart/PrecheckoutHeader";
 import { CheckoutFooter } from "@/features/checkout/CheckoutFooter";
 import { STORE_FLOW_THEME } from "@/features/shell/store-flow-theme";
 import { CampaignFlowBar, campaignFlowOffset } from "@/features/black-friday/CampaignFlowBar";
-import { BlackFridayBanner } from "@/features/black-friday/BlackFridayBanner";
 
 export const metadata: Metadata = {
   title: "Carrinho",
@@ -30,7 +29,6 @@ export default async function Carrinho() {
   return (
     <div className={`flex min-h-dvh flex-col bg-surface-plain ${STORE_FLOW_THEME} ${campaignFlowOffset}`}>
       <CampaignFlowBar />
-      <BlackFridayBanner variant="cart" />
       <PrecheckoutHeader />
       <main className="mx-auto w-full max-w-[1200px] flex-1 px-4 py-8 sm:px-6 lg:py-12">
         <CartPage offer={offer} />

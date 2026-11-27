@@ -120,7 +120,7 @@ export function BlackFridayHero() {
           </dl>
         </div>
 
-        {/* Node 2727:5951. Phone: the box sits 14px from the screen and scales so the books use that width. Desktop grows about 9% into the free space on the right. */}
+        {/* Node 2727:5951. Phone: the stage scale is shared, then only the two books shrink another 5.5% so the seal and the arrow stay the size they are. Desktop grows about 9% into the free space on the right. */}
         <div className="relative mx-auto aspect-[743.047/655.498] w-full max-w-[388px] max-lg:left-1/2 max-lg:w-[calc(100vw-28px)] max-lg:max-w-none max-lg:origin-center max-lg:-translate-x-[calc(50%+4px)] max-lg:scale-[1.18] lg:left-auto lg:mx-0 lg:w-[108%] lg:max-w-none lg:translate-x-0 lg:scale-100 lg:justify-self-start">
           <img
             src="/images/black-friday/agenda-perspectiva.webp"
@@ -128,7 +128,7 @@ export function BlackFridayHero() {
             width={928}
             height={1152}
             fetchPriority="high"
-            className="absolute top-0 left-[-1.81%] h-[84.23%] w-[59.86%] rotate-[0.41deg] object-cover [filter:drop-shadow(var(--shadow-bf-soft))]"
+            className="absolute top-0 left-[-1.81%] h-[84.23%] w-[59.86%] rotate-[0.41deg] object-cover [filter:drop-shadow(var(--shadow-bf-soft))] max-lg:origin-[80%_45%] max-lg:scale-[0.945]"
           />
 
           {/* Node 2727:5971. Square, so the 1024×1024 sheet keeps its margins.
@@ -139,7 +139,7 @@ export function BlackFridayHero() {
               alt="Folha do Planner Diário"
               width={1024}
               height={1024}
-              className="absolute inset-0 size-full object-cover [filter:drop-shadow(var(--shadow-bf-soft))]"
+              className="absolute inset-0 size-full object-cover [filter:drop-shadow(var(--shadow-bf-soft))] max-lg:origin-[38%_0%] max-lg:scale-[0.945]"
             />
             {/* About 11% smaller than the first fold, and a little higher, so the arrow still clears the ring and HOJE. The phone box is smaller still because the stage itself scales up. */}
             <div className="@container absolute max-lg:top-[-7.87%] max-lg:right-[25.63%] max-lg:bottom-[82.69%] max-lg:left-[48.7%] lg:top-[-10.65%] lg:right-[23.31%] lg:bottom-[80.92%] lg:left-[46.39%]">

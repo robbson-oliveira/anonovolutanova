@@ -3,43 +3,36 @@
 import { useSyncExternalStore } from "react";
 import { Marquee, cn } from "@ds/index";
 import { BLACK_FRIDAY } from "@content/black-friday";
-import { BLACK_FRIDAY_END_MS } from "@/lib/black-friday";
+import { blackFridayClock, type BlackFridayClock } from "@/lib/black-friday";
 
 const GIFT_MASK =
   "[mask-image:url(/images/black-friday/icone-presente.svg)] [-webkit-mask-image:url(/images/black-friday/icone-presente.svg)] [mask-size:contain] [-webkit-mask-size:contain] [mask-repeat:no-repeat] [-webkit-mask-repeat:no-repeat] [mask-position:center] [-webkit-mask-position:center]";
-
-function formatRemaining(now: number): string {
-  const diff = Math.max(0, BLACK_FRIDAY_END_MS + 999 - now);
-  const total = Math.floor(diff / 1000);
-  const hours = Math.floor(total / 3600);
-  const minutes = Math.floor((total % 3600) / 60);
-  const seconds = total % 60;
-  const pad = (value: number) => String(value).padStart(2, "0");
-  return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-}
 
 function subscribe(onChange: () => void): () => void {
   const id = window.setInterval(onChange, 1000);
   return () => window.clearInterval(id);
 }
 
+/** Stable server snapshot. A live clock in the static HTML would mismatch hydration. */
+const SERVER_CLOCK: BlackFridayClock = { phase: "end", time: "--:--:--" };
+
 /**
- * The server snapshot is a fixed placeholder. A clock rendered during the
- * static build would not match the browser a second later, and that is a
- * hydration warning. React hydrates the placeholder, then paints the live
- * remaining time.
+ * Before 08:00 BRT the label is "Começa em". At 08:00 it flips to "Termina em"
+ * on the next tick, without a reload, and holds 00:00:00 after midnight.
  */
 function Countdown() {
-  const time = useSyncExternalStore(
+  const clock = useSyncExternalStore(
     subscribe,
-    () => formatRemaining(Date.now()),
-    () => "--:--:--",
+    () => blackFridayClock(Date.now()),
+    () => SERVER_CLOCK,
   );
 
   return (
     <p className="flex shrink-0 items-center gap-1.5 text-[15px] leading-none whitespace-nowrap">
-      <span className="font-medium">{BLACK_FRIDAY.barEnds}</span>
-      <span className="min-w-[5.25rem] font-bold tabular-nums text-gold-end">{time}</span>
+      <span className="font-medium">
+        {clock.phase === "start" ? BLACK_FRIDAY.barStarts : BLACK_FRIDAY.barEnds}
+      </span>
+      <span className="min-w-[5.25rem] font-bold tabular-nums text-gold-end">{clock.time}</span>
     </p>
   );
 }

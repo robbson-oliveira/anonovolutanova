@@ -8,6 +8,7 @@ export const BLACK_FRIDAY = {
   /** Phone row: the frame only fits the campaign name beside the timer. */
   barTitleMobile: "Black Friday",
   barShipping: "Frete Grátis a partir de 4 agendas",
+  barStarts: "Começa em",
   barEnds: "Termina em",
   heroEyebrow: "Oferta por tempo limitado",
   heroTitle: "Black Friday",

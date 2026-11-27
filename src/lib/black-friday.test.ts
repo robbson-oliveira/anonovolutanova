@@ -2,7 +2,9 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   BLACK_FRIDAY_END_MS,
+  BLACK_FRIDAY_MIDNIGHT_MS,
   BLACK_FRIDAY_START_MS,
+  blackFridayClock,
   isBlackFridayWindow,
   showBlackFridayNotice,
 } from "./black-friday.ts";
@@ -33,6 +35,32 @@ describe("isBlackFridayWindow", () => {
   it("ignores the machine timezone by using the offset on the bounds", () => {
     // 07:59 BRT is still 27/11 in UTC, but the window has not opened.
     assert.equal(isBlackFridayWindow(new Date("2026-11-27T10:59:59.999Z")), false);
+  });
+});
+
+describe("blackFridayClock", () => {
+  it("counts down to 08:00 BRT before the window", () => {
+    const clock = blackFridayClock(BLACK_FRIDAY_START_MS - 90 * 60 * 1000);
+    assert.equal(clock.phase, "start");
+    assert.equal(clock.time, "01:30:00");
+  });
+
+  it("switches to the midnight countdown at 08:00 BRT", () => {
+    const clock = blackFridayClock(BLACK_FRIDAY_START_MS);
+    assert.equal(clock.phase, "end");
+    assert.equal(clock.time, "16:00:00");
+  });
+
+  it("reaches zero at midnight BRT and does not go negative", () => {
+    assert.equal(blackFridayClock(BLACK_FRIDAY_MIDNIGHT_MS - 1000).time, "00:00:01");
+    assert.deepEqual(blackFridayClock(BLACK_FRIDAY_MIDNIGHT_MS), {
+      phase: "end",
+      time: "00:00:00",
+    });
+    assert.deepEqual(blackFridayClock(BLACK_FRIDAY_MIDNIGHT_MS + 5 * 60 * 1000), {
+      phase: "end",
+      time: "00:00:00",
+    });
   });
 });
 

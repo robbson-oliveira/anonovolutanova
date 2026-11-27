@@ -36,6 +36,8 @@ type StorefrontHomeProps = {
   hero?: ReactNode;
   /** Replaces the planner block. Only `/home-2`. */
   planner?: ReactNode;
+  /** Only `/home-2`: the notepad is a third choice in the offer. */
+  plannerChoice?: boolean;
 };
 
 /**
@@ -56,6 +58,7 @@ export async function StorefrontHome({
   announcement,
   hero,
   planner,
+  plannerChoice = false,
 }: StorefrontHomeProps) {
   const offer = await getProductOffer();
 
@@ -118,7 +121,7 @@ export async function StorefrontHome({
             <Liturgical />
             <Persona />
             <Testimonials />
-            <Product offer={offer} forceBlackFriday={forceBlackFriday} />
+            <Product offer={offer} forceBlackFriday={forceBlackFriday} plannerChoice={plannerChoice} />
             <Faq />
             <Closing />
           </main>

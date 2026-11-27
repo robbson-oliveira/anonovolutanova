@@ -1,7 +1,7 @@
 import { Playfair_Display } from "next/font/google";
 import { cn } from "@ds/index";
 import { BLACK_FRIDAY } from "@content/black-friday";
-import { OFFER_ANCHOR, priceLabel } from "@content/product";
+import { OFFER_ANCHOR } from "@content/product";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -25,7 +25,7 @@ const GIFT_MASK =
 export function BlackFridayHero() {
   return (
     <section id="inicio" className="bg-surface">
-      <div className="@container mx-auto flex w-full max-w-[1376px] flex-col items-center gap-5 px-6 pt-[29px] pb-8 md:px-8 lg:grid lg:grid-cols-[minmax(0,560px)_minmax(320px,1fr)] lg:items-center lg:gap-10 lg:px-12 lg:pt-[29px] lg:pb-[120px]">
+      <div className="@container mx-auto flex w-full max-w-[1376px] flex-col items-center gap-5 px-6 pt-[29px] pb-10 md:px-8 lg:grid lg:grid-cols-[minmax(0,560px)_minmax(320px,1fr)] lg:items-center lg:gap-10 lg:px-12 lg:pt-[29px] lg:pb-[200px]">
         <div className="flex w-full flex-col items-center gap-5 text-center lg:items-start lg:gap-5 lg:text-left">
           {/* On desktop these three join the column gap. On the phone they are their own 14px stack. */}
           <div className="flex w-full flex-col items-center gap-3.5 lg:contents">
@@ -59,7 +59,7 @@ export function BlackFridayHero() {
             </p>
           </div>
 
-          <p className="flex w-full max-w-[326px] items-center justify-center gap-[18px] rounded-[11px] border-[1.2px] border-gold-line bg-surface-plain/38 py-2.5 pr-5 pl-4 lg:w-auto lg:max-w-full lg:justify-start lg:gap-2 lg:rounded-pill lg:border-pill-border lg:bg-surface-card lg:px-3.5 lg:py-2 lg:whitespace-nowrap">
+          <p className="flex w-full max-w-[326px] items-center justify-center gap-[18px] rounded-[10px] border-[1.2px] border-gold-line bg-surface-plain/38 pt-[8.5px] pr-5 pb-[11.5px] pl-4 lg:w-auto lg:max-w-full lg:justify-start lg:gap-2 lg:rounded-[10px] lg:border-pill-border lg:bg-surface-card lg:px-3.5 lg:pt-[6.5px] lg:pb-[9.5px] lg:whitespace-nowrap">
             <img
               src="/images/black-friday/icone-presente.svg"
               alt=""
@@ -120,8 +120,8 @@ export function BlackFridayHero() {
           </dl>
         </div>
 
-        {/* Node 2727:5951, 743.047 × 655.498. Percentages are of that box. */}
-        <div className="relative mx-auto aspect-[743.047/655.498] w-full max-w-[388px] lg:mx-0 lg:w-full lg:max-w-[740px]">
+        {/* Node 2727:5951. Desktop grows about 9% into the free space on the right; the seal and the arrow stay in the same place on the sheet. */}
+        <div className="relative mx-auto aspect-[743.047/655.498] w-full max-w-[388px] lg:mx-0 lg:w-[108%] lg:max-w-none lg:justify-self-start">
           <img
             src="/images/black-friday/agenda-perspectiva.webp"
             alt="Agenda Ano Novo, Luta Nova 2027"
@@ -178,47 +178,6 @@ export function BlackFridayHero() {
               />
             </div>
           </div>
-
-          {/* Figma 2727:5999, drawn at 210×134. Same box on every width so nothing stretches. */}
-          <a
-            href={OFFER_ANCHOR}
-            className="absolute top-[58%] left-1/2 flex h-[134px] w-[210px] -translate-x-1/2 flex-col items-center gap-[3.16px] rounded-[10.52px] border-[1.05px] border-gold-end bg-surface-card p-[10.52px] shadow-bf-offer lg:top-[64%] lg:left-[24%] lg:translate-x-0"
-          >
-            <span className="flex items-center">
-              <span className="relative h-[57.85px] w-[47.33px] shrink-0">
-                <span className="absolute bottom-0 left-[-9.47px] top-[-5.26px] w-[56.8px] overflow-hidden rounded-[12.62px]">
-                  <img
-                    src="/black-friday/card-agenda-mini.png"
-                    alt=""
-                    width={1036}
-                    height={1519}
-                    className="size-full object-cover"
-                  />
-                </span>
-              </span>
-              <span className="relative z-20 h-[37.87px] w-[98.88px] shrink-0">
-                <span className="absolute top-[-9.46px] left-[-2.1px] text-[16.83px] leading-[16.83px] font-bold tracking-[-0.673px] whitespace-nowrap text-text-card">
-                  {BLACK_FRIDAY.heroCardTitle}
-                </span>
-                <span className="absolute top-[6.32px] left-[29.19px] text-[10.65px] leading-[18.93px] font-bold tracking-[-0.757px] whitespace-nowrap text-text-card">
-                  {BLACK_FRIDAY.heroCardExtra}
-                </span>
-                <span className="absolute top-[24.19px] left-[30.5px] text-[15.15px] leading-[15.15px] font-bold tracking-[-0.606px] whitespace-nowrap text-text-muted">
-                  {priceLabel}
-                </span>
-              </span>
-            </span>
-            <img
-              src="/black-friday/card-planner-mini.png"
-              alt=""
-              width={1024}
-              height={1024}
-              className="pointer-events-none absolute top-[20.25px] left-[47.33px] z-10 size-[59.43px] object-contain"
-            />
-            <span className="rounded-[5.26px] bg-linear-90 from-gold-start to-gold-end px-[18.93px] py-[8.42px] text-[15.78px] leading-[18.93px] font-bold whitespace-nowrap text-on-action">
-              {BLACK_FRIDAY.heroCardCta}
-            </span>
-          </a>
         </div>
       </div>
 

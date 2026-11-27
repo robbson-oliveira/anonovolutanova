@@ -14,6 +14,39 @@ export const BLACK_FRIDAY_END_ISO = "2026-11-27T23:59:59-03:00";
 export const BLACK_FRIDAY_START_MS = Date.parse(BLACK_FRIDAY_START_ISO);
 /** The named end instant. The window also covers the rest of that second. */
 export const BLACK_FRIDAY_END_MS = Date.parse(BLACK_FRIDAY_END_ISO);
+/** Midnight that closes the day, 2026-11-28 00:00:00 BRT. The top-bar clock counts to this. */
+export const BLACK_FRIDAY_MIDNIGHT_ISO = "2026-11-28T00:00:00-03:00";
+export const BLACK_FRIDAY_MIDNIGHT_MS = Date.parse(BLACK_FRIDAY_MIDNIGHT_ISO);
+
+export type BlackFridayClock = {
+  /** `start` counts down to 08:00. `end` counts down to midnight, then holds. */
+  phase: "start" | "end";
+  time: string;
+};
+
+function padClock(ms: number): string {
+  const total = Math.floor(Math.max(0, ms) / 1000);
+  const hours = Math.floor(total / 3600);
+  const minutes = Math.floor((total % 3600) / 60);
+  const seconds = total % 60;
+  const pad = (value: number) => String(value).padStart(2, "0");
+  return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+}
+
+/**
+ * Top bar of `/home-2`. Before 08:00 BRT it counts down to the opening.
+ * From 08:00 until midnight it counts down to 2026-11-28 00:00 BRT.
+ * After midnight it stays at 00:00:00.
+ */
+export function blackFridayClock(now: number): BlackFridayClock {
+  if (now < BLACK_FRIDAY_START_MS) {
+    return { phase: "start", time: padClock(BLACK_FRIDAY_START_MS - now) };
+  }
+  if (now < BLACK_FRIDAY_MIDNIGHT_MS) {
+    return { phase: "end", time: padClock(BLACK_FRIDAY_MIDNIGHT_MS - now) };
+  }
+  return { phase: "end", time: "00:00:00" };
+}
 
 /** Query flag for reviewing the notices before the window opens. Client only. */
 export const BLACK_FRIDAY_PREVIEW_PARAM = "preview_bf";

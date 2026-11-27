@@ -14,8 +14,9 @@ import {
   Text,
   cn,
 } from "@ds/index";
-import { whatsappUrlWith, type EditionId } from "@content/product";
-import type { ProductImage, ProductOffer } from "@/lib/commerce/offer-types";
+import { EDITIONS, whatsappUrlWith, type EditionId } from "@content/product";
+import { PLANNER } from "@content/home";
+import type { EditionOffer, ProductImage, ProductOffer } from "@/lib/commerce/offer-types";
 import { formatBRL } from "@/lib/format";
 import { BlackFridayPlannerNote } from "@/features/black-friday/BlackFridayPlannerNote";
 import { useOptionalCart } from "@/features/cart/CartProvider";
@@ -37,13 +38,46 @@ type PurchasePanelProps = {
   forceBlackFriday?: boolean;
   /** Cart page. The note follows the window and `?preview_bf=1`. */
   scheduleBlackFriday?: boolean;
+  /**
+   * Only `/home-2`. The notepad is a third choice under the classic edition.
+   * The public home leaves this off, so its list stays as the offer built it.
+   */
+  plannerChoice?: boolean;
 };
+
+/** The notepad already sold by the offer, or the same static card when WooCommerce has no id yet. */
+function withPlannerChoice(offer: ProductOffer): EditionOffer[] {
+  if (offer.editions.some((e) => e.id === "bloco")) return offer.editions;
+  const base = EDITIONS.find((e) => e.id === "bloco");
+  if (!base) return offer.editions;
+  const count = offer.installments.count;
+  return [
+    ...offer.editions,
+    {
+      id: "bloco",
+      label: base.label,
+      cover: base.cover,
+      coverSize: base.coverSize,
+      coverBox: base.coverBox,
+      description: base.description,
+      agenda: false,
+      unit: base.unit,
+      price: PLANNER.price,
+      installmentAmount: Math.round((PLANNER.price / count) * 100) / 100,
+      inStock: true,
+      productId: null,
+      image: null,
+      gallery: [],
+    },
+  ];
+}
 
 export function PurchasePanel({
   offer,
   headingAs = "h2",
   forceBlackFriday = false,
   scheduleBlackFriday = false,
+  plannerChoice = false,
 }: PurchasePanelProps) {
   const firstAvailable =
     offer.editions.find((e) => e.inStock)?.id ?? offer.editions[0].id;
@@ -64,7 +98,8 @@ export function PurchasePanel({
   const cart = useOptionalCart();
   const router = useRouter();
 
-  const edition = offer.editions.find((e) => e.id === editionId)!;
+  const editions = plannerChoice ? withPlannerChoice(offer) : offer.editions;
+  const edition = editions.find((e) => e.id === editionId) ?? editions[0];
   const total = edition.price * qty;
   const { coverSize: cs, coverBox: cb } = edition;
   const coverThumb: ProductImage = {
@@ -87,7 +122,7 @@ export function PurchasePanel({
   const missingForFreeShipping = Math.max(0, offer.freeShippingMinQty - qty - (cart?.count ?? 0));
   // The selector is not in the cart yet, so only the cart alone can claim the benefit as already earned.
   const cartAlreadyQualifies = (cart?.count ?? 0) >= offer.freeShippingMinQty;
-  const soldOut = offer.editions.every((e) => !e.inStock);
+  const soldOut = editions.every((e) => !e.inStock);
 
   const changeQty = (next: number) =>
     setQty(Math.min(MAX_QTY, Math.max(1, Number.isFinite(next) ? next : 1)));
@@ -236,8 +271,9 @@ export function PurchasePanel({
             Escolha a edição e a quantidade:
           </legend>
           <div className="grid gap-3">
-            {offer.editions.map((e) => {
+            {editions.map((e) => {
               const active = e.id === editionId;
+              const plannerRow = plannerChoice && e.id === "bloco";
               return (
                 <label
                   key={e.id}
@@ -274,16 +310,23 @@ export function PurchasePanel({
                   />
                   <span className="flex min-w-0 flex-1 flex-col justify-center gap-0.5">
                     <span className="text-[15px] font-bold leading-5 text-text-strong md:text-sm">
-                      {e.label}
+                      {plannerRow ? "Bloco Planner Diário" : e.label}
                     </span>
                     {e.id === "classica" ? (
                       <ClassicSoldOutBadge />
                     ) : (
                       <span className="text-balance text-[13px] leading-snug text-text-muted md:text-xs">
-                        {e.inStock ? e.description : "Esgotada"}
+                        {e.inStock
+                          ? plannerRow
+                            ? "20 folhas destacáveis · Avulso ou extra"
+                            : e.description
+                          : "Esgotada"}
                       </span>
                     )}
                   </span>
+                  {plannerRow ? (
+                    <span className="shrink-0 text-[15px] font-bold text-text-strong">{formatBRL(e.price)}</span>
+                  ) : null}
                   {/* Even sizes and grid centering: a half-pixel translate left the dot off the ring. */}
                   <span
                     aria-hidden
@@ -300,7 +343,7 @@ export function PurchasePanel({
           </div>
         </fieldset>
 
-        {offer.editions.some((e) => e.id === "bloco") ? (
+        {(plannerChoice ? edition.agenda && editions.some((e) => e.id === "bloco") : offer.editions.some((e) => e.id === "bloco")) ? (
           <BlackFridayPlannerNote
             force={forceBlackFriday}
             schedule={scheduleBlackFriday}

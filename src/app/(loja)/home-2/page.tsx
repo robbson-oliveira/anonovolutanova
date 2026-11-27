@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { BlackFridayTopBar } from "@/features/black-friday/BlackFridayTopBar";
 import { ProductGallery } from "@sections/ProductGallery";
 import { BlackFridayHero } from "@sections/BlackFridayHero";
+import { BlackFridayPlannerSection } from "@sections/BlackFridayPlannerSection";
 import { StorefrontHome } from "../storefront-home";
 
 export const metadata: Metadata = {
@@ -23,6 +24,7 @@ export default function HomeBlackFridayPreview() {
       forceBlackFriday
       announcement={<BlackFridayTopBar />}
       hero={<BlackFridayHero />}
+      planner={<BlackFridayPlannerSection />}
     />
   );
 }

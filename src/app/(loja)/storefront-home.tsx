@@ -35,6 +35,8 @@ type StorefrontHomeProps = {
   announcement?: ReactNode;
   /** Replaces the first fold. Only `/home-2`. */
   hero?: ReactNode;
+  /** Replaces the planner block. Only `/home-2`. */
+  planner?: ReactNode;
 };
 
 /**
@@ -54,6 +56,7 @@ export async function StorefrontHome({
   forceBlackFriday = false,
   announcement,
   hero,
+  planner,
 }: StorefrontHomeProps) {
   const offer = await getProductOffer();
 
@@ -119,7 +122,7 @@ export async function StorefrontHome({
             <About />
             <Explore />
             {gallery}
-            <Planner forceBlackFriday={forceBlackFriday} />
+            {planner ?? <Planner forceBlackFriday={forceBlackFriday} />}
             <Liturgical />
             <Persona />
             <Testimonials />

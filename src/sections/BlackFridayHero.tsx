@@ -1,5 +1,5 @@
 import { Playfair_Display } from "next/font/google";
-import { Button, cn } from "@ds/index";
+import { cn } from "@ds/index";
 import { BLACK_FRIDAY } from "@content/black-friday";
 import { OFFER_ANCHOR, priceLabel } from "@content/product";
 
@@ -15,8 +15,9 @@ const GIFT_MASK =
 const DUCKS = Array.from({ length: 36 }, (_, i) => i);
 
 /**
- * First fold of `/home-2` (Figma 2727:4964). The public home keeps `Hero`.
- * "Black Friday" corrects the frame, which says "Black Fiday".
+ * First fold of `/home-2`. Desktop follows Figma 2727:4964; the phone
+ * column follows 2758:6347. The public home keeps `Hero`. "Black Friday"
+ * corrects the desktop frame, which says "Black Fiday".
  *
  * The stage is the 743×655 box of node 2727:5951. Percentages below are
  * of that box, so the cover title stays clear of the planner sheet.
@@ -25,91 +26,94 @@ export function BlackFridayHero() {
   return (
     <section id="inicio" className="bg-surface">
       {/* 1316/1920 is the Figma content width. The same ratio keeps 1920, 1440 and 1280 in proportion. */}
-      <div className="@container mx-auto grid w-full items-center gap-8 px-6 pt-[clamp(1.25rem,2.4cqw,2.25rem)] pb-[clamp(1.75rem,4.2cqw,3.25rem)] max-lg:max-w-[420px] lg:w-[min(1316px,68.54vw)] lg:grid-cols-[minmax(0,1fr)_56.5%] lg:gap-[clamp(1.25rem,2.6cqw,2.5rem)] lg:px-0">
-        <div className="flex flex-col items-start gap-[clamp(0.7rem,1.35cqw,1rem)] max-lg:mx-auto max-lg:items-center max-lg:text-center">
-          <p className="flex items-center gap-2 text-[12px] font-bold tracking-[-0.04em]">
-            <img src="/images/black-friday/brilho.svg" alt="" width={14} height={14} className="size-3.5" />
-            <span className="bg-linear-[211deg] from-text-on-inverse-badge to-text-strong bg-clip-text text-transparent">
-              {BLACK_FRIDAY.heroEyebrow}
-            </span>
-          </p>
-
-          <h1 className="text-text-strong">
-            <span className="inline-block max-lg:mx-auto">
-              <span className="block text-[clamp(36px,4.26cqw,56px)] leading-[1.02] font-bold tracking-[-0.02em]">
-                {BLACK_FRIDAY.heroTitle}
-              </span>
-              <img
-                src="/images/black-friday/pincelada.svg"
-                alt=""
-                width={349}
-                height={13}
-                className="pointer-events-none -mt-0.5 block h-[10px] w-[95%] max-lg:mx-auto"
-              />
-            </span>
-            <span className="mt-1 block text-[clamp(26px,3.04cqw,40px)] leading-[1.08] font-bold">
-              {BLACK_FRIDAY.heroTitleLine}
-            </span>
-          </h1>
-
-          <p className="text-[clamp(16px,1.52cqw,20px)] font-bold text-text">
-            {BLACK_FRIDAY.heroSubtitle}
-          </p>
-
-          <div className="flex max-w-[430px] flex-col items-start gap-3 max-lg:items-center">
-            <p className="flex items-center gap-2 rounded-pill border-[1.2px] border-pill-border bg-surface-card px-4 py-2 text-left text-[clamp(13px,1.06cqw,14px)] leading-snug">
-              <img
-                src="/images/black-friday/icone-presente.svg"
-                alt=""
-                width={18}
-                height={18}
-                className="size-[18px] shrink-0"
-              />
-              <span>
-                <span className="font-medium text-text-strong">{BLACK_FRIDAY.heroPillLead}</span>
-                <span className="font-bold text-gold-start">{BLACK_FRIDAY.heroPillStrong}</span>
+      <div className="@container mx-auto flex w-full flex-col items-center gap-5 px-6 pt-[29px] pb-8 lg:grid lg:w-[min(1316px,68.54vw)] lg:grid-cols-[minmax(0,1fr)_56.5%] lg:items-center lg:gap-[clamp(1.25rem,2.6cqw,2.5rem)] lg:px-0 lg:pt-[clamp(1.25rem,2.4cqw,2.25rem)] lg:pb-[clamp(1.75rem,4.2cqw,3.25rem)]">
+        <div className="flex w-full flex-col items-center gap-5 text-center lg:items-start lg:gap-[clamp(0.7rem,1.35cqw,1rem)] lg:text-left">
+          {/* On desktop these three join the column gap. On the phone they are their own 14px stack. */}
+          <div className="flex w-full flex-col items-center gap-3.5 lg:contents">
+            <p className="flex items-center justify-center gap-2.5 text-[16px] leading-4 font-bold tracking-[-0.64px] lg:justify-start lg:gap-2 lg:text-[12px] lg:leading-none lg:tracking-[-0.04em]">
+              <img src="/images/black-friday/brilho.svg" alt="" width={16} height={16} className="size-4 lg:size-3.5" />
+              <span className="bg-linear-[211deg] from-text-on-inverse-badge to-text-strong bg-clip-text text-transparent">
+                {BLACK_FRIDAY.heroEyebrow}
               </span>
             </p>
-            <p className="max-w-[430px] text-[clamp(14px,1.14cqw,15px)] leading-[1.55] text-text-lead">
-              {BLACK_FRIDAY.heroParagraph}
-              <span className="font-bold">{BLACK_FRIDAY.heroParagraphStrong}</span>
+
+            <h1 className="flex flex-col items-center gap-2.5 text-text-strong lg:items-start lg:gap-0">
+              <span className="relative inline-block">
+                <span className="block text-[50px] leading-[52px] font-bold tracking-[-2px] lg:text-[clamp(36px,4.26cqw,56px)] lg:leading-[1.02] lg:tracking-[-0.02em]">
+                  {BLACK_FRIDAY.heroTitle}
+                </span>
+                <img
+                  src="/images/black-friday/pincelada.svg"
+                  alt=""
+                  width={349}
+                  height={13}
+                  className="pointer-events-none absolute top-[46.8px] left-1/2 h-2 w-[238.5px] max-w-none -translate-x-1/2 lg:static lg:mt-[-2px] lg:block lg:h-[10px] lg:w-[95%] lg:max-w-full lg:translate-x-0"
+                />
+              </span>
+              <span className="block text-[clamp(30px,9.2vw,36px)] leading-10 font-bold tracking-[-1.44px] whitespace-nowrap lg:mt-1 lg:text-[clamp(26px,3.04cqw,40px)] lg:leading-[1.08] lg:tracking-normal">
+                {BLACK_FRIDAY.heroTitleLine}
+              </span>
+            </h1>
+
+            <p className="text-[18px] leading-[22px] font-bold tracking-[-0.54px] whitespace-nowrap text-text lg:text-[clamp(16px,1.52cqw,20px)] lg:leading-normal lg:tracking-normal lg:whitespace-normal">
+              {BLACK_FRIDAY.heroSubtitle}
             </p>
           </div>
 
-          <Button
+          <p className="flex w-full max-w-[326px] items-center justify-center gap-[18px] rounded-[11px] border-[1.2px] border-gold-line bg-surface-plain/38 py-2.5 pr-5 pl-4 lg:max-w-[430px] lg:justify-start lg:gap-2 lg:rounded-pill lg:border-pill-border lg:bg-surface-card lg:px-4 lg:py-2">
+            <img
+              src="/images/black-friday/icone-presente.svg"
+              alt=""
+              width={27}
+              height={27}
+              className="size-[27px] shrink-0 lg:size-[18px]"
+            />
+            <span className="text-center lg:text-left">
+              <span className="block text-[14px] leading-[18px] font-medium text-on-badge lg:inline lg:text-[clamp(13px,1.06cqw,14px)] lg:leading-snug lg:text-text-strong">
+                {BLACK_FRIDAY.heroPillLead}
+              </span>
+              <span className="block text-[15px] leading-[19px] font-bold text-gold-start lg:inline lg:text-[clamp(13px,1.06cqw,14px)] lg:leading-snug">
+                {BLACK_FRIDAY.heroPillStrong}
+              </span>
+            </span>
+          </p>
+          <p className="max-w-[430px] text-[15px] leading-[22px] text-text-lead lg:text-[clamp(14px,1.14cqw,15px)] lg:leading-[1.55]">
+            {BLACK_FRIDAY.heroParagraph}
+            <span className="font-bold">{BLACK_FRIDAY.heroParagraphStrong}</span>
+          </p>
+
+          <a
             href={OFFER_ANCHOR}
-            size="lg"
-            shape="block"
-            className="h-[clamp(44px,3.65cqw,48px)]! w-full max-w-[min(330px,32cqw)] rounded-[10px]! border border-gold-end bg-linear-90 from-gold-start to-gold-end text-[clamp(13px,1.06cqw,14px)]! font-semibold! text-on-action"
+            className="flex h-[54px] w-full items-center justify-center rounded-[10px] border border-gold-end bg-linear-90 from-gold-start to-gold-end text-[17px] font-bold tracking-[-0.17px] whitespace-nowrap text-on-action lg:h-[clamp(44px,3.65cqw,48px)] lg:w-auto lg:max-w-[min(330px,32cqw)] lg:px-8 lg:text-[14px] lg:font-semibold lg:tracking-normal"
           >
             {BLACK_FRIDAY.heroCta}
-          </Button>
+          </a>
 
-          <dl className="flex w-full max-w-[460px] items-stretch justify-between gap-6 pt-1">
-            <div className="min-w-0">
-              <dt className="text-[clamp(22px,1.98cqw,26px)] leading-none font-semibold text-text-strong">365</dt>
-              <dd className="mt-1 text-[clamp(12px,1.06cqw,14px)] leading-[1.15] text-text">
+          <dl className="flex w-full items-center pt-1.5 lg:max-w-[460px] lg:items-stretch lg:justify-between lg:gap-6 lg:pt-1">
+            <div className="flex min-w-0 flex-1 flex-col items-center gap-1 text-center lg:flex-none lg:items-start lg:gap-0 lg:text-left">
+              <dt className="text-[24px] leading-[26px] font-semibold text-text-strong lg:text-[clamp(22px,1.98cqw,26px)] lg:leading-none">365</dt>
+              <dd className="text-[13px] leading-4 text-text lg:mt-1 lg:text-[clamp(12px,1.06cqw,14px)] lg:leading-[1.15]">
                 Dias de
                 <br />
                 Inspiração
               </dd>
             </div>
-            <div aria-hidden className="my-1 w-px self-stretch bg-gold-line/40" />
-            <div className="min-w-0">
-              <dt className="text-[clamp(22px,1.98cqw,26px)] leading-none font-semibold text-text-strong">12</dt>
-              <dd className="mt-1 text-[clamp(12px,1.06cqw,14px)] leading-[1.15] text-text">
+            <div aria-hidden className="h-11 w-px shrink-0 bg-gold-line lg:my-1 lg:h-auto lg:self-stretch lg:bg-gold-line/40" />
+            <div className="flex min-w-0 flex-1 flex-col items-center gap-1 text-center lg:flex-none lg:items-start lg:gap-0 lg:text-left">
+              <dt className="text-[24px] leading-[26px] font-semibold text-text-strong lg:text-[clamp(22px,1.98cqw,26px)] lg:leading-none">12</dt>
+              <dd className="text-[13px] leading-4 text-text lg:mt-1 lg:text-[clamp(12px,1.06cqw,14px)] lg:leading-[1.15]">
                 Temas
                 <br />
                 Mensais
               </dd>
             </div>
-            <div aria-hidden className="my-1 w-px self-stretch bg-gold-line/40" />
-            <div className="min-w-0">
-              <dt className="flex h-6 items-center xl:h-[26px]">
+            <div aria-hidden className="h-11 w-px shrink-0 bg-gold-line lg:my-1 lg:h-auto lg:self-stretch lg:bg-gold-line/40" />
+            <div className="flex min-w-0 flex-1 flex-col items-center gap-1 text-center lg:flex-none lg:items-start lg:gap-0 lg:text-left">
+              <dt className="flex h-[26px] items-center">
                 <span aria-hidden className={cn("size-6 bg-gold-start", GIFT_MASK)} />
                 <span className="sr-only">Brinde</span>
               </dt>
-              <dd className="mt-1 text-[clamp(12px,1.06cqw,14px)] leading-[1.15] text-text">
+              <dd className="text-[13px] leading-4 text-text lg:mt-1 lg:text-[clamp(12px,1.06cqw,14px)] lg:leading-[1.15]">
                 Brinde exclusivo
                 <br />
                 na Black Friday
@@ -119,7 +123,7 @@ export function BlackFridayHero() {
         </div>
 
         {/* Node 2727:5951, 743.047 × 655.498. Percentages are of that box. */}
-        <div className="relative mx-auto aspect-[743.047/655.498] w-full max-w-[360px] lg:mx-0 lg:max-w-none">
+        <div className="relative mx-auto aspect-[743.047/655.498] w-full max-w-[388px] lg:mx-0 lg:max-w-none">
           <img
             src="/images/black-friday/agenda-perspectiva.webp"
             alt="Agenda Ano Novo, Luta Nova 2027"
@@ -178,38 +182,37 @@ export function BlackFridayHero() {
 
           <a
             href={OFFER_ANCHOR}
-            className="absolute top-[70.08%] left-[26.53%] flex w-[27.04%] flex-col items-center justify-center rounded-[10px] border border-card-gold-border bg-surface-card p-2 shadow-bf-card"
+            className="absolute top-[64%] left-1/2 flex w-[175px] -translate-x-1/2 flex-col items-center justify-center rounded-[10px] border border-gold-end bg-surface-card p-2 shadow-bf-card lg:top-[70.08%] lg:left-[26.53%] lg:w-[max(175px,27.04%)] lg:translate-x-0 lg:border-card-gold-border"
           >
-            <span className="flex w-full items-start justify-center gap-0.5">
-              <span className="relative h-[52px] w-11 shrink-0">
+            <span className="flex w-full items-center justify-center gap-2">
+              {/* The sheet overlaps the cover's lower-right and stops before the lines. */}
+              <span className="relative h-12 w-[50px] shrink-0">
                 <img
                   src="/images/black-friday/agenda-capa.webp"
                   alt=""
                   width={220}
                   height={321}
-                  className="absolute bottom-0 left-0 h-[52px] w-auto"
+                  className="absolute bottom-0 left-0 h-12 w-auto"
                 />
-                {/* Almost twice the previous sheet, barely tilted, under "Agenda"
-                    and against the right-aligned lines (Figma 2727:5999). */}
                 <img
                   src="/images/black-friday/planner-hoje.webp"
                   alt=""
                   width={1024}
                   height={1024}
-                  className="absolute -right-8 top-3 z-10 h-14 w-auto rotate-[5deg]"
+                  className="absolute bottom-0 left-[14px] z-10 size-[34px] rotate-[5deg] object-contain"
                 />
               </span>
-              <span className="inline-grid justify-items-end">
-                <span className="text-[13px] leading-none font-bold text-text-card">{BLACK_FRIDAY.heroCardTitle}</span>
-                <span className="mt-0.5 text-[10px] leading-tight font-bold text-text-card">
+              <span className="flex flex-col items-end">
+                <span className="whitespace-nowrap text-[13px] leading-none font-bold text-text-card">{BLACK_FRIDAY.heroCardTitle}</span>
+                <span className="mt-0.5 whitespace-nowrap text-[10px] leading-tight font-bold text-text-card">
                   {BLACK_FRIDAY.heroCardExtra}
                 </span>
-                <span className="text-[12px] leading-tight font-bold text-text-price">
+                <span className="whitespace-nowrap text-[12px] leading-tight font-bold text-text-price">
                   {priceLabel}
                 </span>
               </span>
             </span>
-            <span className="mt-1.5 flex h-[26px] w-[88%] items-center justify-center rounded-[6px] bg-linear-90 from-gold-warm-start to-gold-warm-end text-[11px] font-bold text-on-action">
+            <span className="mt-1.5 flex h-[26px] w-[88%] items-center justify-center whitespace-nowrap rounded-[6px] bg-linear-90 from-gold-warm-start to-gold-warm-end text-[11px] font-bold text-on-action">
               {BLACK_FRIDAY.heroCardCta}
             </span>
           </a>

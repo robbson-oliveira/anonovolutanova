@@ -5,6 +5,8 @@
 export const BLACK_FRIDAY = {
   /** Fixed label on the left of the Black Friday top bar. */
   barTitle: "Black Friday Ano Novo, Luta Nova",
+  /** Phone row: the frame only fits the campaign name beside the timer. */
+  barTitleMobile: "Black Friday",
   barShipping: "Frete Grátis a partir de 4 agendas",
   barEnds: "Termina em",
   heroEyebrow: "Oferta por tempo limitado",
@@ -28,6 +30,20 @@ export const BLACK_FRIDAY = {
     "Na compra de 1 Agenda 2027, você ganha 1 Planner Diário grátis, enviado automaticamente no pacote (2 agendas = 2 planners). A partir de 4 agendas, o frete é grátis.",
   cart:
     "Cada Agenda 2027 já acompanha 1 Planner Diário grátis, enviado automaticamente no pacote. Não é preciso adicionar o planner ao carrinho. Com 4 agendas ou mais, o frete é grátis.",
+  plannerSection: {
+    pill: "Brinde Black Friday",
+    title: ["Planner Diário.", "Um dia de cada vez,", "com o que importa."],
+    subtitle: "São 20 folhas A4 para organizar a tarefa mais importante.",
+    giftLine: "Na compra da Agenda 2027, você ganha",
+    giftStrong: "1 Planner Diário por agenda.",
+    giftNote: [
+      "Comprou 2 agendas? Leva 2 planners, assim por diante.",
+      "Os brindes são enviados automaticamente no pedido.",
+    ],
+    extraLead: "Quer levar mais planners? Você também pode adicionar unidades extras no carrinho por ",
+    extraTail: " cada.",
+    cta: "Quero minha Agenda com Brinde",
+  },
   plannerLead: "Black Friday de hoje.",
   planner:
     "Comprando a Agenda, você já ganha 1 Planner Diário grátis por agenda, enviado automaticamente. Adicione este avulso só se quiser unidades extras.",

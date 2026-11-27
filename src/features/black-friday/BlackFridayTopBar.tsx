@@ -79,15 +79,15 @@ export function BlackFridayTopBar() {
         <Countdown />
       </div>
 
-      <div className="mx-auto flex w-full flex-col gap-1 px-4 py-1 md:hidden">
-        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
-          <p className="flex min-w-0 items-center gap-1.5 text-[11px] leading-tight font-semibold">
-            <span aria-hidden className={cn("size-4 shrink-0 bg-gold-end", GIFT_MASK)} />
-            <span className="min-w-0">{BLACK_FRIDAY.barTitle}</span>
+      <div className="flex w-full flex-col md:hidden">
+        <div className="flex h-8 items-center justify-center gap-2.5 px-3">
+          <p className="text-[13px] leading-none font-extrabold tracking-[0.26px] whitespace-nowrap">
+            {BLACK_FRIDAY.barTitleMobile}
           </p>
+          <span aria-hidden className="h-3 w-px shrink-0 bg-gold-end opacity-70" />
           <Countdown />
         </div>
-        <Marquee items={ticker} gap={28} duration={16} className={cn("w-full", TICKER_MASK)} />
+        <Marquee items={ticker} gap={28} duration={16} className={cn("flex h-[26px] w-full items-center", TICKER_MASK)} />
       </div>
     </div>
   );

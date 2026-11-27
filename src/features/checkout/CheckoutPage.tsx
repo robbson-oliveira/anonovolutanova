@@ -919,7 +919,7 @@ export function CheckoutPage() {
         </div>
       </div>
 
-      <aside className="hidden lg:block lg:sticky lg:top-8">
+      <aside className="hidden lg:block lg:sticky lg:top-[var(--anln-flow-sticky,2rem)]">
         <div className="rounded-card border border-border bg-surface-plain p-6">
           <OrderSummary pixDiscount={pixDiscount} shippingKnown={shippingKnown} />
         </div>

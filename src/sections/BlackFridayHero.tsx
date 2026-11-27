@@ -82,7 +82,7 @@ export function BlackFridayHero() {
 
           <a
             href={OFFER_ANCHOR}
-            className="flex h-[49px] w-full items-center justify-center rounded-[10px] border border-gold-end bg-linear-90 from-gold-start to-gold-end text-[17px] font-bold tracking-[0.01em] whitespace-nowrap text-on-action lg:h-[63px] lg:max-w-[425px] lg:text-[16px]"
+            className="flex h-[54px] w-full items-center justify-center rounded-[10px] border border-gold-end bg-linear-90 from-gold-start to-gold-end text-[17px] font-bold tracking-[0.01em] whitespace-nowrap text-on-action lg:h-[63px] lg:max-w-[425px] lg:text-[16px]"
           >
             {BLACK_FRIDAY.heroCta}
           </a>

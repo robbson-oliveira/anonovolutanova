@@ -87,7 +87,7 @@ export async function StorefrontHome({
           the sticky group below. The clip stays on the content under the
           header: a clip (or hidden) ancestor makes iOS Safari repaint the
           sticky bar on every frame while the address bar moves. */}
-      <div className={cn("relative isolate bg-surface", announcement ? "lg:pt-11" : "lg:pt-9")}>
+      <div className={cn("relative isolate bg-surface", announcement ? "lg:pt-[34px]" : "lg:pt-9")}>
         {/* One sticky layer for the shipping bar and the phone header.
             translateZ(0) promotes that layer so it does not shake while
             the visual viewport resizes. Height and padding stay fixed. */}
@@ -96,7 +96,9 @@ export async function StorefrontHome({
           <SiteHeader
             smartMenu
             contentClass={
-              announcement ? "mx-auto w-full max-w-[1140px] px-6 lg:px-8" : undefined
+              announcement
+                ? "mx-auto w-full px-6 lg:w-[min(1316px,68.54vw)] lg:px-0"
+                : undefined
             }
           />
         </div>

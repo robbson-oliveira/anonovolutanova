@@ -37,7 +37,7 @@ function Countdown() {
   );
 
   return (
-    <p className="flex shrink-0 items-center gap-1.5 whitespace-nowrap text-[12px] leading-none md:text-[13px]">
+    <p className="flex shrink-0 items-center gap-1.5 whitespace-nowrap text-[12px] leading-none">
       <span className="font-medium">{BLACK_FRIDAY.barEnds}</span>
       <span className="min-w-[4.75rem] font-bold tabular-nums text-gold-end">{time}</span>
     </p>
@@ -72,9 +72,9 @@ export function BlackFridayTopBar() {
       data-anln-topbar=""
       className="bg-surface-inverse-soft text-text-on-inverse max-lg:relative lg:fixed lg:inset-x-0 lg:top-0 lg:z-50"
     >
-      <div className="mx-auto hidden h-11 max-w-[1140px] items-center gap-4 px-4 md:flex">
-        <p className="flex shrink-0 items-center gap-2 text-sm font-semibold">
-          <span aria-hidden className={cn("size-[18px] bg-gold-end", GIFT_MASK)} />
+      <div className="mx-auto hidden h-[34px] w-full items-center gap-3 px-6 text-[12px] md:flex lg:w-[min(1316px,68.54vw)] lg:px-0">
+        <p className="flex shrink-0 items-center gap-2 text-[12px] font-semibold">
+          <span aria-hidden className={cn("size-4 bg-gold-end", GIFT_MASK)} />
           {BLACK_FRIDAY.barTitle}
         </p>
         <span aria-hidden className="h-3.5 w-px shrink-0 bg-gold-end" />
@@ -83,7 +83,7 @@ export function BlackFridayTopBar() {
         <Countdown />
       </div>
 
-      <div className="mx-auto flex max-w-[1140px] flex-col gap-1 px-4 py-1.5 md:hidden">
+      <div className="mx-auto flex w-full flex-col gap-1 px-4 py-1 md:hidden">
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
           <p className="flex min-w-0 items-center gap-1.5 text-[11px] leading-tight font-semibold">
             <span aria-hidden className={cn("size-4 shrink-0 bg-gold-end", GIFT_MASK)} />

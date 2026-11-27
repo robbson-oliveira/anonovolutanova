@@ -24,8 +24,9 @@ const DUCKS = Array.from({ length: 36 }, (_, i) => i);
 export function BlackFridayHero() {
   return (
     <section id="inicio" className="bg-surface">
-      <div className="mx-auto grid w-full max-w-[1140px] items-center gap-8 px-6 pt-8 pb-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,560px)] lg:gap-10 lg:px-8 lg:pt-10 lg:pb-8">
-        <div className="flex max-w-[480px] flex-col items-start gap-3.5 max-lg:mx-auto max-lg:items-center max-lg:text-center">
+      {/* 1316/1920 is the Figma content width. The same ratio keeps 1920, 1440 and 1280 in proportion. */}
+      <div className="@container mx-auto grid w-full items-center gap-8 px-6 pt-[clamp(1.25rem,2.4cqw,2.25rem)] pb-[clamp(1.75rem,4.2cqw,3.25rem)] max-lg:max-w-[420px] lg:w-[min(1316px,68.54vw)] lg:grid-cols-[minmax(0,1fr)_56.5%] lg:gap-[clamp(1.25rem,2.6cqw,2.5rem)] lg:px-0">
+        <div className="flex flex-col items-start gap-[clamp(0.7rem,1.35cqw,1rem)] max-lg:mx-auto max-lg:items-center max-lg:text-center">
           <p className="flex items-center gap-2 text-[12px] font-bold tracking-[-0.04em]">
             <img src="/images/black-friday/brilho.svg" alt="" width={14} height={14} className="size-3.5" />
             <span className="bg-linear-[211deg] from-text-on-inverse-badge to-text-strong bg-clip-text text-transparent">
@@ -35,7 +36,7 @@ export function BlackFridayHero() {
 
           <h1 className="text-text-strong">
             <span className="inline-block max-lg:mx-auto">
-              <span className="block text-[40px] leading-[1.02] font-bold tracking-[-0.02em] sm:text-[48px] xl:text-[56px]">
+              <span className="block text-[clamp(36px,4.26cqw,56px)] leading-[1.02] font-bold tracking-[-0.02em]">
                 {BLACK_FRIDAY.heroTitle}
               </span>
               <img
@@ -46,17 +47,17 @@ export function BlackFridayHero() {
                 className="pointer-events-none -mt-0.5 block h-[10px] w-[95%] max-lg:mx-auto"
               />
             </span>
-            <span className="mt-1 block text-[28px] leading-[1.08] font-bold sm:text-[34px] xl:text-[40px]">
+            <span className="mt-1 block text-[clamp(26px,3.04cqw,40px)] leading-[1.08] font-bold">
               {BLACK_FRIDAY.heroTitleLine}
             </span>
           </h1>
 
-          <p className="text-[16px] font-bold text-text sm:text-[18px] xl:text-[20px]">
+          <p className="text-[clamp(16px,1.52cqw,20px)] font-bold text-text">
             {BLACK_FRIDAY.heroSubtitle}
           </p>
 
           <div className="flex max-w-[430px] flex-col items-start gap-3 max-lg:items-center">
-            <p className="flex items-center gap-2 rounded-pill border-[1.2px] border-pill-border bg-surface-card px-4 py-2 text-left text-[13px] leading-snug xl:text-[14px]">
+            <p className="flex items-center gap-2 rounded-pill border-[1.2px] border-pill-border bg-surface-card px-4 py-2 text-left text-[clamp(13px,1.06cqw,14px)] leading-snug">
               <img
                 src="/images/black-friday/icone-presente.svg"
                 alt=""
@@ -69,7 +70,7 @@ export function BlackFridayHero() {
                 <span className="font-bold text-gold-start">{BLACK_FRIDAY.heroPillStrong}</span>
               </span>
             </p>
-            <p className="text-[14px] leading-[1.55] text-text-lead xl:text-[15px]">
+            <p className="max-w-[430px] text-[clamp(14px,1.14cqw,15px)] leading-[1.55] text-text-lead">
               {BLACK_FRIDAY.heroParagraph}
               <span className="font-bold">{BLACK_FRIDAY.heroParagraphStrong}</span>
             </p>
@@ -79,15 +80,15 @@ export function BlackFridayHero() {
             href={OFFER_ANCHOR}
             size="lg"
             shape="block"
-            className="h-[46px]! w-full max-w-[340px] rounded-[10px]! border border-gold-end bg-linear-90 from-gold-start to-gold-end text-[14px]! font-semibold! text-on-action"
+            className="h-[clamp(44px,3.65cqw,48px)]! w-full max-w-[min(330px,32cqw)] rounded-[10px]! border border-gold-end bg-linear-90 from-gold-start to-gold-end text-[clamp(13px,1.06cqw,14px)]! font-semibold! text-on-action"
           >
             {BLACK_FRIDAY.heroCta}
           </Button>
 
-          <dl className="flex w-full max-w-[460px] items-stretch justify-between gap-3 pt-1">
+          <dl className="flex w-full max-w-[460px] items-stretch justify-between gap-6 pt-1">
             <div className="min-w-0">
-              <dt className="text-[24px] leading-none font-semibold text-text-strong xl:text-[26px]">365</dt>
-              <dd className="mt-1 text-[13px] leading-[1.15] text-text xl:text-[14px]">
+              <dt className="text-[clamp(22px,1.98cqw,26px)] leading-none font-semibold text-text-strong">365</dt>
+              <dd className="mt-1 text-[clamp(12px,1.06cqw,14px)] leading-[1.15] text-text">
                 Dias de
                 <br />
                 Inspiração
@@ -95,8 +96,8 @@ export function BlackFridayHero() {
             </div>
             <div aria-hidden className="my-1 w-px self-stretch bg-gold-line/40" />
             <div className="min-w-0">
-              <dt className="text-[24px] leading-none font-semibold text-text-strong xl:text-[26px]">12</dt>
-              <dd className="mt-1 text-[13px] leading-[1.15] text-text xl:text-[14px]">
+              <dt className="text-[clamp(22px,1.98cqw,26px)] leading-none font-semibold text-text-strong">12</dt>
+              <dd className="mt-1 text-[clamp(12px,1.06cqw,14px)] leading-[1.15] text-text">
                 Temas
                 <br />
                 Mensais
@@ -108,7 +109,7 @@ export function BlackFridayHero() {
                 <span aria-hidden className={cn("size-6 bg-gold-start", GIFT_MASK)} />
                 <span className="sr-only">Brinde</span>
               </dt>
-              <dd className="mt-1 text-[13px] leading-[1.15] text-text xl:text-[14px]">
+              <dd className="mt-1 text-[clamp(12px,1.06cqw,14px)] leading-[1.15] text-text">
                 Brinde exclusivo
                 <br />
                 na Black Friday
@@ -117,91 +118,105 @@ export function BlackFridayHero() {
           </dl>
         </div>
 
-        <div className="relative mx-auto aspect-[743/655] w-full max-w-[560px]">
+        {/* Node 2727:5951, 743.047 × 655.498. Percentages are of that box. */}
+        <div className="relative mx-auto aspect-[743.047/655.498] w-full max-w-[360px] lg:mx-0 lg:max-w-none">
           <img
             src="/images/black-friday/agenda-perspectiva.webp"
             alt="Agenda Ano Novo, Luta Nova 2027"
-            width={672}
-            height={967}
+            width={928}
+            height={1152}
             fetchPriority="high"
-            className="absolute top-[2%] left-0 w-[56%]"
+            className="absolute top-0 left-[-1.81%] h-[84.23%] w-[59.86%] rotate-[0.41deg] object-cover [filter:drop-shadow(var(--shadow-bf-soft))]"
           />
-          <img
-            src="/images/black-friday/planner-hoje.webp"
-            alt="Folha do Planner Diário"
-            width={840}
-            height={687}
-            className="absolute top-[30%] left-[48%] w-[50%]"
-          />
-          <img
-            src="/images/black-friday/seta-curva.webp"
-            alt=""
-            width={280}
-            height={318}
-            className="pointer-events-none absolute top-[16%] left-[54%] w-[9.5%] max-w-[56px] min-w-[36px]"
-          />
-          <div className="absolute top-0 left-[63%] w-[22%] max-w-[128px] min-w-[88px]">
+
+          {/* Node 2727:5971. Square, so the 1024×1024 sheet keeps its margins.
+              The badge and the arrow are children of this box, as in Figma. */}
+          <div className="absolute top-[20.57%] left-[29.93%] h-[79.43%] w-[70.07%]">
             <img
-              src="/images/black-friday/selo-brinde.webp"
-              alt=""
-              width={420}
-              height={414}
-              className="w-full"
+              src="/images/black-friday/planner-hoje.webp"
+              alt="Folha do Planner Diário"
+              width={1024}
+              height={1024}
+              className="absolute inset-0 size-full object-cover [filter:drop-shadow(var(--shadow-bf-soft))]"
             />
-            <div
-              className={cn(
-                playfair.className,
-                "absolute inset-[18%] flex flex-col items-center justify-center text-center text-text-strong",
-              )}
-            >
-              <span aria-hidden className={cn("mb-0.5 size-3.5 bg-text-strong", GIFT_MASK)} />
-              <p className="text-[11px] leading-none font-bold tracking-[0.02em] xl:text-[13px]">
-                {BLACK_FRIDAY.sealTitle}
-              </p>
-              <p className="mt-0.5 text-[7px] leading-[1.15] font-semibold xl:text-[8px]">
-                <span className="font-black">1 </span>
-                {BLACK_FRIDAY.sealLine}
-                <br />
-                {BLACK_FRIDAY.sealFoot}
-              </p>
+            <div className="@container absolute top-[-9.98%] right-[21.44%] bottom-[76.58%] left-[44.51%]">
+              <img
+                src="/images/black-friday/selo-brinde.webp"
+                alt=""
+                width={420}
+                height={414}
+                className="absolute inset-0 size-full object-contain"
+              />
+              <div
+                className={cn(
+                  playfair.className,
+                  "absolute inset-[14%] flex flex-col items-center justify-center text-center text-text-seal",
+                )}
+              >
+                <span aria-hidden className={cn("mb-[0.4cqw] size-[16cqw] bg-text-seal", GIFT_MASK)} />
+                <p className="text-[13.3cqw] leading-none font-bold tracking-[0.02em]">
+                  {BLACK_FRIDAY.sealTitle}
+                </p>
+                <p className="mt-[0.4cqw] text-[7.3cqw] leading-[1.15] font-semibold">
+                  <span className="font-black">1 </span>
+                  {BLACK_FRIDAY.sealLine}
+                  <br />
+                  {BLACK_FRIDAY.sealFoot}
+                </p>
+              </div>
+            </div>
+            <div className="pointer-events-none absolute top-[7.95%] right-[53.74%] left-[30.51%] aspect-square">
+              <img
+                src="/images/black-friday/seta-curva.webp"
+                alt=""
+                width={280}
+                height={318}
+                className="absolute inset-0 size-full object-contain rotate-[89.44deg]"
+              />
             </div>
           </div>
 
           <a
             href={OFFER_ANCHOR}
-            className="absolute bottom-[6%] left-[24%] flex w-[195px] max-w-[58%] flex-col gap-1.5 rounded-[10px] bg-surface-card p-2.5 shadow-bf-card"
+            className="@container absolute top-[70.08%] left-[26.53%] flex w-[27.04%] flex-col justify-center rounded-[10px] bg-surface-card p-[5cqw] shadow-bf-card"
           >
-            <span className="flex items-center gap-2">
-              <span className="relative h-[52px] w-[46px] shrink-0">
+            <span className="flex items-center gap-[3cqw]">
+              <span className="relative h-[26cqw] w-[22cqw] shrink-0">
                 <img
                   src="/images/black-friday/agenda-capa.webp"
                   alt=""
                   width={220}
                   height={321}
-                  className="absolute bottom-0 left-0 h-[52px] w-auto"
+                  className="absolute bottom-0 left-0 h-full w-auto"
                 />
                 <img
                   src="/images/black-friday/planner-hoje.webp"
                   alt=""
-                  width={840}
-                  height={687}
-                  className="absolute right-0 bottom-1 h-[28px] w-auto"
+                  width={1024}
+                  height={1024}
+                  className="absolute right-0 bottom-[8%] h-[58%] w-auto"
                 />
               </span>
-              <span className="min-w-0 text-left leading-tight">
-                <span className="block text-[15px] font-bold text-text-card">{BLACK_FRIDAY.heroCardTitle}</span>
-                <span className="block text-[10px] font-bold text-text-card">{BLACK_FRIDAY.heroCardExtra}</span>
-                <span className="mt-0.5 block text-[14px] font-semibold text-text-price">{priceLabel}</span>
+              <span className="min-w-0 text-left">
+                <span className="block text-[8.4cqw] leading-none font-bold text-text-card">
+                  {BLACK_FRIDAY.heroCardTitle}
+                </span>
+                <span className="mt-[0.6cqw] block text-[5.2cqw] leading-tight font-bold text-text-card">
+                  {BLACK_FRIDAY.heroCardExtra}
+                </span>
+                <span className="mt-[0.8cqw] block text-[7.2cqw] leading-tight font-semibold text-text-price">
+                  {priceLabel}
+                </span>
               </span>
             </span>
-            <span className="flex h-[28px] w-full items-center justify-center rounded-[6px] bg-linear-90 from-gold-start to-gold-end text-[11px] font-semibold text-on-action">
+            <span className="mt-[4cqw] flex h-[16cqw] w-full items-center justify-center rounded-[6px] bg-linear-90 from-gold-start to-gold-end text-[8cqw] font-semibold text-on-action">
               {BLACK_FRIDAY.heroCardCta}
             </span>
           </a>
         </div>
       </div>
 
-      <div aria-hidden className="flex h-9 items-center justify-center gap-3.5 overflow-hidden bg-surface-inverse-soft">
+      <div aria-hidden className="flex h-[34px] items-center justify-center gap-3.5 overflow-hidden bg-surface-inverse-soft">
         {DUCKS.map((i) => (
           <img
             key={i}
@@ -209,7 +224,7 @@ export function BlackFridayHero() {
             alt=""
             width={120}
             height={76}
-            className="h-5 w-auto shrink-0"
+            className="h-[19px] w-auto shrink-0"
           />
         ))}
       </div>

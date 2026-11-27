@@ -154,7 +154,11 @@
   /* Price on the floating card (#4a4845). */
   --brand-ink-700: rgb(74 72 69);
   --color-text-price: var(--brand-ink-700);
-  --shadow-bf-card: 0 4px 14px rgb(0 0 0 / 0.12);
+  --shadow-bf-card: 0 4px 10px rgb(0 0 0 / 0.12);
+  --shadow-bf-soft: 0 10px 18px rgb(0 0 0 / 0.16);
+  /* Seal ink on the gold badge (#0A3B48). */
+  --brand-seal-ink: rgb(10 59 72);
+  --color-text-seal: var(--brand-seal-ink);
   --color-text-card: var(--brand-ink-900);          /* título dentro de card: preto */
   --color-text-on-warm: var(--brand-gold-200);      /* texto sobre o card petróleo */
   --color-text-heading-sea: var(--brand-sea-700);    /* título do cabeçalho do "Sobre" (#134F63) */

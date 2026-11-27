@@ -17,15 +17,25 @@ function subscribe(onChange: () => void): () => void {
 const SERVER_CLOCK: BlackFridayClock = { phase: "end", time: "--:--:--" };
 
 /**
+ * `useSyncExternalStore` compares snapshots with `Object.is`. A fresh object
+ * on every read is a new snapshot, so React re-renders forever and the page
+ * dies right after the server HTML flashes on screen.
+ */
+let cachedClock: BlackFridayClock = SERVER_CLOCK;
+
+function readClock(): BlackFridayClock {
+  const next = blackFridayClock(Date.now());
+  if (cachedClock.phase === next.phase && cachedClock.time === next.time) return cachedClock;
+  cachedClock = next;
+  return cachedClock;
+}
+
+/**
  * Before 08:00 BRT the label is "Começa em". At 08:00 it flips to "Termina em"
  * on the next tick, without a reload, and holds 00:00:00 after midnight.
  */
 function Countdown() {
-  const clock = useSyncExternalStore(
-    subscribe,
-    () => blackFridayClock(Date.now()),
-    () => SERVER_CLOCK,
-  );
+  const clock = useSyncExternalStore(subscribe, readClock, () => SERVER_CLOCK);
 
   return (
     <p className="flex shrink-0 items-center gap-1.5 text-[15px] leading-none whitespace-nowrap">

@@ -48,7 +48,11 @@ function Countdown() {
 const TICKER_MASK =
   "[mask-image:linear-gradient(to_right,transparent_0%,black_40px,black_calc(100%_-_40px),transparent_100%)] [-webkit-mask-image:linear-gradient(to_right,transparent_0%,black_40px,black_calc(100%_-_40px),transparent_100%)]";
 
-/** Repeated so the centre only ever shows this one line, with no empty gap. */
+/**
+ * Six copies, then the marquee duplicates the run. The wide margin is what
+ * leaves about one and a half phrases in the track: the phrase is 216px, so
+ * the margin is `track / 1.5 - 216` at 1440 (580px) and at 1920 (909px).
+ */
 const ticker = Array.from({ length: 6 }, (_, index) => (
   <span key={index} className="flex items-center gap-2 text-[12px] font-semibold text-text-on-inverse">
     <IconPackage className="text-base text-text-on-inverse" />
@@ -74,7 +78,16 @@ export function BlackFridayTopBar() {
           {BLACK_FRIDAY.barTitle}
         </p>
         <span aria-hidden className="h-3.5 w-px shrink-0 bg-gold-end" />
-        <Marquee items={ticker} gap={48} duration={22} className={cn("min-w-0 flex-1", TICKER_MASK)} />
+        <Marquee
+          items={ticker}
+          gap={170}
+          duration={48}
+          className={cn(
+            "min-w-0 flex-1",
+            TICKER_MASK,
+            "min-[1600px]:[&_li]:mr-[250px]! min-[1800px]:[&_li]:mr-[340px]! min-[1920px]:[&_li]:mr-[390px]!",
+          )}
+        />
         <span aria-hidden className="h-3.5 w-px shrink-0 bg-gold-end" />
         <Countdown />
       </div>
@@ -87,7 +100,7 @@ export function BlackFridayTopBar() {
           <span aria-hidden className="h-3 w-px shrink-0 bg-gold-end opacity-70" />
           <Countdown />
         </div>
-        <Marquee items={ticker} gap={28} duration={16} className={cn("flex h-[26px] w-full items-center", TICKER_MASK)} />
+        <Marquee items={ticker} gap={72} duration={32} className={cn("flex h-[26px] w-full items-center", TICKER_MASK)} />
       </div>
     </div>
   );

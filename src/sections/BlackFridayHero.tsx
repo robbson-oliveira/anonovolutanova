@@ -54,7 +54,7 @@ export function BlackFridayHero() {
               </span>
             </h1>
 
-            <p className="text-[18px] leading-[22px] font-bold tracking-[-0.54px] whitespace-nowrap text-text lg:text-h3 lg:leading-none lg:tracking-[-0.04em] lg:whitespace-normal">
+            <p className="text-[18px] leading-snug font-bold tracking-[-0.54px] text-balance text-text lg:text-h3 lg:leading-none lg:tracking-[-0.04em]">
               {BLACK_FRIDAY.heroSubtitle}
             </p>
           </div>
@@ -76,8 +76,9 @@ export function BlackFridayHero() {
               </span>
             </span>
           </p>
-          <p className="max-w-[430px] text-[15px] leading-[22px] text-text-lead lg:max-w-[540px] lg:text-lead lg:leading-[1.25]">
+          <p className="max-w-[430px] text-[15px] leading-[22px] text-text-lead lg:max-w-[32.5rem] lg:text-[18px] lg:leading-[1.45]">
             {BLACK_FRIDAY.heroParagraph}
+            <br className="hidden lg:block" />
             <span className="font-bold">{BLACK_FRIDAY.heroParagraphStrong}</span>
           </p>
 
@@ -153,14 +154,14 @@ export function BlackFridayHero() {
               <div
                 className={cn(
                   playfair.className,
-                  "absolute inset-[16%] flex flex-col items-center justify-center text-center text-text-seal",
+                  "absolute inset-[22%] flex flex-col items-center justify-center text-center text-text-seal lining-nums",
                 )}
               >
-                <span aria-hidden className={cn("mb-[1.2cqw] size-[20cqw] bg-text-seal", GIFT_MASK)} />
-                <p className="text-[18cqw] leading-none font-bold tracking-[0.02em]">
+                <span aria-hidden className={cn("mb-[1cqw] size-[16cqw] bg-seal-gift", GIFT_MASK)} />
+                <p className="text-[15cqw] leading-none font-bold tracking-[0.02em]">
                   {BLACK_FRIDAY.sealTitle}
                 </p>
-                <p className="mt-[1.2cqw] text-[10.5cqw] leading-[1.1] font-semibold">
+                <p className="mt-[1cqw] text-[8.5cqw] leading-[1.15] font-semibold [font-feature-settings:'lnum'_1]">
                   <span className="font-black">1 </span>
                   {BLACK_FRIDAY.sealLine}
                   <br />
@@ -168,7 +169,8 @@ export function BlackFridayHero() {
                 </p>
               </div>
             </div>
-            <div className="pointer-events-none absolute top-[7.95%] right-[53.74%] left-[30.51%] aspect-square">
+            {/* Head of the rotated arrow sits on the sheet's top edge, clear of HOJE. */}
+            <div className="pointer-events-none absolute top-[-1%] left-[46%] w-[13%] aspect-square">
               <img
                 src="/images/black-friday/seta-curva.webp"
                 alt=""
@@ -181,37 +183,37 @@ export function BlackFridayHero() {
 
           <a
             href={OFFER_ANCHOR}
-            className="absolute top-[64%] left-1/2 flex w-[175px] -translate-x-1/2 flex-col items-center justify-center rounded-[10px] border border-gold-end bg-surface-card p-2 shadow-bf-card lg:top-[70.08%] lg:left-[26.53%] lg:w-[max(175px,27.04%)] lg:translate-x-0 lg:border-card-gold-border"
+            className="absolute top-[58%] left-1/2 flex aspect-[161/100] w-[200px] -translate-x-1/2 flex-col items-center justify-between rounded-[10px] border border-gold-end bg-surface-card px-2 pt-2 pb-2 shadow-bf-card lg:top-[62%] lg:left-[22%] lg:w-[34%] lg:max-w-[240px] lg:translate-x-0 lg:border-card-gold-border"
           >
-            <span className="flex w-full items-center justify-center gap-2">
+            <span className="flex w-full items-center justify-center gap-1.5">
               {/* The sheet overlaps the cover's lower-right and stops before the lines. */}
-              <span className="relative h-12 w-[50px] shrink-0">
+              <span className="relative h-14 w-[58px] shrink-0">
                 <img
                   src="/images/black-friday/agenda-capa.webp"
                   alt=""
                   width={220}
                   height={321}
-                  className="absolute bottom-0 left-0 h-12 w-auto"
+                  className="absolute bottom-0 left-0 h-14 w-auto"
                 />
                 <img
                   src="/images/black-friday/planner-hoje.webp"
                   alt=""
                   width={1024}
                   height={1024}
-                  className="absolute bottom-0 left-[14px] z-10 size-[34px] rotate-[5deg] object-contain"
+                  className="absolute bottom-0 left-[16px] z-10 size-10 rotate-[5deg] object-contain"
                 />
               </span>
               <span className="flex flex-col items-end">
-                <span className="whitespace-nowrap text-[13px] leading-none font-bold text-text-card">{BLACK_FRIDAY.heroCardTitle}</span>
-                <span className="mt-0.5 whitespace-nowrap text-[10px] leading-tight font-bold text-text-card">
+                <span className="whitespace-nowrap text-[15px] leading-none font-extrabold text-text-card">{BLACK_FRIDAY.heroCardTitle}</span>
+                <span className="mt-1 whitespace-nowrap text-[12px] leading-none font-bold text-text-card">
                   {BLACK_FRIDAY.heroCardExtra}
                 </span>
-                <span className="whitespace-nowrap text-[12px] leading-tight font-bold text-text-price">
+                <span className="mt-1 whitespace-nowrap text-[14px] leading-none font-bold text-text-price">
                   {priceLabel}
                 </span>
               </span>
             </span>
-            <span className="mt-1.5 flex h-[26px] w-[88%] items-center justify-center whitespace-nowrap rounded-[6px] bg-linear-90 from-gold-warm-start to-gold-warm-end text-[11px] font-bold text-on-action">
+            <span className="flex h-9 w-[84%] items-center justify-center whitespace-nowrap rounded-[6px] bg-linear-90 from-gold-warm-start to-gold-warm-end text-[13px] font-bold text-on-action">
               {BLACK_FRIDAY.heroCardCta}
             </span>
           </a>

@@ -102,14 +102,14 @@ export function BlackFridayPlannerSection() {
               className="w-full"
             />
             <div
-              className={cn(
-                playfair.className,
-                "absolute inset-[16%] flex flex-col items-center justify-center text-center text-text-seal",
-              )}
-            >
-              <span aria-hidden className={cn("mb-[1cqw] size-[18cqw] bg-text-seal", GIFT_MASK)} />
-              <p className="text-[16cqw] leading-none font-bold">{BLACK_FRIDAY.sealTitle}</p>
-              <p className="mt-[1cqw] text-[9cqw] leading-[1.1] font-semibold">
+                className={cn(
+                  playfair.className,
+                  "absolute inset-[22%] flex flex-col items-center justify-center text-center text-text-seal lining-nums",
+                )}
+              >
+              <span aria-hidden className={cn("mb-[1cqw] size-[15cqw] bg-seal-gift", GIFT_MASK)} />
+              <p className="text-[13cqw] leading-none font-bold">{BLACK_FRIDAY.sealTitle}</p>
+              <p className="mt-[1cqw] text-[7.5cqw] leading-[1.15] font-semibold [font-feature-settings:'lnum'_1]">
                 <span className="font-black">1 </span>
                 {BLACK_FRIDAY.sealLine}
                 <br />

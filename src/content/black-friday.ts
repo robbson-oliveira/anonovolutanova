@@ -12,7 +12,7 @@ export const BLACK_FRIDAY = {
   heroEyebrow: "Oferta por tempo limitado",
   heroTitle: "Black Friday",
   heroTitleLine: "Ano Novo, Luta Nova",
-  heroSubtitle: "Viva o caminho de santidade no dia a dia",
+  heroSubtitle: "Menos cálculo. Mais confiança. Patos à água!",
   heroPillLead: "Na compra da Agenda 2027, ",
   heroPillStrong: "ganhe 1 Planner Diário.",
   heroParagraph:

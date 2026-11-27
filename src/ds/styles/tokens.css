@@ -163,9 +163,11 @@
   --color-gold-warm-end: var(--brand-gold-warm-300);
   --shadow-bf-card: 0 4px 10px rgb(0 0 0 / 0.12);
   --shadow-bf-soft: 0 10px 18px rgb(0 0 0 / 0.16);
-  /* Seal ink on the gold badge (#0A3B48). */
+  /* Seal ink on the gold badge (#0A3B48). The gift on that badge is the dark gold of Figma 2727:4964 (#5E3E0F), not the petrol ink. */
   --brand-seal-ink: rgb(10 59 72);
   --color-text-seal: var(--brand-seal-ink);
+  --brand-seal-gift: rgb(94 62 15);
+  --color-seal-gift: var(--brand-seal-gift);
   --color-text-card: var(--brand-ink-900);          /* título dentro de card: preto */
   --color-text-on-warm: var(--brand-gold-200);      /* texto sobre o card petróleo */
   --color-text-heading-sea: var(--brand-sea-700);    /* título do cabeçalho do "Sobre" (#134F63) */

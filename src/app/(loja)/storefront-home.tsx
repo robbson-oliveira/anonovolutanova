@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { cn } from "@ds/index";
 import { getProductOffer } from "@/lib/commerce/offer";
 import { publicEnv } from "@/lib/env";
 import { About } from "@sections/About";
@@ -87,23 +86,17 @@ export async function StorefrontHome({
         />
       ) : null}
       {/* pt-9 only from lg: on the phone the shipping bar is in flow, inside
-          the sticky group below. The clip stays on the content under the
-          header: a clip (or hidden) ancestor makes iOS Safari repaint the
-          sticky bar on every frame while the address bar moves. */}
-      <div className={cn("relative isolate bg-surface", announcement ? "lg:pt-[34px]" : "lg:pt-9")}>
+          the sticky group below. Both bars are 36px tall. The clip stays on
+          the content under the header: a clip (or hidden) ancestor makes
+          iOS Safari repaint the sticky bar on every frame while the address
+          bar moves. */}
+      <div className="relative isolate bg-surface lg:pt-9">
         {/* One sticky layer for the shipping bar and the phone header.
             translateZ(0) promotes that layer so it does not shake while
             the visual viewport resizes. Height and padding stay fixed. */}
         <div className="max-lg:sticky max-lg:top-0 max-lg:z-50 max-lg:bg-surface max-lg:will-change-transform max-lg:[transform:translateZ(0)] lg:contents">
           {announcement ?? <TopBar />}
-          <SiteHeader
-            smartMenu
-            contentClass={
-              announcement
-                ? "mx-auto w-full px-6 lg:w-[min(1316px,68.54vw)] lg:px-0"
-                : undefined
-            }
-          />
+          <SiteHeader smartMenu />
         </div>
         <div className="relative overflow-x-clip">
           {/* Watercolor shared by the FAQ, the closing card and the footer (Figma
@@ -117,8 +110,7 @@ export async function StorefrontHome({
           />
           <main>
             {hero ?? <Hero />}
-            {/* The Black Friday fold already ends on its own duck band. */}
-            {hero ? null : <DuckStrip />}
+            <DuckStrip />
             <About />
             <Explore />
             {gallery}

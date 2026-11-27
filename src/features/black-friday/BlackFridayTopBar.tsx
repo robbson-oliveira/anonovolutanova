@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { IconPackage, cn } from "@ds/index";
+import { Marquee, cn } from "@ds/index";
 import { BLACK_FRIDAY } from "@content/black-friday";
 import { BLACK_FRIDAY_END_MS } from "@/lib/black-friday";
 
@@ -37,56 +37,53 @@ function Countdown() {
   );
 
   return (
-    <p className="flex shrink-0 items-center gap-1.5 whitespace-nowrap text-[12px] leading-none">
+    <p className="flex shrink-0 items-center gap-1.5 text-[15px] leading-none whitespace-nowrap">
       <span className="font-medium">{BLACK_FRIDAY.barEnds}</span>
-      <span className="min-w-[4.75rem] font-bold tabular-nums text-gold-end">{time}</span>
+      <span className="min-w-[5.25rem] font-bold tabular-nums text-gold-end">{time}</span>
     </p>
   );
 }
 
-function ShippingLine() {
-  return (
-    <p className="flex shrink-0 items-center gap-2 text-[12px] font-semibold whitespace-nowrap">
-      <IconPackage className="text-base text-text-on-inverse" />
-      {BLACK_FRIDAY.barShipping}
-    </p>
-  );
-}
+/** One phrase wide. The run is duplicated inside `Marquee`, so the loop has no jump. */
+const shippingTicker = Array.from({ length: 6 }, (_, index) => (
+  <span key={index} className="text-[15px] font-medium whitespace-nowrap text-text-on-inverse">
+    <span aria-hidden className="mr-2">📦</span>
+    {BLACK_FRIDAY.barShipping}
+  </span>
+));
 
 /**
  * Top bar of `/home-2` only. Desktop is one centered cluster: the campaign
- * name, the free-shipping line, and the countdown, with the spare space on
- * the outer edges of the bar. The phone stacks the name and the clock, then
- * the shipping line on its own.
+ * name, a one-phrase window where the shipping line travels, and the
+ * countdown. Spare space stays on the outer edges. The phone keeps the name
+ * and the clock fixed, and lets the shipping line travel on the row below.
  */
 export function BlackFridayTopBar() {
   return (
     <div
       data-anln-topbar=""
-      className="bg-surface-inverse-soft text-text-on-inverse max-lg:relative lg:fixed lg:inset-x-0 lg:top-0 lg:z-50"
+      className="bg-surface-inverse text-text-on-inverse max-lg:relative lg:fixed lg:inset-x-0 lg:top-0 lg:z-50"
     >
-      <div className="hidden h-[34px] w-full items-center justify-center gap-5 px-6 text-[12px] md:flex">
-        <p className="flex shrink-0 items-center gap-2 text-[12px] font-semibold whitespace-nowrap">
+      <div className="hidden h-9 w-full items-center justify-center gap-5 px-6 md:flex">
+        <p className="flex shrink-0 items-center gap-2 text-[15px] font-semibold whitespace-nowrap">
           <span aria-hidden className={cn("size-4 bg-gold-end", GIFT_MASK)} />
           {BLACK_FRIDAY.barTitle}
         </p>
-        <span aria-hidden className="h-3.5 w-px shrink-0 bg-gold-end" />
-        <ShippingLine />
-        <span aria-hidden className="h-3.5 w-px shrink-0 bg-gold-end" />
+        <span aria-hidden className="h-4 w-px shrink-0 bg-gold-end" />
+        <Marquee items={shippingTicker} gap={32} duration={28} fade className="w-[17.5rem] shrink-0" />
+        <span aria-hidden className="h-4 w-px shrink-0 bg-gold-end" />
         <Countdown />
       </div>
 
       <div className="flex w-full flex-col md:hidden">
-        <div className="flex h-8 items-center justify-center gap-2.5 px-3">
-          <p className="text-[13px] leading-none font-extrabold tracking-[0.26px] whitespace-nowrap">
+        <div className="flex h-9 items-center justify-center gap-2.5 px-3">
+          <p className="text-[15px] leading-none font-extrabold tracking-[0.26px] whitespace-nowrap">
             {BLACK_FRIDAY.barTitleMobile}
           </p>
-          <span aria-hidden className="h-3 w-px shrink-0 bg-gold-end opacity-70" />
+          <span aria-hidden className="h-3.5 w-px shrink-0 bg-gold-end opacity-70" />
           <Countdown />
         </div>
-        <div className="flex h-[26px] items-center justify-center px-3">
-          <ShippingLine />
-        </div>
+        <Marquee items={shippingTicker} gap={48} duration={22} fade className="flex h-9 w-full items-center" />
       </div>
     </div>
   );

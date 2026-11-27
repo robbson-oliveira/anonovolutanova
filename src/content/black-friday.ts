@@ -5,7 +5,6 @@
 export const BLACK_FRIDAY = {
   /** Fixed label on the left of the Black Friday top bar. */
   barTitle: "Black Friday Ano Novo, Luta Nova",
-  barGift: "Na compra de 1 Agenda, ganhe 1 Planner Diário",
   barShipping: "Frete Grátis a partir de 4 agendas",
   barEnds: "Termina em",
   heroEyebrow: "Oferta por tempo limitado",

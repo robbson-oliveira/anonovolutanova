@@ -48,23 +48,19 @@ function Countdown() {
 const TICKER_MASK =
   "[mask-image:linear-gradient(to_right,transparent_0%,black_40px,black_calc(100%_-_40px),transparent_100%)] [-webkit-mask-image:linear-gradient(to_right,transparent_0%,black_40px,black_calc(100%_-_40px),transparent_100%)]";
 
-const ticker = [
-  <span key="gift" className="flex items-center gap-2 text-[13px] font-semibold text-text-on-inverse md:text-[15px]">
-    <span aria-hidden className={cn("size-4 shrink-0 bg-gold-end", GIFT_MASK)} />
-    {BLACK_FRIDAY.barGift}
-  </span>,
-  <span key="ship" className="flex items-center gap-2 text-[13px] font-semibold text-text-on-inverse md:text-[15px]">
+/** Repeated so the centre only ever shows this one line, with no empty gap. */
+const ticker = Array.from({ length: 6 }, (_, index) => (
+  <span key={index} className="flex items-center gap-2 text-[12px] font-semibold text-text-on-inverse">
     <IconPackage className="text-base text-text-on-inverse" />
     {BLACK_FRIDAY.barShipping}
-  </span>,
-];
+  </span>
+));
 
 /**
- * Top bar of `/home-2` only (Figma 2727:6214, 44px, petrol). The title and
- * the countdown stay put. Only the gift and shipping lines travel.
+ * Top bar of `/home-2` only. The campaign name and the countdown stay put.
+ * Between the rules, only the free-shipping line travels.
  *
- * On a phone the countdown sits on its own row so it never wraps, and the
- * travelling line uses the full width under the title.
+ * On a phone that line is the row under the fixed title and timer.
  */
 export function BlackFridayTopBar() {
   return (

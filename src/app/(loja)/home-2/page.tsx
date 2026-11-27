@@ -11,10 +11,9 @@ export const metadata: Metadata = {
 };
 
 /**
- * Official Black Friday home. The top bar and the first fold are the
- * approved frame (Figma 2727:4964). `/` never renders them. Not indexed.
- * Turn the route off after the campaign. The cart still follows the
- * Brasília window and `?preview_bf=1` on its own.
+ * Campaign route, always `noindex`. `/` uses the same layout only while
+ * `BLACK_FRIDAY_HOME_ACTIVE` is on, and that page stays indexable.
+ * The cart still follows the Brasília window and `?preview_bf=1` on its own.
  */
 export default function HomeBlackFridayPreview() {
   return (

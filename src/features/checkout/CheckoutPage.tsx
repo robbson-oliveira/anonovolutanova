@@ -474,9 +474,11 @@ export function CheckoutPage() {
       const payment_data = await paymentDataFor(chosen, card);
 
       // The checkout form has no free-text note. `orderCustomerNote` still
-      // appends gift wrap after one, so a note passed in is kept.
-      // Memory covers a check on this page; storage covers the cart page,
-      // which is a full load away and may not have hydrated yet.
+      // appends gift wrap after one, and, only inside today's Brasília
+      // window, one packer line for the free planner. It does not add a
+      // cart line or change the total. Memory covers a check on this page;
+      // storage covers the cart page, which is a full load away and may
+      // not have hydrated yet.
       const selected = [...new Set([...cart.giftWrapIds, ...readGiftWrapIds()])];
       const customerNote = orderCustomerNote(cart.cart?.items ?? [], "", selected);
       const result = await processCheckout({

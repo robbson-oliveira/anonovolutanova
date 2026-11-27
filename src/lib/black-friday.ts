@@ -6,7 +6,14 @@
  * and the server and the browser agree on the same instants.
  *
  * Inclusive from 27/11/2026 08:00:00.000 through 23:59:59.999.
+ *
+ * `BLACK_FRIDAY_HOME_ACTIVE` is the one switch for the public home. `true`
+ * renders the approved campaign layout on `/`, which stays indexable.
+ * `false` restores the original home without removing any of its sections.
+ * `/home-2` does not read it.
  */
+
+export const BLACK_FRIDAY_HOME_ACTIVE = true;
 
 export const BLACK_FRIDAY_START_ISO = "2026-11-27T08:00:00-03:00";
 export const BLACK_FRIDAY_END_ISO = "2026-11-27T23:59:59-03:00";
@@ -65,9 +72,10 @@ export function isBlackFridayWindow(now: Date): boolean {
 /**
  * Which surface may follow the clock.
  *
- * The public home (`/`) never does: it stays as it is, including during the
- * window and with `?preview_bf=1`. `/home-2` passes `force`. The cart and
- * its drawer pass `schedule`, so they open with the window or the preview
+ * The original home passes neither, so it stays as it is, including during
+ * the window and with `?preview_bf=1`. The campaign layout (`/home-2`, and
+ * `/` while `BLACK_FRIDAY_HOME_ACTIVE`) passes `force`. The cart and its
+ * drawer pass `schedule`, so they open with the window or the preview
  * query and close on their own at midnight.
  */
 export function showBlackFridayNotice(input: {

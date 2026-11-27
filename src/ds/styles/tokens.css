@@ -151,9 +151,16 @@
   /* Pill border on the Black Friday hero (#d8c7a3). */
   --brand-sand-300: rgb(216 199 163);
   --color-pill-border: var(--brand-sand-300);
-  /* Price on the floating card (#4a4845). */
-  --brand-ink-700: rgb(74 72 69);
-  --color-text-price: var(--brand-ink-700);
+  /* Price on the floating card (#7f7f7f). */
+  --brand-ink-500: rgb(127 127 127);
+  --color-text-price: var(--brand-ink-500);
+  /* Thin gold edge of that card (#d8be80) and its warmer button. */
+  --brand-gold-card-border: rgb(216 190 128);
+  --color-card-gold-border: var(--brand-gold-card-border);
+  --brand-gold-warm-700: rgb(157 124 58);
+  --brand-gold-warm-300: rgb(223 197 125);
+  --color-gold-warm-start: var(--brand-gold-warm-700);
+  --color-gold-warm-end: var(--brand-gold-warm-300);
   --shadow-bf-card: 0 4px 10px rgb(0 0 0 / 0.12);
   --shadow-bf-soft: 0 10px 18px rgb(0 0 0 / 0.16);
   /* Seal ink on the gold badge (#0A3B48). */

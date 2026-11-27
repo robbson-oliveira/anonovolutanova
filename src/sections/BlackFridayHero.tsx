@@ -150,14 +150,14 @@ export function BlackFridayHero() {
               <div
                 className={cn(
                   playfair.className,
-                  "absolute inset-[14%] flex flex-col items-center justify-center text-center text-text-seal",
+                  "absolute inset-[16%] flex flex-col items-center justify-center text-center text-text-seal",
                 )}
               >
-                <span aria-hidden className={cn("mb-[0.4cqw] size-[16cqw] bg-text-seal", GIFT_MASK)} />
-                <p className="text-[13.3cqw] leading-none font-bold tracking-[0.02em]">
+                <span aria-hidden className={cn("mb-[1.2cqw] size-[20cqw] bg-text-seal", GIFT_MASK)} />
+                <p className="text-[18cqw] leading-none font-bold tracking-[0.02em]">
                   {BLACK_FRIDAY.sealTitle}
                 </p>
-                <p className="mt-[0.4cqw] text-[7.3cqw] leading-[1.15] font-semibold">
+                <p className="mt-[1.2cqw] text-[10.5cqw] leading-[1.1] font-semibold">
                   <span className="font-black">1 </span>
                   {BLACK_FRIDAY.sealLine}
                   <br />
@@ -178,10 +178,10 @@ export function BlackFridayHero() {
 
           <a
             href={OFFER_ANCHOR}
-            className="@container absolute top-[70.08%] left-[26.53%] flex w-[27.04%] flex-col justify-center rounded-[10px] bg-surface-card p-[5cqw] shadow-bf-card"
+            className="absolute top-[70.08%] left-[26.53%] flex w-[27.04%] flex-col items-center justify-center rounded-[10px] border border-card-gold-border bg-surface-card p-2 shadow-bf-card"
           >
-            <span className="flex items-center gap-[3cqw]">
-              <span className="relative h-[26cqw] w-[22cqw] shrink-0">
+            <span className="flex w-full items-end gap-1">
+              <span className="relative h-12 w-[42px] shrink-0">
                 <img
                   src="/images/black-friday/agenda-capa.webp"
                   alt=""
@@ -189,27 +189,27 @@ export function BlackFridayHero() {
                   height={321}
                   className="absolute bottom-0 left-0 h-full w-auto"
                 />
+                {/* Tilted sheet in front of the cover's lower right, under the A of "Agenda". */}
                 <img
                   src="/images/black-friday/planner-hoje.webp"
                   alt=""
                   width={1024}
                   height={1024}
-                  className="absolute right-0 bottom-[8%] h-[58%] w-auto"
+                  className="absolute -right-1 bottom-0 h-[62%] w-auto rotate-[8deg]"
                 />
               </span>
-              <span className="min-w-0 text-left">
-                <span className="block text-[8.4cqw] leading-none font-bold text-text-card">
-                  {BLACK_FRIDAY.heroCardTitle}
-                </span>
-                <span className="mt-[0.6cqw] block text-[5.2cqw] leading-tight font-bold text-text-card">
+              {/* The two lines sit on the right, under "2027" (Figma 2727:6007). */}
+              <span className="inline-grid min-w-0 flex-1 justify-items-start">
+                <span className="text-[13px] leading-none font-bold text-text-card">{BLACK_FRIDAY.heroCardTitle}</span>
+                <span className="mt-0.5 justify-self-end text-[10px] leading-tight font-bold text-text-card">
                   {BLACK_FRIDAY.heroCardExtra}
                 </span>
-                <span className="mt-[0.8cqw] block text-[7.2cqw] leading-tight font-semibold text-text-price">
+                <span className="justify-self-end text-[12px] leading-tight font-bold text-text-price">
                   {priceLabel}
                 </span>
               </span>
             </span>
-            <span className="mt-[4cqw] flex h-[16cqw] w-full items-center justify-center rounded-[6px] bg-linear-90 from-gold-start to-gold-end text-[8cqw] font-semibold text-on-action">
+            <span className="mt-1.5 flex h-[26px] w-[88%] items-center justify-center rounded-[6px] bg-linear-90 from-gold-warm-start to-gold-warm-end text-[11px] font-bold text-on-action">
               {BLACK_FRIDAY.heroCardCta}
             </span>
           </a>

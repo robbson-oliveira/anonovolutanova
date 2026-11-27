@@ -333,9 +333,7 @@ export function PurchasePanel({
                       </span>
                     )}
                   </span>
-                  {plannerRow ? (
-                    <span className="shrink-0 text-[15px] font-bold text-text-strong">{formatBRL(e.price)}</span>
-                  ) : null}
+                  {/* Unit price stays off this row. The total below and the cart still use the edition price. */}
                   {/* Even sizes and grid centering: a half-pixel translate left the dot off the ring. */}
                   <span
                     aria-hidden

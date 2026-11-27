@@ -179,39 +179,43 @@ export function BlackFridayHero() {
             </div>
           </div>
 
+          {/* Figma 2727:5999, drawn at 210×134. Same box on every width so nothing stretches. */}
           <a
             href={OFFER_ANCHOR}
-            className="absolute top-[58%] left-1/2 grid aspect-[161/100] w-[200px] -translate-x-1/2 grid-rows-[minmax(0,1fr)_30%] gap-1 rounded-[10px] border border-gold-end bg-surface-card px-1.5 py-1.5 shadow-bf-card lg:top-[62%] lg:left-[22%] lg:w-[34%] lg:max-w-[240px] lg:translate-x-0 lg:border-card-gold-border"
+            className="absolute top-[58%] left-1/2 flex h-[134px] w-[210px] -translate-x-1/2 flex-col items-center gap-[3.16px] rounded-[10.52px] border-[1.05px] border-gold-end bg-surface-card p-[10.52px] shadow-bf-offer lg:top-[64%] lg:left-[24%] lg:translate-x-0"
           >
-            <span className="flex min-h-0 w-full items-center gap-1">
-              {/* The sheet overlaps the cover's lower-right and stops before the lines. */}
-              <span className="relative h-full w-[46%] shrink-0">
-                <img
-                  src="/images/black-friday/agenda-capa.webp"
-                  alt=""
-                  width={220}
-                  height={321}
-                  className="absolute bottom-0 left-0 h-[96%] w-auto"
-                />
-                <img
-                  src="/images/black-friday/planner-hoje.webp"
-                  alt=""
-                  width={1024}
-                  height={1024}
-                  className="absolute bottom-0 left-[32%] z-10 h-[74%] w-auto rotate-[5deg] object-contain"
-                />
+            <span className="flex items-center">
+              <span className="relative h-[57.85px] w-[47.33px] shrink-0">
+                <span className="absolute bottom-0 left-[-9.47px] top-[-5.26px] w-[56.8px] overflow-hidden rounded-[12.62px]">
+                  <img
+                    src="/black-friday/card-agenda-mini.png"
+                    alt=""
+                    width={1036}
+                    height={1519}
+                    className="size-full object-cover"
+                  />
+                </span>
               </span>
-              <span className="flex h-full min-w-0 flex-1 flex-col items-end justify-between py-0.5">
-                <span className="whitespace-nowrap text-[17px] leading-none font-extrabold text-text-card">{BLACK_FRIDAY.heroCardTitle}</span>
-                <span className="whitespace-nowrap text-[13px] leading-none font-bold text-text-card">
+              <span className="relative z-20 h-[37.87px] w-[98.88px] shrink-0">
+                <span className="absolute top-[-9.46px] left-[-2.1px] text-[16.83px] leading-[16.83px] font-bold tracking-[-0.673px] whitespace-nowrap text-text-card">
+                  {BLACK_FRIDAY.heroCardTitle}
+                </span>
+                <span className="absolute top-[6.32px] left-[29.19px] text-[10.65px] leading-[18.93px] font-bold tracking-[-0.757px] whitespace-nowrap text-text-card">
                   {BLACK_FRIDAY.heroCardExtra}
                 </span>
-                <span className="whitespace-nowrap text-[16px] leading-none font-bold text-text-price">
+                <span className="absolute top-[24.19px] left-[30.5px] text-[15.15px] leading-[15.15px] font-bold tracking-[-0.606px] whitespace-nowrap text-text-muted">
                   {priceLabel}
                 </span>
               </span>
             </span>
-            <span className="flex h-full w-[82%] items-center justify-center justify-self-center whitespace-nowrap rounded-[6px] bg-linear-90 from-gold-warm-start to-gold-warm-end text-[15px] font-bold text-on-action">
+            <img
+              src="/black-friday/card-planner-mini.png"
+              alt=""
+              width={1024}
+              height={1024}
+              className="pointer-events-none absolute top-[20.25px] left-[47.33px] z-10 size-[59.43px] object-contain"
+            />
+            <span className="rounded-[5.26px] bg-linear-90 from-gold-start to-gold-end px-[18.93px] py-[8.42px] text-[15.78px] leading-[18.93px] font-bold whitespace-nowrap text-on-action">
               {BLACK_FRIDAY.heroCardCta}
             </span>
           </a>

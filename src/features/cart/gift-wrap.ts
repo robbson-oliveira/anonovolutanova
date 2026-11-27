@@ -1,4 +1,5 @@
 import { editionOfCartItem } from "@/lib/commerce/editions";
+import { BLACK_FRIDAY_MIDNIGHT_MS, BLACK_FRIDAY_START_MS } from "@/lib/black-friday";
 
 /**
  * Gift wrap is drawn in the cart drawer. It does not change the line price.
@@ -98,30 +99,74 @@ export function writeGiftWrapIds(ids: readonly number[]): void {
 }
 
 /**
+ * The notepad sold on its own. Its quantity is never a gifted planner:
+ * the gift is one planner per agenda, and this line is an extra the
+ * customer chose to pay for.
+ */
+const NOTEPAD_PRODUCT_ID = 6581;
+
+const BLACK_FRIDAY_NOTE_MARK = "Pedido da Black Friday";
+
+/**
+ * Agendas in the cart (Edição Color and Edição Clássica). The loose notepad
+ * is left out, by product id and by the same edition label the cart already
+ * uses for the gift line.
+ */
+function agendaQuantity(items: readonly GiftWrapCartItem[]): number {
+  return items.reduce((sum, item) => {
+    if (item.id === NOTEPAD_PRODUCT_ID) return sum;
+    const edition = editionOfCartItem(item);
+    if (edition?.unit !== "agenda") return sum;
+    const quantity = Math.trunc(item.quantity);
+    if (!Number.isFinite(quantity) || quantity < 1) return sum;
+    return sum + quantity;
+  }, 0);
+}
+
+/**
+ * One line for the packer, only from 27/11/2026 08:00:00 BRT until midnight
+ * (exclusive). It does not add a cart line, a price, or a shipping change.
+ */
+function blackFridayGiftLine(items: readonly GiftWrapCartItem[], now: number): string | null {
+  if (now < BLACK_FRIDAY_START_MS || now >= BLACK_FRIDAY_MIDNIGHT_MS) return null;
+  const agendas = agendaQuantity(items);
+  if (agendas < 1) return null;
+  if (agendas === 1) {
+    return `${BLACK_FRIDAY_NOTE_MARK} — adicionar 1 Planner Diário de brinde (1 por agenda).`;
+  }
+  return `${BLACK_FRIDAY_NOTE_MARK} — adicionar ${agendas} Planners Diários de brinde (1 por agenda).`;
+}
+
+/**
  * `customer_note` for Store API checkout. Gift-wrap lines go after whatever
- * the customer typed, one line per item, in cart order. Empty when there is
- * nothing to send.
+ * the customer typed, one line per item, in cart order. During the Black
+ * Friday window a packer line is appended after that, and it is not repeated
+ * if the note already contains it. Empty when there is nothing to send.
  *
  * `selectedProductIds` defaults to what is stored. Pass it explicitly to
  * build the note from a known set (the checkout reads storage at submit,
  * which is already written by the time the customer leaves the cart).
+ * `now` defaults to the clock; tests pass the Brasília instants.
  */
 export function orderCustomerNote(
   items: readonly GiftWrapCartItem[],
   typedNote = "",
   selectedProductIds: readonly number[] = readGiftWrapIds(),
+  now = Date.now(),
 ): string {
   const own = typedNote.trim();
-  if (!GIFT_WRAP_AFFECTS_ORDER) return own;
-
   const selected = new Set(selectedProductIds);
-  const lines = items.flatMap((item) => {
-    if (!selected.has(item.id)) return [];
-    const line = giftWrapLine(item);
-    return line ? [line] : [];
-  });
+  const lines = GIFT_WRAP_AFFECTS_ORDER
+    ? items.flatMap((item) => {
+        if (!selected.has(item.id)) return [];
+        const line = giftWrapLine(item);
+        return line ? [line] : [];
+      })
+    : [];
   const gift = lines.join("\n");
-  if (!own) return gift;
-  if (!gift) return own;
-  return `${own}\n${gift}`;
+  const base = !own ? gift : !gift ? own : `${own}\n${gift}`;
+  if (base.includes(BLACK_FRIDAY_NOTE_MARK)) return base;
+  const campaign = blackFridayGiftLine(items, now);
+  if (!campaign) return base;
+  return base ? `${base}\n${campaign}` : campaign;
 }

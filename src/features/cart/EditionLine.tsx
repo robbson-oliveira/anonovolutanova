@@ -4,6 +4,7 @@ import { Button, IconCheck, IconMinus, IconPlus, cn } from "@ds/index";
 import { PRODUCT_NAME } from "@content/product";
 import type { EditionOffer } from "@/lib/commerce/offer-types";
 import { fromMinor, type StoreCartItem } from "@/lib/commerce/store-api";
+import { BlackFridayPlannerNote } from "@/features/black-friday/BlackFridayPlannerNote";
 import { ClassicSoldOutBadge } from "@/features/purchase/ClassicSoldOutBadge";
 import { formatBRL } from "@/lib/format";
 import { plannerPaperFocus } from "./planner-thumb";
@@ -64,6 +65,8 @@ export function EditionLine({ edition, price, line, busy, onAdd, onQuantity }: E
           {quantity > 1 ? <p className="text-fine text-text-muted">{formatBRL(price)} cada</p> : null}
         </div>
       </div>
+
+      {edition.id === "bloco" ? <BlackFridayPlannerNote schedule surface="warm" /> : null}
 
       {/* Under the text on larger screens (112px miniature + 20px gap); full width on the phone. */}
       <div className="flex flex-wrap items-center justify-between gap-3 sm:pl-[132px]">

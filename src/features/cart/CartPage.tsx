@@ -53,7 +53,7 @@ export function CartPage({ offer }: CartPageProps) {
   if (!selling) {
     return (
       <div className="rounded-card border border-border bg-surface-plain p-5 shadow-subtle sm:p-8 lg:p-12">
-        <PurchasePanel offer={offer} headingAs="h2" />
+        <PurchasePanel offer={offer} headingAs="h2" scheduleBlackFriday />
       </div>
     );
   }

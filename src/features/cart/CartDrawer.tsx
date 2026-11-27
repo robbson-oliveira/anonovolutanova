@@ -3,12 +3,13 @@
 import { useEffect, useRef } from "react";
 import { Button, Heading, IconArrowRight, IconClose, Text, cn } from "@ds/index";
 import { BUY_URL, FREE_SHIPPING_MIN_QTY } from "@content/product";
+import { BlackFridayBanner } from "@/features/black-friday/BlackFridayBanner";
+import { CLASSIC_CART_NOTICE, cartBlockedByClassic } from "@/lib/commerce/availability";
 import { fromMinor } from "@/lib/commerce/store-api";
 import { formatBRL } from "@/lib/format";
 import { CartItemRow } from "./CartItemRow";
-import { CouponForm } from "./CouponForm";
-import { CLASSIC_CART_NOTICE, cartBlockedByClassic } from "@/lib/commerce/availability";
 import { useCart } from "./CartProvider";
+import { CouponForm } from "./CouponForm";
 import { GIFT_WRAP_AFFECTS_ORDER, SHOW_GIFT_WRAP } from "./gift-wrap";
 
 /** Gaveta do carrinho, pela direita. Fecha com Esc, no fundo ou no X. */
@@ -74,6 +75,8 @@ export function CartDrawer() {
             <IconClose viewBox="4 4 16 16" className="text-2xl" />
           </button>
         </header>
+
+        <BlackFridayBanner variant="drawer" />
 
         {count === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 text-center">

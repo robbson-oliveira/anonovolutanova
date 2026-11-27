@@ -4,6 +4,14 @@ import { PurchasePanel } from "@/features/purchase/PurchasePanel";
 import type { ProductOffer } from "@/lib/commerce/offer-types";
 import { BenefitList } from "./BenefitList";
 
+type ProductProps = {
+  offer: ProductOffer;
+  /** Passed by `/home-2` so the planner note renders before the window. */
+  forceBlackFriday?: boolean;
+  /** Only `/home-2`: the notepad is a third choice. The public home leaves this off. */
+  plannerChoice?: boolean;
+};
+
 /**
  * Product section of the home (#oferta): the visitor picks the edition and
  * quantity right here and the button goes straight to checkout. Every buy
@@ -18,7 +26,7 @@ import { BenefitList } from "./BenefitList";
  * Top and bottom gold rules are 4px. There is no left or right rule: a side
  * border read as a frame and stole a few pixels from the band.
  */
-export function Product({ offer }: { offer: ProductOffer }) {
+export function Product({ offer, forceBlackFriday = false, plannerChoice = false }: ProductProps) {
   return (
     <section
       id="oferta"
@@ -72,7 +80,12 @@ export function Product({ offer }: { offer: ProductOffer }) {
               the cover and below the wholesale line. Desktop padding stays. */}
           <div className="mx-auto mt-10 w-full max-w-[1188px] max-md:mt-6 lg:mt-[75px]">
             <div className="rounded-[26px] bg-surface-plain p-5 shadow-float max-md:pt-8 max-md:pb-10 sm:p-8 lg:px-12 lg:py-14">
-              <PurchasePanel offer={offer} headingAs="h3" />
+              <PurchasePanel
+                offer={offer}
+                headingAs="h3"
+                forceBlackFriday={forceBlackFriday}
+                plannerChoice={plannerChoice}
+              />
             </div>
           </div>
 

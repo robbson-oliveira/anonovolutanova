@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import { withHome2Galleries } from "@/lib/commerce/campaign-galleries";
+import { BLACK_FRIDAY } from "@content/black-friday";
 import { getProductOffer } from "@/lib/commerce/offer";
 import { publicEnv } from "@/lib/env";
 import { About } from "@sections/About";
@@ -25,6 +27,19 @@ type StorefrontHomeProps = {
   gallery?: ReactNode;
   /** The public home is the product page. The gallery preview is not. */
   structuredData?: boolean;
+  /**
+   * Renders the planner note in the first paint. Only `/home-2`.
+   * The public home never sets this, so `/` stays unchanged.
+   */
+  forceBlackFriday?: boolean;
+  /** Replaces the shipping bar. Only `/home-2`. */
+  announcement?: ReactNode;
+  /** Replaces the first fold. Only `/home-2`. */
+  hero?: ReactNode;
+  /** Replaces the planner block. Only `/home-2`. */
+  planner?: ReactNode;
+  /** Only `/home-2`: the notepad is a third choice in the offer. */
+  plannerChoice?: boolean;
 };
 
 /**
@@ -41,8 +56,17 @@ type StorefrontHomeProps = {
 export async function StorefrontHome({
   gallery,
   structuredData = true,
+  forceBlackFriday = false,
+  announcement,
+  hero,
+  planner,
+  plannerChoice = false,
 }: StorefrontHomeProps) {
-  const offer = await getProductOffer();
+  // `/` keeps the offer exactly as the store built it. `/home-2` only fills
+  // an empty gallery, so the strip matches the public home when the preview
+  // has no product ids.
+  const loaded = await getProductOffer();
+  const offer = plannerChoice ? await withHome2Galleries(loaded) : loaded;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -71,15 +95,16 @@ export async function StorefrontHome({
         />
       ) : null}
       {/* pt-9 only from lg: on the phone the shipping bar is in flow, inside
-          the sticky group below. The clip stays on the content under the
-          header: a clip (or hidden) ancestor makes iOS Safari repaint the
-          sticky bar on every frame while the address bar moves. */}
+          the sticky group below. Both bars are 36px tall. The clip stays on
+          the content under the header: a clip (or hidden) ancestor makes
+          iOS Safari repaint the sticky bar on every frame while the address
+          bar moves. */}
       <div className="relative isolate bg-surface lg:pt-9">
         {/* One sticky layer for the shipping bar and the phone header.
             translateZ(0) promotes that layer so it does not shake while
             the visual viewport resizes. Height and padding stay fixed. */}
         <div className="max-lg:sticky max-lg:top-0 max-lg:z-50 max-lg:bg-surface max-lg:will-change-transform max-lg:[transform:translateZ(0)] lg:contents">
-          <TopBar />
+          {announcement ?? <TopBar />}
           <SiteHeader smartMenu />
         </div>
         <div className="relative overflow-x-clip">
@@ -93,17 +118,17 @@ export async function StorefrontHome({
             className="pointer-events-none absolute bottom-0 left-1/2 -z-10 aspect-[1920/2824] w-[max(100%,1100px)] -translate-x-1/2 bg-[url(/img/footer/bg-aquarela.webp)] bg-[length:100%_auto] bg-top bg-no-repeat [mask-image:var(--mask-lower-aquarela)] min-[1440px]:w-[max(100%,1920px)]"
           />
           <main>
-            <Hero />
+            {hero ?? <Hero />}
             <DuckStrip />
             <About />
             <Explore />
             {gallery}
-            <Planner />
+            {planner ?? <Planner forceBlackFriday={forceBlackFriday} />}
             <Liturgical />
             <Persona />
             <Testimonials />
-            <Product offer={offer} />
-            <Faq />
+            <Product offer={offer} forceBlackFriday={forceBlackFriday} plannerChoice={plannerChoice} />
+            <Faq leading={plannerChoice ? BLACK_FRIDAY.faq : undefined} />
             <Closing />
           </main>
           <SiteFooter />

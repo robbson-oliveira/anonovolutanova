@@ -2,6 +2,12 @@ import { Badge, Button, IconSparkle, Reveal, pageFrameClass } from "@ds/index";
 import { PLANNER } from "@content/home";
 import { OFFER_ANCHOR } from "@content/product";
 import { formatBRL } from "@/lib/format";
+import { BlackFridayPlannerNote } from "@/features/black-friday/BlackFridayPlannerNote";
+
+type PlannerProps = {
+  /** Passed by `/home-2`. The public home leaves this off. */
+  forceBlackFriday?: boolean;
+};
 
 /**
  * Chamada do Planner Diário (Figma "Seção 3", 949:788): cartão com borda
@@ -17,7 +23,7 @@ import { formatBRL } from "@/lib/format";
  * Espaços da seção, do Figma: 132px sob "Explore a Agenda" e 163px até a
  * seção seguinte.
  */
-export function Planner() {
+export function Planner({ forceBlackFriday = false }: PlannerProps) {
   return (
     <section className={`${pageFrameClass} bg-surface pb-16 pt-4 md:pb-24 xl:pb-[163px] xl:pt-[32px]`}>
       <Reveal
@@ -89,6 +95,8 @@ export function Planner() {
           className="pointer-events-none hidden lg:absolute lg:left-[50.2%] lg:top-[2.9%] lg:block lg:h-auto lg:w-[62.9%] lg:max-w-none"
         />
       </Reveal>
+      {/* Below the card: the desktop card has a fixed aspect and clips overflow. */}
+      <BlackFridayPlannerNote force={forceBlackFriday} className="mt-4" />
     </section>
   );
 }

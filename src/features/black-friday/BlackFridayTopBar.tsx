@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { IconPackage, Marquee, cn } from "@ds/index";
+import { IconPackage, cn } from "@ds/index";
 import { BLACK_FRIDAY } from "@content/black-friday";
 import { BLACK_FRIDAY_END_MS } from "@/lib/black-friday";
 
@@ -44,27 +44,20 @@ function Countdown() {
   );
 }
 
-/** Soft edges so a letter is never sliced in half at the marquee clip. */
-const TICKER_MASK =
-  "[mask-image:linear-gradient(to_right,transparent_0%,black_40px,black_calc(100%_-_40px),transparent_100%)] [-webkit-mask-image:linear-gradient(to_right,transparent_0%,black_40px,black_calc(100%_-_40px),transparent_100%)]";
+function ShippingLine() {
+  return (
+    <p className="flex shrink-0 items-center gap-2 text-[12px] font-semibold whitespace-nowrap">
+      <IconPackage className="text-base text-text-on-inverse" />
+      {BLACK_FRIDAY.barShipping}
+    </p>
+  );
+}
 
 /**
- * Six copies, then the marquee duplicates the run. The wide margin is what
- * leaves about one and a half phrases in the track: the phrase is 216px, so
- * the margin is `track / 1.5 - 216` at 1440 (580px) and at 1920 (909px).
- */
-const ticker = Array.from({ length: 6 }, (_, index) => (
-  <span key={index} className="flex items-center gap-2 text-[12px] font-semibold text-text-on-inverse">
-    <IconPackage className="text-base text-text-on-inverse" />
-    {BLACK_FRIDAY.barShipping}
-  </span>
-));
-
-/**
- * Top bar of `/home-2` only. The campaign name and the countdown stay put.
- * Between the rules, only the free-shipping line travels.
- *
- * On a phone that line is the row under the fixed title and timer.
+ * Top bar of `/home-2` only. Desktop is one centered cluster: the campaign
+ * name, the free-shipping line, and the countdown, with the spare space on
+ * the outer edges of the bar. The phone stacks the name and the clock, then
+ * the shipping line on its own.
  */
 export function BlackFridayTopBar() {
   return (
@@ -72,22 +65,13 @@ export function BlackFridayTopBar() {
       data-anln-topbar=""
       className="bg-surface-inverse-soft text-text-on-inverse max-lg:relative lg:fixed lg:inset-x-0 lg:top-0 lg:z-50"
     >
-      <div className="mx-auto hidden h-[34px] w-full items-center gap-3 px-6 text-[12px] md:flex lg:w-[min(1316px,68.54vw)] lg:px-0">
-        <p className="flex shrink-0 items-center gap-2 text-[12px] font-semibold">
+      <div className="hidden h-[34px] w-full items-center justify-center gap-5 px-6 text-[12px] md:flex">
+        <p className="flex shrink-0 items-center gap-2 text-[12px] font-semibold whitespace-nowrap">
           <span aria-hidden className={cn("size-4 bg-gold-end", GIFT_MASK)} />
           {BLACK_FRIDAY.barTitle}
         </p>
         <span aria-hidden className="h-3.5 w-px shrink-0 bg-gold-end" />
-        <Marquee
-          items={ticker}
-          gap={170}
-          duration={48}
-          className={cn(
-            "min-w-0 flex-1",
-            TICKER_MASK,
-            "min-[1600px]:[&_li]:mr-[250px]! min-[1800px]:[&_li]:mr-[340px]! min-[1920px]:[&_li]:mr-[390px]!",
-          )}
-        />
+        <ShippingLine />
         <span aria-hidden className="h-3.5 w-px shrink-0 bg-gold-end" />
         <Countdown />
       </div>
@@ -100,7 +84,9 @@ export function BlackFridayTopBar() {
           <span aria-hidden className="h-3 w-px shrink-0 bg-gold-end opacity-70" />
           <Countdown />
         </div>
-        <Marquee items={ticker} gap={72} duration={32} className={cn("flex h-[26px] w-full items-center", TICKER_MASK)} />
+        <div className="flex h-[26px] items-center justify-center px-3">
+          <ShippingLine />
+        </div>
       </div>
     </div>
   );

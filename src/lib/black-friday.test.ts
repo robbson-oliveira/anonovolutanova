@@ -4,6 +4,7 @@ import {
   BLACK_FRIDAY_END_MS,
   BLACK_FRIDAY_START_MS,
   isBlackFridayWindow,
+  showBlackFridayNotice,
 } from "./black-friday.ts";
 
 describe("isBlackFridayWindow", () => {
@@ -32,5 +33,22 @@ describe("isBlackFridayWindow", () => {
   it("ignores the machine timezone by using the offset on the bounds", () => {
     // 07:59 BRT is still 27/11 in UTC, but the window has not opened.
     assert.equal(isBlackFridayWindow(new Date("2026-11-27T10:59:59.999Z")), false);
+  });
+});
+
+describe("showBlackFridayNotice", () => {
+  it("keeps the public home closed during the window and with the preview query", () => {
+    assert.equal(showBlackFridayNotice({ force: false, schedule: false, scheduled: true }), false);
+    assert.equal(showBlackFridayNotice({ force: false, schedule: false, scheduled: false }), false);
+  });
+
+  it("keeps /home-2 open regardless of the clock", () => {
+    assert.equal(showBlackFridayNotice({ force: true, schedule: false, scheduled: false }), true);
+    assert.equal(showBlackFridayNotice({ force: true, schedule: false, scheduled: true }), true);
+  });
+
+  it("opens the cart only inside the window or with the preview query", () => {
+    assert.equal(showBlackFridayNotice({ force: false, schedule: true, scheduled: true }), true);
+    assert.equal(showBlackFridayNotice({ force: false, schedule: true, scheduled: false }), false);
   });
 });

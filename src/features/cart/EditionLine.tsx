@@ -66,7 +66,7 @@ export function EditionLine({ edition, price, line, busy, onAdd, onQuantity }: E
         </div>
       </div>
 
-      {edition.id === "bloco" ? <BlackFridayPlannerNote surface="warm" /> : null}
+      {edition.id === "bloco" ? <BlackFridayPlannerNote schedule surface="warm" /> : null}
 
       {/* Under the text on larger screens (112px miniature + 20px gap); full width on the phone. */}
       <div className="flex flex-wrap items-center justify-between gap-3 sm:pl-[132px]">

@@ -6,6 +6,7 @@ import {
   BLACK_FRIDAY_PREVIEW_PARAM,
   BLACK_FRIDAY_START_MS,
   isBlackFridayWindow,
+  showBlackFridayNotice,
 } from "@/lib/black-friday";
 
 /**
@@ -48,12 +49,24 @@ function subscribe(onChange: () => void): () => void {
   };
 }
 
+type BlackFridayActiveOptions = {
+  /** `/home-2` renders the home notices on the server, ignoring the clock. */
+  force?: boolean;
+  /**
+   * Cart and drawer. Follows the Brasília window and `?preview_bf=1`.
+   * The public home leaves this off, so `/` never grows a notice on its own.
+   */
+  schedule?: boolean;
+};
+
 /**
- * True during the Brasília window, or when the page was opened with
- * `?preview_bf=1`. `force` is for `/home-2`, which must render the notices
- * on the server regardless of the clock.
+ * `force` is the `/home-2` path. `schedule` is the cart path. With neither,
+ * the result stays false even inside the window.
  */
-export function useBlackFridayActive(force = false): boolean {
+export function useBlackFridayActive({
+  force = false,
+  schedule = false,
+}: BlackFridayActiveOptions = {}): boolean {
   const scheduled = useSyncExternalStore(subscribe, clientSnapshot, serverSnapshot);
-  return force || scheduled;
+  return showBlackFridayNotice({ force, schedule, scheduled });
 }

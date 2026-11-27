@@ -33,11 +33,18 @@ type PurchasePanelProps = {
   offer: ProductOffer;
   /** Nível do título com o nome do produto dentro da seção onde o painel está. */
   headingAs?: "h1" | "h2" | "h3";
-  /** Passed by `/home-2`. The cart and the public home leave this off. */
+  /** Passed by `/home-2`. The public home leaves this off. */
   forceBlackFriday?: boolean;
+  /** Cart page. The note follows the window and `?preview_bf=1`. */
+  scheduleBlackFriday?: boolean;
 };
 
-export function PurchasePanel({ offer, headingAs = "h2", forceBlackFriday = false }: PurchasePanelProps) {
+export function PurchasePanel({
+  offer,
+  headingAs = "h2",
+  forceBlackFriday = false,
+  scheduleBlackFriday = false,
+}: PurchasePanelProps) {
   const firstAvailable =
     offer.editions.find((e) => e.inStock)?.id ?? offer.editions[0].id;
   const [editionId, setEditionId] = useState<EditionId>(firstAvailable);
@@ -294,7 +301,11 @@ export function PurchasePanel({ offer, headingAs = "h2", forceBlackFriday = fals
         </fieldset>
 
         {offer.editions.some((e) => e.id === "bloco") ? (
-          <BlackFridayPlannerNote force={forceBlackFriday} surface="warm" />
+          <BlackFridayPlannerNote
+            force={forceBlackFriday}
+            schedule={scheduleBlackFriday}
+            surface="warm"
+          />
         ) : null}
 
         {/* Quantidade */}

@@ -5,8 +5,10 @@ import { BLACK_FRIDAY } from "@content/black-friday";
 import { useBlackFridayActive } from "./use-black-friday";
 
 type BlackFridayPlannerNoteProps = {
-  /** See `BlackFridayBanner`. */
+  /** `/home-2`. Ignores the clock. */
   force?: boolean;
+  /** Cart lines. Follows the window and `?preview_bf=1`. */
+  schedule?: boolean;
   /**
    * `plain` sits on the cream page (white panel). `warm` sits on a white
    * card (cream panel). The border runs all the way around: a side rule
@@ -27,10 +29,11 @@ const surfaceClass = {
  */
 export function BlackFridayPlannerNote({
   force = false,
+  schedule = false,
   surface = "plain",
   className,
 }: BlackFridayPlannerNoteProps) {
-  const active = useBlackFridayActive(force);
+  const active = useBlackFridayActive({ force, schedule });
   if (!active) return null;
 
   return (

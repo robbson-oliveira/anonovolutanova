@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { usePathname } from "next/navigation";
 import { Button, Heading, IconArrowRight, IconClose, Text, cn } from "@ds/index";
 import { BUY_URL, FREE_SHIPPING_MIN_QTY } from "@content/product";
 import { BlackFridayBanner } from "@/features/black-friday/BlackFridayBanner";
@@ -15,7 +14,6 @@ import { GIFT_WRAP_AFFECTS_ORDER, SHOW_GIFT_WRAP } from "./gift-wrap";
 
 /** Gaveta do carrinho, pela direita. Fecha com Esc, no fundo ou no X. */
 export function CartDrawer() {
-  const pathname = usePathname();
   const { cart, count, busy, error, isLinePending, drawerOpen, closeDrawer, setQuantity, giftWrapIds, setGiftWrap } = useCart();
   const classicBlocked = cartBlockedByClassic(cart?.items);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -78,8 +76,7 @@ export function CartDrawer() {
           </button>
         </header>
 
-        {/* /home-2 reviews the home with the notices already on. The cart page stays on the clock. */}
-        <BlackFridayBanner variant="drawer" force={pathname === "/home-2"} />
+        <BlackFridayBanner variant="drawer" />
 
         {count === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 text-center">

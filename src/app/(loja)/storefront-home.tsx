@@ -27,9 +27,8 @@ type StorefrontHomeProps = {
   /** The public home is the product page. The gallery preview is not. */
   structuredData?: boolean;
   /**
-   * Renders the Black Friday notices in the first paint, ignoring the clock.
-   * Only `/home-2` sets this. The public home waits for the Brasília window
-   * or `?preview_bf=1`.
+   * Renders the Black Friday notices in the first paint. Only `/home-2`.
+   * The public home never sets this, so `/` stays unchanged through the window.
    */
   forceBlackFriday?: boolean;
 };

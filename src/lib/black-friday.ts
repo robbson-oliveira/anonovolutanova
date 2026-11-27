@@ -28,3 +28,20 @@ export function isBlackFridayWindow(now: Date): boolean {
   if (Number.isNaN(t)) return false;
   return t >= BLACK_FRIDAY_START_MS && t <= BLACK_FRIDAY_END_MS + 999;
 }
+
+/**
+ * Which surface may follow the clock.
+ *
+ * The public home (`/`) never does: it stays as it is, including during the
+ * window and with `?preview_bf=1`. `/home-2` passes `force`. The cart and
+ * its drawer pass `schedule`, so they open with the window or the preview
+ * query and close on their own at midnight.
+ */
+export function showBlackFridayNotice(input: {
+  force: boolean;
+  schedule: boolean;
+  /** True inside the window or when the preview query is set. */
+  scheduled: boolean;
+}): boolean {
+  return input.force || (input.schedule && input.scheduled);
+}

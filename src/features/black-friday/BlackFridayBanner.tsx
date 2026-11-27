@@ -16,12 +16,15 @@ type BlackFridayBannerProps = {
 };
 
 /**
- * Black Friday announcement. Closed until the Brasília window (or the
- * preview query, or `force`), so the public pages stay unchanged outside it.
- * A full band, not a card with a colored side rule.
+ * Black Friday announcement. The home strip renders only when `force` is set
+ * (`/home-2`). The cart strip and the drawer follow the Brasília window and
+ * `?preview_bf=1`. A full band, not a card with a colored side rule.
  */
 export function BlackFridayBanner({ variant, force = false, className }: BlackFridayBannerProps) {
-  const active = useBlackFridayActive(force);
+  const active = useBlackFridayActive({
+    force: variant === "home" && force,
+    schedule: variant !== "home",
+  });
   if (!active) return null;
 
   if (variant === "drawer") {

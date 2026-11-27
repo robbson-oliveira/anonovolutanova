@@ -241,12 +241,18 @@ type SiteHeaderProps = {
    * in once that row has scrolled away.
    */
   smartMenu?: boolean;
+  /**
+   * Replaces the page frame on `/home-2` so the menu lines up with the
+   * narrower campaign column. The public home leaves this unset.
+   */
+  contentClass?: string;
 };
 
 /** Home shell reserves `pt-9` (36px) for the fixed shipping bar. */
 const SHELL_BAR = 36;
 
-export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
+export function SiteHeader({ smartMenu = false, contentClass }: SiteHeaderProps) {
+  const frame = contentClass ?? pageFrameClass;
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [barH, setBarH] = useState(smartMenu ? SHELL_BAR : 0);
@@ -439,7 +445,7 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
             center; a 10px shift pulls it left without reaching the menu
             or the frame edge. Desktop uses the row below and never sees
             this one. */}
-        <div className={cn(pageFrameClass, "grid h-20 grid-cols-[1fr_auto_1fr] items-center lg:hidden")}>
+        <div className={cn(frame, "grid h-20 grid-cols-[1fr_auto_1fr] items-center lg:hidden")}>
           <div className="flex items-center justify-self-start">
             <button
               ref={triggerRef}
@@ -479,7 +485,7 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
             logo and Comprar sit on the viewport edge between 1024 and 1316.
             `hidden` is overridden by `lg:flex`; the phone row above is the
             one that shows below that breakpoint. */}
-        <div className={cn(pageFrameClass, "hidden h-20 items-center justify-between gap-3 xl:gap-6 lg:flex")}>
+        <div className={cn(frame, "hidden h-20 items-center justify-between gap-3 xl:gap-6 lg:flex")}>
           {/* Logo is the first item in the shared frame, so its left edge is
               the same x as the sections below. */}
           <a
@@ -543,7 +549,7 @@ export function SiteHeader({ smartMenu = false }: SiteHeaderProps) {
               : "lg:pointer-events-none lg:opacity-0",
           )}
         >
-          <div className={cn(pageFrameClass, "flex h-full items-center gap-3")}>
+          <div className={cn(frame, "flex h-full items-center gap-3")}>
             <a href="#inicio" className="flex shrink-0 items-center" aria-label={PRODUCT_NAME}>
               {/* 391×171 lockup. At 40px tall the file is still above 2×. */}
               <img src={logoCompact} alt="" width={391} height={171} loading="lazy" decoding="async" className="h-10 w-auto" />

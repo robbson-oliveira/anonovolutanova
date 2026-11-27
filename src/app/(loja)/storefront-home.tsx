@@ -93,7 +93,12 @@ export async function StorefrontHome({
             the visual viewport resizes. Height and padding stay fixed. */}
         <div className="max-lg:sticky max-lg:top-0 max-lg:z-50 max-lg:bg-surface max-lg:will-change-transform max-lg:[transform:translateZ(0)] lg:contents">
           {announcement ?? <TopBar />}
-          <SiteHeader smartMenu />
+          <SiteHeader
+            smartMenu
+            contentClass={
+              announcement ? "mx-auto w-full max-w-[1140px] px-6 lg:px-8" : undefined
+            }
+          />
         </div>
         <div className="relative overflow-x-clip">
           {/* Watercolor shared by the FAQ, the closing card and the footer (Figma

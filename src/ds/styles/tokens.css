@@ -148,6 +148,13 @@
   /* Husk from the Black Friday hero (Figma 2727:4964): pill border and the stat rules. */
   --brand-husk-500: rgb(181 160 97);
   --color-gold-line: var(--brand-husk-500);
+  /* Pill border on the Black Friday hero (#d8c7a3). */
+  --brand-sand-300: rgb(216 199 163);
+  --color-pill-border: var(--brand-sand-300);
+  /* Price on the floating card (#4a4845). */
+  --brand-ink-700: rgb(74 72 69);
+  --color-text-price: var(--brand-ink-700);
+  --shadow-bf-card: 0 4px 14px rgb(0 0 0 / 0.12);
   --color-text-card: var(--brand-ink-900);          /* título dentro de card: preto */
   --color-text-on-warm: var(--brand-gold-200);      /* texto sobre o card petróleo */
   --color-text-heading-sea: var(--brand-sea-700);    /* título do cabeçalho do "Sobre" (#134F63) */

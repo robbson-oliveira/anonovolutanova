@@ -44,6 +44,10 @@ function Countdown() {
   );
 }
 
+/** Soft edges so a letter is never sliced in half at the marquee clip. */
+const TICKER_MASK =
+  "[mask-image:linear-gradient(to_right,transparent_0%,black_40px,black_calc(100%_-_40px),transparent_100%)] [-webkit-mask-image:linear-gradient(to_right,transparent_0%,black_40px,black_calc(100%_-_40px),transparent_100%)]";
+
 const ticker = [
   <span key="gift" className="flex items-center gap-2 text-[13px] font-semibold text-text-on-inverse md:text-[15px]">
     <span aria-hidden className={cn("size-4 shrink-0 bg-gold-end", GIFT_MASK)} />
@@ -68,18 +72,18 @@ export function BlackFridayTopBar() {
       data-anln-topbar=""
       className="bg-surface-inverse-soft text-text-on-inverse max-lg:relative lg:fixed lg:inset-x-0 lg:top-0 lg:z-50"
     >
-      <div className="mx-auto hidden h-11 max-w-[1440px] items-center gap-4 px-6 md:flex">
+      <div className="mx-auto hidden h-11 max-w-[1140px] items-center gap-4 px-4 md:flex">
         <p className="flex shrink-0 items-center gap-2 text-sm font-semibold">
           <span aria-hidden className={cn("size-[18px] bg-gold-end", GIFT_MASK)} />
           {BLACK_FRIDAY.barTitle}
         </p>
         <span aria-hidden className="h-3.5 w-px shrink-0 bg-gold-end" />
-        <Marquee items={ticker} gap={48} duration={22} className="min-w-0 flex-1" />
+        <Marquee items={ticker} gap={48} duration={22} className={cn("min-w-0 flex-1", TICKER_MASK)} />
         <span aria-hidden className="h-3.5 w-px shrink-0 bg-gold-end" />
         <Countdown />
       </div>
 
-      <div className="flex flex-col gap-1 px-3 py-1.5 md:hidden">
+      <div className="mx-auto flex max-w-[1140px] flex-col gap-1 px-4 py-1.5 md:hidden">
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
           <p className="flex min-w-0 items-center gap-1.5 text-[11px] leading-tight font-semibold">
             <span aria-hidden className={cn("size-4 shrink-0 bg-gold-end", GIFT_MASK)} />
@@ -87,7 +91,7 @@ export function BlackFridayTopBar() {
           </p>
           <Countdown />
         </div>
-        <Marquee items={ticker} gap={28} duration={16} className="w-full" />
+        <Marquee items={ticker} gap={28} duration={16} className={cn("w-full", TICKER_MASK)} />
       </div>
     </div>
   );

@@ -17,6 +17,7 @@ import {
 import { whatsappUrlWith, type EditionId } from "@content/product";
 import type { ProductImage, ProductOffer } from "@/lib/commerce/offer-types";
 import { formatBRL } from "@/lib/format";
+import { BlackFridayPlannerNote } from "@/features/black-friday/BlackFridayPlannerNote";
 import { useOptionalCart } from "@/features/cart/CartProvider";
 import { ClassicSoldOutBadge } from "./ClassicSoldOutBadge";
 import { plannerThumbFocus } from "@/features/cart/planner-thumb";
@@ -32,9 +33,11 @@ type PurchasePanelProps = {
   offer: ProductOffer;
   /** Nível do título com o nome do produto dentro da seção onde o painel está. */
   headingAs?: "h1" | "h2" | "h3";
+  /** Passed by `/home-2`. The cart and the public home leave this off. */
+  forceBlackFriday?: boolean;
 };
 
-export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
+export function PurchasePanel({ offer, headingAs = "h2", forceBlackFriday = false }: PurchasePanelProps) {
   const firstAvailable =
     offer.editions.find((e) => e.inStock)?.id ?? offer.editions[0].id;
   const [editionId, setEditionId] = useState<EditionId>(firstAvailable);
@@ -289,6 +292,10 @@ export function PurchasePanel({ offer, headingAs = "h2" }: PurchasePanelProps) {
             })}
           </div>
         </fieldset>
+
+        {offer.editions.some((e) => e.id === "bloco") ? (
+          <BlackFridayPlannerNote force={forceBlackFriday} surface="warm" />
+        ) : null}
 
         {/* Quantidade */}
         <div className="flex flex-col gap-3">

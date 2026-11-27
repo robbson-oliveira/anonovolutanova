@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { BlackFridayBanner } from "@/features/black-friday/BlackFridayBanner";
 import { getProductOffer } from "@/lib/commerce/offer";
 import { publicEnv } from "@/lib/env";
 import { About } from "@sections/About";
@@ -25,6 +26,12 @@ type StorefrontHomeProps = {
   gallery?: ReactNode;
   /** The public home is the product page. The gallery preview is not. */
   structuredData?: boolean;
+  /**
+   * Renders the Black Friday notices in the first paint, ignoring the clock.
+   * Only `/home-2` sets this. The public home waits for the Brasília window
+   * or `?preview_bf=1`.
+   */
+  forceBlackFriday?: boolean;
 };
 
 /**
@@ -41,6 +48,7 @@ type StorefrontHomeProps = {
 export async function StorefrontHome({
   gallery,
   structuredData = true,
+  forceBlackFriday = false,
 }: StorefrontHomeProps) {
   const offer = await getProductOffer();
 
@@ -93,16 +101,19 @@ export async function StorefrontHome({
             className="pointer-events-none absolute bottom-0 left-1/2 -z-10 aspect-[1920/2824] w-[max(100%,1100px)] -translate-x-1/2 bg-[url(/img/footer/bg-aquarela.webp)] bg-[length:100%_auto] bg-top bg-no-repeat [mask-image:var(--mask-lower-aquarela)] min-[1440px]:w-[max(100%,1920px)]"
           />
           <main>
+            {/* In flow, under the header: not part of the sticky phone
+                stack, so the hero and the menu keep their height. */}
+            <BlackFridayBanner variant="home" force={forceBlackFriday} />
             <Hero />
             <DuckStrip />
             <About />
             <Explore />
             {gallery}
-            <Planner />
+            <Planner forceBlackFriday={forceBlackFriday} />
             <Liturgical />
             <Persona />
             <Testimonials />
-            <Product offer={offer} />
+            <Product offer={offer} forceBlackFriday={forceBlackFriday} />
             <Faq />
             <Closing />
           </main>

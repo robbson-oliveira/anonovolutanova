@@ -127,7 +127,7 @@ export function CartPage({ offer }: CartPageProps) {
         </div>
       </div>
 
-      <aside className="lg:sticky lg:top-8">
+      <aside className="lg:sticky lg:top-[var(--anln-flow-sticky,2rem)]">
         <CartSummary offer={offer} />
       </aside>
     </div>

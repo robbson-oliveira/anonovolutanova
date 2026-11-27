@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { CampaignFlowBar, campaignFlowOffset } from "@/features/black-friday/CampaignFlowBar";
 import { CheckoutFooter } from "@/features/checkout/CheckoutFooter";
 import { CheckoutPage } from "@/features/checkout/CheckoutPage";
 import { STORE_FLOW_THEME } from "@/features/shell/store-flow-theme";
@@ -16,7 +17,8 @@ export const metadata: Metadata = {
  */
 export default function Checkout() {
   return (
-    <div className={`flex min-h-dvh flex-col bg-surface-plain pb-16 lg:pb-0 ${STORE_FLOW_THEME}`}>
+    <div className={`flex min-h-dvh flex-col bg-surface-plain pb-16 lg:pb-0 ${STORE_FLOW_THEME} ${campaignFlowOffset}`}>
+      <CampaignFlowBar />
       <main className="mx-auto w-full max-w-[1200px] flex-1 px-4 py-8 sm:px-6 lg:py-10">
         <CheckoutPage />
       </main>

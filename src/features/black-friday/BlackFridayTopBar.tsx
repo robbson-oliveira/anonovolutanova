@@ -56,7 +56,7 @@ const shippingTicker = Array.from({ length: 6 }, (_, index) => (
 ));
 
 /**
- * Top bar of `/home-2` only. Desktop is one centered cluster: the campaign
+ * Campaign top bar. Desktop is one centered cluster: the campaign
  * name, a one-phrase window where the shipping line travels, and the
  * countdown. Spare space stays on the outer edges. The phone keeps the name
  * and the clock fixed, and lets the shipping line travel on the row below.

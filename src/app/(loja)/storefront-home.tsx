@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { BlackFridayBanner } from "@/features/black-friday/BlackFridayBanner";
+import { cn } from "@ds/index";
 import { getProductOffer } from "@/lib/commerce/offer";
 import { publicEnv } from "@/lib/env";
 import { About } from "@sections/About";
@@ -27,10 +27,14 @@ type StorefrontHomeProps = {
   /** The public home is the product page. The gallery preview is not. */
   structuredData?: boolean;
   /**
-   * Renders the Black Friday notices in the first paint. Only `/home-2`.
-   * The public home never sets this, so `/` stays unchanged through the window.
+   * Renders the planner note in the first paint. Only `/home-2`.
+   * The public home never sets this, so `/` stays unchanged.
    */
   forceBlackFriday?: boolean;
+  /** Replaces the shipping bar. Only `/home-2`. */
+  announcement?: ReactNode;
+  /** Replaces the first fold. Only `/home-2`. */
+  hero?: ReactNode;
 };
 
 /**
@@ -48,6 +52,8 @@ export async function StorefrontHome({
   gallery,
   structuredData = true,
   forceBlackFriday = false,
+  announcement,
+  hero,
 }: StorefrontHomeProps) {
   const offer = await getProductOffer();
 
@@ -81,12 +87,12 @@ export async function StorefrontHome({
           the sticky group below. The clip stays on the content under the
           header: a clip (or hidden) ancestor makes iOS Safari repaint the
           sticky bar on every frame while the address bar moves. */}
-      <div className="relative isolate bg-surface lg:pt-9">
+      <div className={cn("relative isolate bg-surface", announcement ? "lg:pt-11" : "lg:pt-9")}>
         {/* One sticky layer for the shipping bar and the phone header.
             translateZ(0) promotes that layer so it does not shake while
             the visual viewport resizes. Height and padding stay fixed. */}
         <div className="max-lg:sticky max-lg:top-0 max-lg:z-50 max-lg:bg-surface max-lg:will-change-transform max-lg:[transform:translateZ(0)] lg:contents">
-          <TopBar />
+          {announcement ?? <TopBar />}
           <SiteHeader smartMenu />
         </div>
         <div className="relative overflow-x-clip">
@@ -100,11 +106,9 @@ export async function StorefrontHome({
             className="pointer-events-none absolute bottom-0 left-1/2 -z-10 aspect-[1920/2824] w-[max(100%,1100px)] -translate-x-1/2 bg-[url(/img/footer/bg-aquarela.webp)] bg-[length:100%_auto] bg-top bg-no-repeat [mask-image:var(--mask-lower-aquarela)] min-[1440px]:w-[max(100%,1920px)]"
           />
           <main>
-            {/* In flow, under the header: not part of the sticky phone
-                stack, so the hero and the menu keep their height. */}
-            <BlackFridayBanner variant="home" force={forceBlackFriday} />
-            <Hero />
-            <DuckStrip />
+            {hero ?? <Hero />}
+            {/* The Black Friday fold already ends on its own duck band. */}
+            {hero ? null : <DuckStrip />}
             <About />
             <Explore />
             {gallery}

@@ -3,6 +3,27 @@
  * cart, the shipping rule or what is sent in the package.
  */
 export const BLACK_FRIDAY = {
+  /** Fixed label on the left of the Black Friday top bar. */
+  barTitle: "Black Friday Ano Novo, Luta Nova",
+  barGift: "Na compra de 1 Agenda, ganhe 1 Planner Diário",
+  barShipping: "Frete Grátis a partir de 4 agendas",
+  barEnds: "Termina em",
+  heroEyebrow: "Oferta por tempo limitado",
+  heroTitle: "Black Friday",
+  heroTitleLine: "Ano Novo, Luta Nova",
+  heroSubtitle: "Viva o caminho de santidade no dia a dia",
+  heroPillLead: "Na compra da Agenda 2027, ",
+  heroPillStrong: "ganhe 1 Planner Diário.",
+  heroParagraph:
+    "Aproveite a Black Friday e garanta a sua Agenda Ano Novo, Luta Nova 2027 com um brinde especial: o Planner Diário e semanal, para te ajudar a colocar os planos em prática todos os dias. ",
+  heroParagraphStrong: "Oferta por tempo limitado.",
+  heroCta: "Garantir Hoje Agenda + Planner",
+  heroCardTitle: "Agenda 2027",
+  heroCardExtra: "+ planner diário",
+  heroCardCta: "Comprar Agora",
+  sealTitle: "BRINDE",
+  sealLine: "PLANNER",
+  sealFoot: "POR AGENDA",
   kicker: "Black Friday · hoje, 27/11 · até 23h59",
   home:
     "Na compra de 1 Agenda 2027, você ganha 1 Planner Diário grátis, enviado automaticamente no pacote (2 agendas = 2 planners). A partir de 4 agendas, o frete é grátis.",

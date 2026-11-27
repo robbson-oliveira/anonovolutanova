@@ -145,6 +145,9 @@
   --color-surface-card: var(--brand-cream-50);
   --color-gold-start: var(--brand-gold-600);        /* gold button gradient */
   --color-gold-end: var(--brand-gold-200);
+  /* Husk from the Black Friday hero (Figma 2727:4964): pill border and the stat rules. */
+  --brand-husk-500: rgb(181 160 97);
+  --color-gold-line: var(--brand-husk-500);
   --color-text-card: var(--brand-ink-900);          /* título dentro de card: preto */
   --color-text-on-warm: var(--brand-gold-200);      /* texto sobre o card petróleo */
   --color-text-heading-sea: var(--brand-sea-700);    /* título do cabeçalho do "Sobre" (#134F63) */

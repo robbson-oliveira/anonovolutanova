@@ -180,31 +180,31 @@ export function BlackFridayHero() {
             href={OFFER_ANCHOR}
             className="absolute top-[70.08%] left-[26.53%] flex w-[27.04%] flex-col items-center justify-center rounded-[10px] border border-card-gold-border bg-surface-card p-2 shadow-bf-card"
           >
-            <span className="flex w-full items-end gap-1">
-              <span className="relative h-12 w-[42px] shrink-0">
+            <span className="flex w-full items-start justify-center gap-0.5">
+              <span className="relative h-[52px] w-11 shrink-0">
                 <img
                   src="/images/black-friday/agenda-capa.webp"
                   alt=""
                   width={220}
                   height={321}
-                  className="absolute bottom-0 left-0 h-full w-auto"
+                  className="absolute bottom-0 left-0 h-[52px] w-auto"
                 />
-                {/* Tilted sheet in front of the cover's lower right, under the A of "Agenda". */}
+                {/* Almost twice the previous sheet, barely tilted, under "Agenda"
+                    and against the right-aligned lines (Figma 2727:5999). */}
                 <img
                   src="/images/black-friday/planner-hoje.webp"
                   alt=""
                   width={1024}
                   height={1024}
-                  className="absolute -right-1 bottom-0 h-[62%] w-auto rotate-[8deg]"
+                  className="absolute -right-8 top-3 z-10 h-14 w-auto rotate-[5deg]"
                 />
               </span>
-              {/* The two lines sit on the right, under "2027" (Figma 2727:6007). */}
-              <span className="inline-grid min-w-0 flex-1 justify-items-start">
+              <span className="inline-grid justify-items-end">
                 <span className="text-[13px] leading-none font-bold text-text-card">{BLACK_FRIDAY.heroCardTitle}</span>
-                <span className="mt-0.5 justify-self-end text-[10px] leading-tight font-bold text-text-card">
+                <span className="mt-0.5 text-[10px] leading-tight font-bold text-text-card">
                   {BLACK_FRIDAY.heroCardExtra}
                 </span>
-                <span className="justify-self-end text-[12px] leading-tight font-bold text-text-price">
+                <span className="text-[12px] leading-tight font-bold text-text-price">
                   {priceLabel}
                 </span>
               </span>
@@ -216,7 +216,7 @@ export function BlackFridayHero() {
         </div>
       </div>
 
-      <div aria-hidden className="flex h-[34px] items-center justify-center gap-3.5 overflow-hidden bg-surface-inverse-soft">
+      <div aria-hidden className="mb-8 flex h-[34px] items-center justify-center gap-3.5 overflow-hidden bg-surface-inverse-soft md:mb-12">
         {DUCKS.map((i) => (
           <img
             key={i}

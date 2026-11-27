@@ -16,8 +16,7 @@ export const BLACK_FRIDAY = {
   heroPillLead: "Na compra da Agenda 2027, ",
   heroPillStrong: "ganhe 1 Planner Diário.",
   heroParagraph:
-    "Aproveite a Black Friday e garanta a sua Agenda Ano Novo, Luta Nova 2027 com um brinde especial: o Planner Diário e semanal, para te ajudar a colocar os planos em prática todos os dias. ",
-  heroParagraphStrong: "Oferta por tempo limitado.",
+    "Aproveite a Black Friday e garanta a sua Agenda Ano Novo, Luta Nova 2027 com um brinde especial: o Planner Diário e semanal, para te ajudar a colocar os planos em prática todos os dias.",
   heroCta: "Garantir Hoje Agenda + Planner",
   heroCardTitle: "Agenda 2027",
   heroCardExtra: "+ planner diário",

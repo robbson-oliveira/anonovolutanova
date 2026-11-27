@@ -78,8 +78,6 @@ export function BlackFridayHero() {
           </p>
           <p className="max-w-[430px] text-[15px] leading-[22px] text-text-lead lg:max-w-[32.5rem] lg:text-[18px] lg:leading-[1.45]">
             {BLACK_FRIDAY.heroParagraph}
-            <br className="hidden lg:block" />
-            <span className="font-bold">{BLACK_FRIDAY.heroParagraphStrong}</span>
           </p>
 
           <a
@@ -169,8 +167,8 @@ export function BlackFridayHero() {
                 </p>
               </div>
             </div>
-            {/* Head of the rotated arrow sits on the sheet's top edge, clear of HOJE. */}
-            <div className="pointer-events-none absolute top-[-1%] left-[46%] w-[13%] aspect-square">
+            {/* Tail stays left of the seal. The rotated head meets the sheet's top edge, above HOJE. */}
+            <div className="pointer-events-none absolute top-[6%] left-[29%] w-[13%] aspect-square">
               <img
                 src="/images/black-friday/seta-curva.webp"
                 alt=""
@@ -183,37 +181,37 @@ export function BlackFridayHero() {
 
           <a
             href={OFFER_ANCHOR}
-            className="absolute top-[58%] left-1/2 flex aspect-[161/100] w-[200px] -translate-x-1/2 flex-col items-center justify-between rounded-[10px] border border-gold-end bg-surface-card px-2 pt-2 pb-2 shadow-bf-card lg:top-[62%] lg:left-[22%] lg:w-[34%] lg:max-w-[240px] lg:translate-x-0 lg:border-card-gold-border"
+            className="absolute top-[58%] left-1/2 grid aspect-[161/100] w-[200px] -translate-x-1/2 grid-rows-[minmax(0,1fr)_30%] gap-1 rounded-[10px] border border-gold-end bg-surface-card px-1.5 py-1.5 shadow-bf-card lg:top-[62%] lg:left-[22%] lg:w-[34%] lg:max-w-[240px] lg:translate-x-0 lg:border-card-gold-border"
           >
-            <span className="flex w-full items-center justify-center gap-1.5">
+            <span className="flex min-h-0 w-full items-center gap-1">
               {/* The sheet overlaps the cover's lower-right and stops before the lines. */}
-              <span className="relative h-14 w-[58px] shrink-0">
+              <span className="relative h-full w-[46%] shrink-0">
                 <img
                   src="/images/black-friday/agenda-capa.webp"
                   alt=""
                   width={220}
                   height={321}
-                  className="absolute bottom-0 left-0 h-14 w-auto"
+                  className="absolute bottom-0 left-0 h-[96%] w-auto"
                 />
                 <img
                   src="/images/black-friday/planner-hoje.webp"
                   alt=""
                   width={1024}
                   height={1024}
-                  className="absolute bottom-0 left-[16px] z-10 size-10 rotate-[5deg] object-contain"
+                  className="absolute bottom-0 left-[32%] z-10 h-[74%] w-auto rotate-[5deg] object-contain"
                 />
               </span>
-              <span className="flex flex-col items-end">
-                <span className="whitespace-nowrap text-[15px] leading-none font-extrabold text-text-card">{BLACK_FRIDAY.heroCardTitle}</span>
-                <span className="mt-1 whitespace-nowrap text-[12px] leading-none font-bold text-text-card">
+              <span className="flex h-full min-w-0 flex-1 flex-col items-end justify-between py-0.5">
+                <span className="whitespace-nowrap text-[17px] leading-none font-extrabold text-text-card">{BLACK_FRIDAY.heroCardTitle}</span>
+                <span className="whitespace-nowrap text-[13px] leading-none font-bold text-text-card">
                   {BLACK_FRIDAY.heroCardExtra}
                 </span>
-                <span className="mt-1 whitespace-nowrap text-[14px] leading-none font-bold text-text-price">
+                <span className="whitespace-nowrap text-[16px] leading-none font-bold text-text-price">
                   {priceLabel}
                 </span>
               </span>
             </span>
-            <span className="flex h-9 w-[84%] items-center justify-center whitespace-nowrap rounded-[6px] bg-linear-90 from-gold-warm-start to-gold-warm-end text-[13px] font-bold text-on-action">
+            <span className="flex h-full w-[82%] items-center justify-center justify-self-center whitespace-nowrap rounded-[6px] bg-linear-90 from-gold-warm-start to-gold-warm-end text-[15px] font-bold text-on-action">
               {BLACK_FRIDAY.heroCardCta}
             </span>
           </a>

@@ -13,7 +13,7 @@
  * `/home-2` does not read it.
  */
 
-export const BLACK_FRIDAY_HOME_ACTIVE = true;
+export const BLACK_FRIDAY_HOME_ACTIVE = false;
 
 export const BLACK_FRIDAY_START_ISO = "2026-11-27T08:00:00-03:00";
 export const BLACK_FRIDAY_END_ISO = "2026-11-27T23:59:59-03:00";
